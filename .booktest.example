@@ -1,0 +1,28 @@
+#
+# diff_tool is used to see changes in the results
+#
+# one option is Meld: https://meldmerge.org/
+#
+# install in Debian based distros with
+#   'sudo apt install meld'
+#
+diff_tool=meld
+
+#
+# md_viewer is used to view the md content, like tables, lists, links and images
+#
+# one option is retext, which is an md editor
+#
+# Retext - https://github.com/retext-project/retext
+#
+md_viewer=retext --preview
+
+#
+# default paths for looking up test cases
+#
+test_paths=test,book,run
+
+#
+# default location for storing the results and books
+#
+books_path=books

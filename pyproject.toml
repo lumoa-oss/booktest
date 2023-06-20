@@ -1,0 +1,32 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "booktest"
+version = "0.2.1"
+authors = ["Antt Rauhala <antti@lumoa.io>"]
+description = "Booktest is a snapshot testing library for review driven testing."
+readme = "readme.md"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent"
+]
+homepage = "https://github.com/lumoa/booktest-py"
+repository = "https://github.com/lumoa/booktest-py"
+packages = [{include = "booktest"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = "^1.0.0"
+argcomplete = "^1.12.0"
+coverage = "^6.5.0"
+
+[tool.poetry.group.test.dependencies]
+matplotlib = "^3.3.0"
+pycodestyle = "^2.0.0"
+
+[tool.poetry.scripts]
+booktest = "booktest.cli:main"

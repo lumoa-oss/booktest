@@ -1,0 +1,8 @@
+[run]
+concurrency=multiprocessing
+source=booktest
+relative_files = True
+branch = True
+
+[report]
+show_missing = true
