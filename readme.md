@@ -1,8 +1,8 @@
 # Booktest
 
-textanalyticsservice is using a custom book_test testing utility for
-combining Jupyterbook style data science development with traditional 
-regression testing.
+booktest is review-driven testing tool that combines Jupyterbook style data science
+development with traditional regression testing. Booktest is developed by 
+[Lumoa.me](https://lumoa.me), the actionable feedback analytics platform.
 
 book_test is designed to tackle a common problem with the data science work 
 RnD work flows and regression testing: 
