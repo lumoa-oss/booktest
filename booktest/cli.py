@@ -34,7 +34,6 @@ def setup_test_suite(parser):
         if os.path.exists(path):
             sys.path.insert(0, os.path.curdir)
 
-            tests = []
             for f in os.listdir(path):
                 if f.endswith("_test.py") or f.endswith("_book.py") or f.endswith("_suite.py") or \
                    (f.startswith("test_") and f.endswith(".py")):
@@ -80,4 +79,4 @@ def main(arguments=None):
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)
