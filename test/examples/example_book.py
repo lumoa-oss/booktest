@@ -1,6 +1,6 @@
 import booktest as bt
 
-import test.example_engine as engine
+import test.examples.example_engine as engine
 import time
 
 import os
@@ -39,7 +39,6 @@ class ExampleTestBook(bt.TestBook):
 
     def test_tmp_file(self, t: bt.TestCaseRun):
         # these imports are slow, let's do them lazily
-        import matplotlib.pyplot as plt
 
         t.h1("This test demonstrates tmp file")
         message = "this is message"

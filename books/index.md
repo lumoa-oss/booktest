@@ -1,12 +1,6 @@
 # Books overview:
 
  * test
-     * example_suite
-         * [simple](test/example_suite/simple.md)
-         * [headers](test/example_suite/headers.md)
-         * [multiline](test/example_suite/multiline.md)
-         * [tokenizer](test/example_suite/tokenizer.md)
-
      * dependencies
          * parametrized1
              * [create_data](test/dependencies/parametrized1/create_data.md)
@@ -43,13 +37,20 @@
          * url_ops
              * [names](test/test_names/url_ops/names.md)
 
-     * example
-         * [engine](test/example/engine.md)
-         * [df](test/example/df.md)
-         * [image](test/example/image.md)
-         * [tmp_file](test/example/tmp_file.md)
-         * [cache](test/example/cache.md)
-         * [cache_use](test/example/cache_use.md)
-         * [two_cached](test/example/two_cached.md)
-         * [ms](test/example/ms.md)
+     * examples
+         * example_suite
+             * [simple](test/examples/example_suite/simple.md)
+             * [headers](test/examples/example_suite/headers.md)
+             * [multiline](test/examples/example_suite/multiline.md)
+             * [tokenizer](test/examples/example_suite/tokenizer.md)
+
+         * example
+             * [engine](test/examples/example/engine.md)
+             * [df](test/examples/example/df.md)
+             * [image](test/examples/example/image.md)
+             * [tmp_file](test/examples/example/tmp_file.md)
+             * [cache](test/examples/example/cache.md)
+             * [cache_use](test/examples/example/cache_use.md)
+             * [two_cached](test/examples/example/two_cached.md)
+             * [ms](test/examples/example/ms.md)
 

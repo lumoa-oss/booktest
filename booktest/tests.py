@@ -141,9 +141,9 @@ class Tests:
             help="update test on success"
         )
         parser.add_argument(
-            "-U",
+            "-a",
             action='store_true',
-            help="update test on failure"
+            help="automatically accept differing tests"
         )
         parser.add_argument(
             "-p",
@@ -239,7 +239,7 @@ class Tests:
 
         parser.add_argument('test_cases',
                             nargs='*',
-                            default="*",
+                            default='*',
                             choices=test_choices)
 
     def exec_parsed(self, root_dir, parsed, cache=None) -> int:
@@ -272,8 +272,8 @@ class Tests:
             config["refresh_sources"] = True
         if parsed.u:
             config["update"] = True
-        if parsed.U:
-            config["freeze"] = True
+        if parsed.a:
+            config["accept"] = True
         if parsed.p:
             config["parallel"] = True
         if parsed.cov:
@@ -310,7 +310,12 @@ class Tests:
         else:
             cache_out_dir = out_dir
 
-        cases = self.selected_names(parsed.test_cases, cache_out_dir)
+        test_cases = parsed.test_cases
+
+        if test_cases == "*":
+            test_cases = config.get("default_tests", "test,book").split(",")
+
+        cases = self.selected_names(test_cases, cache_out_dir)
 
         cmd = parsed.cmd
 
