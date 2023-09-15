@@ -19,11 +19,7 @@ def parse_config_value(value):
 
 def resolve_default_config(config_file):
     rv = {}
-    for key, value in os.environ.items():
-        if key.startswith(BOOK_TEST_PREFIX):
-            book_key = key[len(BOOK_TEST_PREFIX):].lower()
-            rv[book_key] = parse_config_value(value)
-
+    # let config_file defaults have lower priority
     if path.exists(config_file):
         with open(config_file) as f:
             for line in f:
@@ -31,6 +27,12 @@ def resolve_default_config(config_file):
                     continue
                 key, value = line.strip().split('=', 1)
                 rv[key] = parse_config_value(value)
+
+    # environment defaults have higher priority
+    for key, value in os.environ.items():
+        if key.startswith(BOOK_TEST_PREFIX):
+            book_key = key[len(BOOK_TEST_PREFIX):].lower()
+            rv[book_key] = parse_config_value(value)
 
     return rv
 
