@@ -23,6 +23,11 @@ md_viewer=retext --preview
 test_paths=test,book,run
 
 #
+# default tests to run, when no argument given
+#
+default_tests=test,book
+
+#
 # default location for storing the results and books
 #
 books_path=books

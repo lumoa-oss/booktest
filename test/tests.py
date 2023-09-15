@@ -1,7 +1,7 @@
 import booktest as bt
 
-import test.example_suite as es
-import test.example_book as eb
+import test.examples.example_suite as es
+import test.examples.example_book as eb
 import test.test_names_test as tn
 
 tests = bt.merge_tests([

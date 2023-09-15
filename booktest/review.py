@@ -101,7 +101,7 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
         interaction = UserRequest.NONE
 
     auto_update = config.get("update", False)
-    auto_freeze = config.get("freeze", False)
+    auto_freeze = config.get("accept", False)
 
     if (interaction == UserRequest.FREEZE or
        (rv == TestResult.OK and auto_update) or

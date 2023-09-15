@@ -53,7 +53,7 @@ def tokenizer_test(t):
     tokenize("3435 23.32 23. +2 +")
 
 
-example_suite = bt.TestSuite("test/example_suite", [
+example_suite = bt.TestSuite("test/examples/example_suite", [
     ["simple", simple_test],
     ["headers", headers_test],
     ["multiline", multiline_test],

@@ -7,6 +7,7 @@ from booktest.testrun import TestRun
 from booktest.tests import Tests
 from booktest.testsuite import TestSuite, merge_tests, drop_prefix
 from booktest.tokenizer import TestTokenizer, BufferIterator
+from booktest.detection import detect_tests, detect_test_suite
 
 
 __all__ = {
@@ -23,6 +24,8 @@ __all__ = {
     "merge_tests",
     "drop_prefix",
     "value_format",
-    "class_to_test_path"
+    "class_to_test_path",
+    "detect_tests",
+    "detect_test_suite"
 }
 
