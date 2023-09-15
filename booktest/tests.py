@@ -242,7 +242,11 @@ class Tests:
                             default='*',
                             choices=test_choices)
 
-    def exec_parsed(self, root_dir, parsed, cache=None) -> int:
+    def exec_parsed(self,
+                    root_dir,
+                    parsed,
+                    cache=None,
+                    extra_default_config: dict = {}) -> int:
         """
         :param root_dir:  the directory containing books and .out directory
         :param parsed: the object containing argparse parsed arguments
@@ -256,7 +260,12 @@ class Tests:
 
         if cache is None:
             cache = LruCache(8)
+
         config = get_default_config()
+        # extra default configuration parameters get layered
+        # on top of normal default configuration
+        for key, value in extra_default_config.items():
+            config[key] = value
 
         if parsed.i:
             config["interactive"] = True
