@@ -79,6 +79,7 @@ class TestBook(metaclass=OrderedClass):
                         cases.append([name[len("test_"):], m[1]])
 
         self.test_suite = TestSuite(full_path, cases)
+        self.cases = self.test_suite.cases
 
         self.__test_book_path = full_path
 

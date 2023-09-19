@@ -53,7 +53,7 @@ class TestRun:
                     else:
                         raise Exception(
                             f"case {case.name} dependency {t[0]}" +
-                            f" result '{bin_path}' doesn't exist")
+                            f" missing in '{bin_path}'")
 
                 return True, self.cache[bin_path]
 
