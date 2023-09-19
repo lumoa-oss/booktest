@@ -107,22 +107,23 @@ class CaseReports:
     def of_file(file_name):
         cases = []
         for j in read_lines(file_name):
-            parts = j.split("\t")
-            case_name = parts[0]
-            result_str = parts[1]
-            if result_str == "OK":
-                result = TestResult.OK
-            elif result_str == "DIFF":
-                result = TestResult.DIFF
-            elif result_str == "FAIL":
-                result = TestResult.FAIL
-            else:
-                raise Exception(f"{result_str}?")
+            if len(j.strip()) > 0:
+                parts = j.split("\t")
+                case_name = parts[0]
+                result_str = parts[1]
+                if result_str == "OK":
+                    result = TestResult.OK
+                elif result_str == "DIFF":
+                    result = TestResult.DIFF
+                elif result_str == "FAIL":
+                    result = TestResult.FAIL
+                else:
+                    raise Exception(f"{result_str}?")
 
-            duration = float(parts[2])
-            cases.append((case_name,
-                          result,
-                          duration))
+                duration = float(parts[2])
+                cases.append((case_name,
+                              result,
+                              duration))
         return CaseReports(cases)
 
     @staticmethod

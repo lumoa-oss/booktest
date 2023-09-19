@@ -37,8 +37,6 @@ def merge_tests(suites: list) -> Tests:
     """
     cases = []
     for s in suites:
-        if type(s).__name__ != "TestSuite":
-            s = s.test_suite
         for c in s.cases:
             cases.append([c[0], c[1]])
 
