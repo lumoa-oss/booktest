@@ -21,36 +21,41 @@ def add_exec(parser, method):
 config_comments = {
     "diff_tool":
 """#
-# diff_tool is used to see changes in the results
+# diff_tool is the tool used to see changes in the results
 #
 # one option is Meld: https://meldmerge.org/
 #
-# install in Debian based distros with
+# you can install 'meld' in Debian based distros with
+#
 #   'sudo apt install meld'
 #
 """,
     "md_viewer":
 """#
-# md_viewer is used to view the md content, like tables, lists, links and images
+# md_viewer is the tool used to view the md content, like tables, lists, links and images
 #
 # one option is retext, which is an md editor
 #
 # Retext - https://github.com/retext-project/retext
 #
+# you can install 'retext' in Debian based distros with
+#
+#   'sudo apt install retext'
+#
 """,
     "test_paths":
 """#
-# default paths for looking up test cases
+# booktest automatically detects tests in the default_tests directories
 #
 """,
     "default_tests":
 """#
-# default tests to run, when no argument given
+# booktest will run all default_tests test cases, if no argument is given
 #
 """,
     "books_path":
 """#
-# default location for storing the results and books
+# books_path specifies directory, where results and books are stored
 #
 """
 }
@@ -64,27 +69,39 @@ config_defaults = {
 }
 
 
-def prompt_config(prompt,
-                  key,
+def prompt_config(key,
                   config):
+    print(config_comments[key])
+
     default_value = config.get(key)
     if default_value is None:
         default_value = config_defaults.get(key)
-    value = input(f"{prompt} (default '{default_value}'):")
+    value = input(f"specify {key} (default '{default_value}'):")
     if not value:
         value = default_value
+
+    print()
+    print(f"{key}={value}")
+    print()
+
     return key, value
 
 
 def setup_booktest(parsed):
     config = get_default_config()
 
+    print()
+    print("setup asks you to specify various tools and paths for booktest")
+    print("==============================================================")
+    print()
+
+
     configs = []
-    configs.append(prompt_config("specify diff tool", "diff_tool", config))
-    configs.append(prompt_config("specify md viewer", "md_viewer", config))
-    configs.append(prompt_config("specify all test paths", "test_paths", config))
-    configs.append(prompt_config("specify default test paths", "default_tests", config))
-    configs.append(prompt_config("specify directory for storing books", "books_path", config))
+    configs.append(prompt_config("diff_tool", config))
+    configs.append(prompt_config("md_viewer", config))
+    configs.append(prompt_config("test_paths", config))
+    configs.append(prompt_config("default_tests", config))
+    configs.append(prompt_config("books_path", config))
 
     with open(".booktest", "w") as f:
         for key, value in configs:
