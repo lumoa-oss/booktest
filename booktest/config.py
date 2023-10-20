@@ -17,16 +17,21 @@ def parse_config_value(value):
         return value
 
 
-def resolve_default_config(config_file):
-    rv = {}
-    # let config_file defaults have lower priority
+def parse_config_file(config_file, config):
     if path.exists(config_file):
         with open(config_file) as f:
             for line in f:
                 if line.startswith('#') or not line.strip():
                     continue
                 key, value = line.strip().split('=', 1)
-                rv[key] = parse_config_value(value)
+                config[key] = parse_config_value(value)
+
+def resolve_default_config(config_file):
+    rv = {}
+    # let home directory .booktest file has lowest priority
+    parse_config_file("~/.booktest", rv)
+    # let config_file defaults have lower priority
+    parse_config_file(config_file, rv)
 
     # environment defaults have higher priority
     for key, value in os.environ.items():

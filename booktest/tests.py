@@ -100,9 +100,9 @@ class Tests:
                 for dependency in dependencies:
                     if dependency not in selected:
                         selected.append(dependency)
-                selected.append(c[0])
+                if c[0] not in selected:
+                    selected.append(c[0])
         return selected
-
 
     def setup_parser(self, parser):
         parser.add_argument(
