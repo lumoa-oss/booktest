@@ -59,11 +59,20 @@ Book test uses two tools for reviewing the test results, that are:
  2. md tool for viewing MD files 
 
 These tools depend on the OS, environment and user preferences. 
-To choose tools that work for you:
+To choose tools that work for you, you can either run setup:
+
+```bash
+booktest setup
+```
+
+Or you can:
 
  1. copy the .booktest.example as .booktest
- 2. change the defaults (meld, retext) to a difftool and
-    an md tool, that work for you in your working environment.
+ 2. modify .booktest to:
+    * change the defaults (meld, retext) to a difftool and an md tool, that work for you in your working environment. 
+    * define the default directories, where booktest will lookup test cases and set the default run, 
+      when booktest is started without parameters 
+    * define the directory, where books and temporary files are stored
 
 # Testing
 

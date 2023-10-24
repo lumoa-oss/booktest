@@ -1,3 +1,4 @@
+import logging
 import os
 import json
 
@@ -109,21 +110,25 @@ class CaseReports:
         for j in read_lines(file_name):
             if len(j.strip()) > 0:
                 parts = j.split("\t")
-                case_name = parts[0]
-                result_str = parts[1]
-                if result_str == "OK":
-                    result = TestResult.OK
-                elif result_str == "DIFF":
-                    result = TestResult.DIFF
-                elif result_str == "FAIL":
-                    result = TestResult.FAIL
-                else:
-                    raise Exception(f"{result_str}?")
+                try:
+                    case_name = parts[0]
+                    result_str = parts[1]
+                    if result_str == "OK":
+                        result = TestResult.OK
+                    elif result_str == "DIFF":
+                        result = TestResult.DIFF
+                    elif result_str == "FAIL":
+                        result = TestResult.FAIL
+                    else:
+                        raise Exception(f"{result_str}?")
 
-                duration = float(parts[2])
-                cases.append((case_name,
-                              result,
-                              duration))
+                    duration = float(parts[2])
+                    cases.append((case_name,
+                                  result,
+                                  duration))
+                except Exception as e:
+                    logging.exception(f"parsing line {j} failed with {e}")
+
         return CaseReports(cases)
 
     @staticmethod
