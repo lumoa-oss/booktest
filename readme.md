@@ -74,6 +74,10 @@ Or you can:
       when booktest is started without parameters 
     * define the directory, where books and temporary files are stored
 
+You can also store a .booktest file in your home directory to provide cross-project default settings. These
+settings will be overriden by project specific .booktest or environment variables of form BOOKTEST_VARIABLE_NAME.
+E.g. BOOKTEST_MD_VIEWER will override .booktest file md_viewer configuration.
+
 # Testing
 
 To run the test cases, run:

@@ -26,6 +26,7 @@ def parse_config_file(config_file, config):
                 key, value = line.strip().split('=', 1)
                 config[key] = parse_config_value(value)
 
+
 def resolve_default_config(config_file):
     rv = {}
     # let home directory .booktest file has lowest priority
