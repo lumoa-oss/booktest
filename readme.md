@@ -4,28 +4,32 @@ booktest is review-driven testing tool that combines Jupyterbook style data scie
 development with traditional regression testing. Booktest is developed by 
 [Lumoa.me](https://lumoa.me), the actionable feedback analytics platform.
 
-book_test is designed to tackle a common problem with the data science work 
+booktest is designed to tackle a common problem with the data science
 RnD work flows and regression testing: 
 
  * Data science produces results such as probability estimates, which can be 
-   good or bad, but not really right or wrong as in traditional software engineering. 
-     * Because the DS results are not right/wrong, it's very difficult to use assertions 
-       to support the data science RnD workflow or regression testing.
-     * For example, can you cannot really assert that accuracy 0.84 is correct, 
-       but the accuracy 0.83 is incorrec. Neither you cannot really assert that this
-       topic model is correct, but this different is not. Such assertions require
-       an expert opinion and in extreme cases: the assertions can be somewhat subjective.
-     * At the same time, while Jupyter notebooks support the data science workflow by
-       providing the necessary visibility to results to do the expert review, it 
-       cannot be used for regression testing purposes.
- * There is also the problem of the data science data being big, and the intermediate 
+   good or bad, but not really right or wrong as in the traditional software engineering. 
+     * Because the DS results are not strictly right or wrong, it's very difficult to use assertions 
+       for quality assurance and preventing regression.
+     * For example, you cannot really say that accuracy 0.84 is correct, while the 
+       accuracy 0.83 is incorrect, especially if you have other measurements (log likelihood)
+       giving conflicting results. Neither evaluating a topic model as correct or incorrect
+       is non-sensical. In practice, most data science applications require an expert 
+       review.
+     * This less ambigious quality also creates need for a better visibility of how
+       the system behaves. One typically wants to print out edge cases and their diagnostics
+       to see the behavior, see intermediate steps and see the results for different data sets . 
+ * There is also the problem of the data science data being big and the intermediate 
    results being computationally expensive. 
-     * Jupyter notebook supports this by keeping the state in memory between runs, while 
-       traditional unittests tend to lose the program state between runs.
- * So the problem is that what kind of tool would support BOTH data science workflow and
-   the regression testing needs.
+     * Jupyter notebook deals with this problem by keeping the state in memory between runs, while 
+       traditional unittests tend to lose the program state between runs. This leads to very slow 
+       test runs, slow iteration speed and low productivity.
+ * While the Jupyter Notebook provides good visibility to results required by the expert review and
+   powerful caching functionality: it fails short on a) often requiring copy-pasting production code to 
+   make results visible, b) it doesn't support automated regression testing and c) expert review requires
+   expensive full review even if nothing changed.
 
-book_test solves this problem by delivering on 3 main points:
+booktest solves this problem setting by delivering on 3 main points:
 
  * Focus on the results and analytic as in Jupyter notebook by allowing user to print
    the results as MD files. 
@@ -34,64 +38,10 @@ book_test solves this problem by delivering on 3 main points:
  * Instead of doing strict assertions, do testing by comparing old results with 
    new results.
 
-As such, book_test does snapshot testing, and it stores the snapshots in filesystem and in Git. 
+As such, booktest does snapshot testing, and it stores the snapshots in filesystem and in Git. 
 Additional benefit of this approach is that you can trace the result development in Git.
 
 You can find the test behavior and results [here](books/index.md)
-
-# Setup
-
-## dependencies
-
-You will need Poetry and Python 3.8 to use this package. To set-up the environment
-and run the commands described in this package, run:
-
-```bash
-poetry shell
-```
-
-
-## Configurations
-
-Book test uses two tools for reviewing the test results, that are: 
-
- 1. diff tool for reviewing changes in results
- 2. md tool for viewing MD files 
-
-These tools depend on the OS, environment and user preferences. 
-To choose tools that work for you, you can either run setup:
-
-```bash
-booktest setup
-```
-
-Or you can:
-
- 1. copy the .booktest.example as .booktest
- 2. modify .booktest to:
-    * change the defaults (meld, retext) to a difftool and an md tool, that work for you in your working environment. 
-    * define the default directories, where booktest will lookup test cases and set the default run, 
-      when booktest is started without parameters 
-    * define the directory, where books and temporary files are stored
-
-You can also store a .booktest file in your home directory to provide cross-project default settings. These
-settings will be overriden by project specific .booktest or environment variables of form BOOKTEST_VARIABLE_NAME.
-E.g. BOOKTEST_MD_VIEWER will override .booktest file md_viewer configuration.
-
-# Testing
-
-To run the test cases, run:
-
-```bash
-booktest test
-```
-
-The tests are run against expectation files, which 
-represent test snapshots and have been generated
-from previous runs. 
-
-Click [here](books/index.md) to see the booktest test cases
-expectation files.
 
 # Guide
 
@@ -145,30 +95,22 @@ NOTE, that booktest relies on external MD viewer and diff tool. Also, booktest
 uses default directory paths for looking up tests, for storing the books and for
 storing caches and the output. 
 
-You can configure these variables by creating .booktest file in the root directory with 
-content like:
+These tools depend on the OS, environment and user preferences. 
+To choose tools that work for you, you can run the setup script:
 
+```bash
+booktest setup
 ```
-#
-# diff_tool is used to see changes in the results
-#
-diff_tool=meld
 
-#
-# md_viewer is used to view the md content, like tables, lists, links and images
-#
-md_viewer=retext --preview
+NOTE: that this operation will create a .booktest file in the local directory. You
+can edit the file by hand safely. Rerunning `booktest setup` will read the configuration
+and propose existing as defaults.
 
-#
-# default paths for looking up test cases
-#
-test_paths=test,book,run
+NOTE that you can also store a .booktest file in your home directory to provide cross-project 
+default settings. These settings will be overriden by project specific .booktest or 
+environment variables of form BOOKTEST_VARIABLE_NAME. E.g. BOOKTEST_MD_VIEWER will 
+override .booktest file md_viewer configuration.
 
-#
-# default location for storing the results and books
-#
-books_path=books
-```
 
 ## Common workflows
 
@@ -388,3 +330,36 @@ may be slow enough to be maintained and run non-regularly and outside CI:
 ```bash
 ./do perf -v -i slow-perfomance-test
 ```
+
+# Developing booktest
+
+This guides through the basic steps of building booktest locally and 
+running it's tests.
+
+## dependencies
+
+You will need Poetry and Python 3.8 to use this package. To setup the environment
+and run the commands described in this package, run:
+
+```bash
+poetry shell
+```
+
+
+# Testing
+
+booktest uses booktest for testing. To configure booktest, see the instructions above.
+
+To run the test cases, run:
+
+```bash
+booktest test
+```
+
+The tests are run against expectation files, which 
+represent test snapshots and have been generated
+from previous runs. 
+
+Click [here](books/index.md) to see the booktest test cases
+expectation files.
+
