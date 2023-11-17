@@ -1,9 +1,8 @@
-import booktest as bt
+import time
+import os
 
 import test.examples.example_engine as engine
-import time
-
-import os
+import booktest as bt
 
 
 class ExampleTestBook(bt.TestBook):
