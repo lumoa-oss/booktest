@@ -8,6 +8,7 @@ from booktest.cache import LruCache
 from booktest.review import run_tool, review
 from booktest.runs import parallel_run_tests, run_tests
 from booktest.config import get_default_config
+import booktest.setup
 
 
 class Tests:
@@ -169,7 +170,13 @@ class Tests:
             dest='cmd',
             const="-l",
             help="lists the selected test cases")
-
+        parser.add_argument(
+            "--setup",
+            action='store_const',
+            dest='cmd',
+            const="--setup",
+            help="setups booktest"
+        )
         parser.add_argument(
             '--garbage',
             action='store_const',
@@ -328,7 +335,9 @@ class Tests:
 
         cmd = parsed.cmd
 
-        if cmd == '--config':
+        if cmd == '--setup':
+            return booktest.setup.setup_booktest()
+        elif cmd == '--config':
             for key, value in config.items():
                 print(f"{key}={value}")
             return 0

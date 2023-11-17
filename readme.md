@@ -99,11 +99,11 @@ These tools depend on the OS, environment and user preferences.
 To choose tools that work for you, you can run the setup script:
 
 ```bash
-booktest setup
+booktest --setup
 ```
 
 NOTE: that this operation will create a .booktest file in the local directory. You
-can edit the file by hand safely. Rerunning `booktest setup` will read the configuration
+can edit the file by hand safely. Rerunning `booktest --setup` will read the configuration
 and propose existing as defaults.
 
 NOTE that you can also store a .booktest file in your home directory to provide cross-project 
@@ -228,58 +228,6 @@ In bitbucket pipelines, you can add the following step:
 print verbose review of all failed test cases, if the 
 run failed.
 
-## Tips and tricks
-
-### Enable autocomplete
-
-To enable the autocomplete, run the following in bash:
-
-```bash
-eval "$(register-python-argcomplete booktest)"
-```
-
-### Integrating booktest to CLI interface using argparse
-
-It often helps both the developer workflow and introducing other people 
-into the project, if you provide a simple developer CLI interface for
-running common tasks in the project. 
-
-This CLI interface may include commands for e.g. linting the code, 
-deploying pypi packages or running tests.
-
-As long your CLI interface uses the Python argparse, integrating the 
-booktest should be easy. You can follow the example in the `do.py` and 
-`do` scripts in this project:
-
-```python
-import argparse
-import argcomplete
-import sys
-import test.tests as tests
-
-parser = argparse.ArgumentParser()
-
-subparsers = parser.add_subparsers(help='sub-command help')
-
-# TODO: add your own parsers
-tests_parser = subparsers.add_parser("test")
-tests.setup_parser(tests_parser)
-tests_parser.set_defaults(
-    exec=lambda parsed:
-    tests.exec_parsed("books/test",
-                      parsed))
-
-argcomplete.autocomplete(parser)
-parsed = parser.parse_args(sys.args)
-
-exit(parsed.exec(parsed))
-```
-
-After the integration, you can run the test cases with:
-
-```
-./do test examples/hello
-```
 
 ### Tests and runs
 
@@ -300,35 +248,20 @@ may still be necessary for asserting the system real word performance and
 quality and for doing exploratory analysis. 
 
 You may want to save the run data separately and supply separate method
-for loading test data.
-
-```
-./do load-run-data
-```
-
-After this, you can create a separate test suite for the runs with 
-separate integration
-
-```
-runs_parser = subparsers.add_parser("run")
-runs.setup_parser(tests_parser)
-runs_parser.set_defaults(
-    exec=lambda parsed:
-        runs.exec_parsed("books/runs",
-                         parsed))
-```
+for loading test data. After this, you can create a separate test suite for 
+the runs in a separate directory called 'run'.
 
 After this, the runs can be executed with:
 
 ```bash
-./do run -v -i real-world-case
+booktest -v -i run/real-world-case
 ```
 
 Similar integrations can be done for e.g. performance testing, which 
 may be slow enough to be maintained and run non-regularly and outside CI:
 
 ```bash
-./do perf -v -i slow-perfomance-test
+booktest -v -i perf/slow-perfomance-test
 ```
 
 # Developing booktest
