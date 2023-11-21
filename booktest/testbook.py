@@ -1,6 +1,6 @@
 import inspect
 
-from booktest.naming import class_to_test_path
+from booktest.naming import class_to_test_path, clean_method_name
 from booktest.testsuite import TestSuite
 
 
@@ -76,7 +76,7 @@ class TestBook(metaclass=OrderedClass):
             if name.startswith("test_"):
                 for m in inspect.getmembers(self):
                     if m[0] == name:
-                        cases.append([name[len("test_"):], m[1]])
+                        cases.append([clean_method_name(name), m[1]])
 
         self.test_suite = TestSuite(full_path, cases)
         self.cases = self.test_suite.cases

@@ -43,6 +43,8 @@ Additional benefit of this approach is that you can trace the result development
 
 You can find the test behavior and results [here](books/index.md)
 
+API documentation is available [here](docs/booktest.py.md) 
+
 # Guide
 
 ## Getting started with book test
@@ -110,6 +112,38 @@ NOTE that you can also store a .booktest file in your home directory to provide 
 default settings. These settings will be overriden by project specific .booktest or 
 environment variables of form BOOKTEST_VARIABLE_NAME. E.g. BOOKTEST_MD_VIEWER will 
 override .booktest file md_viewer configuration.
+
+
+## Creating your first booktest
+
+Create a directory with name 'test' or 'book'. Create a file there
+called 'my_test.py' or 'my_book.py'. In the file import booktest
+and create a test function taken a TestCaseRun object as a parameter. 
+use the object to print something like this:
+
+```python
+
+import booktest as bt
+
+
+def test_simple(t: bt.TestCaseRun):
+    t.tln("this is a simple test")
+
+```
+
+Then you can run booktest in verbose and interactive mode:
+
+```bash 
+booktest -v -i 
+```
+
+Accept results. Congratulations, you have your first test!
+
+You can find the API documentation for the TestCaseRun class [here](docs/booktest/testcaserun.py.md)
+
+You can find more examples in the [test/examples](test/examples) folder. You can 
+find the test results [here](books/index.md).
+
 
 
 ## Common workflows
