@@ -43,6 +43,8 @@ Additional benefit of this approach is that you can trace the result development
 
 You can find the test behavior and results [here](books/index.md)
 
+API documentation is available [here](docs/booktest.py.md) 
+
 # Guide
 
 ## Getting started with book test
@@ -137,7 +139,11 @@ booktest -v -i
 
 Accept results. Congratulations, you have your first test!
 
-You can find more examples in the test/examples folder. 
+You can find the API documentation for the TestCaseRun class [here](docs/booktest/testcaserun.py.md)
+
+You can find more examples in the [test/examples](test/examples) folder. You can 
+find the test results [here](books/index.md).
+
 
 
 ## Common workflows

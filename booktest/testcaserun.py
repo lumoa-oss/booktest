@@ -29,14 +29,8 @@ import pickle
 
 class TestCaseRun:
     """
-    Runs an individual test case.
-
-    few concerns:
-
-    1. behavior testing
-    2. maintaining state
-    3. workflow
-    4. integration with unittesting
+    A utility, that manages an invidiual test run, and provides the
+    main API for the test case
     """
     def __init__(self,
                  run,
@@ -114,11 +108,13 @@ class TestCaseRun:
         print(*args, sep=sep, end=end, file=self.output)
 
     def report(self, *args, sep=' ', end='\n'):
+        """ writes a report line in report log and possibly in standard output  """
         print(*args, sep=sep, end=end, file=self.rep)
         if self.verbose:
             self.print(*args, sep=sep, end=end)
 
     def reset_exp_reader(self):
+        """ Resets the reader that reads expectation / snapshot file """
         self.close_exp_reader()
         if self.exp_file_exists:
             self.exp = open(self.exp_file_name, "r")
@@ -130,17 +126,32 @@ class TestCaseRun:
         self.next_exp_line()
 
     def tmp_file(self, filename):
+        """
+        creates a temporary file with the filename in the test's .tmp directory
+
+        these files get deleted before new runs, and by `booktest --clean` command
+        """
         if not path.exists(self.out_tmp_dir_name):
             os.mkdir(self.out_tmp_dir_name)
         return path.join(self.out_tmp_dir_name, filename)
 
     def file(self, filename):
+        """
+        creates a file with the filename in the test's main directory
+
+        these files can include test output or e.g. images and graphs included in the
+        .md output. NOTE: these files may end up in Git, so keep them small
+        and avoid sensitive information.
+        """
         # prepare new output files
         if not path.exists(self.out_dir_name):
             os.mkdir(self.out_dir_name)
         return path.join(self.out_dir_name, filename)
 
     def start(self, title=None):
+        """
+        Internal method: starts the test run with the given title
+        """
         self.started = time.time()
         report_case_begin(self.print,
                           self.test_path,
@@ -148,6 +159,16 @@ class TestCaseRun:
                           self.verbose)
 
     def review(self, result):
+        """
+        Internal method: runs the review step, which is done at the end of the test.
+        This method is typically called by end method()
+
+        This step may be interactive depending of the configuration. It ends up with
+        the user or automation accepting or rejecting the result.
+
+        Returns test result (TEST, DIFF, OK) and interaction value, which is used to signal e.g.
+        test run termination.
+        """
         return case_review(
             self.exp_base_dir,
             self.out_base_dir,
@@ -156,6 +177,13 @@ class TestCaseRun:
             self.config)
 
     def end(self):
+        """
+        Test ending step. This records the test time, closes resources,
+        and sets up preliminary result (FAIL, DIFF, OK). This also
+        reports the case and calls the review step.
+s
+        :return:
+        """
         self.ended = time.time()
         self.took_ms = 1000*(self.ended - self.started)
 
@@ -185,11 +213,20 @@ class TestCaseRun:
         return rv, interaction
 
     def close_exp_reader(self):
+        """
+        Closes the expectation/snapshot file reader
+        :return:
+        """
+
         if self.exp is not None:
             self.exp.close()
             self.exp = None
 
     def close(self):
+        """
+        Closes all resources (e.g. file system handles).
+        """
+
         self.close_exp_reader()
         self.out.close()
         self.out = None
@@ -197,6 +234,9 @@ class TestCaseRun:
         self.rep = None
 
     def next_exp_line(self):
+        """
+        Moves snapshot reader cursor to the next snapshot file line
+        """
         if self.exp_file_exists:
             if self.exp:
                 line = self.exp.readline()
@@ -215,6 +255,12 @@ class TestCaseRun:
                 self.exp_tokens = None
 
     def jump(self, line_number):
+        """
+        Moves the snapshot reader cursor to the specified line number.
+
+        If line number is before current reader position, the snapshot
+        file reader is reset.
+        """
         if self.exp_file_exists:
 
             if line_number < self.exp_line_number:
@@ -226,8 +272,8 @@ class TestCaseRun:
 
     def seek(self, is_line_ok, begin=0, end=sys.maxsize):
         """
-        Seeks an expectation file line that matches the is_line_ok()
-        lambda. The seeking is started on 'begin' line and
+        Seeks the next snapshot/expectation file line that matches the
+        is_line_ok() lambda. The seeking is started on 'begin' line and
         it ends on the 'end' line.
 
         NOTE: The seeks starts from the cursor position,
@@ -257,12 +303,40 @@ class TestCaseRun:
                     self.next_exp_line()
 
     def seek_line(self, anchor, begin=0, end=sys.maxsize):
+        """
+        Seeks the next snapshot/expectation file line matching the anchor.
+
+        NOTE: The seeks starts from the cursor position,
+        but it may restart seeking from the beginning of the file,
+        if the sought line is not found.
+
+        NOTE: this is really an O(N) scanning operation.
+              it may restart at the beginning of file and
+              it typically reads the the entire file
+              on seek failures.
+        """
         return self.seek(lambda x: x == anchor, begin, end)
 
     def seek_prefix(self, prefix):
+        """
+        Seeks the next snapshot/expectation file line matching the prefix.
+
+        NOTE: The seeks starts from the cursor position,
+        but it may restart seeking from the beginning of the file,
+        if the sought line is not found.
+
+        NOTE: this is really an O(N) scanning operation.
+              it may restart at the beginning of file and
+              it typically reads the the entire file
+              on seek failures.
+        """
         return self.seek(lambda x: x.startswith(prefix))
 
     def write_line(self):
+        """
+        Internal method. Writes a line into test output file and moves
+        the snaphost line forward by one.
+        """
         self.out.write(self.out_line)
         self.out.write('\n')
         self.out_line = ""
@@ -270,6 +344,17 @@ class TestCaseRun:
         self.line_number = self.line_number + 1
 
     def commit_line(self):
+        """
+        Internal method. Commits the prepared line into testing.
+
+        This writes both decorated line into reporting AND this writes
+        the line into test output. Also the snapshot file cursor is
+        moved into next line.
+
+        Statistics line number of differing or erroneous lines get
+        updated.
+        """
+
         if self.line_error is not None or self.line_diff is not None:
             symbol = "?"
             pos = None
@@ -296,6 +381,9 @@ class TestCaseRun:
             self.write_line()
 
     def head_exp_token(self):
+        """
+        Returns the next token in the snapshot file without moving snapshot file cursor
+        """
         if self.exp_tokens is not None:
             if self.exp_tokens.has_next():
                 return self.exp_tokens.head
@@ -305,6 +393,10 @@ class TestCaseRun:
             return None
 
     def next_exp_token(self):
+        """
+        Reads the next token from the snapshot file. NOTE: this moves snapshot file
+        cursor into the next token.
+        """
         if self.exp_tokens is not None:
             if self.exp_tokens.has_next():
                 return next(self.exp_tokens)
@@ -314,6 +406,18 @@ class TestCaseRun:
             return None
 
     def feed_token(self, token, check=False):
+        """
+        Feeds a token into test stream. If `check` is True, the token
+        will be compared to the next awaiting token in the snapshot file,
+        and on difference a 'diff' is reported.
+
+        If `check`is True, snapshot file cursor is also moved, but no
+        comparison is made.
+
+        NOTE: if token is a line end character, the line will be committed
+        to the test stream.
+        """
+
         exp_token = self.next_exp_token()
         self.last_checked = check
         if self.exp_file_exists \
@@ -327,44 +431,82 @@ class TestCaseRun:
         return self
 
     def test_feed_token(self, token):
+        """
+        Feeds a token into test stream. The token will be compared to the next
+        awaiting token in the snapshot file, and on difference a 'diff' is reported.
+        """
         self.feed_token(token, check=True)
         return self
 
     def test_feed(self, text):
+        """
+        Feeds a piece text into the test stream. The text tokenized and feed
+        into text stream as individual tokens.
+
+        NOTE: The token content IS COMPARED to snapshot content for differences
+        that are reported.
+        """
         tokens = TestTokenizer(str(text))
         for t in tokens:
             self.test_feed_token(t)
         return self
 
     def feed(self, text):
+        """
+        Feeds a piece text into the test stream. The text tokenized and feed
+        into text stream as individual tokens.
+
+        NOTE: The token content IS NOT COMPARED to snapshot content, and differences
+        are ignored
+        """
         tokens = TestTokenizer(text)
         for t in tokens:
             self.feed_token(t)
         return self
 
     def diff(self):
-        """ an unexpected difference encountered"""
+        """ an unexpected difference encountered. this method marks a difference on the line manually """
         if self.line_diff is None:
             self.line_diff = len(self.out_line)
         return self
 
     def fail(self):
-        """ a proper failure encountered """
+        """ a proper failure encountered. this method marks an error on the line manually """
         if self.line_error is None:
             self.line_error = len(self.out_line)
         return self
 
     def anchor(self, anchor):
+        """
+        creates a prefix anchor by seeking & printing prefix. e.g. if you have "key=" anchor,
+        the snapshot cursor will be moved to next line starting with "key=" prefix.
+
+        This method is used for controlling the snapshot cursor location and guaranteeing
+        that a section in test is compared against correct section in the snapshot
+        """
         self.seek_prefix(anchor)
         self.t(anchor)
         return self
 
     def anchorln(self, anchor):
+        """
+        creates a line anchor by seeking & printing an anchor line. e.g. if you have "# SECTION 3" anchor,
+        the snapshot cursor will be moved to next "# SECTION 3" line.
+
+        This method is used for controlling the snapshot cursor location and guaranteeing
+        that a section in test is compared against correct section in the snapshot
+        """
         self.seek_line(anchor)
         self.tln(anchor)
         return self
 
     def header(self, header):
+        """
+        creates a header line that also operates as an anchor.
+
+        the only difference between this method and anchorln() method is that the
+        header is preceded and followed by an empty line.
+        """
         if self.line_number > 0:
             check = self.last_checked and self.exp_line is not None
             self.feed_token("\n", check=check)
@@ -373,6 +515,16 @@ class TestCaseRun:
         return self
 
     def tmsln(self, f, max_ms):
+        """
+        runs the function f and measures the time milliseconds it took.
+        the measurement is printed in the test stream and compared into previous
+        result in the snaphost file.
+
+        This method also prints a new line after the measurements.
+
+        NOTE: if max_ms is defined, this line will fail, if the test took more than
+        max_ms milliseconds.
+        """
         before = time.time()
         rv = f()
         after = time.time()
@@ -397,38 +549,74 @@ class TestCaseRun:
         return rv
 
     def imsln(self, f):
+        """
+        runs the function f and measures the time milliseconds it took.
+        the measurement is printed in the test stream and compared into previous
+        result in the snaphost file.
+
+        This method also prints a new line after the measurements.
+
+        NOTE: unline tmsln(), this method never fails or marks a difference.
+        """
         return self.tmsln(f, sys.maxsize)
 
     def h(self, level, title):
+        """ Markdown style header at level specified by `level` parameter """
         self.header(f"{'#' * level} {title}")
         return self
 
     def h1(self, title):
+        """
+        Markdown style header 1st level header
+
+        This method is used to mark titles as in
+
+        ```python
+        t.h1("This is my title")
+        t.tln("This is my title")
+        ```
+        """
         self.header("# " + title)
         return self
 
     def h2(self, title):
+        """ Markdown style header 2nd level header """
         self.header("## " + title)
         return self
 
     def h3(self, title):
+        """ Markdown style header 3rd level header """
         self.header("### " + title)
         return self
 
     def timage(self, file, alt_text=None):
+        """ Adds a markdown image in the test stream with specified alt text """
         if alt_text is None:
             alt_text = os.path.splitext(os.path.basename(file))[0]
         self.tln(f"![{alt_text}]({file[len(self.out_base_dir)+1:]})")
         return self
 
     def ttable(self, table: dict):
+        """
+        Writes a markdown table based on the `table` parameter columns. It uses column
+        keys as column names
+
+        ```python
+        t.ttable({
+          "x": [1, 2, 3],
+          "y": [2, 3, 4]
+        })
+        ```
+        """
         import pandas as pd
         self.tdf(pd.DataFrame(table))
         return self
 
     def tdf(self, df):
         """
-        df should be of pd.DataFrame or compatible type
+        Writes the `df` dataframe as a markdown table.
+
+        NOTE: df should be of pd.DataFrame or compatible type
         """
         pads = []
         for column in df.columns:
@@ -464,6 +652,22 @@ class TestCaseRun:
         return self
 
     def tlist(self, list, prefix=" * "):
+        """
+        Writes the list into test stream. By default, the list
+        is prefixed by markdown ' * ' list expression.
+
+        For example following call:
+
+        ```python
+        t.tlist(["a", "b", "c"])
+        ```
+
+        will produce:
+
+         * a
+         * b
+         * c
+        """
         for i in list:
             self.tln(f"{prefix}{i}")
 
@@ -504,6 +708,16 @@ class TestCaseRun:
             self.jump(end)
 
     def assertln(self, cond, error_message=None):
+        """
+        Fails the line if the assertion is false.
+
+        This is typically used in unit testing style assertions like:
+
+        ```python
+        t.t("is HTTP response code 200? ").assertln(response.code() == 200)
+        ```
+        """
+
         if cond:
             self.iln("ok")
         else:
@@ -514,51 +728,115 @@ class TestCaseRun:
                 self.iln("FAILED")
 
     def must_apply(self, it, title, cond, error_message=None):
+        """
+        Assertions with decoration for testing, whether `it`
+        fulfills a condition.
+
+        Maily used by TestIt class
+        """
         prefix = f" * MUST {title}..."
         self.i(prefix).assertln(cond(it), error_message)
 
     def must_contain(self, it, member):
+        """
+        Assertions with decoration for testing, whether `it`
+        contains a member.
+
+        Maily used by TestIt class
+        """
         self.must_apply(it, f"have {member}", lambda x: member in x)
 
     def must_equal(self, it, value):
+        """
+        Assertions with decoration for testing, whether `it`
+        equals something.
+
+        Maily used by TestIt class
+        """
         self.must_apply(it, f"equal {value}", lambda x: x == value)
 
     def must_be_a(self, it, typ):
+        """
+        Assertions with decoration for testing, whether `it`
+        is of specific type.
+
+        Maily used by TestIt class
+        """
         self.must_apply(it,
                         f"be a {typ}",
                         lambda x: type(x) == typ,
                         f"was {type(it)}")
 
     def it(self, name, it):
+        """
+        Creates TestIt class around the `it` object named with `name`
+
+        This can be used for assertions as in:
+
+        ```python
+        result = [1, 2]
+        t.it("result", result).must_be_a(list).must_contain(1).must_contain(2)
+        ```
+        """
         return TestIt(self, name, it)
 
     def t(self, text):
+        """
+        Writes the text into test stream. NOTE: this will not print a newline.
+        """
         self.test_feed(text)
         return self
 
     def tformat(self, value):
+        """
+        Converts the value into json like structure containing only the value types.
+
+        Prints a json containing the value types.
+
+        Mainly used for getting snapshot of a e.g. Json response format.
+        """
         self.tln(json.dumps(value_format(value), indent=2))
         return self
 
     def tln(self):
+        """
+        Prints a newline to tests stream. NOTE: this will commit and check the buffered test line
+        """
         self.test_feed("\n")
         return self
 
     def keyvalueln(self, key, value):
+        """
+        Prints a value of format "{key} {value}", and uses key as prefix anchor for
+        adjusting the snapshot file cursor.
+        """
         self.anchor(key)
         self.tln(f" {value}")
         return self
 
     def tln(self, text=""):
+        """
+        Writes the text and new line into test stream. This will commit the test line.
+        """
         self.test_feed(text)
         self.test_feed("\n")
         return self
 
     def i(self, text):
+        """
+        Writes the text into test stream without testing the text against snapshot.
+
+        'i' comes from 'info'/'ignore'.
+        """
         self.feed(text)
         return self
 
     def iln(self, text=""):
+        """
+        Writes the text and new line into test stream without testing the text against the snapshot.
+
+        'i' comes from 'info'/'ignore'.
+        """
         self.feed(text)
         self.feed("\n")
         return self
@@ -605,5 +883,6 @@ class TestIt:
         return self
 
     def member(self, title, select):
+        """ Creates a TestIt class for the member of 'it' """
         return TestIt(self.run, self.title + "." + title, select(self.it))
 
