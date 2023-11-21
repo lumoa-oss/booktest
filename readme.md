@@ -112,6 +112,34 @@ environment variables of form BOOKTEST_VARIABLE_NAME. E.g. BOOKTEST_MD_VIEWER wi
 override .booktest file md_viewer configuration.
 
 
+## Creating your first booktest
+
+Create a directory with name 'test' or 'book'. Create a file there
+called 'my_test.py' or 'my_book.py'. In the file import booktest
+and create a test function taken a TestCaseRun object as a parameter. 
+use the object to print something like this:
+
+```python
+
+import booktest as bt
+
+
+def test_simple(t: bt.TestCaseRun):
+    t.tln("this is a simple test")
+
+```
+
+Then you can run booktest in verbose and interactive mode:
+
+```bash 
+booktest -v -i 
+```
+
+Accept results. Congratulations, you have your first test!
+
+You can find more examples in the test/examples folder. 
+
+
 ## Common workflows
 
 To see available test cases run:
