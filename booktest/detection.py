@@ -4,8 +4,10 @@ import os
 import importlib
 import sys
 from inspect import signature, Parameter
+import types
 
 import booktest as bt
+from booktest.naming import clean_method_name, clean_test_postfix
 
 
 def detect_tests(path, include_in_sys_path=False):
@@ -18,8 +20,10 @@ def detect_tests(path, include_in_sys_path=False):
             for f in files:
                 if f.endswith("_test.py") or f.endswith("_book.py") or f.endswith("_suite.py") or \
                         (f.startswith("test_") and f.endswith(".py")):
+                    test_suite_name = os.path.join(root, clean_test_postfix(f[:len(f) - 3]))
                     module_name = os.path.join(root, f[:len(f) - 3]).replace("/", ".")
                     module = importlib.import_module(module_name)
+                    test_cases = []
                     for name in dir(module):
                         member = getattr(module, name)
                         if isinstance(member, type) and \
@@ -34,6 +38,20 @@ def detect_tests(path, include_in_sys_path=False):
                         elif isinstance(member, bt.TestBook) or \
                                 isinstance(member, bt.Tests):
                             tests.append(member)
+                        elif isinstance(member, types.FunctionType) and name.startswith("test_"):
+                            member_signature = signature(member)
+                            needed_arguments = 0
+                            print(f"method: {name}")
+                            for parameter in member_signature.parameters.values():
+                                print(f"  param: {parameter}")
+                                if parameter.default == Parameter.empty:
+                                    needed_arguments += 1
+                            #if needed_arguments == 1:
+                            test_cases.append((os.path.join(test_suite_name, clean_method_name(name)), member))
+
+                    if len(test_cases) > 0:
+                        print(test_cases)
+                        tests.append(bt.Tests(test_cases))
 
     return tests
 

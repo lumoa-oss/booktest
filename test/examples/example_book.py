@@ -1,5 +1,6 @@
 import time
 import os
+from random import randint
 
 import test.examples.example_engine as engine
 import booktest as bt
@@ -35,6 +36,18 @@ class ExampleTestBook(bt.TestBook):
         plt.plot([1, 2, 3], [1, 2, 3])
         plt.savefig(file)
         t.timage(file)
+
+    def test_md(self, t: bt.TestCaseRun):
+        t.h1("this is a header:")
+        t.tln(f" * list item")
+        t.tln(f" * *bolded* item")
+
+        t.h1("here's random garbage:")
+        for i in range(randint(1, 3)):
+            t.iln("this is not tested")
+
+        t.iln()
+        t.anchorln("anchors help test compare right line")
 
     def test_tmp_file(self, t: bt.TestCaseRun):
         # these imports are slow, let's do them lazily

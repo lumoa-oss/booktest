@@ -1,8 +1,8 @@
 import time
 
-import booktest as bt
-
 import random as rnd
+
+import booktest as bt
 
 
 def simple_test(t):

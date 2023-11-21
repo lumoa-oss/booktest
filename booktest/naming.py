@@ -40,8 +40,15 @@ def clean_test_postfix(name):
     return name
 
 
-def clean_class_name(name):
+def clean_class_name(name: str):
     return clean_test_postfix(camel_case_to_snake_case(name))
+
+
+def clean_method_name(name: str):
+    if name.startswith("test_"):
+        return name[len("test_"):]
+    else:
+        return None
 
 
 def class_to_test_path(clazz):
