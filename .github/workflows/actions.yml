@@ -20,6 +20,12 @@ jobs:
           pip install
           build
           --user
+      - name: Install poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
+      - name: Run unit tests
+        run: poetry run booktest || poetry run booktest -v -w -c
       - name: Build a binary wheel and a source tarball
         run: >-
           python -m
