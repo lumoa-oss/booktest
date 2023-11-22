@@ -46,7 +46,6 @@ def detect_tests(path, include_in_sys_path=False):
                                 print(f"  param: {parameter}")
                                 if parameter.default == Parameter.empty:
                                     needed_arguments += 1
-                            #if needed_arguments == 1:
                             test_cases.append((os.path.join(test_suite_name, clean_method_name(name)), member))
 
                     if len(test_cases) > 0:
