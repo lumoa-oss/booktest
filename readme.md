@@ -43,7 +43,7 @@ Additional benefit of this approach is that you can trace the result development
 
 # Getting started guide
 
-You can find getting guide [here](getting-started.md)
+You can find getting started guide [here](getting-started.md)
 
 # Workflows, coverage and CI
 
