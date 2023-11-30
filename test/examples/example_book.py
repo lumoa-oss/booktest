@@ -1,3 +1,4 @@
+import random
 import time
 import os
 from random import randint
@@ -100,3 +101,11 @@ class ExampleTestBook(bt.TestBook):
         t.tln()
         t.t("sleeping 1 second.. ").tmsln(
             lambda: time.sleep(1), 3000)
+
+    def test_float(self, t: bt.TestCaseRun):
+        t.h1("let's prints numbers and see their old version:")
+
+        t.anchor("time stamp is: ").ifloatln(time.time(), "s")
+        t.anchor("random number is: ").ifloatln(random.random()*1000)
+        t.anchor("random length is: ").ifloatln(random.random()*100, "m")
+
