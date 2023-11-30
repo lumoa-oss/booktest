@@ -514,6 +514,25 @@ s
         self.tln("")
         return self
 
+    def ifloatln(self, value, unit = None):
+        old = self.head_exp_token()
+        try:
+            if old is not None:
+                old = float(old)
+        except ValueError:
+            old = None
+
+        if unit is not None:
+            postfix = f" {unit}"
+        else:
+            postfix = ""
+
+        self.i(f"{value:.3f}{postfix}")
+        if old is not None:
+            self.iln(f" (was {old:.3f}{postfix})")
+        else:
+            self.iln()
+
     def tmsln(self, f, max_ms):
         """
         runs the function f and measures the time milliseconds it took.
@@ -533,18 +552,7 @@ s
             self.fail().tln(f"{(after - before) * 1000:.2f} ms > "
                             f"max {max_ms:.2f} ms! (failed)")
         else:
-            old = self.head_exp_token()
-            try:
-                if old is not None:
-                    old = float(old)
-            except ValueError:
-                old = None
-
-            self.i(f"{(after-before)*1000:.2f} ms")
-            if old is not None:
-                self.iln(f" (was {old:.2f} ms)")
-            else:
-                self.iln()
+            self.ifloatln(ms, "ms")
 
         return rv
 

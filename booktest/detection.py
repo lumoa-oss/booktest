@@ -41,15 +41,12 @@ def detect_tests(path, include_in_sys_path=False):
                         elif isinstance(member, types.FunctionType) and name.startswith("test_"):
                             member_signature = signature(member)
                             needed_arguments = 0
-                            print(f"method: {name}")
                             for parameter in member_signature.parameters.values():
-                                print(f"  param: {parameter}")
                                 if parameter.default == Parameter.empty:
                                     needed_arguments += 1
                             test_cases.append((os.path.join(test_suite_name, clean_method_name(name)), member))
 
                     if len(test_cases) > 0:
-                        print(test_cases)
                         tests.append(bt.Tests(test_cases))
 
     return tests
