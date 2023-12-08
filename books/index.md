@@ -1,21 +1,39 @@
 # Books overview:
 
  * test
-     * test_names
-         * camel_case_names
-             * [names](test/test_names/camel_case_names/names.md)
+     * dependencies
+         * parametrized1
+             * [create_data](test/dependencies/parametrized1/create_data.md)
+             * [use_data](test/dependencies/parametrized1/use_data.md)
 
-         * api_v1
-             * [names](test/test_names/api_v1/names.md)
+         * parametrized2
+             * [create_data](test/dependencies/parametrized2/create_data.md)
+             * [use_data](test/dependencies/parametrized2/use_data.md)
 
-         * get_url
-             * [names](test/test_names/get_url/names.md)
+         * data_source
+             * [create_data](test/dependencies/data_source/create_data.md)
+             * [use_data](test/dependencies/data_source/use_data.md)
+
+         * data_user1
+             * [use_data](test/dependencies/data_user1/use_data.md)
+
+         * data_user2
+             * [use_data](test/dependencies/data_user2/use_data.md)
 
      * utils
          * all_caps
              * [names](test/utils/all_caps/names.md)
 
      * test_names
+         * api_v1
+             * [names](test/test_names/api_v1/names.md)
+
+         * camel_case_names
+             * [names](test/test_names/camel_case_names/names.md)
+
+         * get_url
+             * [names](test/test_names/get_url/names.md)
+
          * url_ops
              * [names](test/test_names/url_ops/names.md)
 
@@ -37,4 +55,12 @@
              * [two_cached](test/examples/example/two_cached.md)
              * [ms](test/examples/example/ms.md)
              * [float](test/examples/example/float.md)
+
+         * simple
+             * [cache](test/examples/simple/cache.md)
+             * [cache_use](test/examples/simple/cache_use.md)
+             * [simple](test/examples/simple/simple.md)
+
+         * hello
+             * [hello](test/examples/hello/hello.md)
 

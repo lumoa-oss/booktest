@@ -65,13 +65,17 @@ class Tests:
                 return t[0]
         return None
 
-    def method_dependencies(self, method, cache_out_dir=None):
+    def method_dependencies(self,
+                            method,
+                            selection,
+                            cache_out_dir=None):
         rv = []
         if hasattr(method, "_dependencies"):
             for dependency in method._dependencies:
                 case = self.case_by_method(dependency)
                 if case is not None:
-                    if cache_out_dir is None or \
+                    if self.is_selected(case[0], selection) or \
+                       cache_out_dir is None or \
                        not self.test_result_exists(cache_out_dir, case):
                         rv.append(case)
 
@@ -79,11 +83,12 @@ class Tests:
 
     def all_method_dependencies(self,
                                 method,
+                                selection,
                                 cache_out_dir=None):
         rv = []
-        for dependency in self.method_dependencies(method, cache_out_dir):
+        for dependency in self.method_dependencies(method, selection, cache_out_dir):
             m = self.get_case(dependency)
-            rv.extend(self.all_method_dependencies(m, cache_out_dir))
+            rv.extend(self.all_method_dependencies(m, selection, cache_out_dir))
             rv.append(dependency)
 
         return rv
@@ -97,6 +102,7 @@ class Tests:
             if self.is_selected(c[0], selection):
                 dependencies = \
                     self.all_method_dependencies(c[1],
+                                                 selection,
                                                  cache_out_dir)
                 for dependency in dependencies:
                     if dependency not in selected:
