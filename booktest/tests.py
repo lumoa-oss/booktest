@@ -74,7 +74,7 @@ class Tests:
             for dependency in method._dependencies:
                 case = self.case_by_method(dependency)
                 if case is not None:
-                    if self.is_selected(case[0], selection) or \
+                    if self.is_selected(case, selection) or \
                        cache_out_dir is None or \
                        not self.test_result_exists(cache_out_dir, case):
                         rv.append(case)
