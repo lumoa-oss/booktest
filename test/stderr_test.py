@@ -7,7 +7,7 @@ class StdErrBook(bt.TestBook):
     def test_stderr(self, t: bt.TestCaseRun):
         t.tln("using logging on background.")
 
-        logging.warning("this is a log")
+        logging.warning("this is a warning")
 
         t.err.flush()
 

@@ -3,9 +3,11 @@ import os
 import time
 from collections import defaultdict
 
-from booktest.review import review, create_index, report_case_result, report_case, report_case_begin
+from booktest.review import review, create_index, report_case_result, report_case, report_case_begin, start_report, \
+    end_report
 from booktest.testrun import TestRun
-from booktest.reports import CaseReports, Metrics, test_result_to_exit_code, read_lines, write_lines
+from booktest.reports import CaseReports, Metrics, test_result_to_exit_code, read_lines, write_lines, UserRequest, \
+    TestResult
 
 
 #
@@ -65,6 +67,12 @@ class RunBatch:
             output.close()
 
         return rv
+
+
+def case_batch_dir_and_report_file(batches_dir, name):
+    path = ".".join(name.split("/"))
+    batch_dir = os.path.join(batches_dir, path)
+    return batch_dir, os.path.join(batch_dir, "cases.txt")
 
 
 def parallel_run_tests(exp_dir,
@@ -128,12 +136,19 @@ def parallel_run_tests(exp_dir,
 
     reports = case_reports.cases
 
-    print()
-    print("# parallel run:")
-    print()
+    passed = case_reports.passed()
+
+    cont = config.get("continue", False)
+    fail_fast = config.get("fail_fast", False)
+
+    reviews = []
+
+    start_report(print)
+    abort = False
+
+    start_report(print)
 
     exit_code = 0
-    exit_codes = []
 
     batch_dirs = []
 
@@ -144,21 +159,16 @@ def parallel_run_tests(exp_dir,
 
             scheduled = dict()
 
-            while len(done) < len(todo):
+            while len(done) < len(todo) and not abort:
                 ready = ready_cases()
 
                 # start async jobs
                 for name in ready:
                     if name not in done and name not in scheduled:
-                        path = ".".join(name.split("/"))
-
-                        batch_reports = list([i for i in reports if i[0] == name])[:1]
-
-                        batch_dir = os.path.join(batches_dir, path)
+                        batch_dir, batch_report_file = case_batch_dir_and_report_file(batches_dir, name)
                         batch_dirs.append(batch_dir)
                         os.makedirs(batch_dir, exist_ok=True)
-
-                        batch_report_file = os.path.join(batch_dir, "cases.txt")
+                        batch_reports = list([i for i in reports if i[0] == name])[:1]
                         CaseReports(batch_reports)\
                             .to_file(batch_report_file)
 
@@ -172,7 +182,6 @@ def parallel_run_tests(exp_dir,
                     for name, task in scheduled.items():
                         if task.ready():
                             done_tasks.add(name)
-                            exit_codes.append(task.get())
                     if len(done_tasks) == 0:
                         break
                     time.sleep(0.001)
@@ -186,16 +195,33 @@ def parallel_run_tests(exp_dir,
                 #     method
 
                 report_txt = os.path.join(out_dir, "cases.txt")
-                case_reports = CaseReports.of_file(report_txt)
 
-                for (case_name, result, duration) in case_reports.cases:
-                    if case_name in done_tasks:
-                        report_case_begin(print, case_name, None, False)
-                        report_case_result(print,
-                                           case_name,
-                                           result,
-                                           duration,
-                                           False)
+                for case_name in done_tasks:
+                    batch_report_file = case_batch_dir_and_report_file(batches_dir, case_name)[1]
+                    case_reports = CaseReports.of_file(batch_report_file)
+                    if not abort and len(case_reports.cases) > 0:
+                        if (cases is None or case_name in cases) and \
+                            (not cont or case_name not in passed):
+                            case_name, result, duration = case_reports.cases[0]
+                            reviewed_result, request = \
+                                report_case(print,
+                                            exp_dir,
+                                            out_dir,
+                                            case_name,
+                                            result,
+                                            duration,
+                                            config)
+
+                            if request == UserRequest.ABORT or \
+                                    (fail_fast and reviewed_result != TestResult.OK):
+                                abort = True
+
+                            if reviewed_result != TestResult.OK:
+                                exit_code = -1
+
+                            reviews.append((case_name,
+                                            reviewed_result,
+                                            duration))
 
         # it's important to wait the jobs for
         # the coverage measurement to succeed
@@ -221,28 +247,19 @@ def parallel_run_tests(exp_dir,
         for name, lines in merged.items():
             write_lines(out_dir, name, lines)
 
-    # 3.3 resolve the test result as unix exit code
-    for i in exit_codes:
-        exit_code = i
-        if exit_code != 0:
-            break
-
     #
     # 4. do test reporting & review
     #
-
     end = time.time()
     took_ms = int((end-begin)*1000)
 
-    Metrics(took_ms).to_file(
-        os.path.join(
-            out_dir, "metrics.json"))
+    updated_case_reports = CaseReports(reviews)
+    updated_case_reports.to_file(report_txt)
 
-    review(exp_dir,
-           out_dir,
-           config,
-           case_reports.passed(),
-           cases)
+    end_report(print,
+               updated_case_reports.failed(),
+               len(updated_case_reports.cases),
+               took_ms)
 
     create_index(exp_dir, tests.all_names())
 

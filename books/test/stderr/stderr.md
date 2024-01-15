@@ -2,5 +2,5 @@ using logging on background.
 
 # err file content:
 
- * this is a log
+ * this is a warning
 
