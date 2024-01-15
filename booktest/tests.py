@@ -333,12 +333,12 @@ class Tests:
         else:
             cache_out_dir = out_dir
 
-        test_cases = parsed.test_cases
+        selection = parsed.test_cases
 
-        if test_cases == "*":
-            test_cases = config.get("default_tests", "test,book").split(",")
+        if selection == "*":
+            selection = config.get("default_tests", "test,book").split(",")
 
-        cases = self.selected_names(test_cases, cache_out_dir)
+        cases = self.selected_names(selection, cache_out_dir)
 
         cmd = parsed.cmd
 

@@ -1,6 +1,9 @@
 # Books overview:
 
  * test
+     * stderr
+         * [stderr](test/stderr/stderr.md)
+
      * dependencies
          * parametrized1
              * [create_data](test/dependencies/parametrized1/create_data.md)

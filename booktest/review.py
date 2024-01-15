@@ -114,7 +114,7 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
 
 def start_report(printer):
     printer()
-    printer("# Running test...")
+    printer("# test results:")
     printer()
 
 
