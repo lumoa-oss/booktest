@@ -58,15 +58,8 @@ class ParametrizedBook(bt.TestBook):
         return rv
 
     @bt.depends_on(test_create_data)
-    def test_process_data(self, t: bt.TestCaseRun, data_value):
+    def test_use_data(self, t: bt.TestCaseRun, data_value):
         t.it("data value", data_value).must_equal(self.parameter)
-        rv = data_value * -1
-        t.it("processed data value", rv).must_equal(self.parameter * -1)
-        return rv
-
-    @bt.depends_on(test_process_data)
-    def test_use_processed_data(self, t: bt.TestCaseRun, processed_data_value):
-        t.it("processed data value", processed_data_value).must_equal(self.parameter * -1)
 
 
 BOOK_1 = ParametrizedBook(1)

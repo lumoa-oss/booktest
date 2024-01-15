@@ -1,18 +1,4 @@
 import functools
-import inspect
-
-
-def bind_dependent_method_if_unbound(method, dependency):
-    non_annotated = dependency
-    while hasattr(non_annotated, "_original_function"):
-        non_annotated = non_annotated._original_function
-
-    if (hasattr(method, "__self__") and
-        "self" in inspect.getfullargspec(non_annotated).args):
-        self = method.__self__
-        return dependency.__get__(self, self.__class__)
-    else:
-        return dependency
 
 
 def call_class_method_test(methods, func, self, case, kwargs):
@@ -84,7 +70,6 @@ def depends_on(*methods):
                 return call_function_test(methods, func, args[0], kwargs)
 
         wrapper._dependencies = methods
-        wrapper._original_function = func
         return wrapper
     return decorator_depends
 
