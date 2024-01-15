@@ -1,7 +1,9 @@
 import asyncio
 import os
+import threading
 import time
 from collections import defaultdict
+from multiprocessing import Pool
 
 from booktest.review import review, create_index, report_case_result, report_case, report_case_begin, start_report, \
     end_report
@@ -75,76 +77,164 @@ def case_batch_dir_and_report_file(batches_dir, name):
     return batch_dir, os.path.join(batch_dir, "cases.txt")
 
 
+class ParallelRunner:
+
+    def __init__(self,
+                 exp_dir,
+                 out_dir,
+                 tests,
+                 cases: list,
+                 config: dict,
+                 cache):
+        self.cases = cases
+        self.pool = None
+        self.done = set()
+
+        batches_dir = \
+            os.path.join(
+                out_dir,
+                ".batches")
+
+        os.makedirs(batches_dir, exist_ok=True)
+
+        #
+        # 2. prepare batch jobs for process pools
+        #
+
+        # 2.1 configuration. batches must not be interactive
+
+        import copy
+        job_config = copy.copy(config)
+        job_config["continue"] = False
+        job_config["interactive"] = False
+        job_config["always_interactive"] = False
+
+        self.batches_dir = batches_dir
+        self.run_batch = RunBatch(exp_dir, out_dir, tests, job_config, cache)
+
+        dependencies = defaultdict(set)
+        todo = set()
+        for name in cases:
+            method = tests.get_case(name)
+            for dependency in tests.method_dependencies(method, cases):
+                dependencies[name].add(dependency)
+            todo.add(name)
+
+            batch_dir, batch_report_file = case_batch_dir_and_report_file(self.batches_dir, name)
+            os.makedirs(batch_dir, exist_ok=True)
+
+        self.todo = todo
+        self.dependencies = dependencies
+        self.scheduled = {}
+        self.abort = False
+        self.thread = None
+        self.lock = threading.Lock()
+
+        self.reports = []
+        self.left = len(todo)
+
+    def runnable_cases(self):
+        rv = []
+        for name in self.todo:
+            ready = True
+            for dependency in self.dependencies[name]:
+                if dependency not in self.done:
+                    ready = False
+            if ready:
+                rv.append(name)
+        return rv
+
+    def abort(self):
+        with self.lock:
+            self.abort = True
+
+    def thread_function(self):
+        scheduled = dict()
+
+        while len(self.done) < len(self.todo) and not self.abort:
+            ready = self.runnable_cases()
+
+            # start async jobs
+            for name in ready:
+                if name not in self.done and name not in scheduled:
+                    scheduled[name] = self.pool.apply_async(self.run_batch, args=[name])
+
+            #
+            # 3. run test in a process pool
+            #
+            done_tasks = set()
+            while len(done_tasks) == 0:
+                for name, task in scheduled.items():
+                    if task.ready():
+                        done_tasks.add(name)
+                if len(done_tasks) == 0:
+                    break
+                time.sleep(0.001)
+
+            self.done |= done_tasks
+            reports = []
+            for i in done_tasks:
+                del scheduled[i]
+                report_file = case_batch_dir_and_report_file(self.batches_dir, i)[1]
+                reports.append(CaseReports.of_file(report_file).cases[0])
+
+            with self.lock:
+                self.left -= len(reports)
+                self.reports.extend(reports)
+
+    def has_next(self):
+        with self.lock:
+            return (self.left > 0 or len(self.reports) > 0) and not self.abort
+
+    def next_report(self):
+        while True:
+            with self.lock:
+                if len(self.reports) > 0:
+                    rv = self.reports[0]
+                    self.reports = self.reports[1:]
+                    return rv
+            # todo, use semaphore instead of polling
+            time.sleep(0.01)
+
+    def __enter__(self):
+        import coverage
+        self.finished = False
+        self.pool = Pool(os.cpu_count(), initializer=coverage.process_startup)
+        self.pool.__enter__()
+
+        self.thread = threading.Thread(target=self.thread_function)
+        self.thread.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # it's important to wait the jobs for
+        # the coverage measurement to succeed
+        self.abort = True
+        self.thread.join()
+
+        self.pool.close()
+        self.pool.join()
+
+
+
 def parallel_run_tests(exp_dir,
                        out_dir,
                        tests,
                        cases: list,
                        config: dict,
                        cache):
-    from multiprocessing import Pool
-
     begin = time.time()
 
-    #
-    # 1. load old report and prepare directories
-    #
     report_file = os.path.join(out_dir, "cases.txt")
-    case_reports = CaseReports.of_file(report_file)
+    reviews, todo = CaseReports.of_file(report_file).cases_to_done_and_todo(cases, config)
 
-    batches_dir = \
-        os.path.join(
-            out_dir,
-            ".batches")
+    runner = ParallelRunner(exp_dir,
+                            out_dir,
+                            tests,
+                            todo,
+                            config,
+                            cache)
 
-    os.makedirs(batches_dir, exist_ok=True)
-
-    #
-    # 2. prepare batch jobs for process pools
-    #
-
-    # 2.1 configuration. batches must not be interactive
-
-    import copy
-    job_config = copy.copy(config)
-    job_config["interactive"] = False
-    job_config["always_interactive"] = False
-
-    run_batch = RunBatch(exp_dir, out_dir, tests, job_config, cache)
-
-    # 2.2 split test cases into batches
-    dependencies = defaultdict(set)
-    todo = set()
-    for name in cases:
-        method = tests.get_case(name)
-        for dependency in tests.method_dependencies(method, cases):
-            dependencies[name].add(dependency)
-        todo.add(name)
-
-    todo = sorted(list(todo))
-    done = set()
-
-    def ready_cases():
-        rv = []
-        for name in todo:
-            ready = True
-            for dependency in dependencies[name]:
-               if dependency not in done:
-                   ready = False
-            if ready:
-                rv.append(name)
-        return rv
-
-    reports = case_reports.cases
-
-    passed = case_reports.passed()
-
-    cont = config.get("continue", False)
     fail_fast = config.get("fail_fast", False)
-
-    reviews = []
-
-    start_report(print)
-    abort = False
 
     start_report(print)
 
@@ -152,82 +242,30 @@ def parallel_run_tests(exp_dir,
 
     batch_dirs = []
 
-    import coverage
     try:
-        with Pool(os.cpu_count(),
-                  initializer=coverage.process_startup) as p:
+        with runner:
+            while runner.has_next():
+                case_name, result, duration = runner.next_report()
 
-            scheduled = dict()
+                reviewed_result, request = \
+                    report_case(print,
+                                exp_dir,
+                                out_dir,
+                                case_name,
+                                result,
+                                duration,
+                                config)
 
-            while len(done) < len(todo) and not abort:
-                ready = ready_cases()
+                if request == UserRequest.ABORT or \
+                   (fail_fast and reviewed_result != TestResult.OK):
+                    runner.abort()
 
-                # start async jobs
-                for name in ready:
-                    if name not in done and name not in scheduled:
-                        batch_dir, batch_report_file = case_batch_dir_and_report_file(batches_dir, name)
-                        batch_dirs.append(batch_dir)
-                        os.makedirs(batch_dir, exist_ok=True)
-                        batch_reports = list([i for i in reports if i[0] == name])[:1]
-                        CaseReports(batch_reports)\
-                            .to_file(batch_report_file)
+                if reviewed_result != TestResult.OK:
+                    exit_code = -1
 
-                        scheduled[name] = p.apply_async(run_batch, args=[name])
-
-                #
-                # 3. run test in a process pool
-                #
-                done_tasks = set()
-                while len(done_tasks) == 0:
-                    for name, task in scheduled.items():
-                        if task.ready():
-                            done_tasks.add(name)
-                    if len(done_tasks) == 0:
-                        break
-                    time.sleep(0.001)
-
-                done |= done_tasks
-                for i in done_tasks:
-                    del scheduled[i]
-
-                # 3.1 Run test in parallel processes
-                #     initialize each process with coverage.process_startup
-                #     method
-
-                report_txt = os.path.join(out_dir, "cases.txt")
-
-                for case_name in done_tasks:
-                    batch_report_file = case_batch_dir_and_report_file(batches_dir, case_name)[1]
-                    case_reports = CaseReports.of_file(batch_report_file)
-                    if not abort and len(case_reports.cases) > 0:
-                        if (cases is None or case_name in cases) and \
-                            (not cont or case_name not in passed):
-                            case_name, result, duration = case_reports.cases[0]
-                            reviewed_result, request = \
-                                report_case(print,
-                                            exp_dir,
-                                            out_dir,
-                                            case_name,
-                                            result,
-                                            duration,
-                                            config)
-
-                            if request == UserRequest.ABORT or \
-                                    (fail_fast and reviewed_result != TestResult.OK):
-                                abort = True
-
-                            if reviewed_result != TestResult.OK:
-                                exit_code = -1
-
-                            reviews.append((case_name,
-                                            reviewed_result,
-                                            duration))
-
-        # it's important to wait the jobs for
-        # the coverage measurement to succeed
-        p.close()
-        p.join()
-
+                reviews.append((case_name,
+                                reviewed_result,
+                                duration))
     finally:
         #
         # 3.2 merge outputs from test. do this
@@ -254,7 +292,7 @@ def parallel_run_tests(exp_dir,
     took_ms = int((end-begin)*1000)
 
     updated_case_reports = CaseReports(reviews)
-    updated_case_reports.to_file(report_txt)
+    updated_case_reports.to_file(report_file)
 
     end_report(print,
                updated_case_reports.failed(),

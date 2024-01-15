@@ -104,6 +104,24 @@ class CaseReports:
     def failed(self):
         return [i[0] for i in self.cases if i[1] != TestResult.OK]
 
+    def by_name(self, name):
+        return list([i for i in self.cases if i[0] == name])
+
+    def cases_to_done_and_todo(self, cases, config):
+        cont = config.get("continue", False)
+        if cont:
+            done = []
+            todo = []
+            for i in cases:
+                record = self.by_name(i)
+                if len(record) > 0 and record[0][1] == TestResult.OK:
+                    done.append(record[0])
+                else:
+                    todo.append(i)
+            return done, todo
+        else:
+            return [], cases
+
     @staticmethod
     def of_file(file_name):
         cases = []
