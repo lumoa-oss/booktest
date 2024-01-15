@@ -6,12 +6,15 @@ import cProfile
 from coverage import Coverage
 import argcomplete
 
-import test.tests as tst
+import booktest as bt
 
 TEST_ROOT_DIR = "books"
 
 
 MIN_COVERAGE_PERCENT = 25
+
+
+tests = bt.detect_test_suite("test")
 
 
 def coverage(parsed) -> int:
@@ -60,7 +63,7 @@ def lint():
 
 
 def test(args, cache={}):
-    return tst.tests.exec(TEST_ROOT_DIR, args, cache)
+    return tests.exec(TEST_ROOT_DIR, args, cache)
 
 
 def qa() -> int:
@@ -147,12 +150,12 @@ def do_args(args, cache={}) -> int:
     setup_subparser(subparsers)
 
     tests_parser = subparsers.add_parser("test")
-    tst.tests.setup_parser(tests_parser)
+    tests.setup_parser(tests_parser)
     tests_parser.set_defaults(
         exec=lambda parsed:
-            tst.tests.exec_parsed(TEST_ROOT_DIR,
-                                  parsed,
-                                  cache))
+            tests.exec_parsed(TEST_ROOT_DIR,
+                              parsed,
+                              cache))
 
     argcomplete.autocomplete(parser)
     parsed = parser.parse_args(args)

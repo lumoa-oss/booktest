@@ -5,6 +5,7 @@ import argparse
 from coverage import Coverage
 
 from booktest.cache import LruCache
+from booktest.dependencies import bind_dependent_method_if_unbound
 from booktest.review import run_tool, review
 from booktest.runs import parallel_run_tests, run_tests
 from booktest.config import get_default_config
@@ -60,8 +61,7 @@ class Tests:
     def case_by_method(self, method):
         for t in self.cases:
             # a bit hacky way for figuring out the dependencies
-            if t[1] == method \
-               or (hasattr(t[1], "__func__") and t[1].__func__ == method):
+            if t[1] == method:
                 return t[0]
         return None
 
@@ -72,7 +72,8 @@ class Tests:
         rv = []
         if hasattr(method, "_dependencies"):
             for dependency in method._dependencies:
-                case = self.case_by_method(dependency)
+                bound_method = bind_dependent_method_if_unbound(method, dependency)
+                case = self.case_by_method(bound_method)
                 if case is not None:
                     if self.is_selected(case, selection) or \
                        cache_out_dir is None or \
