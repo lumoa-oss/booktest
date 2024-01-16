@@ -25,7 +25,7 @@ detect_tests(path, include_in_sys_path=False)
 
 ---
 
-<a href="../booktest/detection.py#L59"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/detection.py#L55"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `detect_test_suite`
 

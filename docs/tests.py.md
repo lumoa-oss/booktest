@@ -16,7 +16,7 @@
 
 
 
-<a href="../booktest/tests.py#L15"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L16"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -33,12 +33,12 @@ __init__(cases)
 
 ---
 
-<a href="../booktest/tests.py#L80"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L93"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `all_method_dependencies`
 
 ```python
-all_method_dependencies(method, cache_out_dir=None)
+all_method_dependencies(method, selection, cache_out_dir=None)
 ```
 
 
@@ -47,7 +47,7 @@ all_method_dependencies(method, cache_out_dir=None)
 
 ---
 
-<a href="../booktest/tests.py#L91"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L105"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `all_names`
 
@@ -61,7 +61,7 @@ all_names()
 
 ---
 
-<a href="../booktest/tests.py#L60"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L61"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `case_by_method`
 
@@ -75,7 +75,7 @@ case_by_method(method)
 
 ---
 
-<a href="../booktest/tests.py#L430"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L444"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `exec`
 
@@ -87,7 +87,7 @@ exec(root_dir, args, cache=None) → int
 
 ---
 
-<a href="../booktest/tests.py#L252"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L267"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `exec_parsed`
 
@@ -99,7 +99,7 @@ exec_parsed(root_dir, parsed, cache=None, extra_default_config: dict = {}) → i
 
 ---
 
-<a href="../booktest/tests.py#L54"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L55"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `get_case`
 
@@ -113,7 +113,7 @@ get_case(case_name)
 
 ---
 
-<a href="../booktest/tests.py#L18"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L19"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `is_selected`
 
@@ -130,7 +130,7 @@ checks whether the test name is selected based on the selection
 ### <kbd>function</kbd> `method_dependencies`
 
 ```python
-method_dependencies(method, cache_out_dir=None)
+method_dependencies(method, selection, cache_out_dir=None)
 ```
 
 
@@ -139,7 +139,21 @@ method_dependencies(method, cache_out_dir=None)
 
 ---
 
-<a href="../booktest/tests.py#L94"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L85"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `method_resources`
+
+```python
+method_resources(method)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/tests.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `selected_names`
 
@@ -153,7 +167,7 @@ selected_names(selection, cache_out_dir=None)
 
 ---
 
-<a href="../booktest/tests.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L123"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `setup_parser`
 
@@ -167,7 +181,7 @@ setup_parser(parser)
 
 ---
 
-<a href="../booktest/tests.py#L51"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L52"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `test_result_exists`
 
@@ -181,7 +195,7 @@ test_result_exists(out_dir, case_path)
 
 ---
 
-<a href="../booktest/tests.py#L48"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L49"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `test_result_path`
 

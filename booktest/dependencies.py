@@ -3,6 +3,14 @@ import inspect
 
 
 class Resource:
+    """
+    Represents an exclusive resources, which must not be
+    shared simultaneously by several parallel tests
+
+    Such a resource can be a specific port, file system resource,
+    some global state or excessive use of RAM or GPU, that prohibits parallel
+    run.
+    """
 
     def __init__(self, value, identifier=None):
         self.value = value
@@ -18,6 +26,11 @@ class Resource:
 
 
 def port(value: int):
+    """
+    Generates a resource for given port.
+    A special identifier is generated in order to not mix the port
+    with other resource integers
+    """
     return Resource(value, f"port={value}")
 
 

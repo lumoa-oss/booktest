@@ -75,6 +75,34 @@ __init__(cases)
 
 ---
 
+<a href="../booktest/reports.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `by_name`
+
+```python
+by_name(name)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/reports.py#L110"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `cases_to_done_and_todo`
+
+```python
+cases_to_done_and_todo(cases, config)
+```
+
+
+
+
+
+---
+
 <a href="../booktest/reports.py#L104"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `failed`
@@ -89,7 +117,21 @@ failed()
 
 ---
 
-<a href="../booktest/reports.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/reports.py#L125"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `of_dir`
+
+```python
+of_dir(out_dir)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/reports.py#L130"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `of_file`
 
@@ -117,7 +159,21 @@ passed()
 
 ---
 
-<a href="../booktest/reports.py#L142"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/reports.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `to_dir`
+
+```python
+to_dir(out_dir)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/reports.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `to_file`
 
@@ -131,7 +187,7 @@ to_file(file)
 
 ---
 
-<a href="../booktest/reports.py#L134"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/reports.py#L157"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `write_case`
 
