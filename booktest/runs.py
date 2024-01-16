@@ -237,8 +237,10 @@ class ParallelRunner:
         self._abort = True
         self.thread.join()
         self.pool.close()
+
         # for some reason, this will get stuck on keyboard interruptions
-        # self.pool.join()
+        # yet, it is necessary to get coverage correctly
+        self.pool.join()
 
 
 def parallel_run_tests(exp_dir,
