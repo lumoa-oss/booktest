@@ -123,6 +123,11 @@ class CaseReports:
             return [], cases
 
     @staticmethod
+    def of_dir(out_dir):
+        report_file = os.path.join(out_dir, "cases.txt")
+        return CaseReports.of_file(report_file)
+
+    @staticmethod
     def of_file(file_name):
         cases = []
         for j in read_lines(file_name):
@@ -156,6 +161,10 @@ class CaseReports:
                    duration):
         file_handle.write(
             f"{case_name}\t{res.name}\t{duration}\n")
+
+    def to_dir(self, out_dir):
+        report_file = os.path.join(out_dir, "cases.txt")
+        return self.to_file(report_file)
 
     def to_file(self, file):
         with open(file, "w") as f:

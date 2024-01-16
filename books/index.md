@@ -49,6 +49,11 @@
              * [multiline](test/examples/example_suite/multiline.md)
              * [tokenizer](test/examples/example_suite/tokenizer.md)
 
+         * resource
+             * [resource_use_1](test/examples/resource/resource_use_1.md)
+             * [resource_use_2](test/examples/resource/resource_use_2.md)
+             * [resource_use_3](test/examples/resource/resource_use_3.md)
+
          * example
              * [engine](test/examples/example/engine.md)
              * [df](test/examples/example/df.md)

@@ -2,6 +2,12 @@ import functools
 import inspect
 
 
+class Resource:
+
+    def __init__(self, identifier):
+        self.identifier = identifier
+
+
 def bind_dependent_method_if_unbound(method, dependency):
     non_annotated = dependency
     while hasattr(non_annotated, "_original_function"):
@@ -69,10 +75,18 @@ def call_function_test(methods, func, case, kwargs):
     return func(*args2, **kwargs)
 
 
-def depends_on(*methods):
+def depends_on(*dependencies):
     """
     This method depends on a method on this object.
     """
+    methods = []
+    resources = []
+    for i in dependencies:
+        if isinstance(i, Resource):
+            resources.append(i.identifier)
+        else:
+            methods.append(i)
+
     def decorator_depends(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -84,6 +98,7 @@ def depends_on(*methods):
                 return call_function_test(methods, func, args[0], kwargs)
 
         wrapper._dependencies = methods
+        wrapper._resources = resources
         wrapper._original_function = func
         return wrapper
     return decorator_depends
