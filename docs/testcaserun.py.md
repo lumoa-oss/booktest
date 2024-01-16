@@ -10,7 +10,7 @@
 
 ---
 
-<a href="../booktest/testcaserun.py#L845"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L907"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `value_format`
 
@@ -28,7 +28,7 @@ value_format(value)
 ## <kbd>class</kbd> `TestCaseRun`
 A utility, that manages an invidiual test run, and provides the main API for the test case 
 
-<a href="../booktest/testcaserun.py#L35"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L36"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -45,7 +45,7 @@ __init__(run, test_path, config, output)
 
 ---
 
-<a href="../booktest/testcaserun.py#L479"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L533"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `anchor`
 
@@ -59,7 +59,7 @@ This method is used for controlling the snapshot cursor location and guaranteein
 
 ---
 
-<a href="../booktest/testcaserun.py#L491"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L545"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `anchorln`
 
@@ -73,7 +73,7 @@ This method is used for controlling the snapshot cursor location and guaranteein
 
 ---
 
-<a href="../booktest/testcaserun.py#L710"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L772"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `assertln`
 
@@ -91,7 +91,7 @@ t.t("is HTTP response code 200? ").assertln(response.code() == 200)
 
 ---
 
-<a href="../booktest/testcaserun.py#L225"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L264"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `close`
 
@@ -103,7 +103,7 @@ Closes all resources (e.g. file system handles).
 
 ---
 
-<a href="../booktest/testcaserun.py#L215"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L231"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `close_exp_reader`
 
@@ -115,7 +115,7 @@ Closes the expectation/snapshot file reader :return:
 
 ---
 
-<a href="../booktest/testcaserun.py#L346"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L400"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `commit_line`
 
@@ -131,7 +131,7 @@ Statistics line number of differing or erroneous lines get updated.
 
 ---
 
-<a href="../booktest/testcaserun.py#L467"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L521"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `diff`
 
@@ -143,7 +143,7 @@ an unexpected difference encountered. this method marks a difference on the line
 
 ---
 
-<a href="../booktest/testcaserun.py#L179"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L195"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `end`
 
@@ -157,7 +157,7 @@ end()
 
 ---
 
-<a href="../booktest/testcaserun.py#L473"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L527"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `fail`
 
@@ -169,7 +169,7 @@ a proper failure encountered. this method marks an error on the line manually
 
 ---
 
-<a href="../booktest/testcaserun.py#L454"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L508"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `feed`
 
@@ -183,7 +183,7 @@ NOTE: The token content IS NOT COMPARED to snapshot content, and differences are
 
 ---
 
-<a href="../booktest/testcaserun.py#L408"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L462"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `feed_token`
 
@@ -199,7 +199,7 @@ NOTE: if token is a line end character, the line will be committed to the test s
 
 ---
 
-<a href="../booktest/testcaserun.py#L138"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L150"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `file`
 
@@ -213,7 +213,7 @@ these files can include test output or e.g. images and graphs included in the .m
 
 ---
 
-<a href="../booktest/testcaserun.py#L563"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L625"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `h`
 
@@ -225,7 +225,7 @@ Markdown style header at level specified by `level` parameter
 
 ---
 
-<a href="../booktest/testcaserun.py#L568"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L630"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `h1`
 
@@ -244,7 +244,7 @@ t.tln("This is my title")
 
 ---
 
-<a href="../booktest/testcaserun.py#L582"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L644"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `h2`
 
@@ -256,7 +256,7 @@ Markdown style header 2nd level header
 
 ---
 
-<a href="../booktest/testcaserun.py#L587"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L649"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `h3`
 
@@ -268,7 +268,7 @@ Markdown style header 3rd level header
 
 ---
 
-<a href="../booktest/testcaserun.py#L383"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L437"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `head_exp_token`
 
@@ -280,7 +280,7 @@ Returns the next token in the snapshot file without moving snapshot file cursor
 
 ---
 
-<a href="../booktest/testcaserun.py#L503"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L557"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `header`
 
@@ -294,7 +294,7 @@ the only difference between this method and anchorln() method is that the header
 
 ---
 
-<a href="../booktest/testcaserun.py#L825"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L887"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `i`
 
@@ -308,7 +308,21 @@ Writes the text into test stream without testing the text against snapshot.
 
 ---
 
-<a href="../booktest/testcaserun.py#L834"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L571"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `ifloatln`
+
+```python
+ifloatln(value, unit=None)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/testcaserun.py#L896"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `iln`
 
@@ -322,7 +336,7 @@ Writes the text and new line into test stream without testing the text against t
 
 ---
 
-<a href="../booktest/testcaserun.py#L551"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L613"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `imsln`
 
@@ -338,7 +352,7 @@ NOTE: unline tmsln(), this method never fails or marks a difference.
 
 ---
 
-<a href="../booktest/testcaserun.py#L770"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L832"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `it`
 
@@ -357,7 +371,7 @@ t.it("result", result).must_be_a(list).must_contain(1).must_contain(2)
 
 ---
 
-<a href="../booktest/testcaserun.py#L257"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L311"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `jump`
 
@@ -371,7 +385,7 @@ If line number is before current reader position, the snapshot file reader is re
 
 ---
 
-<a href="../booktest/testcaserun.py#L808"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L870"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `keyvalueln`
 
@@ -383,7 +397,7 @@ Prints a value of format "{key} {value}", and uses key as prefix anchor for adju
 
 ---
 
-<a href="../booktest/testcaserun.py#L730"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L792"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `must_apply`
 
@@ -397,7 +411,7 @@ Maily used by TestIt class
 
 ---
 
-<a href="../booktest/testcaserun.py#L758"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L820"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `must_be_a`
 
@@ -411,7 +425,7 @@ Maily used by TestIt class
 
 ---
 
-<a href="../booktest/testcaserun.py#L740"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L802"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `must_contain`
 
@@ -425,7 +439,7 @@ Maily used by TestIt class
 
 ---
 
-<a href="../booktest/testcaserun.py#L749"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L811"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `must_equal`
 
@@ -439,7 +453,7 @@ Maily used by TestIt class
 
 ---
 
-<a href="../booktest/testcaserun.py#L236"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L290"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `next_exp_line`
 
@@ -451,7 +465,7 @@ Moves snapshot reader cursor to the next snapshot file line
 
 ---
 
-<a href="../booktest/testcaserun.py#L395"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L449"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `next_exp_token`
 
@@ -463,7 +477,21 @@ Reads the next token from the snapshot file. NOTE: this moves snapshot file curs
 
 ---
 
-<a href="../booktest/testcaserun.py#L107"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L241"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `open`
+
+```python
+open()
+```
+
+
+
+
+
+---
+
+<a href="../booktest/testcaserun.py#L119"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `print`
 
@@ -477,7 +505,7 @@ print(*args, sep=' ', end='\n')
 
 ---
 
-<a href="../booktest/testcaserun.py#L110"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L122"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `report`
 
@@ -489,7 +517,7 @@ writes a report line in report log and possibly in standard output
 
 ---
 
-<a href="../booktest/testcaserun.py#L116"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L128"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `reset_exp_reader`
 
@@ -501,7 +529,7 @@ Resets the reader that reads expectation / snapshot file
 
 ---
 
-<a href="../booktest/testcaserun.py#L161"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L177"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `review`
 
@@ -517,7 +545,7 @@ Returns test result (TEST, DIFF, OK) and interaction value, which is used to sig
 
 ---
 
-<a href="../booktest/testcaserun.py#L273"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L327"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `seek`
 
@@ -533,7 +561,7 @@ NOTE: this is really an O(N) scanning operation.  it may restart at the beginnin
 
 ---
 
-<a href="../booktest/testcaserun.py#L305"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L359"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `seek_line`
 
@@ -549,7 +577,7 @@ NOTE: this is really an O(N) scanning operation.  it may restart at the beginnin
 
 ---
 
-<a href="../booktest/testcaserun.py#L320"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L374"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `seek_prefix`
 
@@ -565,7 +593,7 @@ NOTE: this is really an O(N) scanning operation.  it may restart at the beginnin
 
 ---
 
-<a href="../booktest/testcaserun.py#L151"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L163"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `start`
 
@@ -577,7 +605,7 @@ Internal method: starts the test run with the given title
 
 ---
 
-<a href="../booktest/testcaserun.py#L783"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L845"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `t`
 
@@ -589,7 +617,7 @@ Writes the text into test stream. NOTE: this will not print a newline.
 
 ---
 
-<a href="../booktest/testcaserun.py#L615"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L677"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `tdf`
 
@@ -603,7 +631,7 @@ NOTE: df should be of pd.DataFrame or compatible type
 
 ---
 
-<a href="../booktest/testcaserun.py#L441"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L495"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `test_feed`
 
@@ -617,7 +645,7 @@ NOTE: The token content IS COMPARED to snapshot content for differences that are
 
 ---
 
-<a href="../booktest/testcaserun.py#L433"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L487"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `test_feed_token`
 
@@ -629,7 +657,7 @@ Feeds a token into test stream. The token will be compared to the next awaiting 
 
 ---
 
-<a href="../booktest/testcaserun.py#L790"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L852"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `tformat`
 
@@ -645,7 +673,7 @@ Mainly used for getting snapshot of a e.g. Json response format.
 
 ---
 
-<a href="../booktest/testcaserun.py#L592"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L654"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `timage`
 
@@ -657,7 +685,7 @@ Adds a markdown image in the test stream with specified alt text
 
 ---
 
-<a href="../booktest/testcaserun.py#L654"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L716"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `tlist`
 
@@ -679,7 +707,7 @@ will produce:
 
 ---
 
-<a href="../booktest/testcaserun.py#L817"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L879"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `tln`
 
@@ -691,7 +719,7 @@ Writes the text and new line into test stream. This will commit the test line.
 
 ---
 
-<a href="../booktest/testcaserun.py#L128"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L140"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `tmp_file`
 
@@ -705,7 +733,7 @@ these files get deleted before new runs, and by `booktest --clean` command
 
 ---
 
-<a href="../booktest/testcaserun.py#L517"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L590"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `tmsln`
 
@@ -721,7 +749,7 @@ NOTE: if max_ms is defined, this line will fail, if the test took more than max_
 
 ---
 
-<a href="../booktest/testcaserun.py#L674"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L736"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `tset`
 
@@ -735,7 +763,7 @@ NOTE: this method may be slow, if the set order is unstable.
 
 ---
 
-<a href="../booktest/testcaserun.py#L599"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L661"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `ttable`
 
@@ -754,7 +782,7 @@ t.ttable({
 
 ---
 
-<a href="../booktest/testcaserun.py#L335"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L389"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `write_line`
 
@@ -770,7 +798,7 @@ Internal method. Writes a line into test output file and moves the snaphost line
 ## <kbd>class</kbd> `TestIt`
 utility for making assertions related to a specific object  
 
-<a href="../booktest/testcaserun.py#L863"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L925"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -787,7 +815,7 @@ __init__(run: TestCaseRun, title: str, it)
 
 ---
 
-<a href="../booktest/testcaserun.py#L885"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L947"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `member`
 
@@ -799,7 +827,7 @@ Creates a TestIt class for the member of 'it'
 
 ---
 
-<a href="../booktest/testcaserun.py#L881"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L943"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `must_apply`
 
@@ -813,7 +841,7 @@ must_apply(title, cond)
 
 ---
 
-<a href="../booktest/testcaserun.py#L877"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L939"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `must_be_a`
 
@@ -827,7 +855,7 @@ must_be_a(typ)
 
 ---
 
-<a href="../booktest/testcaserun.py#L869"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L931"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `must_contain`
 
@@ -841,7 +869,7 @@ must_contain(member)
 
 ---
 
-<a href="../booktest/testcaserun.py#L873"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testcaserun.py#L935"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `must_equal`
 

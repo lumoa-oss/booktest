@@ -1,3 +1,4 @@
+import logging
 import os.path as path
 import os
 import inspect
@@ -72,12 +73,25 @@ class TestCaseRun:
         self.out_file_name = path.join(self.out_base_dir, name + ".md")
         self.out_dir_name = path.join(self.out_base_dir, name)
         self.out_tmp_dir_name = path.join(self.out_base_dir, name + ".tmp")
-        self.out = open(self.out_file_name, "w")
+        self.out = None
         self.out_line = ""
 
         # prepare reporting
         self.rep_file_name = path.join(self.out_base_dir, name + ".txt")
-        self.rep = open(self.rep_file_name, "w")
+        self.rep = None
+
+        # prepare std error output
+        self.err_file_name = path.join(self.out_base_dir, name + ".log")
+        self.err = None
+        self.orig_err = None
+
+        # prepare logging
+        self.log = None
+        self.orig_handlers = None
+
+        # swap error
+        self.orig_err = sys.stderr
+        sys.stderr = self.err
 
         # error management
         #
@@ -101,8 +115,6 @@ class TestCaseRun:
 
         if path.exists(self.out_tmp_dir_name):
             shutil.rmtree(self.out_tmp_dir_name)
-
-        self.reset_exp_reader()
 
     def print(self, *args, sep=' ', end='\n'):
         print(*args, sep=sep, end=end, file=self.output)
@@ -152,6 +164,10 @@ class TestCaseRun:
         """
         Internal method: starts the test run with the given title
         """
+        # open resources and swap loggers and stderr
+        self.open()
+        self.reset_exp_reader()
+
         self.started = time.time()
         report_case_begin(self.print,
                           self.test_path,
@@ -222,10 +238,48 @@ s
             self.exp.close()
             self.exp = None
 
+    def open(self):
+        # open files
+        self.out = open(self.out_file_name, "w")
+        self.rep = open(self.rep_file_name, "w")
+        self.err = open(self.err_file_name, "w")
+        self.log = logging.StreamHandler(self.err)
+
+        # swap logger
+        logger = logging.getLogger()
+        self.orig_handlers = logger.handlers
+
+        formatter = None
+        if len(self.orig_handlers) > 0:
+            formatter = self.orig_handlers[0].formatter
+            self.log.setFormatter(formatter)
+
+        logger.handlers = [self.log]
+
+        # swap logging
+        self.orig_err = sys.stderr
+        sys.stderr = self.err
+
+
     def close(self):
         """
         Closes all resources (e.g. file system handles).
         """
+        if self.orig_handlers is not None:
+            logger = logging.getLogger()
+            logger.handlers = self.orig_handlers
+            self.orig_handlers = None
+
+        if self.log is not None:
+            self.log.close()
+            self.log = None
+
+        if self.orig_err is not None:
+            sys.stderr = self.orig_err
+            self.orig_err = None
+
+        self.err.close()
+        self.err = None
 
         self.close_exp_reader()
         self.out.close()

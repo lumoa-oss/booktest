@@ -139,7 +139,7 @@ Note that imsln will never break the test case. tmsln can
 be used to break the test, if the operation takes over specified
 millisecond amont
 
-### Build system and dependencies
+### Build system, dependencies and resources
 
 Why? Big data and long processing times tend to be a common issue plaguing 
 data science workflows. The main issue is the slowered down iteration speed. 
@@ -182,6 +182,60 @@ The test produces 2 different results:
  * [test_cache_file](books/test/examples/simple/cache.md)
  * [test_cache_use](books/test/examples/simple/cache_use.md)
 
+As an addition to managing dependencies, booktest manages exclusive resources 
+like ports in order to avoid race conditions or other issues with parallel runs.
+
+When running tests in parallel format, two tests are never scheduled at the same 
+time, when an exclusive resources (like a port) is being used. here is an 
+example about using a global state parellelization safely using Resources:
+
+```python
+from time import sleep
+
+import booktest as bt
+
+
+class Box:
+
+    def __init__(self, value):
+        self.value = value
+
+
+THE_GLOBAL_BOX = Box(1)
+
+
+def t_resource_use_with_race_condition(t: bt.TestCaseRun, global_box):
+    t.h1("description:")
+    t.tln("this test is run several times separately")
+    t.tln("there will be race condition, if run parallel")
+    t.tln("this test verifies that resource mechanism works")
+
+    t.h1("test sequence:")
+
+    t.tln(f" * the global value is {global_box.value}")
+    global_box.value = global_box.value + 1
+    t.tln(f" * increased it")
+    t.tln(f" * the global value is now {global_box.value}")
+    t.tln(f" * sleeping 100 ms")
+    sleep(0.1)
+    t.tln(f" * the global value is now {global_box.value}")
+    t.tln(f" * decreased it")
+    global_box.value = global_box.value - 1
+    t.tln(f" * the global value is now {global_box.value}")
+
+
+@bt.depends_on(bt.Resource(THE_GLOBAL_BOX))
+def test_resource_use_1(t: bt.TestCaseRun, global_box):
+    t_resource_use_with_race_condition(t, global_box)
+
+
+@bt.depends_on(bt.Resource(THE_GLOBAL_BOX))
+def test_resource_use_2(t: bt.TestCaseRun, global_box):
+    t_resource_use_with_race_condition(t, global_box)
+```
+
+You can find the example code [here](test/examples/resource_book.py) and 
+the results [here](books/test/examples/resource) .
 
 ### Tables, dataframes and images
 

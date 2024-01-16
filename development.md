@@ -30,6 +30,14 @@ from previous runs.
 Click [here](books/index.md) to see the booktest test cases
 expectation files.
 
+## Regenerating documentation
+
+Install lazydocs and run:
+
+```bash
+lazydocs `find booktest -name '*.py' `
+```
+
 ## Contributing
 
 If you want to contribute, please contact Antti Rauhala (antti at lumoa.me)
