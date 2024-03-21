@@ -10,47 +10,85 @@ import json
 import threading
 import sys
 import six
+import copy
+
+
+class RequestKey:
+
+    def __init__(self, json_object):
+        self.json_object = json_object
+
+        hash_code = self.json_object.get("hash")
+
+        if hash_code is None:
+            h = hashlib.sha1()
+            h.update(json.dumps(self.json_object).encode())
+            hash_code = str(h.hexdigest())
+            self.json_object["hash"] = hash_code
+
+        self.hash = hash_code
+
+    def url(self):
+        return self.json_object.get("url")
+
+    def to_json_object(self, hide_details):
+        rv = copy.copy(self.json_object)
+        rv["hash"] = self.hash
+
+        if hide_details:
+            if "headers" in rv:
+                del rv["headers"]
+            if "body" in rv:
+                del rv["body"]
+
+        return rv
+
+    @staticmethod
+    def from_properties(url, method, headers, body):
+        json_object = {
+            "url": str(url),
+            "method": str(method),
+            "headers": dict(headers)
+        }
+        if body is not None:
+            json_object["body"] = body.encode()
+        return RequestKey(json_object)
+
+    @staticmethod
+    def from_request(request: requests.PreparedRequest):
+        return RequestKey.from_properties(request.url, request.method, request.headers, request.body)
+
+    def __eq__(self, other):
+        return type(other) == RequestKey and self.hash == other.hash
+
 
 
 class RequestSnapshot:
 
     def __init__(self,
-                 request: requests.PreparedRequest,
+                 request: RequestKey,
                  response: requests.Response):
         self.request = request
         self.response = response
 
-    def match(self, request: requests.PreparedRequest):
-        return (self.request.url == request.url and
-                self.request.method == request.method and
-                self.request.body == request.body)
+    def match(self, request: RequestKey):
+        return self.request == request
 
     @staticmethod
     def from_json_object(json_object):
-        i = json_object["request"]
-        request = requests.PreparedRequest()
-        request.url = i["url"]
-        request.method = i["method"]
-        request.headers = i["headers"]
-        request.body = i["body"]
-        o = json_object["response"]
+        response_json = json_object["response"]
+
         response = requests.Response()
-        response.headers = o["headers"]
-        response.status_code = o["statusCode"]
-        response.encoding = o["encoding"]
-        response._content = o["content"].encode()
+        response.headers = response_json["headers"]
+        response.status_code = response_json["statusCode"]
+        response.encoding = response_json["encoding"]
+        response._content = response_json["content"].encode()
 
-        return RequestSnapshot(request,
-                               response)
+        return RequestSnapshot(RequestKey(json_object["request"]), response)
 
-    def json_object(self):
+    def json_object(self, hide_details):
         rv = {
-            "request": {
-                "url": self.request.url,
-                "method": self.request.method,
-                "headers": dict(self.request.headers),
-                "body": self.request.body
-            },
+            "request": self.request.to_json_object(hide_details),
             "response": {
                 "headers": dict(self.response.headers),
                 "statusCode": self.response.status_code,
@@ -62,13 +100,7 @@ class RequestSnapshot:
         return rv
 
     def hash(self):
-        h = hashlib.sha1()
-        h.update(self.request.url.encode())
-        h.update(json.dumps(self.json_object()["request"]).encode())
-        return h.hexdigest()
-
-    def name(self):
-        return self.hash()
+        return self.request.hash
 
 
 class SnapshotAdapter(adapters.BaseAdapter):
@@ -79,14 +111,16 @@ class SnapshotAdapter(adapters.BaseAdapter):
         self.requests = []
 
     def send(self, request, **kwargs):
+        key = RequestKey.from_request(request)
+
         for snapshot in reversed(self.snapshots):
-            if snapshot.match(request):
+            if snapshot.match(key):
                 if snapshot not in self.requests:
                     self.requests.append(snapshot)
                 return snapshot.response
 
         rv = adapters.HTTPAdapter().send(request)
-        self.requests.append(RequestSnapshot(request, rv))
+        self.requests.append(RequestSnapshot(key, rv))
 
         return rv
 
@@ -142,13 +176,14 @@ def _set_method(target, name, method):
 
 class SnapshotRequests:
 
-    def __init__(self, t: bt.TestCaseRun):
+    def __init__(self, t: bt.TestCaseRun, hide_details=True):
         self.t = t
         self.mock_path = os.path.join(t.exp_dir_name, ".requests")
         self.mock_out_path = t.file(".requests")
         self._mock_target = requests.Session
         self._last_send = None
         self._last_get_adapter = None
+        self._hide_details = hide_details
         # load snapshots
         snapshots = []
         if os.path.exists(self.mock_path):
@@ -201,15 +236,15 @@ class SnapshotRequests:
         os.makedirs(self.mock_out_path, exist_ok=True)
 
         for snapshot in self._adapter.requests:
-            name = snapshot.name()
+            name = snapshot.hash()
 
             with open(os.path.join(self.mock_out_path, f"{name}.json"), "w") as f:
-                json.dump(snapshot.json_object(), f, indent=4)
+                json.dump(snapshot.json_object(self._hide_details), f, indent=4)
 
     def t_snapshots(self):
         self.t.h1("request snaphots:")
         for i in self._adapter.requests:
-            self.t.tln(f" * {i.request.url} - {i.name()}")
+            self.t.tln(f" * {i.request.url()} - {i.hash()}")
 
     def __enter__(self):
         self.start()
@@ -219,7 +254,7 @@ class SnapshotRequests:
         self.t_snapshots()
 
 
-def snapshot_requests():
+def snapshot_requests(hide_details=True):
     def decorator_depends(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -228,7 +263,7 @@ def snapshot_requests():
                 t = args[1]
             else:
                 t = args[0]
-            with SnapshotRequests(t):
+            with SnapshotRequests(t, hide_details):
                 return func(*args, **kwargs)
         wrapper._original_function = func
         return wrapper
