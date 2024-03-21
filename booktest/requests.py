@@ -12,7 +12,7 @@ import sys
 import six
 
 
-class Snapshot:
+class RequestSnapshot:
 
     def __init__(self,
                  request: requests.PreparedRequest,
@@ -40,8 +40,8 @@ class Snapshot:
         response.encoding = o["encoding"]
         response._content = o["content"].encode()
 
-        return Snapshot(request,
-                        response)
+        return RequestSnapshot(request,
+                               response)
 
     def json_object(self):
         rv = {
@@ -86,7 +86,7 @@ class SnapshotAdapter(adapters.BaseAdapter):
                 return snapshot.response
 
         rv = adapters.HTTPAdapter().send(request)
-        self.requests.append(Snapshot(request, rv))
+        self.requests.append(RequestSnapshot(request, rv))
 
         return rv
 
@@ -154,7 +154,7 @@ class SnapshotRequests:
         if os.path.exists(self.mock_path):
             for mock_file in os.listdir(self.mock_path):
                 with open(os.path.join(self.mock_path, mock_file), "r") as f:
-                    snapshots.append(Snapshot.from_json_object(json.load(f)))
+                    snapshots.append(RequestSnapshot.from_json_object(json.load(f)))
 
         self._adapter = SnapshotAdapter(snapshots)
 
@@ -207,7 +207,7 @@ class SnapshotRequests:
                 json.dump(snapshot.json_object(), f, indent=4)
 
     def t_snapshots(self):
-        self.t.h1("snaphots:")
+        self.t.h1("request snaphots:")
         for i in self._adapter.requests:
             self.t.tln(f" * {i.request.url} - {i.name()}")
 

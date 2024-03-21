@@ -9,6 +9,7 @@ from booktest.testsuite import TestSuite, merge_tests, drop_prefix
 from booktest.tokenizer import TestTokenizer, BufferIterator
 from booktest.detection import detect_tests, detect_test_suite
 from booktest.requests import snapshot_requests
+from booktest.env import snapshot_env
 
 
 __all__ = {
@@ -30,6 +31,7 @@ __all__ = {
     "class_to_test_path",
     "detect_tests",
     "detect_test_suite",
-    "snapshot_requests"
+    "snapshot_requests",
+    "snapshot_env"
 }
 
