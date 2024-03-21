@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "booktest"
-version = "0.3.16"
+version = "0.3.17"
 authors = ["Antti Rauhala <antti@lumoa.me>"]
 description = "Booktest is a snapshot testing library for review driven testing."
 readme = "readme.md"
@@ -23,6 +23,7 @@ python = "^3.8"
 pandas = "^1.0.0"
 argcomplete = "^2.0.0"
 coverage = "^6.5.0"
+requests = "^2.31.0"
 
 [tool.poetry.group.test.dependencies]
 matplotlib = "^3.3.0"

@@ -8,6 +8,7 @@ from booktest.tests import Tests
 from booktest.testsuite import TestSuite, merge_tests, drop_prefix
 from booktest.tokenizer import TestTokenizer, BufferIterator
 from booktest.detection import detect_tests, detect_test_suite
+from booktest.requests import snapshot_requests
 
 
 __all__ = {
@@ -28,6 +29,7 @@ __all__ = {
     "value_format",
     "class_to_test_path",
     "detect_tests",
-    "detect_test_suite"
+    "detect_test_suite",
+    "snapshot_requests"
 }
 

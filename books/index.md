@@ -54,6 +54,9 @@
              * [resource_use_2](test/examples/resource/resource_use_2.md)
              * [resource_use_3](test/examples/resource/resource_use_3.md)
 
+         * mocking
+             * [requests](test/examples/mocking/requests.md)
+
          * example
              * [engine](test/examples/example/engine.md)
              * [df](test/examples/example/df.md)
