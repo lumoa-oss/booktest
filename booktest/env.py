@@ -12,8 +12,8 @@ class SnapshotEnv:
         self.t = t
         self.names = names
 
-        self.snaphot_path = os.path.join(t.exp_dir_name, ".env")
-        self.snapshot_out_path = t.file(".env")
+        self.snaphot_path = os.path.join(t.exp_dir_name, ".env.json")
+        self.snapshot_out_path = t.file(".env.json")
 
         self.snaphots = {}
         self._old_env = {}

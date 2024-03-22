@@ -17,9 +17,9 @@ this test should create 2 snapshots, one for each user
         "Content-Type": "application/json",
         "Host": "httpbin.org",
         "User-Agent": "python-requests/2.31.0",
-        "X-Amzn-Trace-Id": "Root=1-65fd3624-3529480e217d49f05feb05fe",
-        "X-Api-Key": "secret",
-        "X-Timestamp": "1711093284.323702",
+        "X-Amzn-Trace-Id": "Root=1-65fd7d99-17b99ca4779755f6293dbc7a",
+        "X-Api-Key": "mock",
+        "X-Timestamp": "1711111576.7804182",
         "X-User-Id": "1"
     },
     "json": {
@@ -44,9 +44,9 @@ this test should create 2 snapshots, one for each user
         "Content-Type": "application/json",
         "Host": "httpbin.org",
         "User-Agent": "python-requests/2.31.0",
-        "X-Amzn-Trace-Id": "Root=1-65fd3624-3529480e217d49f05feb05fe",
-        "X-Api-Key": "secret",
-        "X-Timestamp": "1711093284.323702",
+        "X-Amzn-Trace-Id": "Root=1-65fd7d99-17b99ca4779755f6293dbc7a",
+        "X-Api-Key": "mock",
+        "X-Timestamp": "1711111576.7804182",
         "X-User-Id": "1"
     },
     "json": {
