@@ -11,12 +11,28 @@ import threading
 import sys
 import six
 import copy
+import base64
 
 
 class RequestKey:
 
-    def __init__(self, json_object):
+    def __init__(self, json_object, ignore_headers=True):
         self.json_object = json_object
+
+        # headers contain often passwords, timestamps or other
+        # information that must not be stored and cannot be used in CI
+        if ignore_headers and "headers" in json_object:
+            if ignore_headers is True:
+                del json_object["headers"]
+            else:
+                headers = json_object["headers"]
+                lower_ignore_headers = set([i.lower() for i in ignore_headers])
+                removed = []
+                for header in headers:
+                    if header.lower() in lower_ignore_headers:
+                        removed.append(header)
+                for i in removed:
+                    del headers[i]
 
         hash_code = self.json_object.get("hash")
 
@@ -44,23 +60,35 @@ class RequestKey:
         return rv
 
     @staticmethod
-    def from_properties(url, method, headers, body):
+    def from_properties(url,
+                        method,
+                        headers,
+                        body,
+                        ignore_headers):
         json_object = {
             "url": str(url),
             "method": str(method),
             "headers": dict(headers)
         }
         if body is not None:
-            json_object["body"] = body.encode()
-        return RequestKey(json_object)
+            if isinstance(body, str):
+                json_object["body"] = body
+            elif isinstance(body, bytes):
+                json_object["body"] = base64.b64encode(body).decode("ascii")
+            else:
+                raise ValueError(f"unexpected body {body} of type {type(body)}")
+        return RequestKey(json_object, ignore_headers=ignore_headers)
 
     @staticmethod
-    def from_request(request: requests.PreparedRequest):
-        return RequestKey.from_properties(request.url, request.method, request.headers, request.body)
+    def from_request(request: requests.PreparedRequest, ignore_headers=True):
+        return RequestKey.from_properties(request.url,
+                                          request.method,
+                                          request.headers,
+                                          request.body,
+                                          ignore_headers=ignore_headers)
 
     def __eq__(self, other):
         return type(other) == RequestKey and self.hash == other.hash
-
 
 
 class RequestSnapshot:
@@ -75,7 +103,7 @@ class RequestSnapshot:
         return self.request == request
 
     @staticmethod
-    def from_json_object(json_object):
+    def from_json_object(json_object, ignore_headers=True):
         response_json = json_object["response"]
 
         response = requests.Response()
@@ -84,7 +112,7 @@ class RequestSnapshot:
         response.encoding = response_json["encoding"]
         response._content = response_json["content"].encode()
 
-        return RequestSnapshot(RequestKey(json_object["request"]), response)
+        return RequestSnapshot(RequestKey(json_object["request"], ignore_headers), response)
 
     def json_object(self, hide_details):
         rv = {
@@ -102,22 +130,35 @@ class RequestSnapshot:
     def hash(self):
         return self.request.hash
 
+    def __eq__(self, other):
+        print(f"{self.hash()} vs {other.hash()}")
+        return isinstance(other, RequestSnapshot) and self.hash() == other.hash()
+
 
 class SnapshotAdapter(adapters.BaseAdapter):
     """A fake adapter than can return predefined responses."""
 
-    def __init__(self, snapshots):
+    def __init__(self,
+                 snapshots,
+                 capture_snapshots,
+                 ignore_headers):
         self.snapshots = snapshots
+        self.capture_snaphots = capture_snapshots
+        self.ignore_headers = ignore_headers
         self.requests = []
 
     def send(self, request, **kwargs):
-        key = RequestKey.from_request(request)
+        key = RequestKey.from_request(request,
+                                      self.ignore_headers)
 
-        for snapshot in reversed(self.snapshots):
+        for snapshot in reversed(self.snapshots + self.requests):
             if snapshot.match(key):
                 if snapshot not in self.requests:
                     self.requests.append(snapshot)
                 return snapshot.response
+
+        if not self.capture_snaphots:
+            raise ValueError(f"missing snapshot for request {request.url} - {key.hash}")
 
         rv = adapters.HTTPAdapter().send(request)
         self.requests.append(RequestSnapshot(key, rv))
@@ -176,22 +217,33 @@ def _set_method(target, name, method):
 
 class SnapshotRequests:
 
-    def __init__(self, t: bt.TestCaseRun, hide_details=True):
+    def __init__(self,
+                 t: bt.TestCaseRun,
+                 lose_request_details=True,
+                 ignore_headers=True):
         self.t = t
         self.mock_path = os.path.join(t.exp_dir_name, ".requests")
         self.mock_out_path = t.file(".requests")
         self._mock_target = requests.Session
         self._last_send = None
         self._last_get_adapter = None
-        self._hide_details = hide_details
+        self._lose_request_details = lose_request_details
+        self._ignore_headers = ignore_headers
+
+        self.refresh_snapshots = t.config.get("refresh_snapshots", False)
+        self.complete_snapshots = t.config.get("complete_snapshots", False)
+
         # load snapshots
         snapshots = []
-        if os.path.exists(self.mock_path):
+
+        if os.path.exists(self.mock_path) and not self.refresh_snapshots:
             for mock_file in os.listdir(self.mock_path):
                 with open(os.path.join(self.mock_path, mock_file), "r") as f:
-                    snapshots.append(RequestSnapshot.from_json_object(json.load(f)))
+                    snapshots.append(RequestSnapshot.from_json_object(json.load(f), ignore_headers=ignore_headers))
 
-        self._adapter = SnapshotAdapter(snapshots)
+        self._adapter = SnapshotAdapter(snapshots,
+                                        self.refresh_snapshots or self.complete_snapshots,
+                                        ignore_headers)
 
     def start(self):
         """Start mocking requests.
@@ -239,7 +291,7 @@ class SnapshotRequests:
             name = snapshot.hash()
 
             with open(os.path.join(self.mock_out_path, f"{name}.json"), "w") as f:
-                json.dump(snapshot.json_object(self._hide_details), f, indent=4)
+                json.dump(snapshot.json_object(self._lose_request_details), f, indent=4)
 
     def t_snapshots(self):
         self.t.h1("request snaphots:")
@@ -254,7 +306,12 @@ class SnapshotRequests:
         self.t_snapshots()
 
 
-def snapshot_requests(hide_details=True):
+def snapshot_requests(lose_request_details=True,
+                      ignore_headers=True):
+    """
+    @param lose_request_details Saves no request details to avoid leaking keys
+    @param ignore_headers Ignores all headers (True) or specific header list
+    """
     def decorator_depends(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -263,7 +320,7 @@ def snapshot_requests(hide_details=True):
                 t = args[1]
             else:
                 t = args[0]
-            with SnapshotRequests(t, hide_details):
+            with SnapshotRequests(t, lose_request_details, ignore_headers):
                 return func(*args, **kwargs)
         wrapper._original_function = func
         return wrapper

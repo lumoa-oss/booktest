@@ -50,8 +50,11 @@
              * [tokenizer](test/examples/example_suite/tokenizer.md)
 
          * snapshots
-             * [requests](test/examples/snapshots/requests.md)
              * [env](test/examples/snapshots/env.md)
+             * [requests](test/examples/snapshots/requests.md)
+             * [requests_and_env](test/examples/snapshots/requests_and_env.md)
+             * [requests_with_headers](test/examples/snapshots/requests_with_headers.md)
+             * [saved_request](test/examples/snapshots/saved_request.md)
 
          * resource
              * [resource_use_1](test/examples/resource/resource_use_1.md)

@@ -167,6 +167,16 @@ class Tests:
             help="run test on parallel processes"
         )
         parser.add_argument(
+            "-s",
+            action='store_true',
+            help="complete snapshots. this captures snapshots that are missing"
+        )
+        parser.add_argument(
+            "-S",
+            action='store_true',
+            help="refresh snapshots and discard old snapshots"
+        )
+        parser.add_argument(
             "--cov",
             action='store_true',
             help="store coverage information"
@@ -307,6 +317,10 @@ class Tests:
             config["accept"] = True
         if parsed.p:
             config["parallel"] = True
+        if parsed.s:
+            config["complete_snapshots"] = True
+        if parsed.S:
+            config["refresh_snapshots"] = True
         if parsed.cov:
             config["coverage"] = True
         if parsed.md_viewer:

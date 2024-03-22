@@ -6,4 +6,4 @@
 
 # request snaphots:
 
- * https://api.weather.gov/ - 10d97d7a244436881d43ad0c685e4aa77d96f950
+ * https://api.weather.gov/ - 42a916709d8abbc968e998b18e503e3afe402426

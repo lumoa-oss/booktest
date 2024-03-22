@@ -2,25 +2,25 @@
     "request": {
         "url": "https://api.weather.gov/",
         "method": "GET",
-        "hash": "10d97d7a244436881d43ad0c685e4aa77d96f950"
+        "hash": "42a916709d8abbc968e998b18e503e3afe402426"
     },
     "response": {
         "headers": {
             "Server": "nginx/1.20.1",
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
-            "X-Request-ID": "3d555d28-375d-40d9-b011-70a968b3f2db",
-            "X-Correlation-ID": "28119cfd",
-            "X-Server-ID": "vm-bldr-nids-apiapp6.ncep.noaa.gov",
+            "X-Request-ID": "15ee4982-d038-4015-af7c-83e414378d5a",
+            "X-Correlation-ID": "45cae7b5",
+            "X-Server-ID": "vm-bldr-nids-apiapp12.ncep.noaa.gov",
             "Pragma": "no-cache",
             "Content-Encoding": "gzip",
             "Content-Length": "40",
             "Cache-Control": "private, must-revalidate, max-age=0",
-            "Expires": "Thu, 21 Mar 2024 15:22:15 GMT",
-            "Date": "Thu, 21 Mar 2024 15:22:15 GMT",
+            "Expires": "Fri, 22 Mar 2024 06:50:36 GMT",
+            "Date": "Fri, 22 Mar 2024 06:50:36 GMT",
             "Connection": "keep-alive",
             "Vary": "Accept-Encoding, Accept,Feature-Flags,Accept-Language",
-            "X-Edge-Request-ID": "601d74f7",
+            "X-Edge-Request-ID": "1416c972",
             "Strict-Transport-Security": "max-age=31536000 ; includeSubDomains ; preload"
         },
         "statusCode": 200,

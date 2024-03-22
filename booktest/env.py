@@ -17,8 +17,11 @@ class SnapshotEnv:
         self._old_env = {}
         self.capture = {}
 
+        self.refresh_snapshots = t.config.get("refresh_snapshots", False)
+        self.complete_snapshots = t.config.get("complete_snapshots", False)
+
         # load snapshots
-        if os.path.exists(self.snaphot_path):
+        if os.path.exists(self.snaphot_path) and not self.refresh_snapshots:
             with open(self.snaphot_path, "r") as f:
                 self.snaphots = json.load(f)
 
@@ -37,8 +40,10 @@ class SnapshotEnv:
                 else:
                     os.environ[name] = self.snaphots[name]
                 self.capture[name] = value
-            else:
+            elif self.complete_snapshots or self.refresh_snapshots:
                 self.capture[name] = old_value
+            else:
+                raise Exception(f"missing env snapshot '{name}' ")
 
     def stop(self):
         for name, value in self._old_env.items():
