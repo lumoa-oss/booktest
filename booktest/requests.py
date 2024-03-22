@@ -158,7 +158,8 @@ class SnapshotAdapter(adapters.BaseAdapter):
                 return snapshot.response
 
         if not self.capture_snaphots:
-            raise ValueError(f"missing snapshot for request {request.url} - {key.hash}")
+            raise ValueError(f"missing snapshot for request {request.url} - {key.hash}. "
+                             f"try running booktest with '-s' flag to capture the missing snapshot")
 
         rv = adapters.HTTPAdapter().send(request)
         self.requests.append(RequestSnapshot(key, rv))

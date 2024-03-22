@@ -45,7 +45,9 @@ class SnapshotEnv:
             elif self.complete_snapshots or self.refresh_snapshots:
                 self.capture[name] = old_value
             else:
-                raise Exception(f"missing env snapshot '{name}' ")
+                raise Exception(
+                    f"missing env snapshot '{name}'. "
+                    "try running booktest with '-s' flag to capture the missing snapshot")
 
     def stop(self):
         for name, value in self._old_env.items():

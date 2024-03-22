@@ -285,7 +285,7 @@ Booktest provides HTTP snapshotting and environment variable snapshot for provid
 a simple way for mocking the variables and services. 
 
 Here is an example of using both environment and request snapshotting for creating tests
-using live HTTP service with an api key.
+using live HTTP service with an api key. 
 
 ```python
 import booktest as bt
@@ -293,8 +293,8 @@ import os
 import requests
 import json
 
-
 @bt.snapshot_env("HOST_NAME")
+@bt.mock_missing_env({"API_KEY": "mock"})
 @bt.snapshot_requests()
 def test_requests_and_env(t: bt.TestCaseRun):
     t.h1("request:")
@@ -314,29 +314,32 @@ def test_requests_and_env(t: bt.TestCaseRun):
 
     t.h1("response:")
     t.tln(json.dumps(response.json()["json"], indent=4))
+
 ```
 
 This test produces [following results](books/test/examples/snapshots/requests_and_env.md)
 
 In the example, HOST_NAME is captured using bt.snaphot_env decoration and the 
-http request is captured using the snaphot_requests. NOTE: X-Api-Key is not 
-captured. Also, both HTTP headers are ignored by default to avoid leaking information
-about secrets via SHA-1 encoded hashes and to match requests independent of variable
-header details. 
+http request is captured using the snaphot_requests. 
 
+NOTE: X-Api-Key is not captured, but a mock value is provided instead, whenever the test
+is not in a snapshot capture mode. 
+
+Also, both HTTP headers are ignored by default to avoid leaking information about secrets
+via SHA-1 encoded hashes and to match requests independent of variable header details.
 You can check the example for more selective HTTP header selection in case the response 
 depends on the header content.
 
 When developing code with snapshots, note, that you need special flags for snapshots
 library to be completed with snapshots or to recreate old ones. 
 
-You can complete missing snapshots with '-s' flag as in 
+You can capture missing snapshots with '-s' flag as in 
 
 ```bash
 booktest -v -i -s test/examples/snapshots/requests_and_env
 ```
 
-Or you complete recreate the snapshots with '-S' flag as in:
+Or you completely recapture the snapshots with '-S' flag as in:
 
 ```bash
 HOST_NAME="https://httpbin.org/anything" API_KEY="secret" booktest -v -i -S test/examples/snapshots/requests_and_env
