@@ -27,13 +27,20 @@ def test_saved_request(t: bt.TestCaseRun):
 
 @bt.snapshot_env("TEST_ENV_VARIABLE")
 def test_env(t: bt.TestCaseRun):
-    response = requests.get("https://api.weather.gov/")
+    t.h1("test environment variable:")
+    t.keyvalueln(" * TEST_ENV_VARIABLE:", os.environ["TEST_ENV_VARIABLE"])
 
-    t.h1("response:")
-    t.tln(json.dumps(response.json(), indent=4))
+
+@bt.mock_env({
+    "TEST_ENV_VARIABLE": "hello2"
+})
+def test_mock_env(t: bt.TestCaseRun):
+    t.h1("test environment variable:")
+    t.keyvalueln(" * TEST_ENV_VARIABLE:", os.environ["TEST_ENV_VARIABLE"])
 
 
 @bt.snapshot_env("HOST_NAME")
+@bt.mock_missing_env({"API_KEY": "mock"})
 @bt.snapshot_requests()
 def test_requests_and_env(t: bt.TestCaseRun):
     t.h1("request:")
@@ -56,6 +63,7 @@ def test_requests_and_env(t: bt.TestCaseRun):
 
 
 @bt.snapshot_env("HOST_NAME")
+@bt.mock_missing_env({"API_KEY": "mock"})
 @bt.snapshot_requests(lose_request_details=False,
                       ignore_headers=["X-Api-Key", "X-Timestamp"])
 def test_requests_with_headers(t: bt.TestCaseRun):

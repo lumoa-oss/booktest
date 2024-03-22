@@ -325,4 +325,3 @@ def snapshot_requests(lose_request_details=True,
         wrapper._original_function = func
         return wrapper
     return decorator_depends
-

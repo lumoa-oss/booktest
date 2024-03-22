@@ -51,6 +51,7 @@
 
          * snapshots
              * [env](test/examples/snapshots/env.md)
+             * [mock_env](test/examples/snapshots/mock_env.md)
              * [requests](test/examples/snapshots/requests.md)
              * [requests_and_env](test/examples/snapshots/requests_and_env.md)
              * [requests_with_headers](test/examples/snapshots/requests_with_headers.md)

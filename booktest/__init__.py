@@ -9,7 +9,7 @@ from booktest.testsuite import TestSuite, merge_tests, drop_prefix
 from booktest.tokenizer import TestTokenizer, BufferIterator
 from booktest.detection import detect_tests, detect_test_suite
 from booktest.requests import snapshot_requests
-from booktest.env import snapshot_env
+from booktest.env import snapshot_env, mock_env, mock_missing_env
 
 
 __all__ = {
@@ -32,6 +32,8 @@ __all__ = {
     "detect_tests",
     "detect_test_suite",
     "snapshot_requests",
-    "snapshot_env"
+    "snapshot_env",
+    "mock_missing_env",
+    "mock_env",
 }
 

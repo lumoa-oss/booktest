@@ -6,7 +6,9 @@ import json
 
 class SnapshotEnv:
 
-    def __init__(self, t: bt.TestCaseRun, names: list):
+    def __init__(self,
+                 t: bt.TestCaseRun,
+                 names: list):
         self.t = t
         self.names = names
 
@@ -83,3 +85,113 @@ def snapshot_env(*names):
         return wrapper
     return decorator_depends
 
+
+class MockMissingEnv:
+
+    def __init__(self, t: bt.TestCaseRun, env: dict):
+        self.t = t
+        self.env = env
+
+        self._old_env = {}
+
+        refresh_snapshots = t.config.get("refresh_snapshots", False)
+        complete_snapshots = t.config.get("complete_snapshots", False)
+
+        # mocking is on only, when we are not updating snapshots
+        self._do_mock = not (refresh_snapshots | complete_snapshots)
+
+    def start(self):
+        if self._old_env is None:
+            raise ValueError("already started")
+
+        self._old_env = {}
+        for name, value in self.env.items():
+            old_value = os.environ.get(name)
+            self._old_env[name] = old_value
+
+            if old_value is None:
+                if value is None:
+                    del os.environ[name]
+                else:
+                    os.environ[name] = value
+
+    def stop(self):
+        for name, value in self._old_env.items():
+            if value is None:
+                del os.environ[name]
+            else:
+                os.environ[name] = self._old_env[name]
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+
+
+def mock_missing_env(env):
+    def decorator_depends(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            from booktest import TestBook
+            if isinstance(args[0], TestBook):
+                t = args[1]
+            else:
+                t = args[0]
+            with MockMissingEnv(t, env):
+                return func(*args, **kwargs)
+        wrapper._original_function = func
+        return wrapper
+    return decorator_depends
+
+
+class MockEnv:
+
+    def __init__(self, t: bt.TestCaseRun, env: dict):
+        self.t = t
+        self.env = env
+
+        self._old_env = {}
+
+    def start(self):
+        if self._old_env is None:
+            raise ValueError("already started")
+
+        self._old_env = {}
+        for name, value in self.env.items():
+            old_value = os.environ.get(name)
+            self._old_env[name] = old_value
+
+            if value is None:
+                del os.environ[name]
+            else:
+                os.environ[name] = value
+
+    def stop(self):
+        for name, value in self._old_env.items():
+            if value is None:
+                del os.environ[name]
+            else:
+                os.environ[name] = self._old_env[name]
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+
+
+def mock_env(env):
+    def decorator_depends(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            from booktest import TestBook
+            if isinstance(args[0], TestBook):
+                t = args[1]
+            else:
+                t = args[0]
+            with MockEnv(t, env):
+                return func(*args, **kwargs)
+        wrapper._original_function = func
+        return wrapper
+    return decorator_depends

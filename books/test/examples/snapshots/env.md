@@ -1,8 +1,6 @@
-# response:
+# test environment variable:
 
-{
-    "status": "OK"
-}
+ * TEST_ENV_VARIABLE: hello
 
 # env snaphots:
 
