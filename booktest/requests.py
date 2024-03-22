@@ -131,7 +131,6 @@ class RequestSnapshot:
         return self.request.hash
 
     def __eq__(self, other):
-        print(f"{self.hash()} vs {other.hash()}")
         return isinstance(other, RequestSnapshot) and self.hash() == other.hash()
 
 

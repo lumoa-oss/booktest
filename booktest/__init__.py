@@ -10,6 +10,7 @@ from booktest.tokenizer import TestTokenizer, BufferIterator
 from booktest.detection import detect_tests, detect_test_suite
 from booktest.requests import snapshot_requests
 from booktest.env import snapshot_env, mock_env, mock_missing_env
+from booktest.utils import combine_decorators
 
 
 __all__ = {
@@ -35,5 +36,6 @@ __all__ = {
     "snapshot_env",
     "mock_missing_env",
     "mock_env",
+    "combine_decorators"
 }
 
