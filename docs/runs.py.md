@@ -25,7 +25,7 @@ case_batch_dir_and_report_file(batches_dir, name)
 
 ---
 
-<a href="../booktest/runs.py#L244"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L246"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `parallel_run_tests`
 
@@ -40,7 +40,7 @@ parallel_run_tests(exp_dir, out_dir, tests, cases: list, config: dict)
 
 ---
 
-<a href="../booktest/runs.py#L335"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L337"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `run_tests`
 
