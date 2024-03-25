@@ -75,7 +75,7 @@ case_by_method(method)
 
 ---
 
-<a href="../booktest/tests.py#L444"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L458"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `exec`
 
@@ -87,7 +87,7 @@ exec(root_dir, args, cache=None) → int
 
 ---
 
-<a href="../booktest/tests.py#L267"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L277"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `exec_parsed`
 

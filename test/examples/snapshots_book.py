@@ -4,11 +4,20 @@ import booktest as bt
 import requests
 import json
 import time
+import httpx
 
 
 @bt.snapshot_requests()
 def test_requests(t: bt.TestCaseRun):
     response = requests.get("https://api.weather.gov/")
+
+    t.h1("response:")
+    t.tln(json.dumps(response.json(), indent=4))
+
+
+@bt.snapshot_httpx()
+def test_httpx(t: bt.TestCaseRun):
+    response = httpx.get("https://api.weather.gov/")
 
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
