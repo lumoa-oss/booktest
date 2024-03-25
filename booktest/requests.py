@@ -150,7 +150,7 @@ class SnapshotAdapter(adapters.BaseAdapter):
         key = RequestKey.from_request(request,
                                       self.ignore_headers)
 
-        for snapshot in reversed(self.snapshots + self.requests):
+        for snapshot in reversed(self.snapshots):
             if snapshot.match(key):
                 if snapshot not in self.requests:
                     self.requests.append(snapshot)
@@ -161,6 +161,9 @@ class SnapshotAdapter(adapters.BaseAdapter):
                              f"try running booktest with '-s' flag to capture the missing snapshot")
 
         rv = adapters.HTTPAdapter().send(request)
+
+        # remove old version, it may have been timeout
+        self.requests = list([i for i in self.requests if not i.request == key])
         self.requests.append(RequestSnapshot(key, rv))
 
         return rv
