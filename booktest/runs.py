@@ -7,8 +7,8 @@ from copy import copy
 from multiprocessing import Pool
 
 from booktest.cache import LruCache
-from booktest.review import create_index, report_case,  start_report, \
-    end_report
+from booktest.review import create_index, report_case, start_report, \
+    end_report, report_case_begin, report_case_result
 from booktest.testrun import TestRun
 from booktest.reports import CaseReports, Metrics, test_result_to_exit_code, read_lines, write_lines, UserRequest, \
     TestResult
@@ -219,6 +219,10 @@ class ParallelRunner:
         with self.lock:
             return (self.left > 0 or len(self.reports) > 0) and not self._abort
 
+    def report_queue(self):
+        with self.lock:
+            return self.reports
+
     def next_report(self):
         while True:
             with self.lock:
@@ -274,69 +278,108 @@ def parallel_run_tests(exp_dir,
 
     exit_code = 0
 
-    with runner:
-        try:
-            while runner.has_next():
-                case_name, result, duration = runner.next_report()
+    os.system(f"mkdir -p {out_dir}")
+    report_file = os.path.join(out_dir, "cases.txt")
 
-                reviewed_result, request = \
-                    report_case(print,
-                                exp_dir,
-                                out_dir,
-                                case_name,
-                                result,
-                                duration,
-                                config)
+    with open(report_file, "w") as report_f:
+        # add previously passed items to test
+        for i in reviews:
+            if i[1] == TestResult.OK:
+                CaseReports.write_case(
+                    report_f, i[0], i[1], i[2])
 
-                if request == UserRequest.ABORT or \
-                   (fail_fast and reviewed_result != TestResult.OK):
-                    runner.abort()
+        reviewed = []
 
-                if reviewed_result != TestResult.OK:
-                    exit_code = -1
+        def record_case(case_name, result, duration):
+            CaseReports.write_case(
+                report_f,
+                case_name,
+                result,
+                duration)
+            reviewed.append((case_name, result, duration))
 
-                reviews.append((case_name,
-                                reviewed_result,
-                                duration))
-        except KeyboardInterrupt as e:
-            for i in runner.todo - runner.done:
-                print(f"  {i}..interrupted")
+        with runner:
+            try:
+                while runner.has_next():
+                    case_name, result, duration = runner.next_report()
 
-        finally:
-            #
-            # 3.2 merge outputs from test. do this
-            #     even on failures to allow continuing
-            #     testing from CTRL-C
-            #
-            merged = {}
-            for batch_dir in runner.batch_dirs():
-                if os.path.isdir(batch_dir):
-                    for j in os.listdir(batch_dir):
-                        if j.endswith(".txt"):
-                            lines = merged.get(j, [])
-                            lines.extend(
-                                read_lines(batch_dir, j))
-                            merged[j] = lines
+                    reviewed_result, request = \
+                        report_case(print,
+                                    exp_dir,
+                                    out_dir,
+                                    case_name,
+                                    result,
+                                    duration,
+                                    config)
 
-            for name, lines in merged.items():
-                write_lines(out_dir, name, lines)
+                    if request == UserRequest.ABORT or \
+                       (fail_fast and reviewed_result != TestResult.OK):
+                        runner.abort()
 
-            #
-            # 4. do test reporting & review
-            #
-            end = time.time()
-            took_ms = int((end-begin)*1000)
-            Metrics(took_ms).to_dir(out_dir)
+                    if reviewed_result != TestResult.OK:
+                        exit_code = -1
 
-            updated_case_reports = CaseReports(reviews)
-            updated_case_reports.to_dir(out_dir)
+                    record_case(
+                        case_name,
+                        reviewed_result,
+                        duration)
 
-            end_report(print,
-                       updated_case_reports.failed(),
-                       len(updated_case_reports.cases),
-                       took_ms)
+            except KeyboardInterrupt as e:
+                runner.abort()
+                for i in runner.todo - runner.done:
+                    print(f"  {i}..interrupted")
 
-            create_index(exp_dir, tests.all_names())
+            finally:
+                #
+                # 3.2 merge outputs from test. do this
+                #     even on failures to allow continuing
+                #     testing from CTRL-C
+                #
+
+                # add already processed, but not interacted reports
+                for case_name, result, duration in runner.report_queue():
+                    report_case_begin(print,
+                                      case_name,
+                                      None,
+                                      False)
+                    report_case_result(print,
+                                       case_name,
+                                       result,
+                                       duration,
+                                       False)
+                    record_case(
+                        case_name,
+                        result,
+                        duration)
+
+                merged = {}
+                for batch_dir in runner.batch_dirs():
+                    if os.path.isdir(batch_dir):
+                        for j in os.listdir(batch_dir):
+                            if j.endswith(".txt"):
+                                lines = merged.get(j, [])
+                                lines.extend(
+                                    read_lines(batch_dir, j))
+                                merged[j] = lines
+
+                for name, lines in merged.items():
+                    write_lines(out_dir, name, lines)
+
+                #
+                # 4. do test reporting & review
+                #
+                end = time.time()
+                took_ms = int((end-begin)*1000)
+                Metrics(took_ms).to_dir(out_dir)
+
+                updated_case_reports = CaseReports(reviewed)
+
+                end_report(print,
+                           updated_case_reports.failed(),
+                           len(updated_case_reports.cases),
+                           took_ms)
+
+                create_index(exp_dir, tests.all_names())
 
     return exit_code
 

@@ -161,6 +161,7 @@ class CaseReports:
                    duration):
         file_handle.write(
             f"{case_name}\t{res.name}\t{duration}\n")
+        file_handle.flush()
 
     def to_dir(self, out_dir):
         report_file = os.path.join(out_dir, "cases.txt")

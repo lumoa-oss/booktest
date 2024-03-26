@@ -6,6 +6,7 @@ from coverage import Coverage
 
 from booktest.cache import LruCache
 from booktest.dependencies import bind_dependent_method_if_unbound
+from booktest.reports import CaseReports
 from booktest.review import run_tool, review
 from booktest.runs import parallel_run_tests, run_tests
 from booktest.config import get_default_config
@@ -250,6 +251,7 @@ class Tests:
             dest='cmd',
             const="-l",
             help="lists the selected test cases")
+
         parser.add_argument(
             "--setup",
             action='store_const',
@@ -417,6 +419,9 @@ class Tests:
 
         cases = self.selected_names(selection, cache_out_dir)
 
+        reports = CaseReports.of_dir(out_dir)
+        done, todo = reports.cases_to_done_and_todo(cases, config)
+
         cmd = parsed.cmd
 
         if cmd == '--setup':
@@ -430,13 +435,13 @@ class Tests:
                 print(f"{p}")
             return 0
         elif cmd == '--print':
-            for name in cases:
+            for name in todo:
                 file = path.join(exp_dir, f"{name}.md")
                 if path.exists(file):
                     os.system(f"cat {file}")
             return 0
         elif cmd == '--path':
-            for name in cases:
+            for name in todo:
                 file = path.join(exp_dir, f"{name}.md")
                 print(file)
             return 0
@@ -456,7 +461,7 @@ class Tests:
                 print(f"removed {p}")
             return 0
         elif cmd == '-l':
-            for s in cases:
+            for s in todo:
                 print(f"  {s}")
             return 0
         elif cmd == '--review':
