@@ -313,6 +313,12 @@ class Tests:
             dest='cmd',
             const="--review",
             help="Short hand for --review.")
+        parser.add_argument(
+            '--forget',
+            action='store_const',
+            dest='cmd',
+            const="--forget",
+            help="Removes reviews from test cases. This stages them for rerun even with -c flag.")
 
         test_choices = ["*"]
         for name in self.all_names():
@@ -470,6 +476,10 @@ class Tests:
                           config,
                           None,
                           cases)
+        elif cmd == '--forget':
+            reports = CaseReports.of_dir(out_dir).cases
+            reports = [i for i in reports if i[0] not in cases]
+            CaseReports(reports).to_dir(out_dir)
         else:
             def run():
                 parallel = config.get("parallel", False)

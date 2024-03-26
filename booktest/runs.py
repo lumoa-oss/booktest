@@ -282,7 +282,7 @@ def parallel_run_tests(exp_dir,
 
     reports = CaseReports.of_dir(out_dir)
 
-    reviews, todo = reports.cases_to_done_and_todo(cases, config)
+    done, todo = reports.cases_to_done_and_todo(cases, config)
 
     prepare_batch_dir(out_dir)
 
@@ -304,8 +304,8 @@ def parallel_run_tests(exp_dir,
 
     with open(report_file, "w") as report_f:
         # add previously passed items to test
-        for i in reviews:
-            if i[1] == TestResult.OK:
+        for i in reports.cases:
+            if i[0] not in todo:
                 CaseReports.write_case(
                     report_f, i[0], i[1], i[2])
 
@@ -384,7 +384,8 @@ def parallel_run_tests(exp_dir,
                                 merged[j] = lines
 
                 for name, lines in merged.items():
-                    write_lines(out_dir, name, lines)
+                    if name != "cases.txt":
+                        write_lines(out_dir, name, lines)
 
                 #
                 # 4. do test reporting & review
