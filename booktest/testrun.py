@@ -108,11 +108,9 @@ class TestRun:
 
         # 1.2. To continue testing, we need to read
         #      the old case report so that we continue from there
-        if self.continue_test:
-            old_report = CaseReports.of_file(report_file)
-            passed = old_report.passed()
-        else:
-            old_report = None
+        old_report = CaseReports.of_file(report_file)
+
+        done, todo = old_report.cases_to_done_and_todo(self.selected_cases, self.config)
 
         #
         # 2. Test
@@ -129,38 +127,37 @@ class TestRun:
             # 2.2.1 add previously passed items to test
             if old_report is not None:
                 for i in old_report.cases:
-                    if i[1] == TestResult.OK:
+                    if i[0] not in todo:
                         CaseReports.write_case(
                             report_f, i[0], i[1], i[2])
 
             # 2.2.2 run cases
-            for case_name in self.selected_cases:
-                if case_name not in passed:
-                    case = self.tests.get_case(case_name)
-                    res, request, duration = \
-                        self.run_case(case_name, case)
+            for case_name in todo:
+                case = self.tests.get_case(case_name)
+                res, request, duration = \
+                    self.run_case(case_name, case)
 
-                    if res == TestResult.DIFF \
-                       or res == TestResult.FAIL:
-                        if rv != TestResult.FAIL:
-                            rv = res
-                        # treat both FAIL and DIFF as failures
-                        failed.append(case_name)
-                        fails += 1
-                        tests += 1
-                    else:
-                        passed.append(case_name)
-                        oks += 1
-                        tests += 1
+                if res == TestResult.DIFF \
+                   or res == TestResult.FAIL:
+                    if rv != TestResult.FAIL:
+                        rv = res
+                    # treat both FAIL and DIFF as failures
+                    failed.append(case_name)
+                    fails += 1
+                    tests += 1
+                else:
+                    passed.append(case_name)
+                    oks += 1
+                    tests += 1
 
-                    CaseReports.write_case(
-                        report_f, case_name, res, duration)
+                CaseReports.write_case(
+                    report_f, case_name, res, duration)
 
-                    # manage situations, where testing should
-                    # be aborted
-                    if request == UserRequest.ABORT or \
-                       (self.fail_fast and fails > 0):
-                        break
+                # manage situations, where testing should
+                # be aborted
+                if request == UserRequest.ABORT or \
+                   (self.fail_fast and fails > 0):
+                    break
 
         took = int((time.time() - before) * 1000)
 
