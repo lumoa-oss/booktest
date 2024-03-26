@@ -22,6 +22,24 @@ from booktest.reports import CaseReports, Metrics, test_result_to_exit_code, rea
 PROCESS_LOCAL_CACHE = LruCache(8)
 
 
+def batch_dir(out_dir: str):
+    return \
+        os.path.join(
+            out_dir,
+            ".batches")
+
+
+def prepare_batch_dir(out_dir: str):
+    if len(out_dir) < len(".out"):
+        raise ValueError(f"dangerous looking {out_dir}!")
+
+    _batch_dir = batch_dir(out_dir)
+
+    if os.path.exists(_batch_dir):
+        os.system(f"rm -rf {_batch_dir}")
+        os.makedirs(_batch_dir, exist_ok=True)
+
+
 class RunBatch:
     #
     # Tests are collected into suites, that are
@@ -203,7 +221,8 @@ class ParallelRunner:
                 del scheduled[i]
                 self.reserved_resources -= self.resources[i]
                 report_file = case_batch_dir_and_report_file(self.batches_dir, i)[1]
-                reports.append(CaseReports.of_file(report_file).cases[0])
+                if os.path.exists(report_file):
+                    reports.append(CaseReports.of_file(report_file).cases[0])
 
             with self.lock:
                 self.left -= len(reports)
@@ -219,7 +238,7 @@ class ParallelRunner:
         with self.lock:
             return (self.left > 0 or len(self.reports) > 0) and not self._abort
 
-    def report_queue(self):
+    def done_reports(self):
         with self.lock:
             return self.reports
 
@@ -264,6 +283,8 @@ def parallel_run_tests(exp_dir,
     reports = CaseReports.of_dir(out_dir)
 
     reviews, todo = reports.cases_to_done_and_todo(cases, config)
+
+    prepare_batch_dir(out_dir)
 
     runner = ParallelRunner(exp_dir,
                             out_dir,
@@ -337,7 +358,7 @@ def parallel_run_tests(exp_dir,
                 #
 
                 # add already processed, but not interacted reports
-                for case_name, result, duration in runner.report_queue():
+                for case_name, result, duration in runner.done_reports():
                     report_case_begin(print,
                                       case_name,
                                       None,
