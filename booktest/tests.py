@@ -6,6 +6,7 @@ from coverage import Coverage
 
 from booktest.cache import LruCache
 from booktest.dependencies import bind_dependent_method_if_unbound
+from booktest.reports import CaseReports
 from booktest.review import run_tool, review
 from booktest.runs import parallel_run_tests, run_tests
 from booktest.config import get_default_config
@@ -164,7 +165,62 @@ class Tests:
         parser.add_argument(
             "-p",
             action='store_true',
-            help="run test on parallel processes"
+            help="run test on N parallel processes, where is N relative to CPU count"
+        )
+        parser.add_argument(
+            "-p1",
+            dest='p',
+            action='store_const',
+            const=1,
+            help="run test on 1 parallel processes"
+        )
+        parser.add_argument(
+            "-p2",
+            dest='p',
+            action='store_const',
+            const=2,
+            help="run test on 2 parallel processes"
+        )
+        parser.add_argument(
+            "-p3",
+            dest='p',
+            action='store_const',
+            const=3,
+            help="run test on 3 parallel processes"
+        )
+        parser.add_argument(
+            "-p4",
+            dest='p',
+            action='store_const',
+            const=4,
+            help="run test on 4 parallel processes"
+        )
+        parser.add_argument(
+            "-p6",
+            dest='p',
+            action='store_const',
+            const=6,
+            help="run test on 6 parallel processes"
+        )
+        parser.add_argument(
+            "-p8",
+            dest='p',
+            action='store_const',
+            const=8,
+            help="run test on 8 parallel processes"
+        )
+        parser.add_argument(
+            "-p16",
+            dest='p',
+            action='store_const',
+            const='16',
+            help="run test on 16 parallel processes"
+        )
+        parser.add_argument(
+            "--parallel-count",
+            dest='p',
+            type=int,
+            help="run test on N parallel processes"
         )
         parser.add_argument(
             "-s",
@@ -195,6 +251,7 @@ class Tests:
             dest='cmd',
             const="-l",
             help="lists the selected test cases")
+
         parser.add_argument(
             "--setup",
             action='store_const',
@@ -316,7 +373,7 @@ class Tests:
         if parsed.a:
             config["accept"] = True
         if parsed.p:
-            config["parallel"] = True
+            config["parallel"] = parsed.p
         if parsed.s:
             config["complete_snapshots"] = True
         if parsed.S:
@@ -362,6 +419,9 @@ class Tests:
 
         cases = self.selected_names(selection, cache_out_dir)
 
+        reports = CaseReports.of_dir(out_dir)
+        done, todo = reports.cases_to_done_and_todo(cases, config)
+
         cmd = parsed.cmd
 
         if cmd == '--setup':
@@ -375,13 +435,13 @@ class Tests:
                 print(f"{p}")
             return 0
         elif cmd == '--print':
-            for name in cases:
+            for name in todo:
                 file = path.join(exp_dir, f"{name}.md")
                 if path.exists(file):
                     os.system(f"cat {file}")
             return 0
         elif cmd == '--path':
-            for name in cases:
+            for name in todo:
                 file = path.join(exp_dir, f"{name}.md")
                 print(file)
             return 0
@@ -401,7 +461,7 @@ class Tests:
                 print(f"removed {p}")
             return 0
         elif cmd == '-l':
-            for s in cases:
+            for s in todo:
                 print(f"  {s}")
             return 0
         elif cmd == '--review':
