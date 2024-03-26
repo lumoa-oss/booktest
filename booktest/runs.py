@@ -90,6 +90,13 @@ class ParallelRunner:
                  config: dict,
                  reports: CaseReports):
         self.cases = cases
+        process_count = config.get("parallel", True)
+        if process_count is True or process_count == "True":
+            process_count = os.cpu_count()
+        else:
+            process_count = int(process_count)
+
+        self.process_count = process_count
         self.pool = None
         self.done = set()
         self.case_durations = {}
@@ -225,7 +232,7 @@ class ParallelRunner:
     def __enter__(self):
         import coverage
         self.finished = False
-        self.pool = Pool(os.cpu_count(), initializer=coverage.process_startup)
+        self.pool = Pool(self.process_count, initializer=coverage.process_startup)
         self.pool.__enter__()
 
         self.thread = threading.Thread(target=self.thread_function)
