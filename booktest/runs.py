@@ -174,7 +174,7 @@ class ParallelRunner:
         for name in todo:
             runnable = True
             for dependency in self.dependencies[name]:
-                if dependency not in self.done:
+                if dependency in self.todo and dependency not in self.done:
                     runnable = False
             if len(self.resources[name] & reserved_resources) > 0:
                 runnable = False
