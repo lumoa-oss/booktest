@@ -36,11 +36,17 @@ def port(value: int):
 
 def bind_dependent_method_if_unbound(method, dependency):
     non_annotated = dependency
+    dependency_type = None
+
+    if hasattr(dependency, "_self_type"):
+        dependency_type = dependency._self_type
+
     while hasattr(non_annotated, "_original_function"):
         non_annotated = non_annotated._original_function
 
-    if (hasattr(method, "__self__") and
-        "self" in inspect.getfullargspec(non_annotated).args):
+    if (dependency_type is not None and
+        hasattr(method, "__self__") and
+        isinstance(method.__self__, dependency_type)):
         self = method.__self__
         return dependency.__get__(self, self.__class__)
     else:

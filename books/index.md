@@ -15,6 +15,9 @@
              * [process_data](test/dependencies/parametrized2/process_data.md)
              * [use_processed_data](test/dependencies/parametrized2/use_processed_data.md)
 
+         * cross_dependency
+             * [cross_use_data](test/dependencies/cross_dependency/cross_use_data.md)
+
          * data_source
              * [create_data](test/dependencies/data_source/create_data.md)
              * [use_data](test/dependencies/data_source/use_data.md)

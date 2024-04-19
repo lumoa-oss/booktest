@@ -23,6 +23,13 @@ class DataSourceBook(bt.TestBook):
         t.it("data value", data_value).must_equal(DATA_VALUE)
 
 
+class CrossDependencyTest(bt.TestBook):
+
+    @bt.depends_on(DataSourceBook.test_create_data)
+    def test_cross_use_data(self, t: bt.TestCaseRun, data_value):
+        t.it("data value", data_value).must_equal(DATA_VALUE)
+
+
 class DataUser1Book(bt.TestBook):
 
     @bt.depends_on(DataSourceBook.test_create_data)

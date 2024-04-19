@@ -61,8 +61,7 @@ class Tests:
 
     def case_by_method(self, method):
         for t in self.cases:
-            # a bit hacky way for figuring out the dependencies
-            if t[1] == method:
+            if t[1] == method or (hasattr(t[1], "__func__") and t[1].__func__ == method):
                 return t[0]
         return None
 
