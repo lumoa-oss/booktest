@@ -76,6 +76,9 @@ class TestBook(metaclass=OrderedClass):
             if name.startswith("test_"):
                 for m in inspect.getmembers(self):
                     if m[0] == name:
+                        unbound = m[1].__func__
+                        if not hasattr(unbound, "_self_type"):
+                            unbound._self_type = type(self)
                         cases.append([clean_method_name(name), m[1]])
 
         self.test_suite = TestSuite(full_path, cases)
