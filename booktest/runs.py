@@ -1,10 +1,9 @@
-import asyncio
+import multiprocessing
 import os
 import threading
 import time
 from collections import defaultdict
 from copy import copy
-from multiprocessing import Pool
 
 from booktest.cache import LruCache
 from booktest.review import create_index, report_case, start_report, \
@@ -255,7 +254,7 @@ class ParallelRunner:
     def __enter__(self):
         import coverage
         self.finished = False
-        self.pool = Pool(self.process_count, initializer=coverage.process_startup)
+        self.pool = multiprocessing.get_context('spawn').Pool(self.process_count, initializer=coverage.process_startup)
         self.pool.__enter__()
 
         self.thread = threading.Thread(target=self.thread_function)
