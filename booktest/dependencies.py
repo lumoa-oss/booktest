@@ -34,20 +34,27 @@ def port(value: int):
     return Resource(value, f"port={value}")
 
 
+def get_decorated_attr(method, attr):
+    while True:
+        if hasattr(method, attr):
+            return getattr(method, attr)
+        if hasattr(method, "_original_function"):
+            method = method._original_function
+        else:
+            return None
+
+
+def remove_decoration(method):
+    while hasattr(method, "_original_function"):
+        method = method._original_function
+    return method
+
+
 def bind_dependent_method_if_unbound(method, dependency):
-    non_annotated = dependency
-    dependency_type = None
+    dependency_type = get_decorated_attr(method, "_self_type")
+    self = get_decorated_attr(method, "__self__")
 
-    if hasattr(dependency, "_self_type"):
-        dependency_type = dependency._self_type
-
-    while hasattr(non_annotated, "_original_function"):
-        non_annotated = non_annotated._original_function
-
-    if (dependency_type is not None and
-        hasattr(method, "__self__") and
-        isinstance(method.__self__, dependency_type)):
-        self = method.__self__
+    if dependency_type is not None and self is not None and isinstance(self, dependency_type):
         return dependency.__get__(self, self.__class__)
     else:
         return dependency

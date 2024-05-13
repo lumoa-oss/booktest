@@ -6,6 +6,7 @@ from coverage import Coverage
 
 from booktest.cache import LruCache
 from booktest.dependencies import bind_dependent_method_if_unbound
+from booktest.detection import BookTestSetup
 from booktest.reports import CaseReports
 from booktest.review import run_tool, review
 from booktest.runs import parallel_run_tests, run_tests
@@ -340,7 +341,8 @@ class Tests:
                     root_dir,
                     parsed,
                     cache=None,
-                    extra_default_config: dict = {}) -> int:
+                    extra_default_config: dict = {},
+                    setup = None) -> int:
         """
         :param root_dir:  the directory containing books and .out directory
         :param parsed: the object containing argparse parsed arguments
@@ -354,6 +356,9 @@ class Tests:
 
         if cache is None:
             cache = LruCache(8)
+
+        if setup is None:
+            setup = BookTestSetup()
 
         config = get_default_config()
         # extra default configuration parameters get layered
@@ -487,14 +492,16 @@ class Tests:
                                               out_dir,
                                               self,
                                               cases,
-                                              config)
+                                              config,
+                                              setup)
                 else:
                     return run_tests(exp_dir,
                                      out_dir,
                                      self,
                                      cases,
                                      config,
-                                     cache)
+                                     cache,
+                                     setup)
 
             coverage = config.get("coverage", False)
 
@@ -539,4 +546,5 @@ class Tests:
         parsed = parser.parse_args(args)
 
         return self.exec_parsed(root_dir, parsed, cache)
+
 

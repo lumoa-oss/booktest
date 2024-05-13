@@ -7,11 +7,11 @@ from booktest.testrun import TestRun
 from booktest.tests import Tests
 from booktest.testsuite import TestSuite, merge_tests, drop_prefix
 from booktest.tokenizer import TestTokenizer, BufferIterator
-from booktest.detection import detect_tests, detect_test_suite
+from booktest.detection import detect_tests, detect_test_suite, detect_setup
 from booktest.requests import snapshot_requests
 from booktest.httpx import snapshot_httpx
 from booktest.env import snapshot_env, mock_env, mock_missing_env
-from booktest.utils import combine_decorators
+from booktest.utils import combine_decorators, setup_teardown
 
 
 __all__ = {
@@ -33,11 +33,13 @@ __all__ = {
     "class_to_test_path",
     "detect_tests",
     "detect_test_suite",
+    "detect_setup",
     "snapshot_requests",
     "snapshot_httpx",
     "snapshot_env",
     "mock_missing_env",
     "mock_env",
-    "combine_decorators"
+    "combine_decorators",
+    "setup_teardown"
 }
 

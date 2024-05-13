@@ -149,14 +149,13 @@ def mock_missing_env(env):
 
 class MockEnv:
 
-    def __init__(self, t: bt.TestCaseRun, env: dict):
-        self.t = t
+    def __init__(self, env: dict):
         self.env = env
 
-        self._old_env = {}
+        self._old_env = None
 
     def start(self):
-        if self._old_env is None:
+        if self._old_env is not None:
             raise ValueError("already started")
 
         self._old_env = {}
@@ -165,16 +164,19 @@ class MockEnv:
             self._old_env[name] = old_value
 
             if value is None:
-                del os.environ[name]
+                if "name" in os.environ:
+                    del os.environ[name]
             else:
                 os.environ[name] = value
 
     def stop(self):
         for name, value in self._old_env.items():
             if value is None:
-                del os.environ[name]
+                if "name" in os.environ:
+                    del os.environ[name]
             else:
                 os.environ[name] = self._old_env[name]
+        self._old_env = None
 
     def __enter__(self):
         self.start()
@@ -187,12 +189,7 @@ def mock_env(env):
     def decorator_depends(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            from booktest import TestBook
-            if isinstance(args[0], TestBook):
-                t = args[1]
-            else:
-                t = args[0]
-            with MockEnv(t, env):
+            with MockEnv(env):
                 return func(*args, **kwargs)
         wrapper._original_function = func
         return wrapper

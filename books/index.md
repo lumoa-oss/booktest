@@ -45,6 +45,9 @@
          * url_ops
              * [names](test/test_names/url_ops/names.md)
 
+     * setup_teardown
+         * [process_fixture](test/setup_teardown/process_fixture.md)
+
      * examples
          * example_suite
              * [simple](test/examples/example_suite/simple.md)

@@ -31,13 +31,30 @@ def drop_prefix(prefix: str, tests: Tests) -> Tests:
     return Tests(cases)
 
 
-def merge_tests(suites: list) -> Tests:
+def cases_of(tests_or_suites) -> list:
+    if isinstance(tests_or_suites, list):
+        rv = []
+        for s in tests_or_suites:
+            rv.extend(cases_of(s))
+        return rv
+    else:
+        return tests_or_suites.cases
+
+
+def merge_tests(tests_or_suites) -> Tests:
     """
     Combines a list of Tests into a single Tests entity
     """
     cases = []
-    for s in suites:
-        for c in s.cases:
-            cases.append([c[0], c[1]])
+    for c in cases_of(tests_or_suites):
+        cases.append([c[0], c[1]])
+
+    return Tests(cases)
+
+
+def decorate_tests(decorator, tests_or_suites) -> Tests:
+    cases = []
+    for c in cases_of(tests_or_suites):
+        cases.append([c[0], decorator(c[1])])
 
     return Tests(cases)
