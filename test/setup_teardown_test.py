@@ -1,8 +1,5 @@
-import test.__booktest__ as bts
 import booktest as bt
-
-
-default_decorator = bts.default_decorator
+from test.global_value import get_global_value
 
 
 def test_process_fixture(t: bt.TestCaseRun):
@@ -17,6 +14,6 @@ def test_process_fixture(t: bt.TestCaseRun):
     t.tln("the global variable should always be 'set'")
     t.tln()
 
-    value = bts.get_global_value()
+    value = get_global_value()
 
     t.t(f"global variable is '{value}'..").assertln(value == 'set')

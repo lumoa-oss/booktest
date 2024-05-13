@@ -10,7 +10,7 @@ import sys
 
 import booktest as bt
 from booktest.config import get_default_config
-from booktest.detection import detect_tests
+from booktest.detection import detect_tests, detect_setup, include_sys_path
 
 
 def add_exec(parser, method):
@@ -23,15 +23,21 @@ def setup_test_suite(parser):
 
     default_paths = config.get("test_paths", "test,book,run").split(",")
 
+    include_sys_path()
+
     tests = []
+    setup = None
     for path in default_paths:
-        tests.extend(detect_tests(path, include_in_sys_path=True))
+        tests.extend(detect_tests(path))
+        path_setup = detect_setup(path)
+        if path_setup is not None:
+            setup = path_setup
 
     test_suite = bt.merge_tests(tests)
     test_suite.setup_parser(parser)
     books_dir = config.get("books_path", "books")
     parser.set_defaults(
-        exec=lambda args: test_suite.exec_parsed(books_dir, args))
+        exec=lambda args: test_suite.exec_parsed(books_dir, args, setup=setup))
 
 
 def exec_parsed(parsed):

@@ -1,17 +1,8 @@
-import booktest as bt
 
 
-GLOBAL_VALUE = "unset"
-
-
-def get_global_value():
-    global GLOBAL_VALUE
-    return GLOBAL_VALUE
-
-
-@bt.setup_teardown
-def default_decorator():
-    global GLOBAL_VALUE
-    GLOBAL_VALUE = "set"
+def process_setup_teardown():
+    from test.global_value import set_global_value
+    set_global_value("set")
     yield
-    GLOBAL_VALUE = "unset"
+    set_global_value("unset")
+

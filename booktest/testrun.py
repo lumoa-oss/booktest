@@ -4,6 +4,7 @@ import time
 import traceback
 import pickle
 
+from booktest.dependencies import remove_decoration, get_decorated_attr
 from booktest.testcaserun import TestCaseRun
 from booktest.reports import TestResult, CaseReports, UserRequest, Metrics
 from booktest.review import end_report, create_index, start_report
@@ -12,6 +13,15 @@ from booktest.review import end_report, create_index, start_report
 #
 # Test running
 #
+
+def method_identity(method):
+    self = get_decorated_attr(method, "__self__")
+    func = get_decorated_attr(method, "__func__")
+
+    if func is None:
+        func = method
+
+    return self, func
 
 
 class TestRun:
@@ -40,10 +50,13 @@ class TestRun:
         self.output = output
 
     def get_test_result(self, case, method):
+        method_self, method_func = method_identity(method)
+
         for t in self.tests.cases:
+            t_self, t_func = method_identity(t[1])
+
             # a bit hacky way for figuring out the dependencies
-            if t[1] == method \
-               or (hasattr(t[1], "__func__") and t[1].__func__ == method):
+            if method_func == t_func and (method_self is None or method_self == t_self):
                 bin_path = self.tests.test_result_path(self.out_dir, t[0])
                 if bin_path not in self.cache:
                     if path.exists(bin_path):

@@ -15,6 +15,7 @@ MIN_COVERAGE_PERCENT = 25
 
 
 tests = bt.detect_test_suite("test")
+bt_setup = bt.detect_setup("test")
 
 
 def coverage(parsed) -> int:
@@ -155,7 +156,8 @@ def do_args(args, cache={}) -> int:
         exec=lambda parsed:
             tests.exec_parsed(TEST_ROOT_DIR,
                               parsed,
-                              cache))
+                              cache,
+                              setup=bt_setup))
 
     argcomplete.autocomplete(parser)
     parsed = parser.parse_args(args)

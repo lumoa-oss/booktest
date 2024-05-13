@@ -1,3 +1,4 @@
+import logging
 import multiprocessing
 import os
 import threading
@@ -6,12 +7,13 @@ from collections import defaultdict
 from copy import copy
 
 from booktest.cache import LruCache
+from booktest.detection import BookTestSetup
 from booktest.review import create_index, report_case, start_report, \
     end_report, report_case_begin, report_case_result
 from booktest.testrun import TestRun
 from booktest.reports import CaseReports, Metrics, test_result_to_exit_code, read_lines, write_lines, UserRequest, \
     TestResult
-
+from booktest.utils import SetupTeardown
 
 #
 # Parallelization and test execution support:
@@ -49,11 +51,13 @@ class RunBatch:
                  exp_dir: str,
                  out_dir: str,
                  tests,
-                 config: dict):
+                 config: dict,
+                 setup: BookTestSetup):
         self.exp_dir = exp_dir
         self.out_dir = out_dir
         self.tests = tests
         self.config = config
+        self.setup = setup
 
     def __call__(self, case):
         path = case.split("/")
@@ -84,7 +88,10 @@ class RunBatch:
                 PROCESS_LOCAL_CACHE,
                 output)
 
-            rv = test_result_to_exit_code(run.run())
+            with self.setup.setup_teardown():
+                rv = test_result_to_exit_code(run.run())
+        except Exception as e:
+            print(f"{','.join(case)} failed with e")
         finally:
             output.close()
 
@@ -105,6 +112,7 @@ class ParallelRunner:
                  tests,
                  cases: list,
                  config: dict,
+                 setup,
                  reports: CaseReports):
         self.cases = cases
         process_count = config.get("parallel", True)
@@ -140,7 +148,7 @@ class ParallelRunner:
         job_config["always_interactive"] = False
 
         self.batches_dir = batches_dir
-        self.run_batch = RunBatch(exp_dir, out_dir, tests, job_config)
+        self.run_batch = RunBatch(exp_dir, out_dir, tests, job_config, setup)
 
         dependencies = defaultdict(set)
         resources = defaultdict(set)
@@ -276,7 +284,8 @@ def parallel_run_tests(exp_dir,
                        out_dir,
                        tests,
                        cases: list,
-                       config: dict):
+                       config: dict,
+                       setup: BookTestSetup):
     begin = time.time()
 
     reports = CaseReports.of_dir(out_dir)
@@ -290,6 +299,7 @@ def parallel_run_tests(exp_dir,
                             tests,
                             todo,
                             config,
+                            setup,
                             reports)
 
     fail_fast = config.get("fail_fast", False)
@@ -410,7 +420,9 @@ def run_tests(exp_dir,
               tests,
               cases: list,
               config: dict,
-              cache):
+              cache,
+              setup: BookTestSetup):
+
     run = TestRun(
         exp_dir,
         out_dir,
@@ -420,7 +432,8 @@ def run_tests(exp_dir,
         config,
         cache)
 
-    rv = test_result_to_exit_code(run.run())
+    with setup.setup_teardown():
+        rv = test_result_to_exit_code(run.run())
 
     return rv
 
