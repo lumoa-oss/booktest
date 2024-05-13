@@ -45,6 +45,9 @@
          * url_ops
              * [names](test/test_names/url_ops/names.md)
 
+     * booktest_setup
+         * [process_fixture](test/booktest_setup/process_fixture.md)
+
      * examples
          * example_suite
              * [simple](test/examples/example_suite/simple.md)
@@ -77,6 +80,9 @@
              * [two_cached](test/examples/example/two_cached.md)
              * [ms](test/examples/example/ms.md)
              * [float](test/examples/example/float.md)
+
+         * booktest_setup
+             * [process_fixture](test/examples/booktest_setup/process_fixture.md)
 
          * simple
              * [cache](test/examples/simple/cache.md)

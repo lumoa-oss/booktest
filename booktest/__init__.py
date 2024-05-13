@@ -11,7 +11,7 @@ from booktest.detection import detect_tests, detect_test_suite
 from booktest.requests import snapshot_requests
 from booktest.httpx import snapshot_httpx
 from booktest.env import snapshot_env, mock_env, mock_missing_env
-from booktest.utils import combine_decorators
+from booktest.utils import combine_decorators, setup_teardown
 
 
 __all__ = {
@@ -38,6 +38,7 @@ __all__ = {
     "snapshot_env",
     "mock_missing_env",
     "mock_env",
-    "combine_decorators"
+    "combine_decorators",
+    "setup_teardown"
 }
 
