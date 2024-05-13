@@ -1,3 +1,4 @@
+import traceback
 import logging
 import multiprocessing
 import os
@@ -91,7 +92,8 @@ class RunBatch:
             with self.setup.setup_teardown():
                 rv = test_result_to_exit_code(run.run())
         except Exception as e:
-            print(f"{','.join(case)} failed with e")
+            print(f"{case} failed with {e}")
+            traceback.print_exc()
         finally:
             output.close()
 
@@ -230,6 +232,8 @@ class ParallelRunner:
                 report_file = case_batch_dir_and_report_file(self.batches_dir, i)[1]
                 if os.path.exists(report_file):
                     reports.append(CaseReports.of_file(report_file).cases[0])
+                else:
+                    reports.append(CaseReports.make_case(i, TestResult.FAIL, 0))
 
             with self.lock:
                 self.left -= len(reports)
