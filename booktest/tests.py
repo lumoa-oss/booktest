@@ -12,6 +12,7 @@ from booktest.review import run_tool, review
 from booktest.runs import parallel_run_tests, run_tests
 from booktest.config import get_default_config
 import booktest.setup
+from booktest.testrun import method_identity, match_method
 
 
 class Tests:
@@ -62,7 +63,7 @@ class Tests:
 
     def case_by_method(self, method):
         for t in self.cases:
-            if t[1] == method or (hasattr(t[1], "__func__") and t[1].__func__ == method):
+            if match_method(method, t[1]):
                 return t[0]
         return None
 

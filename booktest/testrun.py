@@ -23,6 +23,11 @@ def method_identity(method):
 
     return self, func
 
+def match_method(matcher, method):
+    matcher_self, matcher_func = method_identity(matcher)
+    method_self, method_func = method_identity(method)
+    return matcher_func == method_func and (matcher_self == method_self or matcher_self is None)
+
 
 class TestRun:
     """
@@ -50,13 +55,9 @@ class TestRun:
         self.output = output
 
     def get_test_result(self, case, method):
-        method_self, method_func = method_identity(method)
-
         for t in self.tests.cases:
-            t_self, t_func = method_identity(t[1])
-
             # a bit hacky way for figuring out the dependencies
-            if method_func == t_func and (method_self is None or method_self == t_self):
+            if match_method(method, t[1]):
                 bin_path = self.tests.test_result_path(self.out_dir, t[0])
                 if bin_path not in self.cache:
                     if path.exists(bin_path):
