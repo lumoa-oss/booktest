@@ -89,4 +89,6 @@ class TestBook(metaclass=OrderedClass):
     def test_book_path(self):
         return self.__test_book_path
 
+    def __repr__(self):
+        return self.__test_book_path
 

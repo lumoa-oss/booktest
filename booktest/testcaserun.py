@@ -137,7 +137,7 @@ class TestCaseRun:
         self.exp_tokens = None
         self.next_exp_line()
 
-    def tmp_file(self, filename):
+    def tmp_path(self, name):
         """
         creates a temporary file with the filename in the test's .tmp directory
 
@@ -145,7 +145,15 @@ class TestCaseRun:
         """
         if not path.exists(self.out_tmp_dir_name):
             os.mkdir(self.out_tmp_dir_name)
-        return path.join(self.out_tmp_dir_name, filename)
+        return path.join(self.out_tmp_dir_name, name)
+
+    def tmp_dir(self, dir_name):
+        rv = self.tmp_path(dir_name)
+        os.mkdir(rv)
+        return rv
+
+    def tmp_file(self, filename):
+        return self.tmp_path(filename)
 
     def file(self, filename):
         """

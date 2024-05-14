@@ -28,6 +28,8 @@
          * data_user2
              * [use_data](test/dependencies/data_user2/use_data.md)
 
+         * [dependencies](test/dependencies/dependencies.md)
+
      * utils
          * all_caps
              * [names](test/utils/all_caps/names.md)

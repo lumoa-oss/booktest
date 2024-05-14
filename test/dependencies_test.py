@@ -81,3 +81,34 @@ class ParametrizedBook(bt.TestBook):
 
 BOOK_1 = ParametrizedBook(1)
 BOOK_2 = ParametrizedBook(2)
+
+
+def test_dependencies(t: bt.TestCaseRun):
+    t.h1("description:")
+    t.tln("this test creates a test of other tests and checks their dependencies")
+
+    t.h1("test suites:")
+    tests = [
+        DataSourceBook(),
+        CrossDependencyTest(),
+        DataUser1Book(),
+        DataUser2Book(),
+        BOOK_1,
+        BOOK_2
+    ]
+    for i in tests:
+        t.tln(f" * {i}")
+
+    merged = bt.merge_tests(tests)
+
+    t.h1("test cases:")
+    for i in merged.cases:
+        t.tln(f" * {i[0]}")
+
+    selection = merged.all_names()
+
+    t.h1("case dependencies:")
+    for i in merged.cases:
+        t.tln(f" * {i[0]}:")
+        for j in merged.all_method_dependencies(i[1], selection):
+            t.tln(f"     * {j}")

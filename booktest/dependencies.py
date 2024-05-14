@@ -51,7 +51,7 @@ def remove_decoration(method):
 
 
 def bind_dependent_method_if_unbound(method, dependency):
-    dependency_type = get_decorated_attr(method, "_self_type")
+    dependency_type = get_decorated_attr(dependency, "_self_type")
     self = get_decorated_attr(method, "__self__")
 
     if dependency_type is not None and self is not None and isinstance(self, dependency_type):
