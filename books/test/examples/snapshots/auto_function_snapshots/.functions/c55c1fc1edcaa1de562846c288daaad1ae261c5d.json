@@ -1,0 +1,9 @@
+{
+    "call": {
+        "func": "Random.random",
+        "args": [],
+        "kwargs": {},
+        "hash": "c55c1fc1edcaa1de562846c288daaad1ae261c5d"
+    },
+    "result": 0.12513891318795678
+}

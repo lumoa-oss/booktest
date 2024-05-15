@@ -1,10 +1,13 @@
 import os
+import random
 
 import booktest as bt
 import requests
 import json
 import time
 import httpx
+
+from booktest.functions import SnapshotFunctions
 
 
 @bt.snapshot_requests()
@@ -115,3 +118,63 @@ def test_requests_with_headers(t: bt.TestCaseRun):
     t.h1("response for user 2:")
     t.tln(json.dumps(response.json()["json"], indent=4))
 
+
+def non_deterministic_and_slow_algorithm(input):
+    rnd = random.Random(input)
+    noise = random.Random(int(time.time()))
+
+    rv = []
+    for i in range(rnd.randint(0, 3) + 1 + noise.randint(0, 1)):
+        rv.append(rnd.randint(0, 10000) + noise.randint(-1, 1))
+        time.sleep(1)
+
+    return rv
+
+
+def multiargs(a, b, c, *args, **kwargs):
+    return { "a": a, "b": b, "c": c, "args": list(args), "kwargs": kwargs }
+
+
+def test_function_snapshots(t: bt.TestCaseRun):
+    with SnapshotFunctions(t, []) as s:
+        t.h1("snapshots:")
+
+        t.keyvalueln(" * timestamp:", s.snapshot(time.time_ns))
+        t.keyvalueln(" * random:", s.snapshot(random.random))
+
+        t.h1("algorithm snapshot:")
+
+        result = (
+            t.t(" * calculating result..").imsln(
+                lambda: s.snapshot(non_deterministic_and_slow_algorithm, 124)))
+
+        t.keyvalueln(" * result:", result)
+
+        t.h1("args:")
+        t.keyvalueln(" * args: 123:", s.snapshot(multiargs, 1, 2, 3))
+        t.keyvalueln(" * args: 12345:", s.snapshot(multiargs, 1, 2,  3, 4, 5))
+        t.keyvalueln(" * named args:", s.snapshot(multiargs, a=1, b=2, c=3, d=4, e=5))
+
+
+@bt.snapshot_functions(time.time_ns,
+                       random._inst.random,
+                       non_deterministic_and_slow_algorithm,
+                       multiargs)
+def test_auto_function_snapshots(t: bt.TestCaseRun):
+    t.h1("snapshots:")
+
+    t.keyvalueln(" * timestamp:", time.time_ns())
+    t.keyvalueln(" * random:", random._inst.random())
+
+    t.h1("algorithm snapshot:")
+
+    result = (
+        t.t(" * calculating result..").imsln(
+            lambda: non_deterministic_and_slow_algorithm(124)))
+
+    t.keyvalueln(" * result:", result)
+
+    t.h1("args:")
+    t.keyvalueln(" * args: 123:", multiargs(1, 2, 3))
+    t.keyvalueln(" * args: 12345:", multiargs(1, 2, 3, 4, 5))
+    t.keyvalueln(" * named args:", multiargs(a=1, b=2, c=3, d=4, e=5))
