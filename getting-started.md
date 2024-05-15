@@ -347,6 +347,115 @@ HOST_NAME="https://httpbin.org/anything" API_KEY="secret" booktest -v -i -S test
 
 Remember to provide access to hosts and the missing environment variables, when updating snapshots.
 
+#### Other snapshot targets:
+
+It's common in data science to run into algorithms that are non-deterministic. They may be non-deterministic
+even with fixed seeds, as the specifics may depend on optimizations, which may depend on hardware. Normal 
+function calls can also be snapshotted as in the following example: 
+
+```python
+import booktest as bt
+import time
+import random
+
+def non_deterministic_and_slow_algorithm(input):
+    rnd = random.Random(input)
+    noise = random.Random(int(time.time()))
+
+    rv = []
+    for i in range(rnd.randint(0, 3) + 1 + noise.randint(0, 1)):
+        rv.append(rnd.randint(0, 10000) + noise.randint(-1, 1))
+        time.sleep(1)
+
+    return rv
+
+
+def multiargs(a, b, c, *args, **kwargs):
+    return { "a": a, "b": b, "c": c, "args": list(args), "kwargs": kwargs }
+
+
+@bt.snapshot_functions(time.time_ns,
+                       random._inst.random,
+                       non_deterministic_and_slow_algorithm,
+                       multiargs)
+def test_auto_function_snapshots(t: bt.TestCaseRun):
+    t.h1("snapshots:")
+
+    t.keyvalueln(" * timestamp:", time.time_ns())
+    t.keyvalueln(" * random:", random._inst.random())
+
+    t.h1("algorithm snapshot:")
+
+    result = (
+        t.t(" * calculating result..").imsln(
+            lambda: non_deterministic_and_slow_algorithm(124)))
+
+    t.keyvalueln(" * result:", result)
+
+    t.h1("args:")
+    t.keyvalueln(" * args: 123:", multiargs(1, 2, 3))
+    t.keyvalueln(" * args: 12345:", multiargs(1, 2, 3, 4, 5))
+    t.keyvalueln(" * named args:", multiargs(a=1, b=2, c=3, d=4, e=5))
+```
+
+NOTE: currently, the inputs and outputs are stored in json format, which limits what can be snapshotted. 
+
+Also httpx snapshotting is supported, which is useful when making snaphots of e.g. GPT requests. 
+
+```python
+import booktest as bt
+import httpx 
+import json
+
+@bt.snapshot_httpx()
+def test_httpx(t: bt.TestCaseRun):
+    response = httpx.get("https://api.weather.gov/")
+
+    t.h1("response:")
+    t.tln(json.dumps(response.json(), indent=4))
+```
+
+### Process setup and teardown 
+
+A test may be dependent on some global values or initializations, which may lead to issues when using parallel processing. 
+Booktest has a simplistic mechanism for providing setup and teardown functionality via __booktest__.py file. If the fil
+contains a function named process_setup_teardown, this will be called for each test process to setup the 
+environment.
+
+Here's an example of the __booktest__.py file:
+
+```python
+def process_setup_teardown():
+    from test.global_value import set_global_value
+    set_global_value("set")
+    yield
+    set_global_value("unset")
+```
+
+Here's example of a test, which verifies that the process is setup correctly. 
+
+```python
+import booktest as bt
+from test.global_value import get_global_value
+
+
+def test_setup_teardown(t: bt.TestCaseRun):
+    t.h1("description:")
+    t.tln("global operations are needed to things like faking system times")
+    t.tln("or initializing resources. ")
+    t.tln()
+    t.tln("booktest allows user to define process_setup_teardown in __booktest__.py")
+    t.tln("to set up and teardown global settings")
+
+    t.h1("test:")
+    t.tln("the global variable should always be 'set'")
+    t.tln()
+
+    value = get_global_value()
+
+    t.t(f"global variable is '{value}'..").assertln(value == 'set')
+```
+
 ## More documentation
 
 You can find the API documentation for the TestCaseRun class [here](docs/testcaserun.py.md).

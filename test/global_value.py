@@ -1,6 +1,3 @@
-import booktest as bt
-
-
 GLOBAL_VALUE = "unset"
 
 

@@ -1,0 +1,9 @@
+{
+    "call": {
+        "func": "time_ns",
+        "args": [],
+        "kwargs": {},
+        "hash": "bc2e0043f8879f6f886da0f550eb552d0a839f8f"
+    },
+    "result": 1715762554995561396
+}

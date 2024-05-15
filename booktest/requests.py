@@ -142,7 +142,7 @@ class SnapshotAdapter(adapters.BaseAdapter):
                  capture_snapshots,
                  ignore_headers):
         self.snapshots = snapshots
-        self.capture_snaphots = capture_snapshots
+        self.capture_snapshots = capture_snapshots
         self.ignore_headers = ignore_headers
         self.requests = []
 
@@ -156,7 +156,7 @@ class SnapshotAdapter(adapters.BaseAdapter):
                     self.requests.append(snapshot)
                 return snapshot.response
 
-        if not self.capture_snaphots:
+        if not self.capture_snapshots:
             raise ValueError(f"missing snapshot for request {request.url} - {key.hash}. "
                              f"try running booktest with '-s' flag to capture the missing snapshot")
 

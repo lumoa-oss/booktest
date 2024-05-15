@@ -1,0 +1,19 @@
+{
+    "call": {
+        "func": "multiargs",
+        "args": [
+            1,
+            2,
+            3
+        ],
+        "kwargs": {},
+        "hash": "4ce53acc47d2c97a04d66dd0d544a8f5ea6b066a"
+    },
+    "result": {
+        "a": 1,
+        "b": 2,
+        "c": 3,
+        "args": [],
+        "kwargs": {}
+    }
+}

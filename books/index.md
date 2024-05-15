@@ -48,7 +48,7 @@
              * [names](test/test_names/url_ops/names.md)
 
      * setup_teardown
-         * [process_fixture](test/setup_teardown/process_fixture.md)
+         * [setup_teardown](test/setup_teardown/setup_teardown.md)
 
      * examples
          * example_suite
@@ -58,7 +58,9 @@
              * [tokenizer](test/examples/example_suite/tokenizer.md)
 
          * snapshots
+             * [auto_function_snapshots](test/examples/snapshots/auto_function_snapshots.md)
              * [env](test/examples/snapshots/env.md)
+             * [function_snapshots](test/examples/snapshots/function_snapshots.md)
              * [httpx](test/examples/snapshots/httpx.md)
              * [mock_env](test/examples/snapshots/mock_env.md)
              * [requests](test/examples/snapshots/requests.md)
