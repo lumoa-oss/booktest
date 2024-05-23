@@ -36,7 +36,10 @@ class ExampleTestBook(bt.TestBook):
         file = t.file("figure1.png")
         plt.plot([1, 2, 3], [1, 2, 3])
         plt.savefig(file)
-        t.timage(file)
+
+        # file is renamed with hash name to avoid name conflicts with functions
+        # using similar names and to break the test, if the image content changes
+        t.timage(t.rename_file_to_hash(file))
 
     def test_md(self, t: bt.TestCaseRun):
         t.h1("this is a header:")

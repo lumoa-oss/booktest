@@ -1,3 +1,3 @@
 # This test demonstrates images
 
-![figure1](image/figure1.png)
+![bb8a702e0d888293ac590bf160c3c2eb0a717f97](image/bb8a702e0d888293ac590bf160c3c2eb0a717f97)
