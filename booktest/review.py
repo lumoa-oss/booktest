@@ -61,7 +61,11 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
             user_request = UserRequest.ABORT
             done = True
         elif answer == "v":
-            run_tool(config, "md_viewer", out_file_name)
+            if os.path.exists(exp_file_name):
+                arg = f"{exp_file_name} {out_file_name}"
+            else:
+                arg = out_file_name
+            run_tool(config, "md_viewer", arg)
         elif answer == "d":
             run_tool(config,
                      "diff_tool",

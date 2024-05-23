@@ -1,3 +1,4 @@
+import hashlib
 import logging
 import os.path as path
 import os
@@ -167,6 +168,31 @@ class TestCaseRun:
         if not path.exists(self.out_dir_name):
             os.mkdir(self.out_dir_name)
         return path.join(self.out_dir_name, filename)
+
+    def rename_file_to_hash(self, file, postfix=""):
+        """
+        this can be useful with images or similar resources it avoids overwrites
+        (e.g. image.png won't be renamed with image.pnh), guarantees uniqueness
+        and makes the test break whenever image changes.
+        """
+        with open(file, 'rb', buffering=0) as f:
+            hash_code = str(hashlib.file_digest(f, 'sha1').hexdigest())
+            path, filename = os.path.split(file)
+            name = os.path.join(path, hash_code + postfix)
+            os.rename(file, name)
+            return name
+
+    def rel_path(self, file):
+        """
+        rel_path returns relative path for a file. the returned path that can be referred
+        from the MD file e.g. in images
+        """
+        abs_file = os.path.abspath(file)
+        abs_out_base_dir = os.path.abspath(self.out_base_dir)
+        if abs_file[:len(abs_out_base_dir)] == abs_out_base_dir:
+            return abs_file[len(abs_out_base_dir)+1:]
+        else:
+            return None
 
     def start(self, title=None):
         """
@@ -663,7 +689,7 @@ s
         """ Adds a markdown image in the test stream with specified alt text """
         if alt_text is None:
             alt_text = os.path.splitext(os.path.basename(file))[0]
-        self.tln(f"![{alt_text}]({file[len(self.out_base_dir)+1:]})")
+        self.tln(f"![{alt_text}]({self.rel_path(file)})")
         return self
 
     def ttable(self, table: dict):
