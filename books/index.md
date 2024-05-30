@@ -63,6 +63,7 @@
              * [function_snapshots](test/examples/snapshots/function_snapshots.md)
              * [httpx](test/examples/snapshots/httpx.md)
              * [mock_env](test/examples/snapshots/mock_env.md)
+             * [mock_env_deletions](test/examples/snapshots/mock_env_deletions.md)
              * [requests](test/examples/snapshots/requests.md)
              * [requests_and_env](test/examples/snapshots/requests_and_env.md)
              * [requests_with_headers](test/examples/snapshots/requests_with_headers.md)
