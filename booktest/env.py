@@ -164,7 +164,7 @@ class MockEnv:
             self._old_env[name] = old_value
 
             if value is None:
-                if "name" in os.environ:
+                if name in os.environ:
                     del os.environ[name]
             else:
                 os.environ[name] = value
@@ -172,7 +172,7 @@ class MockEnv:
     def stop(self):
         for name, value in self._old_env.items():
             if value is None:
-                if "name" in os.environ:
+                if name in os.environ:
                     del os.environ[name]
             else:
                 os.environ[name] = self._old_env[name]

@@ -51,6 +51,28 @@ def test_mock_env(t: bt.TestCaseRun):
     t.keyvalueln(" * TEST_ENV_VARIABLE:", os.environ["TEST_ENV_VARIABLE"])
 
 
+@bt.mock_env({
+    "TEST_ENV_VARIABLE": "hello2"
+})
+def test_mock_env(t: bt.TestCaseRun):
+    t.h1("test environment variable:")
+    t.keyvalueln(" * TEST_ENV_VARIABLE:", os.environ["TEST_ENV_VARIABLE"])
+
+
+@bt.mock_env({
+    "SHELL": None,
+    "HOME": None,
+    "LANG": None,
+    "USERNAME": None
+})
+def test_mock_env_deletions(t: bt.TestCaseRun):
+    t.h1("deleted variables:")
+    t.keyvalueln(" * SHELL:", os.environ.get("SHELL"))
+    t.keyvalueln(" * HOME:", os.environ.get("HOME"))
+    t.keyvalueln(" * LANG:", os.environ.get("LANG"))
+    t.keyvalueln(" * USERNAME:", os.environ.get("USERNAME"))
+
+
 @bt.snapshot_env("HOST_NAME")
 @bt.mock_missing_env({"API_KEY": "mock"})
 @bt.snapshot_requests()
