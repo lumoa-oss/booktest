@@ -16,17 +16,17 @@ this test should create 2 snapshots, one for each user
         "Content-Length": "20",
         "Content-Type": "application/json",
         "Host": "httpbin.org",
-        "User-Agent": "python-requests/2.31.0",
-        "X-Amzn-Trace-Id": "Root=1-65fd7d99-17b99ca4779755f6293dbc7a",
+        "User-Agent": "python-requests/2.32.3",
+        "X-Amzn-Trace-Id": "Root=1-66d6f383-3d65fc8142aa30720965b6ad",
         "X-Api-Key": "mock",
-        "X-Timestamp": "1711111576.7804182",
+        "X-Timestamp": "1725363074.3761563",
         "X-User-Id": "1"
     },
     "json": {
         "message": "hello"
     },
     "method": "POST",
-    "origin": "89.27.46.42",
+    "origin": "82.181.38.215",
     "url": "https://httpbin.org/anything"
 }
 
@@ -43,17 +43,17 @@ this test should create 2 snapshots, one for each user
         "Content-Length": "20",
         "Content-Type": "application/json",
         "Host": "httpbin.org",
-        "User-Agent": "python-requests/2.31.0",
-        "X-Amzn-Trace-Id": "Root=1-65fd7d99-17b99ca4779755f6293dbc7a",
+        "User-Agent": "python-requests/2.32.3",
+        "X-Amzn-Trace-Id": "Root=1-66d6f383-3d65fc8142aa30720965b6ad",
         "X-Api-Key": "mock",
-        "X-Timestamp": "1711111576.7804182",
+        "X-Timestamp": "1725363074.3761563",
         "X-User-Id": "1"
     },
     "json": {
         "message": "hello"
     },
     "method": "POST",
-    "origin": "89.27.46.42",
+    "origin": "82.181.38.215",
     "url": "https://httpbin.org/anything"
 }
 
@@ -65,8 +65,8 @@ this test should create 2 snapshots, one for each user
 
 # request snaphots:
 
- * https://httpbin.org/anything - 27998400b033ee02f437700839238fb5f6f1d9d3
- * https://httpbin.org/anything - 7f963daf2af5a559a14be24f80a30ff5b30245d9
+ * https://httpbin.org/anything - 0d833a0b8b125360f00a5ee7cda46c3600948092
+ * https://httpbin.org/anything - 2ee62c41048ed9e981d586a43d61217cb119632a
 
 # env snaphots:
 

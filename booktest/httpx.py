@@ -22,7 +22,7 @@ from unittest import mock
 class RequestKey:
 
     def __init__(self, json_object, ignore_headers=True):
-        self.json_object = json_object
+        json_object = copy.deepcopy(json_object)
 
         # headers contain often passwords, timestamps or other
         # information that must not be stored and cannot be used in CI
@@ -39,14 +39,15 @@ class RequestKey:
                 for i in removed:
                     del headers[i]
 
-        hash_code = self.json_object.get("hash")
+        hash_code = json_object.get("hash")
 
         if hash_code is None:
             h = hashlib.sha1()
-            h.update(json.dumps(self.json_object).encode())
+            h.update(json.dumps(json_object, sort_keys=True).encode())
             hash_code = str(h.hexdigest())
-            self.json_object["hash"] = hash_code
+            json_object["hash"] = hash_code
 
+        self.json_object = json_object
         self.hash = hash_code
 
     def url(self):
