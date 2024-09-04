@@ -14,10 +14,33 @@ import copy
 import base64
 
 
+def json_to_sha1(json_object):
+    h = hashlib.sha1()
+    h.update(json.dumps(json_object, sort_keys=True).encode())
+    hash_code = str(h.hexdigest())
+    return hash_code
+
+
+def default_encode_body(body, _url, _method):
+    if body is not None:
+        if isinstance(body, str):
+            body = body.encode("utf-8")
+        if isinstance(body, bytes):
+            return base64.b64encode(body).decode("ascii")
+        else:
+            raise ValueError(f"unexpected body {body} of type {type(body)}")
+
+
 class RequestKey:
 
-    def __init__(self, json_object, ignore_headers=True):
-        self.json_object = json_object
+    def __init__(self,
+                 json_object,
+                 ignore_headers=True,
+                 json_to_hash=None):
+        if json_to_hash is None:
+            json_to_hash = json_to_sha1
+
+        json_object = copy.deepcopy(json_object)
 
         # headers contain often passwords, timestamps or other
         # information that must not be stored and cannot be used in CI
@@ -34,14 +57,13 @@ class RequestKey:
                 for i in removed:
                     del headers[i]
 
-        hash_code = self.json_object.get("hash")
+        hash_code = json_object.get("hash")
 
         if hash_code is None:
-            h = hashlib.sha1()
-            h.update(json.dumps(self.json_object).encode())
-            hash_code = str(h.hexdigest())
-            self.json_object["hash"] = hash_code
+            hash_code = json_to_hash(json_object)
+            json_object["hash"] = hash_code
 
+        self.json_object = json_object
         self.hash = hash_code
 
     def url(self):
@@ -64,28 +86,32 @@ class RequestKey:
                         method,
                         headers,
                         body,
-                        ignore_headers):
+                        ignore_headers,
+                        json_to_hash=None,
+                        encode_body=None):
+        if encode_body is None:
+            encode_body = default_encode_body
         json_object = {
             "url": str(url),
             "method": str(method),
             "headers": dict(headers)
         }
         if body is not None:
-            if isinstance(body, str):
-                json_object["body"] = body
-            elif isinstance(body, bytes):
-                json_object["body"] = base64.b64encode(body).decode("ascii")
-            else:
-                raise ValueError(f"unexpected body {body} of type {type(body)}")
-        return RequestKey(json_object, ignore_headers=ignore_headers)
+            json_object["body"] = encode_body(body, url, method)
+        return RequestKey(json_object, ignore_headers=ignore_headers, json_to_hash=json_to_hash)
 
     @staticmethod
-    def from_request(request: requests.PreparedRequest, ignore_headers=True):
+    def from_request(request: requests.PreparedRequest,
+                     ignore_headers=True,
+                     json_to_hash=None,
+                     encode_body=None):
         return RequestKey.from_properties(request.url,
                                           request.method,
                                           request.headers,
                                           request.body,
-                                          ignore_headers=ignore_headers)
+                                          ignore_headers=ignore_headers,
+                                          json_to_hash=json_to_hash,
+                                          encode_body=encode_body)
 
     def __eq__(self, other):
         return type(other) == RequestKey and self.hash == other.hash
@@ -103,7 +129,7 @@ class RequestSnapshot:
         return self.request == request
 
     @staticmethod
-    def from_json_object(json_object, ignore_headers=True):
+    def from_json_object(json_object, ignore_headers=True, json_to_hash=None):
         response_json = json_object["response"]
 
         response = requests.Response()
@@ -112,7 +138,8 @@ class RequestSnapshot:
         response.encoding = response_json["encoding"]
         response._content = response_json["content"].encode()
 
-        return RequestSnapshot(RequestKey(json_object["request"], ignore_headers), response)
+        return RequestSnapshot(RequestKey(json_object["request"], ignore_headers, json_to_hash),
+                               response)
 
     def json_object(self, hide_details):
         rv = {
@@ -140,15 +167,21 @@ class SnapshotAdapter(adapters.BaseAdapter):
     def __init__(self,
                  snapshots,
                  capture_snapshots,
-                 ignore_headers):
+                 ignore_headers,
+                 json_to_hash=None,
+                 encode_body=None):
         self.snapshots = snapshots
         self.capture_snapshots = capture_snapshots
         self.ignore_headers = ignore_headers
+        self.json_to_hash = json_to_hash
+        self.encode_body = encode_body
         self.requests = []
 
     def send(self, request, **kwargs):
         key = RequestKey.from_request(request,
-                                      self.ignore_headers)
+                                      self.ignore_headers,
+                                      self.json_to_hash,
+                                      self.encode_body)
 
         for snapshot in reversed(self.snapshots):
             if snapshot.match(key):
@@ -223,15 +256,19 @@ class SnapshotRequests:
     def __init__(self,
                  t: bt.TestCaseRun,
                  lose_request_details=True,
-                 ignore_headers=True):
+                 ignore_headers=True,
+                 json_to_hash=None,
+                 encode_body=None):
         self.t = t
-        self.mock_path = os.path.join(t.exp_dir_name, ".requests")
-        self.mock_out_path = t.file(".requests")
+        self.legacy_mock_path = os.path.join(t.exp_dir_name, ".requests")
+        self.mock_file = os.path.join(t.exp_dir_name, ".requests.json")
+        self.mock_out_file = t.file(".requests.json")
         self._mock_target = requests.Session
         self._last_send = None
         self._last_get_adapter = None
         self._lose_request_details = lose_request_details
         self._ignore_headers = ignore_headers
+        self._encode_body = encode_body
 
         self.refresh_snapshots = t.config.get("refresh_snapshots", False)
         self.complete_snapshots = t.config.get("complete_snapshots", False)
@@ -239,14 +276,26 @@ class SnapshotRequests:
         # load snapshots
         snapshots = []
 
-        if os.path.exists(self.mock_path) and not self.refresh_snapshots:
-            for mock_file in os.listdir(self.mock_path):
-                with open(os.path.join(self.mock_path, mock_file), "r") as f:
-                    snapshots.append(RequestSnapshot.from_json_object(json.load(f), ignore_headers=ignore_headers))
+        # legacy support
+        if os.path.exists(self.legacy_mock_path) and not self.refresh_snapshots:
+            for mock_file in os.listdir(self.legacy_mock_path):
+                with open(os.path.join(self.legacy_mock_path, mock_file), "r") as f:
+                    snapshots.append(RequestSnapshot.from_json_object(json.load(f),
+                                                                      ignore_headers=ignore_headers,
+                                                                      json_to_hash=json_to_hash))
+
+        if os.path.exists(self.mock_file) and not self.refresh_snapshots:
+            with open(self.mock_file, "r") as f:
+                for key, value in json.load(f).items():
+                    snapshots.append(RequestSnapshot.from_json_object(value,
+                                                                      ignore_headers=ignore_headers,
+                                                                      json_to_hash=json_to_hash))
 
         self._adapter = SnapshotAdapter(snapshots,
                                         self.refresh_snapshots or self.complete_snapshots,
-                                        ignore_headers)
+                                        ignore_headers,
+                                        json_to_hash,
+                                        encode_body)
 
     def start(self):
         """Start mocking requests.
@@ -288,13 +337,14 @@ class SnapshotRequests:
             self._mock_target.send = self._last_send
             self._last_send = None
 
-        os.makedirs(self.mock_out_path, exist_ok=True)
-
+        # let's store everything in one file to avoid spamming git
+        stored = {}
         for snapshot in self._adapter.requests:
             name = snapshot.hash()
+            stored[name] = snapshot.json_object(self._lose_request_details)
 
-            with open(os.path.join(self.mock_out_path, f"{name}.json"), "w") as f:
-                json.dump(snapshot.json_object(self._lose_request_details), f, indent=4)
+        with open(self.mock_out_file, "w") as f:
+            json.dump(stored, f, indent=4)
 
     def t_snapshots(self):
         self.t.h1("request snaphots:")
@@ -310,10 +360,17 @@ class SnapshotRequests:
 
 
 def snapshot_requests(lose_request_details=True,
-                      ignore_headers=True):
+                      ignore_headers=True,
+                      json_to_hash=None,
+                      encode_body=None):
     """
     @param lose_request_details Saves no request details to avoid leaking keys
     @param ignore_headers Ignores all headers (True) or specific header list
+    @param json_to_hash allows adding your own json to hash for calculating hash code to request.
+           can be used to print or prune e.g. http arguments in case they contain e.g. platform specific
+           details or timestamps
+    @param encode_body allows adding your own body encoding for removing e.g. platform or time details from
+           request bodies. this needs to always return a string. encode body method receives body, url and method
     """
     def decorator_depends(func):
         @functools.wraps(func)
@@ -323,7 +380,7 @@ def snapshot_requests(lose_request_details=True,
                 t = args[1]
             else:
                 t = args[0]
-            with SnapshotRequests(t, lose_request_details, ignore_headers):
+            with SnapshotRequests(t, lose_request_details, ignore_headers, json_to_hash, encode_body):
                 return func(*args, **kwargs)
         wrapper._original_function = func
         return wrapper

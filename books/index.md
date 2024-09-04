@@ -66,6 +66,7 @@
              * [mock_env_deletions](test/examples/snapshots/mock_env_deletions.md)
              * [requests](test/examples/snapshots/requests.md)
              * [requests_and_env](test/examples/snapshots/requests_and_env.md)
+             * [requests_deterministic_hashes](test/examples/snapshots/requests_deterministic_hashes.md)
              * [requests_with_headers](test/examples/snapshots/requests_with_headers.md)
              * [saved_request](test/examples/snapshots/saved_request.md)
 

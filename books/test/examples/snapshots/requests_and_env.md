@@ -1,6 +1,6 @@
 # request:
 
-making post request to https://httpbin.org/anything in 1002.564 ms (was 0.506 ms)
+making post request to https://httpbin.org/anything in 772.653 ms (was 1002.564 ms)
 
 # response:
 
@@ -10,7 +10,7 @@ making post request to https://httpbin.org/anything in 1002.564 ms (was 0.506 ms
 
 # request snaphots:
 
- * https://httpbin.org/anything - 42ac4ee63b47b44fb0f616ff94ca589812938f08
+ * https://httpbin.org/anything - 6ca07eb92b8e21296a2d798d1795e885ba1c9751
 
 # env snaphots:
 
