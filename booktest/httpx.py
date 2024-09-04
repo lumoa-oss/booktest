@@ -3,6 +3,7 @@ import functools
 import hashlib
 import os
 import types
+from base64 import encode
 
 from httpx import SyncByteStream
 from httpx._content import IteratorByteStream, ByteStream
@@ -18,10 +19,18 @@ import base64
 
 from unittest import mock
 
+from booktest.requests import json_to_sha1, default_encode_body
+
 
 class RequestKey:
 
-    def __init__(self, json_object, ignore_headers=True):
+    def __init__(self,
+                 json_object,
+                 ignore_headers=True,
+                 json_to_hash=None):
+        if json_to_hash is None:
+            json_to_hash = json_to_sha1
+
         json_object = copy.deepcopy(json_object)
 
         # headers contain often passwords, timestamps or other
@@ -42,9 +51,7 @@ class RequestKey:
         hash_code = json_object.get("hash")
 
         if hash_code is None:
-            h = hashlib.sha1()
-            h.update(json.dumps(json_object, sort_keys=True).encode())
-            hash_code = str(h.hexdigest())
+            hash_code = json_to_hash(json_object)
             json_object["hash"] = hash_code
 
         self.json_object = json_object
@@ -70,28 +77,36 @@ class RequestKey:
                         method,
                         headers,
                         body,
-                        ignore_headers):
+                        ignore_headers,
+                        json_to_hash=None,
+                        encode_body=None):
+        if encode_body is None:
+            encode_body = default_encode_body
+
         json_object = {
             "url": str(url),
             "method": str(method),
             "headers": dict(headers)
         }
         if body is not None:
-            if isinstance(body, str):
-                json_object["body"] = body
-            elif isinstance(body, bytes):
-                json_object["body"] = base64.b64encode(body).decode("ascii")
-            else:
-                raise ValueError(f"unexpected body {body} of type {type(body)}")
-        return RequestKey(json_object, ignore_headers=ignore_headers)
+            json_object["body"] = encode_body(body, url, method)
+
+        return RequestKey(json_object,
+                          ignore_headers=ignore_headers,
+                          json_to_hash=json_to_hash)
 
     @staticmethod
-    def from_request(request: httpx.Request, ignore_headers=True):
+    def from_request(request: httpx.Request,
+                     ignore_headers=True,
+                     json_to_hash=None,
+                     encode_body=None):
         return RequestKey.from_properties(request.url,
                                           request.method,
                                           request.headers,
                                           request.read(),
-                                          ignore_headers=ignore_headers)
+                                          ignore_headers=ignore_headers,
+                                          json_to_hash=json_to_hash,
+                                          encode_body=encode_body)
 
     def __eq__(self, other):
         return type(other) == RequestKey and self.hash == other.hash
@@ -109,7 +124,9 @@ class RequestSnapshot:
         return self.request == request
 
     @staticmethod
-    def from_json_object(json_object, ignore_headers=True):
+    def from_json_object(json_object,
+                         ignore_headers=True,
+                         json_to_hash=None):
         response_json = json_object["response"]
 
         content = base64.b64decode(response_json["content"].encode("ascii")).decode("utf-8")
@@ -118,7 +135,8 @@ class RequestSnapshot:
                                   headers=response_json["headers"],
                                   content=content)
 
-        return RequestSnapshot(RequestKey(json_object["request"], ignore_headers), response)
+        return RequestSnapshot(RequestKey(json_object["request"], ignore_headers, json_to_hash),
+                               response)
 
     def json_object(self, hide_details):
         payload = self.response.content
@@ -151,12 +169,18 @@ class SnapshotHttpx:
     def __init__(self,
                  t: bt.TestCaseRun,
                  lose_request_details=True,
-                 ignore_headers=True):
+                 ignore_headers=True,
+                 json_to_hash=None,
+                 encode_body=None):
         self.t = t
-        self.mock_path = os.path.join(t.exp_dir_name, ".httpx")
-        self.mock_out_path = t.file(".httpx")
+        self.legacy_mock_path = os.path.join(t.exp_dir_name, ".requests")
+        self.mock_file = os.path.join(t.exp_dir_name, ".requests.json")
+        self.mock_out_file = t.file(".requests.json")
+
         self._lose_request_details = lose_request_details
         self._ignore_headers = ignore_headers
+        self._json_to_hash = json_to_hash
+        self._encode_body = encode_body
 
         self.refresh_snapshots = t.config.get("refresh_snapshots", False)
         self.complete_snapshots = t.config.get("complete_snapshots", False)
@@ -165,10 +189,20 @@ class SnapshotHttpx:
         # load snapshots
         snapshots = []
 
-        if os.path.exists(self.mock_path) and not self.refresh_snapshots:
-            for mock_file in os.listdir(self.mock_path):
-                with open(os.path.join(self.mock_path, mock_file), "r") as f:
-                    snapshots.append(RequestSnapshot.from_json_object(json.load(f), ignore_headers=ignore_headers))
+        # legacy support
+        if os.path.exists(self.legacy_mock_path) and not self.refresh_snapshots:
+            for mock_file in os.listdir(self.legacy_mock_path):
+                with open(os.path.join(self.legacy_mock_path, mock_file), "r") as f:
+                    snapshots.append(RequestSnapshot.from_json_object(json.load(f),
+                                                                      ignore_headers=ignore_headers,
+                                                                      json_to_hash=json_to_hash))
+
+        if os.path.exists(self.mock_file) and not self.refresh_snapshots:
+            with open(self.mock_file, "r") as f:
+                for key, value in json.load(f).items():
+                    snapshots.append(RequestSnapshot.from_json_object(value,
+                                                                      ignore_headers=ignore_headers,
+                                                                      json_to_hash=json_to_hash))
 
         self.snapshots = snapshots
         self.requests = []
@@ -178,7 +212,9 @@ class SnapshotHttpx:
 
     def lookup_snapshot(self, request: httpx.Request):
         key = RequestKey.from_request(request,
-                                      self._ignore_headers)
+                                      self._ignore_headers,
+                                      self._json_to_hash,
+                                      self._encode_body)
 
         for snapshot in reversed(self.snapshots):
             if snapshot.match(key):
@@ -251,13 +287,14 @@ class SnapshotHttpx:
             "handle_async_request",
             self._real_handle_async_request)
 
-        os.makedirs(self.mock_out_path, exist_ok=True)
-
+        # let's store everything in one file to avoid spamming git
+        stored = {}
         for snapshot in self.requests:
             name = snapshot.hash()
+            stored[name] = snapshot.json_object(self._lose_request_details)
 
-            with open(os.path.join(self.mock_out_path, f"{name}.json"), "w") as f:
-                json.dump(snapshot.json_object(self._lose_request_details), f, indent=4)
+        with open(self.mock_out_file, "w") as f:
+            json.dump(stored, f, indent=4)
 
     def t_snapshots(self):
         self.t.h1("httpx snaphots:")
@@ -273,10 +310,17 @@ class SnapshotHttpx:
 
 
 def snapshot_httpx(lose_request_details=True,
-                   ignore_headers=True):
+                   ignore_headers=True,
+                   json_to_hash=None,
+                   encode_body=None):
     """
     @param lose_request_details Saves no request details to avoid leaking keys
     @param ignore_headers Ignores all headers (True) or specific header list
+    @param json_to_hash allows adding your own json to hash for calculating hash code to request.
+           can be used to print or prune e.g. http arguments in case they contain e.g. platform specific
+           details or timestamps
+    @param encode_body allows adding your own body encoding for removing e.g. platform or time details from
+           request bodies. this needs to always return a string. encode body method receives body, url and method
     """
     def decorator_depends(func):
         @functools.wraps(func)
@@ -286,7 +330,7 @@ def snapshot_httpx(lose_request_details=True,
                 t = args[1]
             else:
                 t = args[0]
-            with SnapshotHttpx(t, lose_request_details, ignore_headers):
+            with SnapshotHttpx(t, lose_request_details, ignore_headers, json_to_hash, encode_body):
                 return func(*args, **kwargs)
         wrapper._original_function = func
         return wrapper

@@ -25,13 +25,43 @@ removes a prefix like 'test' from all test. this can be used, if the test name i
 
 <a href="../booktest/testsuite.py#L34"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
+## <kbd>function</kbd> `cases_of`
+
+```python
+cases_of(tests_or_suites) → list
+```
+
+
+
+
+
+
+---
+
+<a href="../booktest/testsuite.py#L44"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
 ## <kbd>function</kbd> `merge_tests`
 
 ```python
-merge_tests(suites: list) → Tests
+merge_tests(tests_or_suites) → Tests
 ```
 
 Combines a list of Tests into a single Tests entity 
+
+
+---
+
+<a href="../booktest/testsuite.py#L55"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `decorate_tests`
+
+```python
+decorate_tests(decorator, tests_or_suites) → Tests
+```
+
+
+
+
 
 
 ---

@@ -1,5 +1,7 @@
+import copy
 import os
 import random
+from datetime import datetime
 
 import booktest as bt
 import requests
@@ -8,6 +10,7 @@ import time
 import httpx
 
 from booktest.functions import SnapshotFunctions
+from booktest.requests import json_to_sha1, default_encode_body
 
 
 @bt.snapshot_requests()
@@ -17,7 +20,6 @@ def test_requests(t: bt.TestCaseRun):
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
 
-
 @bt.snapshot_httpx()
 def test_httpx(t: bt.TestCaseRun):
     response = httpx.get("https://api.weather.gov/")
@@ -25,10 +27,71 @@ def test_httpx(t: bt.TestCaseRun):
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
 
+def drop_random_parameter_json(json_object):
+    json_object = copy.deepcopy(json_object)
+
+    url = str(json_object["url"])
+    if url.startswith("https://httpbin.org/anything/"):
+        # remove random url component
+        json_object["url"] = "https://httpbin.org/anything/"
+
+    return json_to_sha1(json_object)
+
+def drop_date_encode_body(body, request, url):
+    json_object = json.loads(body.decode("utf-8"))
+
+    del json_object["date"]
+
+    return default_encode_body(json.dumps(json_object).encode("utf-8"), request, url)
+
+@bt.snapshot_requests(json_to_hash=drop_random_parameter_json, encode_body=drop_date_encode_body)
+def test_requests_deterministic_hashes(t: bt.TestCaseRun):
+    t.h1("request:")
+
+    random_id = random.randint(0, 10000000)
+    t.i(f" * random url component is: {random_id}").tln()
+
+    host_name = f"https://httpbin.org/anything/{random_id}"
+    response = (
+        t.i(f" * making post request to {host_name} in ").imsln(
+            lambda:
+            requests.post(
+                host_name,
+                json={
+                    "message": "hello",
+                    "date": datetime.now().isoformat()
+                })))
+
+    t.h1("response:")
+    t.tln(json.dumps(response.json()["json"], indent=4))
+
+@bt.snapshot_httpx(json_to_hash=drop_random_parameter_json, encode_body=drop_date_encode_body)
+def test_requests_deterministic_hashes(t: bt.TestCaseRun):
+    t.h1("request:")
+
+    random_id = random.randint(0, 10000000)
+    t.i(f" * random url component is: {random_id}").tln()
+
+    host_name = f"https://httpbin.org/anything/{random_id}"
+    response = (
+        t.i(f" * making post request to {host_name} in ").imsln(
+            lambda:
+            httpx.post(
+                host_name,
+                json={
+                    "message": "hello",
+                    "date": datetime.now().isoformat()
+                })))
+
+    t.h1("response:")
+    t.tln(json.dumps(response.json()["json"], indent=4))
 
 @bt.snapshot_requests(lose_request_details=False,
-                      ignore_headers=False)
+                      ignore_headers=["User-Agent"])
 def test_saved_request(t: bt.TestCaseRun):
+    t.h1("description:")
+    t.tln("in this test, the headers are stored within the expectation files.")
+
     response = requests.post("https://httpbin.org/anything", json={
         "message": "hello"
     })
@@ -73,7 +136,7 @@ def test_mock_env_deletions(t: bt.TestCaseRun):
     t.keyvalueln(" * USERNAME:", os.environ.get("USERNAME"))
 
 
-@bt.snapshot_env("HOST_NAME")
+@bt.snapshot_env("HOST_NAME")  # should be "https://httpbin.org/anything"
 @bt.mock_missing_env({"API_KEY": "mock"})
 @bt.snapshot_requests()
 def test_requests_and_env(t: bt.TestCaseRun):
@@ -96,16 +159,22 @@ def test_requests_and_env(t: bt.TestCaseRun):
     t.tln(json.dumps(response.json()["json"], indent=4))
 
 
-@bt.snapshot_env("HOST_NAME")
+@bt.snapshot_env("HOST_NAME")  # should be "https://httpbin.org/anything"
 @bt.mock_missing_env({"API_KEY": "mock"})
 @bt.snapshot_requests(lose_request_details=False,
-                      ignore_headers=["X-Api-Key", "X-Timestamp"])
+                      ignore_headers=["X-Api-Key", "X-Timestamp", "User-Agent"])
 def test_requests_with_headers(t: bt.TestCaseRun):
 
     t.h1("description:")
 
     t.tln("in this description, it's assumed that user id is significant. ")
     t.tln("this test should create 2 snapshots, one for each user")
+    t.tln()
+    t.tln("note: you may need to freeze this twice, because on first run 2 different calls")
+    t.tln("are made for user 1, but only snapshot is stored. recalling first run is necesssary,")
+    t.tln("because otherwise the system may get stuck on timeouts. this will cause the result to")
+    t.tln("be different on second run, as in first run 2 calls are done, while on second run")
+    t.tln("one snapshot is used twice.")
 
     response = requests.post(os.environ["HOST_NAME"], json={
         "message": "hello"
@@ -138,7 +207,7 @@ def test_requests_with_headers(t: bt.TestCaseRun):
     })
 
     t.h1("response for user 2:")
-    t.tln(json.dumps(response.json()["json"], indent=4))
+    t.tln(json.dumps(response.json(), indent=4))
 
 
 def non_deterministic_and_slow_algorithm(input):

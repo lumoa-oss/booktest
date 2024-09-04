@@ -40,7 +40,7 @@ mock_missing_env(env)
 
 ---
 
-<a href="../booktest/env.py#L186"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/env.py#L188"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `mock_env`
 
@@ -65,7 +65,7 @@ mock_env(env)
 ### <kbd>function</kbd> `__init__`
 
 ```python
-__init__(t: TestCaseRun, env: dict)
+__init__(env: dict)
 ```
 
 
@@ -77,7 +77,7 @@ __init__(t: TestCaseRun, env: dict)
 
 ---
 
-<a href="../booktest/env.py#L158"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/env.py#L157"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `start`
 

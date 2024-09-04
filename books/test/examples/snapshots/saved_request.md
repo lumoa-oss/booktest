@@ -1,3 +1,7 @@
+# description:
+
+in this test, the headers are stored within the expectation files.
+
 # response:
 
 {
@@ -6,4 +10,4 @@
 
 # request snaphots:
 
- * https://httpbin.org/anything - 3c4cb64a88ba0e3bd1e2a037141ba89a46e9a6d4
+ * https://httpbin.org/anything - 60dd61ad853e1c69c795a9b530b36f8afe643079

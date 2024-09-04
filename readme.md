@@ -48,7 +48,7 @@ You can find getting started guide [here](getting-started.md)
 # Workflows, coverage and CI
 
 You can find guide on common workflows, coverage measurements and 
-continuous integratio [here](workflows.md)
+continuous integration [here](workflows.md)
 
 # Examples
 

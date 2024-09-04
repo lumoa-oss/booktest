@@ -25,6 +25,36 @@ Generates a resource for given port. A special identifier is generated in order 
 
 <a href="../booktest/dependencies.py#L37"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
+## <kbd>function</kbd> `get_decorated_attr`
+
+```python
+get_decorated_attr(method, attr)
+```
+
+
+
+
+
+
+---
+
+<a href="../booktest/dependencies.py#L47"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `remove_decoration`
+
+```python
+remove_decoration(method)
+```
+
+
+
+
+
+
+---
+
+<a href="../booktest/dependencies.py#L53"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
 ## <kbd>function</kbd> `bind_dependent_method_if_unbound`
 
 ```python
@@ -38,7 +68,7 @@ bind_dependent_method_if_unbound(method, dependency)
 
 ---
 
-<a href="../booktest/dependencies.py#L50"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L63"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `call_class_method_test`
 
@@ -53,7 +83,7 @@ call_class_method_test(dependencies, func, case, kwargs)
 
 ---
 
-<a href="../booktest/dependencies.py#L88"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L101"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `call_function_test`
 
@@ -68,7 +98,7 @@ call_function_test(methods, func, case, kwargs)
 
 ---
 
-<a href="../booktest/dependencies.py#L111"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L124"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `depends_on`
 

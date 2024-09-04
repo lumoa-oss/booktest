@@ -42,7 +42,7 @@ The full_path parameter is aimed for e.g. generating different test cases from t
 
 ---
 
-<a href="../booktest/testbook.py#L86"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testbook.py#L89"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `test_book_path`
 
