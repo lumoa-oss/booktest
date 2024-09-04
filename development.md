@@ -5,7 +5,7 @@ running it's tests.
 
 ## dependencies
 
-You will need Poetry and Python 3.8 to use this package. To setup the environment
+You will need Poetry and Python 3.9 to use this package. To setup the environment
 and run the commands described in this package, run:
 
 ```bash

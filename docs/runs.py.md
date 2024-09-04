@@ -10,7 +10,37 @@
 
 ---
 
-<a href="../booktest/runs.py#L77"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L27"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `batch_dir`
+
+```python
+batch_dir(out_dir: str)
+```
+
+
+
+
+
+
+---
+
+<a href="../booktest/runs.py#L34"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `prepare_batch_dir`
+
+```python
+prepare_batch_dir(out_dir: str)
+```
+
+
+
+
+
+
+---
+
+<a href="../booktest/runs.py#L103"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `case_batch_dir_and_report_file`
 
@@ -25,12 +55,19 @@ case_batch_dir_and_report_file(batches_dir, name)
 
 ---
 
-<a href="../booktest/runs.py#L246"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L287"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `parallel_run_tests`
 
 ```python
-parallel_run_tests(exp_dir, out_dir, tests, cases: list, config: dict)
+parallel_run_tests(
+    exp_dir,
+    out_dir,
+    tests,
+    cases: list,
+    config: dict,
+    setup: BookTestSetup
+)
 ```
 
 
@@ -40,12 +77,20 @@ parallel_run_tests(exp_dir, out_dir, tests, cases: list, config: dict)
 
 ---
 
-<a href="../booktest/runs.py#L337"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L422"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `run_tests`
 
 ```python
-run_tests(exp_dir, out_dir, tests, cases: list, config: dict, cache)
+run_tests(
+    exp_dir,
+    out_dir,
+    tests,
+    cases: list,
+    config: dict,
+    cache,
+    setup: BookTestSetup
+)
 ```
 
 
@@ -60,7 +105,7 @@ run_tests(exp_dir, out_dir, tests, cases: list, config: dict, cache)
 
 
 
-<a href="../booktest/runs.py#L85"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L111"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -71,6 +116,7 @@ __init__(
     tests,
     cases: list,
     config: dict,
+    setup,
     reports: CaseReports
 )
 ```
@@ -84,7 +130,7 @@ __init__(
 
 ---
 
-<a href="../booktest/runs.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L199"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `abort`
 
@@ -98,7 +144,7 @@ abort()
 
 ---
 
-<a href="../booktest/runs.py#L205"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L242"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `batch_dirs`
 
@@ -112,7 +158,21 @@ batch_dirs()
 
 ---
 
-<a href="../booktest/runs.py#L211"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L252"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `done_reports`
+
+```python
+done_reports()
+```
+
+
+
+
+
+---
+
+<a href="../booktest/runs.py#L248"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `has_next`
 
@@ -126,7 +186,7 @@ has_next()
 
 ---
 
-<a href="../booktest/runs.py#L215"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L256"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `next_report`
 
@@ -140,7 +200,7 @@ next_report()
 
 ---
 
-<a href="../booktest/runs.py#L146"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L180"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `plan`
 
@@ -154,7 +214,7 @@ plan(todo)
 
 ---
 
-<a href="../booktest/runs.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L203"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `thread_function`
 
@@ -174,12 +234,12 @@ thread_function()
 
 
 
-<a href="../booktest/runs.py#L31"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/runs.py#L51"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
 ```python
-__init__(exp_dir: str, out_dir: str, tests, config: dict)
+__init__(exp_dir: str, out_dir: str, tests, config: dict, setup: BookTestSetup)
 ```
 
 

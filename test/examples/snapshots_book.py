@@ -169,6 +169,12 @@ def test_requests_with_headers(t: bt.TestCaseRun):
 
     t.tln("in this description, it's assumed that user id is significant. ")
     t.tln("this test should create 2 snapshots, one for each user")
+    t.tln()
+    t.tln("note: you may need to freeze this twice, because on first run 2 different calls")
+    t.tln("are made for user 1, but only snapshot is stored. recalling first run is necesssary,")
+    t.tln("because otherwise the system may get stuck on timeouts. this will cause the result to")
+    t.tln("be different on second run, as in first run 2 calls are done, while on second run")
+    t.tln("one snapshot is used twice.")
 
     response = requests.post(os.environ["HOST_NAME"], json={
         "message": "hello"

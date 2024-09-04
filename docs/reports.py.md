@@ -117,6 +117,20 @@ failed()
 
 ---
 
+<a href="../booktest/reports.py#L166"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `make_case`
+
+```python
+make_case(case_name, res: TestResult, duration)
+```
+
+
+
+
+
+---
+
 <a href="../booktest/reports.py#L125"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `of_dir`
@@ -159,7 +173,7 @@ passed()
 
 ---
 
-<a href="../booktest/reports.py#L165"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/reports.py#L172"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `to_dir`
 
@@ -173,7 +187,7 @@ to_dir(out_dir)
 
 ---
 
-<a href="../booktest/reports.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/reports.py#L176"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `to_file`
 
