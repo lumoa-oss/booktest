@@ -7,6 +7,7 @@ import json
 import sys
 
 from booktest import TestCaseRun
+from booktest.coroutines import maybe_async_call
 
 
 class FunctionCall:
@@ -208,16 +209,17 @@ def snapshot_functions(*snapshot_funcs):
     @param lose_request_details Saves no request details to avoid leaking keys
     @param ignore_headers Ignores all headers (True) or specific header list
     """
-    def decorator_depends(func):
+    def decorator(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             from booktest import TestBook
             if isinstance(args[0], TestBook):
                 t = args[1]
             else:
                 t = args[0]
             with SnapshotFunctions(t, snapshot_funcs):
-                return func(*args, **kwargs)
+                return await maybe_async_call(func, args, kwargs)
         wrapper._original_function = func
         return wrapper
-    return decorator_depends
+
+    return decorator

@@ -70,6 +70,13 @@
              * [requests_with_headers](test/examples/snapshots/requests_with_headers.md)
              * [saved_request](test/examples/snapshots/saved_request.md)
 
+         * async
+             * [cache](test/examples/async/cache.md)
+             * [cache_use](test/examples/async/cache_use.md)
+             * [httpx](test/examples/async/httpx.md)
+             * [requests](test/examples/async/requests.md)
+             * [wait](test/examples/async/wait.md)
+
          * resource
              * [resource_use_1](test/examples/resource/resource_use_1.md)
              * [resource_use_2](test/examples/resource/resource_use_2.md)

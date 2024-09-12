@@ -441,3 +441,25 @@ def run_tests(exp_dir,
 
     return rv
 
+async def run_tests_async(exp_dir,
+                          out_dir,
+                          tests,
+                          cases: list,
+                          config: dict,
+                          cache,
+                          setup: BookTestSetup):
+
+    run = TestRun(
+        exp_dir,
+        out_dir,
+        out_dir,
+        tests,
+        cases,
+        config,
+        cache)
+
+    with setup.setup_teardown():
+        rv = await test_result_to_exit_code(run.run())
+
+    return rv
+

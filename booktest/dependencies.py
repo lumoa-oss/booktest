@@ -1,6 +1,8 @@
 import functools
 import inspect
 
+from booktest.coroutines import maybe_async_call
+
 
 class Resource:
     """
@@ -60,7 +62,7 @@ def bind_dependent_method_if_unbound(method, dependency):
         return dependency
 
 
-def call_class_method_test(dependencies, func, self, case, kwargs):
+async def call_class_method_test(dependencies, func, self, case, kwargs):
 
     args2 = []
     args2.append(self)
@@ -95,10 +97,9 @@ def call_class_method_test(dependencies, func, self, case, kwargs):
 
             args2.append(result)
 
-    return func(*args2, **kwargs)
+    return await maybe_async_call(func, args2, kwargs)
 
-
-def call_function_test(methods, func, case, kwargs):
+async def call_function_test(methods, func, case, kwargs):
     run = case.run
 
     args2 = []
@@ -118,7 +119,7 @@ def call_function_test(methods, func, case, kwargs):
 
             args2.append(result)
 
-    return func(*args2, **kwargs)
+    return await maybe_async_call(func, args2, kwargs)
 
 
 def depends_on(*dependencies):
@@ -133,19 +134,20 @@ def depends_on(*dependencies):
         else:
             methods.append(i)
 
-    def decorator_depends(func):
+    def decorator(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             from booktest import TestBook
 
             if isinstance(args[0], TestBook):
-                return call_class_method_test(dependencies, func, args[0], args[1], kwargs)
+                return await call_class_method_test(dependencies, func, args[0], args[1], kwargs)
             else:
-                return call_function_test(dependencies, func, args[0], kwargs)
+                return await call_function_test(dependencies, func, args[0], kwargs)
 
         wrapper._dependencies = methods
         wrapper._resources = resources
         wrapper._original_function = func
         return wrapper
-    return decorator_depends
+
+    return decorator
 
