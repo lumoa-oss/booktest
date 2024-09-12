@@ -1,3 +1,5 @@
+import asyncio
+import inspect
 import os.path as path
 import os
 import time
@@ -83,12 +85,15 @@ class TestRun:
             with open(bin_path, 'wb') as file:
                 pickle.dump(result, file)
 
-    def run_case(self, case_path, case, title=None) \
+    async def run_case(self, case_path, case, title=None) \
             -> (TestResult, UserRequest, float):
         t = TestCaseRun(self, case_path, self.config, self.output)
         t.start(title)
         try:
-            rv = case(t)
+            if inspect.iscoroutinefunction(case):
+                rv = await case(t)
+            else:
+                rv = case(t)
         except Exception as e:
             t.iln().fail().iln(f"test raised exception {e}:")
             t.iln(traceback.format_exc())
@@ -104,7 +109,7 @@ class TestRun:
     def print(self, *args, sep=' ', end='\n'):
         print(*args, sep=sep, end=end, file=self.output)
 
-    def run(self):
+    async def run_async(self):
         #
         # 1. prepare variables and state
         #
@@ -149,7 +154,7 @@ class TestRun:
             for case_name in todo:
                 case = self.tests.get_case(case_name)
                 res, request, duration = \
-                    self.run_case(case_name, case)
+                    await self.run_case(case_name, case)
 
                 if res == TestResult.DIFF \
                    or res == TestResult.FAIL:
@@ -184,3 +189,6 @@ class TestRun:
         create_index(self.exp_dir, self.tests.all_names())
 
         return rv
+
+    def run(self):
+        return asyncio.run(self.run_async())
