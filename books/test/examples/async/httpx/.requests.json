@@ -1,0 +1,30 @@
+{
+    "7185541346b850c27b0a566841b088e6e39b146b": {
+        "request": {
+            "url": "https://api.weather.gov/",
+            "method": "GET",
+            "hash": "7185541346b850c27b0a566841b088e6e39b146b"
+        },
+        "response": {
+            "headers": {
+                "server": "nginx/1.20.1",
+                "content-type": "application/json",
+                "access-control-allow-origin": "*",
+                "x-request-id": "ee8754c6-8c4b-4aca-9e43-212cb3221c92",
+                "x-correlation-id": "708750",
+                "x-server-id": "vm-lnx-nids-apiapp8.ncep.noaa.gov",
+                "pragma": "no-cache",
+                "content-length": "40",
+                "cache-control": "private, must-revalidate, max-age=0",
+                "expires": "Thu, 12 Sep 2024 13:38:44 GMT",
+                "date": "Thu, 12 Sep 2024 13:38:44 GMT",
+                "connection": "keep-alive",
+                "vary": "Accept-Encoding, Accept,Feature-Flags,Accept-Language",
+                "x-edge-request-id": "7835d9e5",
+                "strict-transport-security": "max-age=31536000 ; includeSubDomains ; preload"
+            },
+            "statusCode": 200,
+            "content": "ewogICAgInN0YXR1cyI6ICJPSyIKfQ=="
+        }
+    }
+}

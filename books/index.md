@@ -71,6 +71,10 @@
              * [saved_request](test/examples/snapshots/saved_request.md)
 
          * async
+             * [cache](test/examples/async/cache.md)
+             * [cache_use](test/examples/async/cache_use.md)
+             * [httpx](test/examples/async/httpx.md)
+             * [requests](test/examples/async/requests.md)
              * [wait](test/examples/async/wait.md)
 
          * resource

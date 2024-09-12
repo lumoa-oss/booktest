@@ -3,6 +3,8 @@ import os
 import booktest as bt
 import json
 
+from booktest.coroutines import maybe_async_call
+
 
 class SnapshotEnv:
 
@@ -73,19 +75,20 @@ class SnapshotEnv:
 
 
 def snapshot_env(*names):
-    def decorator_depends(func):
+    def decorator(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             from booktest import TestBook
             if isinstance(args[0], TestBook):
                 t = args[1]
             else:
                 t = args[0]
             with SnapshotEnv(t, names):
-                return func(*args, **kwargs)
+                return await maybe_async_call(func, args, kwargs)
         wrapper._original_function = func
         return wrapper
-    return decorator_depends
+
+    return decorator
 
 
 class MockMissingEnv:
@@ -132,19 +135,19 @@ class MockMissingEnv:
 
 
 def mock_missing_env(env):
-    def decorator_depends(func):
+    def decorator(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             from booktest import TestBook
             if isinstance(args[0], TestBook):
                 t = args[1]
             else:
                 t = args[0]
             with MockMissingEnv(t, env):
-                return func(*args, **kwargs)
+                return await maybe_async_call(func, args, kwargs)
         wrapper._original_function = func
         return wrapper
-    return decorator_depends
+    return decorator
 
 
 class MockEnv:
@@ -186,11 +189,12 @@ class MockEnv:
 
 
 def mock_env(env):
-    def decorator_depends(func):
+    def decorator(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             with MockEnv(env):
-                return func(*args, **kwargs)
+                return await maybe_async_call(func , args, kwargs)
         wrapper._original_function = func
         return wrapper
-    return decorator_depends
+
+    return decorator

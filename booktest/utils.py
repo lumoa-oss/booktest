@@ -1,5 +1,7 @@
 import functools
 
+from booktest.coroutines import maybe_async_call
+
 
 class SetupTeardown:
 
@@ -22,16 +24,16 @@ class SetupTeardown:
 
 
 def setup_teardown(setup_teardown_generator):
-    def decorator_depends(func):
+    def decorator(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             with SetupTeardown(setup_teardown_generator):
-                return func(*args, **kwargs)
+                return await maybe_async_call(func, args, kwargs)
 
         wrapper._original_function = func
         return wrapper
 
-    return decorator_depends
+    return decorator
 
 
 def combine_decorators(*decorators):

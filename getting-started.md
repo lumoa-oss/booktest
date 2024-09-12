@@ -415,6 +415,31 @@ def test_httpx(t: bt.TestCaseRun):
     t.tln(json.dumps(response.json(), indent=4))
 ```
 
+### Async support
+
+Booktest has async support, and it can run async tests.
+
+```python
+import booktest as bt
+import asyncio
+import time
+
+
+async def test_wait(t: bt.TestCaseRun):
+    t.h1("async test:")
+
+    t.t(" * waiting on async io..")
+    before = time.time()
+    await asyncio.sleep(0.1)
+    after = time.time()
+    t.ifloatln(after-before, "s")
+
+    t.tln(" * done")
+```
+
+If you need to call booktest in from asynchronous code, 
+you can run_async method. 
+
 ### Process setup and teardown 
 
 A test may be dependent on some global values or initializations, which may lead to issues when using parallel processing. 

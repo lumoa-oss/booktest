@@ -19,6 +19,7 @@ import base64
 
 from unittest import mock
 
+from booktest.coroutines import maybe_async_call
 from booktest.requests import json_to_sha1, default_encode_body
 
 
@@ -324,14 +325,15 @@ def snapshot_httpx(lose_request_details=True,
     """
     def decorator_depends(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             from booktest import TestBook
             if isinstance(args[0], TestBook):
                 t = args[1]
             else:
                 t = args[0]
             with SnapshotHttpx(t, lose_request_details, ignore_headers, json_to_hash, encode_body):
-                return func(*args, **kwargs)
+                return await maybe_async_call(func , args, kwargs)
         wrapper._original_function = func
         return wrapper
+
     return decorator_depends

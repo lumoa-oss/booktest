@@ -13,6 +13,8 @@ import six
 import copy
 import base64
 
+from booktest.coroutines import maybe_async_call
+
 
 def json_to_sha1(json_object):
     h = hashlib.sha1()
@@ -374,14 +376,15 @@ def snapshot_requests(lose_request_details=True,
     """
     def decorator_depends(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             from booktest import TestBook
             if isinstance(args[0], TestBook):
                 t = args[1]
             else:
                 t = args[0]
             with SnapshotRequests(t, lose_request_details, ignore_headers, json_to_hash, encode_body):
-                return func(*args, **kwargs)
+                return await maybe_async_call(func , args, kwargs)
         wrapper._original_function = func
         return wrapper
+
     return decorator_depends
