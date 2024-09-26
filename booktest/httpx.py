@@ -174,9 +174,9 @@ class SnapshotHttpx:
                  json_to_hash=None,
                  encode_body=None):
         self.t = t
-        self.legacy_mock_path = os.path.join(t.exp_dir_name, ".requests")
-        self.mock_file = os.path.join(t.exp_dir_name, ".requests.json")
-        self.mock_out_file = t.file(".requests.json")
+        self.legacy_mock_path = os.path.join(t.exp_dir_name, ".httpx")
+        self.mock_file = os.path.join(t.exp_dir_name, ".httpx.json")
+        self.mock_out_file = t.file(".httpx.json")
 
         self._lose_request_details = lose_request_details
         self._ignore_headers = ignore_headers
