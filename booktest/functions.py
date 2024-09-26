@@ -227,9 +227,7 @@ def snapshot_functions(*snapshot_funcs):
 
 class MockFunctions:
 
-    def __init__(self, t: TestCaseRun, mock_funcs: dict = None):
-        self.t = t
-
+    def __init__(self, mock_funcs: dict = None):
         if mock_funcs is None:
             mock_funcs = {}
 
@@ -276,7 +274,7 @@ def mock_functions(mock_funcs):
                 t = args[1]
             else:
                 t = args[0]
-            with MockFunctions(t, mock_funcs):
+            with MockFunctions(mock_funcs):
                 return await maybe_async_call(func, args, kwargs)
         wrapper._original_function = func
         return wrapper
