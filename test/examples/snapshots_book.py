@@ -9,7 +9,7 @@ import json
 import time
 import httpx
 
-from booktest.functions import SnapshotFunctions
+from booktest.functions import SnapshotFunctions, MockFunctions
 from booktest.requests import json_to_sha1, default_encode_body
 
 
@@ -269,3 +269,24 @@ def test_auto_function_snapshots(t: bt.TestCaseRun):
     t.keyvalueln(" * args: 123:", multiargs(1, 2, 3))
     t.keyvalueln(" * args: 12345:", multiargs(1, 2, 3, 4, 5))
     t.keyvalueln(" * named args:", multiargs(a=1, b=2, c=3, d=4, e=5))
+
+
+def mock_time_ns():
+    return 10000000000000
+
+def mock_random():
+    return 42
+
+def mock_random():
+    return 42
+
+
+@bt.mock_functions({
+    time.time_ns: mock_time_ns,
+    random._inst.random: mock_random
+})
+def test_mock_functions(t: bt.TestCaseRun):
+    t.h1("mocks:")
+
+    t.keyvalueln(" * timestamp:", time.time_ns())
+    t.keyvalueln(" * random:", random._inst.random())
