@@ -1,0 +1,45 @@
+{
+    "61a85a10ba34bfb5cdee47cba501dee356846bbb": {
+        "request": {
+            "url": "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam",
+            "method": "GET",
+            "hash": "61a85a10ba34bfb5cdee47cba501dee356846bbb"
+        },
+        "response": {
+            "headers": {
+                "Server": "nginx/1.27.0",
+                "Date": "Fri, 27 Sep 2024 13:05:04 GMT",
+                "Content-Type": "application/json; charset=utf-8",
+                "Transfer-Encoding": "chunked",
+                "Connection": "keep-alive",
+                "Content-Encoding": "gzip",
+                "Vary": "Accept-Encoding"
+            },
+            "statusCode": 200,
+            "encoding": "utf-8",
+            "content": "{\"year\":2024,\"month\":9,\"day\":27,\"hour\":15,\"minute\":5,\"seconds\":4,\"milliSeconds\":162,\"dateTime\":\"2024-09-27T15:05:04.1627683\",\"date\":\"09/27/2024\",\"time\":\"15:05\",\"timeZone\":\"Europe/Amsterdam\",\"dayOfWeek\":\"Friday\",\"dstActive\":true}"
+        }
+    },
+    "1ae53133617f92562bda2414f19d09faae5774f3": {
+        "request": {
+            "url": "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam",
+            "method": "GET",
+            "order": 1,
+            "hash": "1ae53133617f92562bda2414f19d09faae5774f3"
+        },
+        "response": {
+            "headers": {
+                "Server": "nginx/1.27.0",
+                "Date": "Fri, 27 Sep 2024 13:09:11 GMT",
+                "Content-Type": "application/json; charset=utf-8",
+                "Transfer-Encoding": "chunked",
+                "Connection": "keep-alive",
+                "Content-Encoding": "gzip",
+                "Vary": "Accept-Encoding"
+            },
+            "statusCode": 200,
+            "encoding": "utf-8",
+            "content": "{\"year\":2024,\"month\":9,\"day\":27,\"hour\":15,\"minute\":9,\"seconds\":11,\"milliSeconds\":902,\"dateTime\":\"2024-09-27T15:09:11.9025506\",\"date\":\"09/27/2024\",\"time\":\"15:09\",\"timeZone\":\"Europe/Amsterdam\",\"dayOfWeek\":\"Friday\",\"dstActive\":true}"
+        }
+    }
+}

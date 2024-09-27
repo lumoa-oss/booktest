@@ -28,6 +28,42 @@ def test_httpx(t: bt.TestCaseRun):
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
 
+
+@bt.snapshot_requests()
+def test_requests_sequence(t: bt.TestCaseRun):
+    t.h1("description:")
+    t.tln("sometimes apis are stateful and we want to keep track of response sequence")
+    t.tln("following requests should provide different answer")
+
+    t.h1("first response:")
+    response = requests.get("https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam")
+    t.tln(json.dumps(response.json()["dateTime"], indent=4))
+
+    time.sleep(0.1)
+
+    t.h1("second response:")
+    response = requests.get("https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam")
+    t.tln(json.dumps(response.json()["dateTime"], indent=4))
+
+
+
+@bt.snapshot_httpx()
+def test_httpx_sequence(t: bt.TestCaseRun):
+    t.h1("description:")
+    t.tln("sometimes apis are stateful and we want to keep track of response sequence")
+    t.tln("following requests should provide different answer")
+
+    t.h1("first response:")
+    response = httpx.get("https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam")
+    t.tln(json.dumps(response.json()["dateTime"], indent=4))
+
+    time.sleep(0.1)
+
+    t.h1("second response:")
+    response = httpx.get("https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam")
+    t.tln(json.dumps(response.json()["dateTime"], indent=4))
+
+
 def drop_random_parameter_json(json_object):
     json_object = copy.deepcopy(json_object)
 
