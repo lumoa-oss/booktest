@@ -1,3 +1,4 @@
+import asyncio
 import copy
 import os
 import random
@@ -274,19 +275,29 @@ def test_auto_function_snapshots(t: bt.TestCaseRun):
 def mock_time_ns():
     return 10000000000000
 
-def mock_random():
-    return 42
 
 def mock_random():
     return 42
+
+
+
+async def async_random():
+    await asyncio.sleep(0.1)
+    return random.randint(0, 10000000)
+
+
+async def mock_async_random():
+    return 23
 
 
 @bt.mock_functions({
     time.time_ns: mock_time_ns,
-    random._inst.random: mock_random
+    random._inst.random: mock_random,
+    async_random: mock_async_random
 })
-def test_mock_functions(t: bt.TestCaseRun):
+async def test_mock_functions(t: bt.TestCaseRun):
     t.h1("mocks:")
 
     t.keyvalueln(" * timestamp:", time.time_ns())
     t.keyvalueln(" * random:", random._inst.random())
+    t.keyvalueln(" * async random:", await async_random())

@@ -232,25 +232,25 @@ class MockFunctions:
             mock_funcs = {}
 
         self.mock_funcs = mock_funcs
-        self.snapshotters = None
+        self._original_funcs = None
 
     def start(self):
-        if self.snapshotters is not None:
+        if self._original_funcs is not None:
             raise RuntimeError('FunctionSnapshots has already been started')
 
-        snapshotters = []
+        original_funcs = []
 
         for func, mock in self.mock_funcs.items():
             set_function(func, mock)
-            snapshotters.append(func)
+            original_funcs.append(func)
 
-        self.snapshotters = snapshotters
+        self._original_funcs = original_funcs
 
     def stop(self):
-        for func in self.snapshotters:
+        for func in self._original_funcs:
             set_function(func, func)
 
-        self.snapshotters = None
+        self._original_funcs = None
 
     def __enter__(self):
         self.start()
