@@ -223,3 +223,60 @@ def snapshot_functions(*snapshot_funcs):
         return wrapper
 
     return decorator
+
+
+class MockFunctions:
+
+    def __init__(self, mock_funcs: dict = None):
+        if mock_funcs is None:
+            mock_funcs = {}
+
+        self.mock_funcs = mock_funcs
+        self._original_funcs = None
+
+    def start(self):
+        if self._original_funcs is not None:
+            raise RuntimeError('FunctionSnapshots has already been started')
+
+        original_funcs = []
+
+        for func, mock in self.mock_funcs.items():
+            set_function(func, mock)
+            original_funcs.append(func)
+
+        self._original_funcs = original_funcs
+
+    def stop(self):
+        for func in self._original_funcs:
+            set_function(func, func)
+
+        self._original_funcs = None
+
+    def __enter__(self):
+        self.start()
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+
+
+def mock_functions(mock_funcs):
+    """
+    @param lose_request_details Saves no request details to avoid leaking keys
+    @param ignore_headers Ignores all headers (True) or specific header list
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            from booktest import TestBook
+            if isinstance(args[0], TestBook):
+                t = args[1]
+            else:
+                t = args[0]
+            with MockFunctions(mock_funcs):
+                return await maybe_async_call(func, args, kwargs)
+        wrapper._original_function = func
+        return wrapper
+
+    return decorator
