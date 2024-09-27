@@ -68,6 +68,13 @@ class RequestKey:
         self.json_object = json_object
         self.hash = hash_code
 
+    def increase_order(self):
+        prev_order = self.json_object.get("order", 0)
+        json_object = copy.copy(self.json_object)
+        json_object["order"] = prev_order + 1
+        del json_object["hash"]
+        return RequestKey(json_object, False)
+
     def url(self):
         return self.json_object.get("url")
 
@@ -179,27 +186,39 @@ class SnapshotAdapter(adapters.BaseAdapter):
         self.encode_body = encode_body
         self.requests = []
 
-    def send(self, request, **kwargs):
+    def mark_order(self, key: RequestKey):
+        for i in self.requests:
+            if key == i.request:
+                key = key.increase_order()
+
+        return key
+
+    def lookup_snapshot(self, request):
         key = RequestKey.from_request(request,
                                       self.ignore_headers,
                                       self.json_to_hash,
                                       self.encode_body)
 
+        key = self.mark_order(key)
+
         for snapshot in reversed(self.snapshots):
             if snapshot.match(key):
                 if snapshot not in self.requests:
                     self.requests.append(snapshot)
-                return snapshot.response
+                return key, snapshot.response
 
         if not self.capture_snapshots:
             raise ValueError(f"missing snapshot for request {request.url} - {key.hash}. "
                              f"try running booktest with '-s' flag to capture the missing snapshot")
 
-        rv = adapters.HTTPAdapter().send(request)
+        return key, None
 
-        # remove old version, it may have been timeout
-        self.requests = list([i for i in self.requests if not i.request == key])
-        self.requests.append(RequestSnapshot(key, rv))
+    def send(self, request, **kwargs):
+        key, rv = self.lookup_snapshot(request)
+
+        if rv is None:
+            rv = adapters.HTTPAdapter().send(request)
+            self.requests.append(RequestSnapshot(key, rv))
 
         return rv
 
