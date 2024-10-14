@@ -46,12 +46,14 @@ async def test_requests(t: bt.TestCaseRun):
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
 
+
 @bt.snapshot_httpx()
 async def test_httpx(t: bt.TestCaseRun):
-    response = httpx.get("https://api.weather.gov/")
+    async with httpx.AsyncClient() as client:
+        response = await client.get("https://api.weather.gov/")
 
-    t.h1("response:")
-    t.tln(json.dumps(response.json(), indent=4))
+        t.h1("response:")
+        t.tln(json.dumps(response.json(), indent=4))
 
 
 

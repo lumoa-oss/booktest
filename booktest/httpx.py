@@ -254,12 +254,12 @@ class SnapshotHttpx:
 
         return rv
 
-    async def async_handle_request(self, transport: httpx.AsyncHTTPTransport, request: httpx.Request):
+    async def handle_async_request(self, transport: httpx.AsyncHTTPTransport, request: httpx.Request):
         key, rv = self.lookup_snapshot(request)
 
         if rv is None:
             rv = await self._real_handle_async_request(transport, request)
-            self.save_snapshot(key, rv)
+            self.requests.append(RequestSnapshot(key, rv))
 
         return rv
 
@@ -280,7 +280,7 @@ class SnapshotHttpx:
         async def mocked_handle_async_request(
                 transport: httpx.AsyncHTTPTransport, request: httpx.Request
         ) -> httpx.Response:
-            return await self._handle_async_request(transport, request)
+            return await self.handle_async_request(transport, request)
 
         setattr(
             httpx.AsyncHTTPTransport,
