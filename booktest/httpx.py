@@ -310,7 +310,7 @@ class SnapshotHttpx:
 
     def t_snapshots(self):
         self.t.h1("httpx snaphots:")
-        for i in self.requests:
+        for i in sorted(self.requests, key=lambda i: (i.request.url(), i.hash())):
             self.t.tln(f" * {i.request.url()} - {i.hash()}")
 
     def __enter__(self):

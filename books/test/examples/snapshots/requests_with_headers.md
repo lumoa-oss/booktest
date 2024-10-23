@@ -92,9 +92,9 @@ one snapshot is used twice.
 
 # request snaphots:
 
- * https://httpbin.org/anything - d360944caa4275ee6fb2da7159894b4ed90cd17f
  * https://httpbin.org/anything - 3f887fcebc089421e4713ef161004859c8007d29
  * https://httpbin.org/anything - 655d501f55408bce98f364383a5f1d6b5378e30b
+ * https://httpbin.org/anything - d360944caa4275ee6fb2da7159894b4ed90cd17f
 
 # env snaphots:
 

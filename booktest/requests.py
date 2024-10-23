@@ -369,7 +369,7 @@ class SnapshotRequests:
 
     def t_snapshots(self):
         self.t.h1("request snaphots:")
-        for i in self._adapter.requests:
+        for i in sorted(self._adapter.requests, key=lambda i: (i.request.url(), i.hash())):
             self.t.tln(f" * {i.request.url()} - {i.hash()}")
 
     def __enter__(self):
