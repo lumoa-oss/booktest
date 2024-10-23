@@ -12,7 +12,8 @@
                 "content-type": "application/json; charset=utf-8",
                 "transfer-encoding": "chunked",
                 "connection": "keep-alive",
-                "vary": "Accept-Encoding"
+                "vary": "Accept-Encoding",
+                "content-length": "228"
             },
             "statusCode": 200,
             "content": "eyJ5ZWFyIjoyMDI0LCJtb250aCI6OSwiZGF5IjoyNywiaG91ciI6MTUsIm1pbnV0ZSI6NCwic2Vjb25kcyI6MTIsIm1pbGxpU2Vjb25kcyI6OTEwLCJkYXRlVGltZSI6IjIwMjQtMDktMjdUMTU6MDQ6MTIuOTEwODI0IiwiZGF0ZSI6IjA5LzI3LzIwMjQiLCJ0aW1lIjoiMTU6MDQiLCJ0aW1lWm9uZSI6IkV1cm9wZS9BbXN0ZXJkYW0iLCJkYXlPZldlZWsiOiJGcmlkYXkiLCJkc3RBY3RpdmUiOnRydWV9"
@@ -32,7 +33,8 @@
                 "content-type": "application/json; charset=utf-8",
                 "transfer-encoding": "chunked",
                 "connection": "keep-alive",
-                "vary": "Accept-Encoding"
+                "vary": "Accept-Encoding",
+                "content-length": "229"
             },
             "statusCode": 200,
             "content": "eyJ5ZWFyIjoyMDI0LCJtb250aCI6OSwiZGF5IjoyNywiaG91ciI6MTUsIm1pbnV0ZSI6NCwic2Vjb25kcyI6MTMsIm1pbGxpU2Vjb25kcyI6MTgwLCJkYXRlVGltZSI6IjIwMjQtMDktMjdUMTU6MDQ6MTMuMTgwODQyNCIsImRhdGUiOiIwOS8yNy8yMDI0IiwidGltZSI6IjE1OjA0IiwidGltZVpvbmUiOiJFdXJvcGUvQW1zdGVyZGFtIiwiZGF5T2ZXZWVrIjoiRnJpZGF5IiwiZHN0QWN0aXZlIjp0cnVlfQ=="
