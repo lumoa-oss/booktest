@@ -53,9 +53,10 @@ def main(arguments=None):
     args = parser.parse_args(args=arguments)
 
     if "exec" in args:
-        exec_parsed(args)
+        return exec_parsed(args)
     else:
         parser.print_help()
+        return 1
 
 
 if __name__ == "__main__":
