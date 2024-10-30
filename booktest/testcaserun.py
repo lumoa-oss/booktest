@@ -176,7 +176,13 @@ class TestCaseRun:
         and makes the test break whenever image changes.
         """
         with open(file, 'rb', buffering=0) as f:
-            hash_code = str(hashlib.file_digest(f, 'sha1').hexdigest())
+            sha1 = hashlib.sha1()  # Create a SHA-1 hash object
+            with open(file, "rb") as f:
+                # Read the file in chunks to avoid memory issues with large files
+                for chunk in iter(lambda: f.read(4096), b""):
+                    sha1.update(chunk)
+            hash_code = str(sha1.hexdigest())
+
             path, filename = os.path.split(file)
             name = os.path.join(path, hash_code + postfix)
             os.rename(file, name)
