@@ -1,5 +1,4 @@
 import traceback
-import logging
 import multiprocessing
 import os
 import threading
@@ -14,7 +13,6 @@ from booktest.review import create_index, report_case, start_report, \
 from booktest.testrun import TestRun
 from booktest.reports import CaseReports, Metrics, test_result_to_exit_code, read_lines, write_lines, UserRequest, \
     TestResult
-from booktest.utils import SetupTeardown
 
 #
 # Parallelization and test execution support:

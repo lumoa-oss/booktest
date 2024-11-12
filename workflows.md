@@ -59,6 +59,12 @@ If tests failed, you likely want review (-w) them in interactive (-i) mode:
 booktest -w -i
 ```
 
+You may also want to inspect logs with -L flag:
+
+```bash
+booktest -w -i -L
+```
+
 If you want to see the test results containing you can use 
 
 ```bash

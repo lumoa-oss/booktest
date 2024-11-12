@@ -13,6 +13,14 @@ config_comments = {
 #   'sudo apt install meld'
 #
 """,
+    "fast_diff_tool":
+"""#
+#
+# fast_diff_tool is used to see changes in the results quickly
+#
+# default option is diff, which should be present in most systems
+#
+""",
     "md_viewer":
 """#
 # md_viewer is the tool used to view the md content, like tables, lists, links and images
@@ -24,6 +32,14 @@ config_comments = {
 # you can install 'retext' in Debian based distros with
 #
 #   'sudo apt install retext'
+#
+""",
+    "log_viewer":
+"""#
+#
+# log_viewer is used to view the logs
+#
+# one option is less, which should be present in most systems
 #
 """,
     "test_paths":
@@ -45,7 +61,9 @@ config_comments = {
 
 config_defaults = {
     "diff_tool": "meld",
+    "fast_diff_tool": "diff",
     "md_viewer": "retext --preview",
+    "log_viewer": "less",
     "test_paths": "test,book,run",
     "default_tests": "test,book",
     "books_path": "books"
@@ -80,7 +98,9 @@ def setup_booktest():
 
     configs = []
     configs.append(prompt_config("diff_tool", config))
+    configs.append(prompt_config("fast_diff_tool", config))
     configs.append(prompt_config("md_viewer", config))
+    configs.append(prompt_config("log_viewer", config))
     configs.append(prompt_config("test_paths", config))
     configs.append(prompt_config("default_tests", config))
     configs.append(prompt_config("books_path", config))

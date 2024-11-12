@@ -9,6 +9,13 @@
 diff_tool=meld
 
 #
+# fast_diff_tool is used to see changes in the results quickly
+#
+# default option is diff, which should be present in most systems
+#
+fast_diff_tool=diff
+
+#
 # md_viewer is used to view the md content, like tables, lists, links and images
 #
 # one option is retext, which is an md editor
@@ -16,6 +23,13 @@ diff_tool=meld
 # Retext - https://github.com/retext-project/retext
 #
 md_viewer=retext --preview
+
+#
+# log_viewer is used to view the logs
+#
+# one option is less, which should be present in most systems
+#
+log_viewer=less
 
 #
 # default paths for looking up test cases
