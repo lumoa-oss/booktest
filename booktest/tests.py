@@ -139,6 +139,11 @@ class Tests:
             help="verbose"
         )
         parser.add_argument(
+            "-L",
+            action='store_true',
+            help="prints logs"
+        )
+        parser.add_argument(
             "-f",
             action='store_true',
             help="fails fast"
@@ -373,6 +378,8 @@ class Tests:
             config["always_interactive"] = True
         if parsed.v:
             config["verbose"] = True
+        if parsed.L:
+            config["print_logs"] = True
         if parsed.f:
             config["fail_fast"] = True
         if parsed.c:

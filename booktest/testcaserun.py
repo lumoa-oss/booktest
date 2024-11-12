@@ -2,30 +2,16 @@ import hashlib
 import logging
 import os.path as path
 import os
-import inspect
-from enum import Enum
+
 import time
-import pickle
-import functools
 import shutil
 
-import traceback
 import sys
 import json
-import argparse
 
-from collections import OrderedDict
-from coverage import Coverage
-
-from booktest.cache import LruCache
-from booktest.review import report_case_begin, case_review, report_case_result
+from booktest.review import report_case_begin, case_review, report_case_result, maybe_print_logs
 from booktest.tokenizer import TestTokenizer, BufferIterator
-from booktest.reports import TestResult, CaseReports
-
-from enum import Enum
-
-
-import pickle
+from booktest.reports import TestResult
 
 
 
@@ -219,7 +205,7 @@ class TestCaseRun:
         Internal method: runs the review step, which is done at the end of the test.
         This method is typically called by end method()
 
-        This step may be interactive depending of the configuration. It ends up with
+        This step may be interactive depending on the configuration. It ends up with
         the user or automation accepting or rejecting the result.
 
         Returns test result (TEST, DIFF, OK) and interaction value, which is used to signal e.g.
@@ -251,6 +237,8 @@ s
             rv = TestResult.DIFF
         else:
             rv = TestResult.OK
+
+        maybe_print_logs(self.print, self.config, self.out_base_dir, self.name)
 
         report_case_result(
             self.print,

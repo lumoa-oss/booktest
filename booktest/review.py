@@ -28,6 +28,7 @@ def run_tool(config, tool, args):
 def interact(exp_dir, out_dir, case_name, test_result, config):
     exp_file_name = os.path.join(exp_dir, case_name + ".md")
     out_file_name = os.path.join(out_dir, case_name + ".md")
+    log_file_name = os.path.join(out_dir, case_name + ".log")
 
     rv = test_result
     user_request = UserRequest.NONE
@@ -42,7 +43,9 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
             "(c)ontinue",
             "(q)uit",
             "(v)iew",
-            "(d)iff?"
+            "(l)ogs",
+            "(d)iff",
+            "fast (D)iff"
         ])
         prompt = \
             ", ".join(options[:len(options) - 1]) + \
@@ -66,9 +69,15 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
             else:
                 arg = out_file_name
             run_tool(config, "md_viewer", arg)
+        elif answer == "l":
+            run_tool(config, "log_viewer", log_file_name)
         elif answer == "d":
             run_tool(config,
                      "diff_tool",
+                     f"{exp_file_name} {out_file_name}")
+        elif answer == "D":
+            run_tool(config,
+                     "fast_diff_tool",
                      f"{exp_file_name} {out_file_name}")
     return rv, user_request
 
@@ -156,6 +165,30 @@ def report_case_result(printer,
     elif result == TestResult.FAIL:
         printer(f"FAILED in {int_took_ms} ms")
 
+def maybe_print_logs(printer, config, out_dir, case_name):
+    verbose = config.get("verbose", False)
+    print_logs = config.get("print_logs", False)
+
+    if print_logs:
+        if verbose:
+            lines = read_lines(out_dir, case_name + ".log")
+            if len(lines) > 0:
+                printer()
+                printer(f"{case_name} logs:")
+                printer()
+                # report case logs
+                for i in lines:
+                    printer("  " + i)
+        else:
+            lines = read_lines(out_dir, case_name + ".log")
+            if len(lines) > 0:
+                printer()
+                for i in lines:
+                    printer("    log: " + i)
+                printer(f"  {case_name}..", end="")
+
+
+
 
 def report_case(printer,
                 exp_dir,
@@ -174,6 +207,8 @@ def report_case(printer,
         # report case content
         for i in read_lines(out_dir, case_name + ".txt"):
             printer(i)
+
+    maybe_print_logs(printer, config, out_dir, case_name)
 
     report_case_result(printer,
                        case_name,
