@@ -54,7 +54,8 @@ class SnapshotEnv:
     def stop(self):
         for name, value in self._old_env.items():
             if value is None:
-                del os.environ[name]
+                if name in os.environ:
+                    del os.environ[name]
             else:
                 os.environ[name] = self._old_env[name]
 
@@ -116,14 +117,16 @@ class MockMissingEnv:
 
             if old_value is None:
                 if value is None:
-                    del os.environ[name]
+                    if name in os.environ:
+                        del os.environ[name]
                 else:
                     os.environ[name] = value
 
     def stop(self):
         for name, value in self._old_env.items():
             if value is None:
-                del os.environ[name]
+                if name in os.environ:
+                    del os.environ[name]
             else:
                 os.environ[name] = self._old_env[name]
 
