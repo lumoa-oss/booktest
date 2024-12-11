@@ -8,6 +8,15 @@ import subprocess
 import re
 
 
+EXEC_PATH = None
+
+
+def booktest_exec_path():
+    if EXEC_PATH is None:
+        EXEC_PAT = subprocess.check_output(["which", "booktest"]).decode("utf-8").strip()
+    return EXEC_PAT
+
+
 class BooktestProcess:
 
     def __init__(self, args, context = None, out_file = None, err_file = None):
@@ -31,7 +40,7 @@ class BooktestProcess:
         else:
             self.err = open(self.err_file, "w")
 
-        self.process = subprocess.Popen(["/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/bin/booktest"] + self.args,
+        self.process = subprocess.Popen([booktest_exec_path()] + self.args,
                                         cwd=self.context,
                                         env={},
                                         stdout=self.out,
