@@ -30,6 +30,14 @@
 
          * [dependencies](test/dependencies/dependencies.md)
 
+     * cli
+         * [configurations](test/cli/configurations.md)
+         * [context](test/cli/context.md)
+         * [help](test/cli/help.md)
+         * [list](test/cli/list.md)
+         * [parallel](test/cli/parallel.md)
+         * [run](test/cli/run.md)
+
      * utils
          * all_caps
              * [names](test/utils/all_caps/names.md)

@@ -1,5 +1,23 @@
 from booktest.config import get_default_config
 
+personal_comment = \
+"""
+#
+# This file is meant for personal UI configuration with booktest 
+#
+# This file should be included in .gitignore and never commited to version control!
+#
+"""
+
+project_comment = \
+"""
+#
+# This file is meant for project specific configuration like python paths and test file location
+#
+# This file should be included in the version control.
+#
+"""
+
 
 config_comments = {
     "diff_tool":
@@ -42,6 +60,13 @@ config_comments = {
 # one option is less, which should be present in most systems
 #
 """,
+    "python_path":
+"""#
+# the python_path is used to specify the directories where the python modules are located
+#
+# by default, it is 'src:.', which means that the src directory and the current directory are searched
+#
+""",
     "test_paths":
 """#
 # booktest automatically detects tests in the default_tests directories
@@ -64,6 +89,7 @@ config_defaults = {
     "fast_diff_tool": "diff",
     "md_viewer": "retext --preview",
     "log_viewer": "less",
+    "python_path": "src:.",
     "test_paths": "test,book,run",
     "default_tests": "test,book",
     "books_path": "books"
@@ -88,12 +114,12 @@ def prompt_config(key,
     return key, value
 
 
-def setup_booktest():
+def setup_personal():
     config = get_default_config()
 
     print()
-    print("setup asks you to specify various tools and paths for booktest")
-    print("==============================================================")
+    print("setup asks you to specify various tools and paths for your personal booktest config")
+    print("====================================================================================")
     print()
 
     configs = []
@@ -101,14 +127,44 @@ def setup_booktest():
     configs.append(prompt_config("fast_diff_tool", config))
     configs.append(prompt_config("md_viewer", config))
     configs.append(prompt_config("log_viewer", config))
-    configs.append(prompt_config("test_paths", config))
-    configs.append(prompt_config("default_tests", config))
-    configs.append(prompt_config("books_path", config))
 
     with open(".booktest", "w") as f:
+        f.write(personal_comment)
+        f.write("\n")
         for key, value in configs:
             f.write(config_comments[key])
             f.write(f"{key}={value}\n\n")
     print("updated .booktest")
+
+    return 0
+
+
+def setup_project():
+    config = get_default_config()
+
+    print()
+    print("setup asks you to specify various tools and paths for booktest project config")
+    print("=============================================================================")
+    print()
+
+    configs = []
+    configs.append(prompt_config("python_path", config))
+    configs.append(prompt_config("test_paths", config))
+    configs.append(prompt_config("default_tests", config))
+    configs.append(prompt_config("books_path", config))
+
+    with open("booktest.ini", "w") as f:
+        f.write(project_comment)
+        f.write("\n")
+        for key, value in configs:
+            f.write(config_comments[key])
+            f.write(f"{key}={value}\n\n")
+    print("updated booktest.ini")
+
+    return 0
+
+def setup_booktest():
+    setup_project()
+    setup_personal()
 
     return 0

@@ -9,7 +9,7 @@ import argcomplete
 import sys
 
 import booktest as bt
-from booktest.config import get_default_config
+from booktest.config import get_default_config, DEFAULT_PYTHON_PATH
 from booktest.detection import detect_tests, detect_setup, include_sys_path
 import os
 
@@ -19,7 +19,7 @@ def add_exec(parser, method):
         exec=method)
 
 
-def setup_test_suite(parser, context=None):
+def setup_test_suite(parser, context=None, python_path=None):
     if context is None:
         context = os.path.curdir
 
@@ -27,7 +27,10 @@ def setup_test_suite(parser, context=None):
 
     default_paths = config.get("test_paths", "test,book,run").split(",")
 
-    include_sys_path(context, config)
+    if python_path is None:
+        python_path = config.get("python_path", DEFAULT_PYTHON_PATH)
+
+    include_sys_path(context, python_path)
 
     tests = []
     setup = None
@@ -52,14 +55,23 @@ def exec_parsed(parsed):
 
 
 def main(arguments=None):
+    if arguments is None:
+        arguments = sys.argv[1:]
+
     parser = argparse.ArgumentParser(description='booktest - review driven test tool')
 
     context = os.environ.get("BOOKTEST_CONTEXT", None)
+    python_path = os.environ.get("PYTHON_PATH", None)
+
     if arguments and "--context" in arguments:
         context_pos = arguments.index("--context")
-        context = arguments(context_pos+1)
+        context = arguments[context_pos+1]
 
-    setup_test_suite(parser, context)
+    if arguments and "--python-path" in arguments:
+        python_path_pos = arguments.index("---python-path")
+        python_path = arguments[python_path_pos+1]
+
+    setup_test_suite(parser, context, python_path)
     argcomplete.autocomplete(parser)
 
     args = parser.parse_args(args=arguments)

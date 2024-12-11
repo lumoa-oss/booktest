@@ -6,8 +6,6 @@ import sys
 from inspect import signature, Parameter
 import types
 
-from requests.packages import package
-
 import booktest as bt
 from booktest.naming import clean_method_name, clean_test_postfix
 
@@ -102,14 +100,12 @@ def get_context(config: dict):
     return context_path
 
 
-def include_sys_path(root: str, config: dict):
-    python_path = config.get("python_path", "src:.")
+def include_sys_path(root: str, python_path: str):
     for src_path in python_path.split(":"):
         if not os.path.isabs(src_path):
             src_path = os.path.join(root, src_path)
         if os.path.exists(src_path) and src_path not in sys.path:
             sys.path.insert(0, os.path.abspath(src_path))
-
 
 def detect_setup(context, path):
     setup = None
