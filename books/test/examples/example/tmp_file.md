@@ -11,7 +11,7 @@ this is message
 
 ## Verify results:
 
-file name: books/.out/test/examples/example/tmp_file.tmp/message.txt
+file name: ./books/.out/test/examples/example/tmp_file.tmp/message.txt
 
 file byte size: 15
 

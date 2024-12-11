@@ -4,8 +4,15 @@ import os
 from os import path
 
 
-DEFAULT_CONFIG_FILE = ".booktest"
+# project config, should be put in git
+PROJECT_CONFIG_FILE = "booktest.ini"
+
+# personal config, should not be put in git
+DOT_CONFIG_FILE = ".booktest"
+
 DEFAULT_CONFIG = None
+
+DEFAULT_PYTHON_PATH = "src:."
 
 
 def parse_config_value(value):
@@ -21,18 +28,23 @@ def parse_config_file(config_file, config):
     if path.exists(config_file):
         with open(config_file) as f:
             for line in f:
-                if line.startswith('#') or not line.strip():
+                if line.startswith(';') or line.startswith('#') or not line.strip():
                     continue
                 key, value = line.strip().split('=', 1)
                 config[key] = parse_config_value(value)
 
 
-def resolve_default_config(config_file):
+def resolve_default_config(context):
+    project_config_file = os.path.join(context, PROJECT_CONFIG_FILE)
+    dot_config_file = os.path.join(context, DOT_CONFIG_FILE)
+
     rv = {}
-    # let home directory .booktest file has lowest priority
+    # let personal .booktest file has lowest priority
     parse_config_file("~/.booktest", rv)
+    # let project config booktest.ini file
+    parse_config_file(project_config_file, rv)
     # let config_file defaults have lower priority
-    parse_config_file(config_file, rv)
+    parse_config_file(dot_config_file, rv)
 
     # environment defaults have higher priority
     for key, value in os.environ.items():
@@ -43,8 +55,9 @@ def resolve_default_config(config_file):
     return rv
 
 
-def get_default_config():
+def get_default_config(context=None):
     global DEFAULT_CONFIG
     if DEFAULT_CONFIG is None:
-        DEFAULT_CONFIG = resolve_default_config(DEFAULT_CONFIG_FILE)
+        DEFAULT_CONFIG = resolve_default_config(context)
+
     return DEFAULT_CONFIG
