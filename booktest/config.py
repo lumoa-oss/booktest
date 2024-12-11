@@ -21,7 +21,7 @@ def parse_config_file(config_file, config):
     if path.exists(config_file):
         with open(config_file) as f:
             for line in f:
-                if line.startswith('#') or not line.strip():
+                if line.startswith(';') or line.startswith('#') or not line.strip():
                     continue
                 key, value = line.strip().split('=', 1)
                 config[key] = parse_config_value(value)
@@ -29,7 +29,9 @@ def parse_config_file(config_file, config):
 
 def resolve_default_config(config_file):
     rv = {}
-    # let home directory .booktest file has lowest priority
+    # let project config booktest.ini file has lowest priority
+    parse_config_file("~/booktest.ini", rv)
+    # let personal .booktest file has lowest priority
     parse_config_file("~/.booktest", rv)
     # let config_file defaults have lower priority
     parse_config_file(config_file, rv)
@@ -43,8 +45,13 @@ def resolve_default_config(config_file):
     return rv
 
 
-def get_default_config():
+def get_default_config(context=None):
     global DEFAULT_CONFIG
     if DEFAULT_CONFIG is None:
-        DEFAULT_CONFIG = resolve_default_config(DEFAULT_CONFIG_FILE)
+        config_path = DEFAULT_CONFIG_FILE
+        if context:
+            config_path = os.path.join(context, DEFAULT_CONFIG_FILE)
+
+        DEFAULT_CONFIG = resolve_default_config(config_path)
+
     return DEFAULT_CONFIG

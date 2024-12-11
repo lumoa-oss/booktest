@@ -244,20 +244,28 @@ class Tests:
             help="store coverage information"
         )
         parser.add_argument(
-            "-md-viewer",
+            "--md-viewer",
             help="set the used mark down viewer"
         )
         parser.add_argument(
-            "-diff-tool",
+            "--diff-tool",
             help="set the used diff tool"
         )
+        parser.add_argument(
+            '--context',
+            type=str,
+            help="context, where the tests are detected and run. default is local directory.")
+        parser.add_argument(
+            '--python-path',
+            type=str,
+            help="python path for detecting source files. values should separated by ':'. default is 'src:.'")
+
         parser.add_argument(
             '-l',
             action='store_const',
             dest='cmd',
             const="-l",
             help="lists the selected test cases")
-
         parser.add_argument(
             "--setup",
             action='store_const',
@@ -402,6 +410,10 @@ class Tests:
             config["md_viewer"] = parsed.md_viewer
         if parsed.diff_tool:
             config["diff_tool"] = parsed.diff_tool
+        if parsed.context:
+            config["context"] = parsed.context
+        if parsed.diff_tool:
+            config["python_path"] = parsed.python_path
 
         def is_garbage(not_garbage, file):
             for ng in not_garbage:
