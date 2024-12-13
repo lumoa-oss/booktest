@@ -4,13 +4,15 @@ It can be used for creating insights or for creating topics.
 """
 
 import argparse
+from os import chdir
+
 import argcomplete
 
 import sys
 
 import booktest as bt
 from booktest.config import get_default_config, DEFAULT_PYTHON_PATH
-from booktest.detection import detect_tests, detect_setup, include_sys_path, resolve_context
+from booktest.detection import detect_tests, detect_setup, include_sys_path
 import os
 
 
@@ -19,29 +21,27 @@ def add_exec(parser, method):
         exec=method)
 
 
-def setup_test_suite(parser, context=None, python_path=None):
-    context = resolve_context(context)
-
-    config = get_default_config(context)
+def setup_test_suite(parser, python_path=None):
+    config = get_default_config()
 
     default_paths = config.get("test_paths", "test,book,run").split(",")
 
     if python_path is None:
         python_path = config.get("python_path", DEFAULT_PYTHON_PATH)
 
-    include_sys_path(context, python_path)
+    include_sys_path(python_path)
 
     tests = []
     setup = None
     for path in default_paths:
-        tests.extend(detect_tests(path, context))
-        path_setup = detect_setup(path, context)
+        tests.extend(detect_tests(path))
+        path_setup = detect_setup(path)
         if path_setup is not None:
             setup = path_setup
 
     test_suite = bt.merge_tests(tests)
     test_suite.setup_parser(parser)
-    books_dir = os.path.join(context, config.get("books_path", "books"))
+    books_dir = config.get("books_path", "books")
 
     parser.set_defaults(
         exec=lambda args: test_suite.exec_parsed(books_dir,
@@ -70,7 +70,10 @@ def main(arguments=None):
         python_path_pos = arguments.index("---python-path")
         python_path = arguments[python_path_pos+1]
 
-    setup_test_suite(parser, context, python_path)
+    if context is not None:
+        os.chdir(context)
+
+    setup_test_suite(parser, python_path)
     argcomplete.autocomplete(parser)
 
     args = parser.parse_args(args=arguments)

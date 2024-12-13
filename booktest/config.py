@@ -1,6 +1,5 @@
 from pydoc import resolve
 
-from booktest.detection import resolve_context
 from booktest.review import BOOK_TEST_PREFIX
 
 import os
@@ -37,11 +36,10 @@ def parse_config_file(config_file, config):
                 config[key] = parse_config_value(value)
 
 
-def resolve_default_config(context):
-    context = resolve_context(context)
+def resolve_default_config():
 
-    project_config_file = os.path.join(context, PROJECT_CONFIG_FILE)
-    dot_config_file = os.path.join(context, DOT_CONFIG_FILE)
+    project_config_file = PROJECT_CONFIG_FILE
+    dot_config_file = DOT_CONFIG_FILE
 
     rv = {}
     # let personal .booktest file has lowest priority
@@ -60,9 +58,9 @@ def resolve_default_config(context):
     return rv
 
 
-def get_default_config(context=None):
+def get_default_config():
     global DEFAULT_CONFIG
     if DEFAULT_CONFIG is None:
-        DEFAULT_CONFIG = resolve_default_config(context)
+        DEFAULT_CONFIG = resolve_default_config()
 
     return DEFAULT_CONFIG
