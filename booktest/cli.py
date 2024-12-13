@@ -35,8 +35,8 @@ def setup_test_suite(parser, context=None, python_path=None):
     tests = []
     setup = None
     for path in default_paths:
-        tests.extend(detect_tests(context, path))
-        path_setup = detect_setup(context, path)
+        tests.extend(detect_tests(path, context))
+        path_setup = detect_setup(path, context)
         if path_setup is not None:
             setup = path_setup
 
