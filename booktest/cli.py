@@ -10,7 +10,7 @@ import sys
 
 import booktest as bt
 from booktest.config import get_default_config, DEFAULT_PYTHON_PATH
-from booktest.detection import detect_tests, detect_setup, include_sys_path
+from booktest.detection import detect_tests, detect_setup, include_sys_path, resolve_context
 import os
 
 
@@ -20,8 +20,7 @@ def add_exec(parser, method):
 
 
 def setup_test_suite(parser, context=None, python_path=None):
-    if context is None:
-        context = os.path.curdir
+    context = resolve_context(context)
 
     config = get_default_config(context)
 

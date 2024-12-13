@@ -113,6 +113,8 @@ def include_sys_path(root: str, python_path: str):
 def resolve_context(context):
     if context is None:
         context = os.path.curdir
+    if context == ".":
+        context = ""
     return context
 
 def detect_setup(path, context=None):
