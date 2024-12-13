@@ -1,3 +1,6 @@
+from pydoc import resolve
+
+from booktest.detection import resolve_context
 from booktest.review import BOOK_TEST_PREFIX
 
 import os
@@ -35,6 +38,8 @@ def parse_config_file(config_file, config):
 
 
 def resolve_default_config(context):
+    context = resolve_context(context)
+
     project_config_file = os.path.join(context, PROJECT_CONFIG_FILE)
     dot_config_file = os.path.join(context, DOT_CONFIG_FILE)
 
