@@ -43,7 +43,10 @@ def resolve_default_config():
 
     rv = {}
     # let personal .booktest file has lowest priority
-    parse_config_file("~/.booktest", rv)
+    home_directory = os.path.expanduser("~")
+    file_path = os.path.join(home_directory, ".booktest")
+
+    parse_config_file(file_path, rv)
     # let project config booktest.ini file
     parse_config_file(project_config_file, rv)
     # let config_file defaults have lower priority

@@ -1,7 +1,10 @@
+import functools
+import logging
 import os.path
 
 import os
 import importlib
+import pkgutil
 import sys
 from inspect import signature, Parameter
 import types
@@ -11,7 +14,9 @@ from booktest.naming import clean_method_name, clean_test_postfix
 
 from booktest.utils import SetupTeardown
 
-BOOKTEST_SETUP_FILENAME = "__booktest__.py"
+BOOKTEST_SETUP_MODULE = "__booktest__"
+
+BOOKTEST_SETUP_FILENAME = f"{BOOKTEST_SETUP_MODULE}.py"
 
 PROCESS_SETUP_TEARDOWN = "process_setup_teardown"
 
@@ -33,10 +38,7 @@ class BookTestSetup:
         return SetupTeardown(self._setup_teardown)
 
 
-def parse_booktest_setup(root, f):
-    module_name = os.path.join(root, f[:len(f) - 3]).replace("/", ".")
-    module = importlib.import_module(module_name)
-
+def parse_booktest_setup_module(module):
     setup_teardown = None
 
     for name in dir(module):
@@ -58,10 +60,15 @@ def parse_booktest_setup(root, f):
     return BookTestSetup(setup_teardown)
 
 
-def parse_test_file(root, f):
-    rv = []
-    test_suite_name = os.path.join(root, clean_test_postfix(f[:len(f) - 3]))
+def parse_booktest_setup(root, f):
     module_name = os.path.join(root, f[:len(f) - 3]).replace("/", ".")
+    module = importlib.import_module(module_name)
+
+    return parse_booktest_setup_module(module)
+
+
+def get_module_tests(test_suite_name, module_name):
+    rv = []
     module = importlib.import_module(module_name)
     test_cases = []
     for name in dir(module):
@@ -91,6 +98,13 @@ def parse_test_file(root, f):
 
     return rv
 
+
+def get_file_tests(root, f):
+    test_suite_name = os.path.join(root, clean_test_postfix(f[:len(f) - 3]))
+    module_name = os.path.join(root, f[:len(f) - 3]).replace("/", ".")
+    return get_module_tests(test_suite_name, module_name)
+
+
 def include_sys_path(python_path: str):
     for src_path in python_path.split(":"):
         if os.path.exists(src_path) and src_path not in sys.path:
@@ -109,14 +123,33 @@ def detect_setup(path):
     return setup
 
 
+def detect_module_setup(module_name):
+    setup = None
+
+    for _, submodule, is_pkg in pkgutil.walk_packages([module_name], module_name + "."):
+        submodule_path = submodule.split(".")
+        submodule_name = submodule_path[len(submodule_path) - 1]
+        if submodule_name == BOOKTEST_SETUP_MODULE:
+            module = importlib.import_module(submodule)
+            setup = parse_booktest_setup_module(module)
+
+    return setup
+
+
 def detect_tests(path):
+    """ Detects tests in a file system path"""
     tests = []
     if os.path.exists(path):
         for root, dirs, files in os.walk(path):
             for f in files:
                 if f.endswith("_test.py") or f.endswith("_book.py") or f.endswith("_suite.py") or \
                    (f.startswith("test_") and f.endswith(".py")):
-                    tests.extend(parse_test_file(root, f))
+                    try:
+                        tests.extend(get_file_tests(root, f))
+                    except Exception as e:
+                        print(f"Error while loading tests from {f}: {e}", file=sys.stderr)
+                        logging.exception(e)
+
 
     return tests
 
@@ -125,3 +158,26 @@ def detect_test_suite(path):
     tests = detect_tests(path)
 
     return bt.merge_tests(tests)
+
+
+def detect_module_tests(module_name):
+    """ Detects tests in a module. This is needed e.g. in pants, where original FS is not easily accessible """
+    tests = []
+
+    for _, submodule_name, is_pkg in pkgutil.walk_packages([module_name], module_name + "."):
+        submodule_path = str(submodule_name).split(".")
+        test_name = submodule_path[len(submodule_path) - 1]
+        if test_name.endswith("_test") or test_name.endswith("_book") or test_name.endswith("_suite") or\
+           test_name.startswith("test_"):
+            submodule_path[len(submodule_path) - 1] = clean_test_postfix(test_name)
+            test_suite_name = os.path.join(*submodule_path)
+            tests.extend(get_module_tests(test_suite_name, submodule_name))
+
+    return tests
+
+
+def detect_module_test_suite(path):
+    tests = detect_module_tests(path)
+
+    return bt.merge_tests(tests)
+

@@ -40,4 +40,4 @@ lazydocs `find booktest -name '*.py' `
 
 ## Contributing
 
-If you want to contribute, please contact Antti Rauhala (antti at lumoa.me)
+If you want to contribute, please contact Antti Rauhala (antti.rauhala at netigate.net)

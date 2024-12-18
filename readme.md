@@ -56,8 +56,11 @@ Examples are found in the [test example directory](test/examples).
 
 Example results are visible in the [book index](books/index.md).
 
-There is also [separate example project](https://github.com/lumoa-oss/booktest-example)
+There are example projects found in example directory: 
 
+ * [examples/predictor](examples/predictor/readme.md) demonstrates a simple predictor using booktest
+ * [examples/configurations](examples/configurations/readme.md) demonstrates how booktest can be configured
+ * [examples/configurations](examples/configurations/readme.md) demonstrates how booktest can be integrated to pytest.
 
 # API reference
 

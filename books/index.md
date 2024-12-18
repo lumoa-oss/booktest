@@ -4,6 +4,10 @@
      * stderr
          * [stderr](test/stderr/stderr.md)
 
+     * detect
+         * [detect_setup](test/detect/detect_setup.md)
+         * [detect_tests](test/detect/detect_tests.md)
+
      * dependencies
          * parametrized1
              * [create_data](test/dependencies/parametrized1/create_data.md)
@@ -36,6 +40,7 @@
          * [help](test/cli/help.md)
          * [list](test/cli/list.md)
          * [parallel](test/cli/parallel.md)
+         * [pytest](test/cli/pytest.md)
          * [run](test/cli/run.md)
 
      * utils
