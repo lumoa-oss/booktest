@@ -10,7 +10,7 @@
 
 ---
 
-<a href="../booktest/dependencies.py#L28"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L30"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `port`
 
@@ -23,7 +23,7 @@ Generates a resource for given port. A special identifier is generated in order 
 
 ---
 
-<a href="../booktest/dependencies.py#L37"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L39"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `get_decorated_attr`
 
@@ -38,7 +38,7 @@ get_decorated_attr(method, attr)
 
 ---
 
-<a href="../booktest/dependencies.py#L47"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L49"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `remove_decoration`
 
@@ -53,7 +53,7 @@ remove_decoration(method)
 
 ---
 
-<a href="../booktest/dependencies.py#L53"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L55"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `bind_dependent_method_if_unbound`
 
@@ -68,7 +68,7 @@ bind_dependent_method_if_unbound(method, dependency)
 
 ---
 
-<a href="../booktest/dependencies.py#L63"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L65"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `call_class_method_test`
 
@@ -83,7 +83,7 @@ call_class_method_test(dependencies, func, case, kwargs)
 
 ---
 
-<a href="../booktest/dependencies.py#L101"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L102"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `call_function_test`
 
@@ -98,7 +98,7 @@ call_function_test(methods, func, case, kwargs)
 
 ---
 
-<a href="../booktest/dependencies.py#L124"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L125"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `depends_on`
 
@@ -116,7 +116,7 @@ Represents an exclusive resources, which must not be shared simultaneously by se
 
 Such a resource can be a specific port, file system resource, some global state or excessive use of RAM or GPU, that prohibits parallel run. 
 
-<a href="../booktest/dependencies.py#L15"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/dependencies.py#L17"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 

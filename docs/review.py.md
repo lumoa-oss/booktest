@@ -41,7 +41,7 @@ interact(exp_dir, out_dir, case_name, test_result, config)
 
 ---
 
-<a href="../booktest/review.py#L76"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L85"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `freeze_case`
 
@@ -56,7 +56,7 @@ freeze_case(exp_dir, out_dir, case_name)
 
 ---
 
-<a href="../booktest/review.py#L92"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L101"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `case_review`
 
@@ -71,7 +71,7 @@ case_review(exp_dir, out_dir, case_name, test_result, config)
 
 ---
 
-<a href="../booktest/review.py#L119"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L128"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `start_report`
 
@@ -86,7 +86,7 @@ start_report(printer)
 
 ---
 
-<a href="../booktest/review.py#L125"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L134"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `report_case_begin`
 
@@ -101,7 +101,7 @@ report_case_begin(printer, case_name, title, verbose)
 
 ---
 
-<a href="../booktest/review.py#L138"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L147"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `report_case_result`
 
@@ -116,7 +116,22 @@ report_case_result(printer, case_name, result, took_ms, verbose)
 
 ---
 
-<a href="../booktest/review.py#L160"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L168"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+## <kbd>function</kbd> `maybe_print_logs`
+
+```python
+maybe_print_logs(printer, config, out_dir, case_name)
+```
+
+
+
+
+
+
+---
+
+<a href="../booktest/review.py#L193"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `report_case`
 
@@ -131,7 +146,7 @@ report_case(printer, exp_dir, out_dir, case_name, result, took_ms, config)
 
 ---
 
-<a href="../booktest/review.py#L195"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L230"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `end_report`
 
@@ -146,7 +161,7 @@ end_report(printer, failed, tests, took_ms)
 
 ---
 
-<a href="../booktest/review.py#L209"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L244"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `create_index`
 
@@ -161,7 +176,7 @@ create_index(dir, case_names)
 
 ---
 
-<a href="../booktest/review.py#L240"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/review.py#L275"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `review`
 

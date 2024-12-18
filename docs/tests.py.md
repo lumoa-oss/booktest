@@ -75,19 +75,25 @@ case_by_method(method)
 
 ---
 
-<a href="../booktest/tests.py#L535"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L554"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `exec`
 
 ```python
-exec(root_dir, args, cache=None) → int
+exec(
+    root_dir,
+    args,
+    cache=None,
+    extra_default_config: dict = {},
+    setup=None
+) → int
 ```
 
 :param root_dir: the directory containing books and .out directory :param args: a string containing command line arguments :param cache: in-memory cache. Can be e.g. dictionary {},  LruCache or NoCache. :return: returns an exit value. 0 for success, 1 for error 
 
 ---
 
-<a href="../booktest/tests.py#L341"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/tests.py#L354"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `exec_parsed`
 
