@@ -1,4 +1,6 @@
 from booktest.config import get_default_config
+import os
+
 
 personal_comment = \
 """
@@ -118,8 +120,8 @@ def setup_personal():
     config = get_default_config()
 
     print()
-    print("setup asks you to specify various tools and paths for your personal booktest config")
-    print("====================================================================================")
+    print("setup asks you to specify various tools and paths for your personal booktest config in ~/.booktest")
+    print("==================================================================================================")
     print()
 
     configs = []
@@ -128,13 +130,16 @@ def setup_personal():
     configs.append(prompt_config("md_viewer", config))
     configs.append(prompt_config("log_viewer", config))
 
-    with open(".booktest", "w") as f:
+    home_directory = os.path.expanduser("~")
+    file_path = os.path.join(home_directory, ".booktest")
+
+    with open(file_path, "w") as f:
         f.write(personal_comment)
         f.write("\n")
         for key, value in configs:
             f.write(config_comments[key])
             f.write(f"{key}={value}\n\n")
-    print("updated .booktest")
+    print(f"updated {file_path}")
 
     return 0
 
@@ -143,8 +148,8 @@ def setup_project():
     config = get_default_config()
 
     print()
-    print("setup asks you to specify various tools and paths for booktest project config")
-    print("=============================================================================")
+    print("setup asks you to specify various tools and paths for booktest project config in booktest.ini")
+    print("=============================================================================================")
     print()
 
     configs = []

@@ -109,3 +109,20 @@ def test_context(t: bt.TestCaseRun):
 
 def test_configurations(t: bt.TestCaseRun):
     t_cli(t, ["-v"], context="examples/configurations")
+
+
+def test_pytest(t: bt.TestCaseRun):
+    t.h1("testing pytest project with booktest")
+    t_cli(t, ["-v"], context="examples/pytest")
+
+    t.h1("testing pytest project with pytest")
+
+    result = subprocess.run(["pytest", "--verbose"], cwd="examples/pytest", capture_output=True, text=True)
+
+    number = re.compile(r"\d+(.\d+?)s")
+    def replace_s(text):
+        return re.sub(number, "<number>s", text)
+
+    t.tln(replace_s(result.stdout))
+    t.tln()
+    t.t(f"return code is {result.returncode}..").assertln(result.returncode==0)

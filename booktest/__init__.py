@@ -7,7 +7,13 @@ from booktest.testrun import TestRun
 from booktest.tests import Tests
 from booktest.testsuite import TestSuite, merge_tests, drop_prefix
 from booktest.tokenizer import TestTokenizer, BufferIterator
-from booktest.detection import detect_tests, detect_test_suite, detect_setup
+from booktest.detection import (
+    detect_tests,
+    detect_test_suite,
+    detect_setup,
+    detect_module_tests,
+    detect_module_test_suite,
+    detect_module_setup)
 from booktest.functions import snapshot_functions, mock_functions
 from booktest.requests import snapshot_requests
 from booktest.httpx import snapshot_httpx
