@@ -4,6 +4,7 @@ import booktest as bt
 import json
 
 from booktest.coroutines import maybe_async_call
+from booktest.snapshots import out_snapshot_path, frozen_snapshot_path, have_snapshots_dir
 
 
 class SnapshotEnv:
@@ -14,8 +15,8 @@ class SnapshotEnv:
         self.t = t
         self.names = names
 
-        self.snaphot_path = os.path.join(t.exp_dir_name, ".env.json")
-        self.snapshot_out_path = t.file(".env.json")
+        self.snaphot_path = frozen_snapshot_path(t, "env.json")
+        self.snapshot_out_path = out_snapshot_path(t, "env.json")
 
         self.snaphots = {}
         self._old_env = {}
@@ -59,6 +60,7 @@ class SnapshotEnv:
             else:
                 os.environ[name] = self._old_env[name]
 
+        have_snapshots_dir(self.t)
         with open(self.snapshot_out_path, "w") as f:
             json.dump(self.capture, f, indent=4)
 

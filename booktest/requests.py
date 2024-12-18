@@ -14,6 +14,7 @@ import copy
 import base64
 
 from booktest.coroutines import maybe_async_call
+from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
 
 
 def json_to_sha1(json_object):
@@ -281,9 +282,9 @@ class SnapshotRequests:
                  json_to_hash=None,
                  encode_body=None):
         self.t = t
-        self.legacy_mock_path = os.path.join(t.exp_dir_name, ".requests")
-        self.mock_file = os.path.join(t.exp_dir_name, ".requests.json")
-        self.mock_out_file = t.file(".requests.json")
+        self.legacy_snapshot_path = os.path.join(t.exp_dir_name, ".requests")
+        self.snapshot_file = frozen_snapshot_path(t, "requests.json")
+        self.snapshot_out_file = out_snapshot_path(t, "requests.json")
         self._mock_target = requests.Session
         self._last_send = None
         self._last_get_adapter = None
@@ -298,15 +299,15 @@ class SnapshotRequests:
         snapshots = []
 
         # legacy support
-        if os.path.exists(self.legacy_mock_path) and not self.refresh_snapshots:
-            for mock_file in os.listdir(self.legacy_mock_path):
-                with open(os.path.join(self.legacy_mock_path, mock_file), "r") as f:
+        if os.path.exists(self.legacy_snapshot_path) and not self.refresh_snapshots:
+            for mock_file in os.listdir(self.legacy_snapshot_path):
+                with open(os.path.join(self.legacy_snapshot_path, mock_file), "r") as f:
                     snapshots.append(RequestSnapshot.from_json_object(json.load(f),
                                                                       ignore_headers=ignore_headers,
                                                                       json_to_hash=json_to_hash))
 
-        if os.path.exists(self.mock_file) and not self.refresh_snapshots:
-            with open(self.mock_file, "r") as f:
+        if os.path.exists(self.snapshot_file) and not self.refresh_snapshots:
+            with open(self.snapshot_file, "r") as f:
                 for key, value in json.load(f).items():
                     snapshots.append(RequestSnapshot.from_json_object(value,
                                                                       ignore_headers=ignore_headers,
@@ -364,7 +365,8 @@ class SnapshotRequests:
             name = snapshot.hash()
             stored[name] = snapshot.json_object(self._lose_request_details)
 
-        with open(self.mock_out_file, "w") as f:
+        have_snapshots_dir(self.t)
+        with open(self.snapshot_out_file, "w") as f:
             json.dump(stored, f, indent=4)
 
     def t_snapshots(self):
