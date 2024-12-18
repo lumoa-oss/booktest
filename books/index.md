@@ -5,7 +5,8 @@
          * [stderr](test/stderr/stderr.md)
 
      * detect
-         * [detect](test/detect/detect.md)
+         * [detect_setup](test/detect/detect_setup.md)
+         * [detect_tests](test/detect/detect_tests.md)
 
      * dependencies
          * parametrized1

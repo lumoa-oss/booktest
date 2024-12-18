@@ -1,4 +1,4 @@
-# detecting tests
+# detecting tests:
 
  * test/cli/configurations..ok
  * test/cli/context..ok
@@ -19,7 +19,8 @@
  * test/dependencies/parametrized2/create_data..ok
  * test/dependencies/parametrized2/process_data..ok
  * test/dependencies/parametrized2/use_processed_data..ok
- * test/detect/detect..ok
+ * test/detect/detect_setup..ok
+ * test/detect/detect_tests..ok
  * test/examples/async/cache..ok
  * test/examples/async/cache_use..ok
  * test/examples/async/httpx..ok
@@ -68,4 +69,4 @@
  * test/test_names/url_ops/names..ok
  * test/utils/all_caps/names..ok
 
-count: 67
+count: 68

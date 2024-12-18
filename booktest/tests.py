@@ -551,7 +551,12 @@ class Tests:
             else:
                 return run()
 
-    def exec(self, root_dir, args, cache=None) -> int:
+    def exec(self,
+             root_dir,
+             args,
+             cache=None,
+             extra_default_config: dict = {},
+             setup = None) -> int:
         """
         :param root_dir: the directory containing books and .out directory
         :param args: a string containing command line arguments
@@ -565,6 +570,4 @@ class Tests:
 
         parsed = parser.parse_args(args)
 
-        return self.exec_parsed(root_dir, parsed, cache)
-
-
+        return self.exec_parsed(root_dir, parsed, cache, extra_default_config, setup)
