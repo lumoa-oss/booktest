@@ -21,6 +21,7 @@ from unittest import mock
 
 from booktest.coroutines import maybe_async_call
 from booktest.requests import json_to_sha1, default_encode_body
+from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
 
 
 class RequestKey:
@@ -181,9 +182,10 @@ class SnapshotHttpx:
                  json_to_hash=None,
                  encode_body=None):
         self.t = t
+
         self.legacy_mock_path = os.path.join(t.exp_dir_name, ".httpx")
-        self.mock_file = os.path.join(t.exp_dir_name, ".httpx.json")
-        self.mock_out_file = t.file(".httpx.json")
+        self.snapshot_file = frozen_snapshot_path(t, "httpx.json")
+        self.snapshot_out_file = out_snapshot_path(t, "httpx.json")
 
         self._lose_request_details = lose_request_details
         self._ignore_headers = ignore_headers
@@ -205,8 +207,8 @@ class SnapshotHttpx:
                                                                       ignore_headers=ignore_headers,
                                                                       json_to_hash=json_to_hash))
 
-        if os.path.exists(self.mock_file) and not self.refresh_snapshots:
-            with open(self.mock_file, "r") as f:
+        if os.path.exists(self.snapshot_file) and not self.refresh_snapshots:
+            with open(self.snapshot_file, "r") as f:
                 for key, value in json.load(f).items():
                     snapshots.append(RequestSnapshot.from_json_object(value,
                                                                       ignore_headers=ignore_headers,
@@ -305,7 +307,8 @@ class SnapshotHttpx:
             name = snapshot.hash()
             stored[name] = snapshot.json_object(self._lose_request_details)
 
-        with open(self.mock_out_file, "w") as f:
+        have_snapshots_dir(self.t)
+        with open(self.snapshot_out_file, "w") as f:
             json.dump(stored, f, indent=4)
 
     def t_snapshots(self):

@@ -126,12 +126,15 @@ def detect_setup(path):
 def detect_module_setup(module_name):
     setup = None
 
-    for _, submodule, is_pkg in pkgutil.walk_packages([module_name], module_name + "."):
-        submodule_path = submodule.split(".")
-        submodule_name = submodule_path[len(submodule_path) - 1]
+    module = importlib.import_module(module_name)
+    module_dir = os.path.dirname(module.__file__)
+
+    for _, submodule_path, is_pkg in pkgutil.walk_packages([module_dir], module_name + "."):
+        submodule_parts = submodule_path.split(".")
+        submodule_name = submodule_parts[len(submodule_parts) - 1]
         if submodule_name == BOOKTEST_SETUP_MODULE:
-            module = importlib.import_module(submodule)
-            setup = parse_booktest_setup_module(module)
+            submodule = importlib.import_module(submodule_path)
+            setup = parse_booktest_setup_module(submodule)
 
     return setup
 
