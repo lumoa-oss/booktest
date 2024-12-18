@@ -45,21 +45,9 @@ book/teardown/setup_teardown/setup_teardown ok in <number> ms.
 
 # testing pytest project with pytest
 
-============================= test session starts ==============================
-platform linux -- Python 3.11.9, pytest-8.3.4, pluggy-1.5.0 -- /home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/bin/python
-cachedir: .pytest_cache
-rootdir: /home/arau/lumoa/src/booktest/examples/pytest
-configfile: pytest.ini
-testpaths: test
-plugins: anyio-4.7.0
-collecting ... collected 4 items
-
 test/test_books.py::test_fs_detect[book/test_hello/hello] PASSED         [ 25%]
 test/test_books.py::test_fs_detect[book/teardown/setup_teardown/setup_teardown] PASSED [ 50%]
 test/test_books.py::test_module_detect[book/teardown/setup_teardown/setup_teardown] PASSED [ 75%]
 test/test_books.py::test_module_detect[book/test_hello/hello] PASSED     [100%]
-
-============================== 4 passed in <number>s ===============================
-
 
 return code is 0..ok

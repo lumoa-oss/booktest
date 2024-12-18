@@ -123,6 +123,10 @@ def test_pytest(t: bt.TestCaseRun):
     def replace_s(text):
         return re.sub(number, "<number>s", text)
 
-    t.tln(replace_s(result.stdout))
+    lines = result.stdout.split("\n")
+
+    for i in lines:
+        if i.startswith("test/"):
+            t.tln(replace_s(i))
     t.tln()
     t.t(f"return code is {result.returncode}..").assertln(result.returncode==0)
