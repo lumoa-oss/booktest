@@ -58,7 +58,7 @@ Example results are visible in the [book index](books/index.md).
 
 There are example projects found in example directory: 
 
- * [examples/predictor](examples/predictor/README) demonstrates a simple predictor using booktest
+ * [examples/predictor](examples/predictor/README.md) demonstrates a simple predictor using booktest
  * [examples/configurations](examples/configurations/readme.md) demonstrates how booktest can be configured
  * [examples/configurations](examples/configurations/readme.md) demonstrates how booktest can be integrated to pytest.
 
