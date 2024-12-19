@@ -167,7 +167,10 @@ def detect_module_tests(module_name):
     """ Detects tests in a module. This is needed e.g. in pants, where original FS is not easily accessible """
     tests = []
 
-    for _, submodule_name, is_pkg in pkgutil.walk_packages([module_name], module_name + "."):
+    module = importlib.import_module(module_name)
+    module_dir = os.path.dirname(module.__file__)
+
+    for _, submodule_name, is_pkg in pkgutil.walk_packages([module_dir], module_name + "."):
         submodule_path = str(submodule_name).split(".")
         test_name = submodule_path[len(submodule_path) - 1]
         if test_name.endswith("_test") or test_name.endswith("_book") or test_name.endswith("_suite") or\
