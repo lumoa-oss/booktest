@@ -8,6 +8,8 @@ import sys
 
 from booktest import TestCaseRun
 from booktest.coroutines import maybe_async_call
+from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
+from booktest.utils import open_file_or_resource, file_or_resource_exists
 
 
 class FunctionCall:
@@ -116,8 +118,8 @@ class SnapshotFunctions:
 
         self.snapshot_funcs = snapshot_funcs
 
-        self.mock_path = os.path.join(t.exp_dir_name, ".functions")
-        self.mock_out_path = t.file(".functions")
+        self.snapshot_file = frozen_snapshot_path(t, "functions.json")
+        self.snapshot_out_file = out_snapshot_path(t, "functions.json")
 
         self.refresh_snapshots = t.config.get("refresh_snapshots", False)
         self.complete_snapshots = t.config.get("complete_snapshots", False)
@@ -155,11 +157,11 @@ class SnapshotFunctions:
 
         snapshots = []
 
-        if os.path.exists(self.mock_path) and not self.refresh_snapshots:
-            for mock_file in os.listdir(self.mock_path):
-                with open(os.path.join(self.mock_path, mock_file), "r") as f:
-                    snapshots.append(
-                        FunctionCallSnapshot.from_json_object(json.load(f)))
+        if file_or_resource_exists(self.snapshot_file, self.t.resource_snapshots) and not self.refresh_snapshots:
+            with open_file_or_resource(self.snapshot_file, self.t.resource_snapshots) as f:
+                for value in json.load(f):
+                    snapshot = FunctionCallSnapshot.from_json_object(value)
+                    snapshots.append(snapshot)
 
         snapshotters = []
 
@@ -177,13 +179,13 @@ class SnapshotFunctions:
             func = snapshotter.func
             set_function(func, func)
 
-        os.makedirs(self.mock_out_path, exist_ok=True)
-
+        stored = []
         for snapshot in self.calls:
-            name = snapshot.hash()
+            stored.append(snapshot.json_object())
 
-            with open(os.path.join(self.mock_out_path, f"{name}.json"), "w") as f:
-                json.dump(snapshot.json_object(), f, indent=4)
+        have_snapshots_dir(self.t)
+        with open(self.snapshot_out_file, "w") as f:
+            json.dump(stored, f, indent=4)
 
         self.snapshotters = None
         self.snapshots = None

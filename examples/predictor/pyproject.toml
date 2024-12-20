@@ -13,3 +13,4 @@ packages = [{include = "poetry_demo"}]
 [tool.poetry.dependencies]
 python = "^3.7"
 booktest = "0.3"
+

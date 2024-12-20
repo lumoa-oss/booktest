@@ -4,9 +4,10 @@ import os
 
 
 def out_snapshot_path(t: TestCaseRun, path: str):
-    # in the new version, let's still keep the dot prefix to avoid name conflicts, but
+    # in the new version, let's still keep the _ prefix to avoid name conflicts, but
     # keep everything inside .snapshots folder to avoid conflicts with .gitignore
-    return t.file(os.path.join(".snapshots", path))
+    # NOTE: dot prefix .snapshots does not work, because those cannot be imported as resoureces
+    return t.file(os.path.join("_snapshots", path))
 
 
 def frozen_snapshot_path(t: TestCaseRun, path: str):
@@ -20,10 +21,10 @@ def frozen_snapshot_path(t: TestCaseRun, path: str):
         return rv
 
     # new path
-    rv = os.path.join(t.exp_dir_name, ".snapshots", path)
+    rv = os.path.join(t.exp_dir_name, "_snapshots", path)
     return rv
 
 
 def have_snapshots_dir(t):
-    os.makedirs(t.file(".snapshots"), exist_ok=True)
+    os.makedirs(t.file("_snapshots"), exist_ok=True)
 

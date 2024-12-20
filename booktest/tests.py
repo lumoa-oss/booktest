@@ -259,6 +259,11 @@ class Tests:
             '--python-path',
             type=str,
             help="python path for detecting source files. values should separated by ':'. default is 'src:.'")
+        parser.add_argument(
+            '--resource-snapshots',
+            dest="resource_snapshots",
+            action='store_true',
+            help="use this flag, if snapshot files are stored as packaged resources (e.g. in PEX file)")
 
         parser.add_argument(
             '-l',
@@ -406,6 +411,8 @@ class Tests:
             config["refresh_snapshots"] = True
         if parsed.cov:
             config["coverage"] = True
+        if parsed.resource_snapshots:
+            config["resource_snapshots"] = True
         if parsed.md_viewer:
             config["md_viewer"] = parsed.md_viewer
         if parsed.diff_tool:

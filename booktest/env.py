@@ -5,6 +5,7 @@ import json
 
 from booktest.coroutines import maybe_async_call
 from booktest.snapshots import out_snapshot_path, frozen_snapshot_path, have_snapshots_dir
+from booktest.utils import file_or_resource_exists, open_file_or_resource
 
 
 class SnapshotEnv:
@@ -26,8 +27,8 @@ class SnapshotEnv:
         self.complete_snapshots = t.config.get("complete_snapshots", False)
 
         # load snapshots
-        if os.path.exists(self.snaphot_path) and not self.refresh_snapshots:
-            with open(self.snaphot_path, "r") as f:
+        if file_or_resource_exists(self.snaphot_path, t.resource_snapshots) and not self.refresh_snapshots:
+            with open_file_or_resource(self.snaphot_path, t.resource_snapshots) as f:
                 self.snaphots = json.load(f)
 
     def start(self):
