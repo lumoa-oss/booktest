@@ -5,6 +5,7 @@ import os
 import types
 from base64 import encode
 
+from anyio import open_file
 from httpx import SyncByteStream
 from httpx._content import IteratorByteStream, ByteStream
 
@@ -22,6 +23,7 @@ from unittest import mock
 from booktest.coroutines import maybe_async_call
 from booktest.requests import json_to_sha1, default_encode_body
 from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
+from booktest.utils import file_or_resource_exists, open_file_or_resource
 
 
 class RequestKey:
@@ -207,8 +209,8 @@ class SnapshotHttpx:
                                                                       ignore_headers=ignore_headers,
                                                                       json_to_hash=json_to_hash))
 
-        if os.path.exists(self.snapshot_file) and not self.refresh_snapshots:
-            with open(self.snapshot_file, "r") as f:
+        if file_or_resource_exists(self.snapshot_file, t.resource_snapshots) and not self.refresh_snapshots:
+            with open_file_or_resource(self.snapshot_file, t.resource_snapshots) as f:
                 for key, value in json.load(f).items():
                     snapshots.append(RequestSnapshot.from_json_object(value,
                                                                       ignore_headers=ignore_headers,

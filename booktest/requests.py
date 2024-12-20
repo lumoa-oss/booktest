@@ -15,6 +15,7 @@ import base64
 
 from booktest.coroutines import maybe_async_call
 from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
+from booktest.utils import file_or_resource_exists, open_file_or_resource
 
 
 def json_to_sha1(json_object):
@@ -307,11 +308,12 @@ class SnapshotRequests:
                                                                       json_to_hash=json_to_hash))
 
         if os.path.exists(self.snapshot_file) and not self.refresh_snapshots:
-            with open(self.snapshot_file, "r") as f:
-                for key, value in json.load(f).items():
-                    snapshots.append(RequestSnapshot.from_json_object(value,
-                                                                      ignore_headers=ignore_headers,
-                                                                      json_to_hash=json_to_hash))
+            if file_or_resource_exists(self.snapshot_file, self.t.resource_snapshots) and not self.refresh_snapshots:
+                with open_file_or_resource(self.snapshot_file, self.t.resource_snapshots) as f:
+                    for key, value in json.load(f).items():
+                        snapshots.append(RequestSnapshot.from_json_object(value,
+                                                                          ignore_headers=ignore_headers,
+                                                                          json_to_hash=json_to_hash))
 
         self._adapter = SnapshotAdapter(snapshots,
                                         self.refresh_snapshots or self.complete_snapshots,

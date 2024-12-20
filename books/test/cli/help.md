@@ -11,9 +11,10 @@ booktest -h
 usage: booktest [-h] [-i] [-I] [-v] [-L] [-f] [-c] [-r] [-u] [-a] [-p] [-p1]
                 [-p2] [-p3] [-p4] [-p6] [-p8] [-p16] [--parallel-count P] [-s]
                 [-S] [--cov] [--md-viewer MD_VIEWER] [--diff-tool DIFF_TOOL]
-                [--context CONTEXT] [--python-path PYTHON_PATH] [-l] [--setup]
-                [--garbage] [--clean] [--config] [--print] [--view] [--path]
-                [--review] [-w] [--forget]
+                [--context CONTEXT] [--python-path PYTHON_PATH]
+                [--resource-snapshots] [-l] [--setup] [--garbage] [--clean]
+                [--config] [--print] [--view] [--path] [--review] [-w]
+                [--forget]
                 [{*,book,skip:book,book/predictor,skip:book/predictor,book/predictor/predictor,skip:book/predictor/predictor,book/predictor/predict_dog,skip:book/predictor/predict_dog} ...]
 
 booktest - review driven test tool
@@ -55,6 +56,8 @@ options:
   --python-path PYTHON_PATH
                         python path for detecting source files. values should
                         separated by ':'. default is 'src:.'
+  --resource-snapshots  use this flag, if snapshot files are stored as
+                        packaged resources (e.g. in PEX file)
   -l                    lists the selected test cases
   --setup               setups booktest
   --garbage             prints the garbage files

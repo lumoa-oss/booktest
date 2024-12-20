@@ -1,6 +1,32 @@
 import functools
 
 from booktest.coroutines import maybe_async_call
+import importlib.resources as rs
+import importlib
+import os
+
+
+def path_to_module_resource(path: str):
+    parts = path.split("/")
+    return ".".join(parts[:len(parts)-1]), parts[len(parts)-1]
+
+
+def open_file_or_resource(path: str, is_resource: bool):
+    if is_resource:
+        module, resource = path_to_module_resource(path)
+        return rs.open_text(module, resource)
+    else:
+        return open(path, "r")
+
+def file_or_resource_exists(path: str, is_resource: bool):
+    if is_resource:
+        module, resource = path_to_module_resource(path)
+        try:
+            return rs.is_resource(module, resource)
+        except ModuleNotFoundError:
+            return False
+    else:
+        return os.path.exists(path)
 
 
 class SetupTeardown:

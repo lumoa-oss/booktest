@@ -12,7 +12,7 @@ import json
 from booktest.review import report_case_begin, case_review, report_case_result, maybe_print_logs
 from booktest.tokenizer import TestTokenizer, BufferIterator
 from booktest.reports import TestResult
-
+from booktest.utils import file_or_resource_exists, open_file_or_resource
 
 
 class TestCaseRun:
@@ -36,6 +36,7 @@ class TestCaseRun:
         self.always_interactive = config.get("always_interactive", False)
         self.interactive = config.get("interactive", self.always_interactive)
         self.verbose = config.get("verbose", False)
+        self.resource_snapshots = config.get("resource_snapshots", False)
         self.point_error_pos = config.get("point_error_pos", False)
         self.config = config
 
@@ -43,12 +44,12 @@ class TestCaseRun:
             output = sys.stdout
         self.output = output
 
-        # expectation file
+        # snapshot file (todo: change expectation jargon into snapshot jargon)
         self.exp_base_dir = path.join(run.exp_dir, relative_dir)
         os.system(f"mkdir -p {self.exp_base_dir}")
         self.exp_file_name = path.join(self.exp_base_dir, name + ".md")
         self.exp_dir_name = path.join(self.exp_base_dir, name)
-        self.exp_file_exists = path.exists(self.exp_file_name)
+        self.exp_file_exists = file_or_resource_exists(self.exp_file_name, self.resource_snapshots)
         self.exp = None
         self.exp_line = None
         self.exp_line_number = None
@@ -116,7 +117,7 @@ class TestCaseRun:
         """ Resets the reader that reads expectation / snapshot file """
         self.close_exp_reader()
         if self.exp_file_exists:
-            self.exp = open(self.exp_file_name, "r")
+            self.exp = open_file_or_resource(self.exp_file_name, self.resource_snapshots)
         else:
             self.exp = None
         self.exp_line = None
