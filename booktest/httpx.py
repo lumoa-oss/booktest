@@ -2,12 +2,15 @@ import contextlib
 import functools
 import hashlib
 import os
+import re
 import types
 from base64 import encode
 
 from anyio import open_file
 from httpx import SyncByteStream
 from httpx._content import IteratorByteStream, ByteStream
+
+from httpx import URL
 
 import booktest as bt
 import httpx
@@ -23,7 +26,7 @@ from unittest import mock
 from booktest.coroutines import maybe_async_call
 from booktest.requests import json_to_sha1, default_encode_body
 from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
-from booktest.utils import file_or_resource_exists, open_file_or_resource
+from booktest.utils import file_or_resource_exists, open_file_or_resource, accept_all
 
 
 class RequestKey:
@@ -182,12 +185,14 @@ class SnapshotHttpx:
                  lose_request_details=True,
                  ignore_headers=True,
                  json_to_hash=None,
-                 encode_body=None):
+                 encode_body=None,
+                 match_request=accept_all):
         self.t = t
 
         self.legacy_mock_path = os.path.join(t.exp_dir_name, ".httpx")
         self.snapshot_file = frozen_snapshot_path(t, "httpx.json")
         self.snapshot_out_file = out_snapshot_path(t, "httpx.json")
+        self.match_request = match_request
 
         self._lose_request_details = lose_request_details
         self._ignore_headers = ignore_headers
@@ -249,7 +254,7 @@ class SnapshotHttpx:
 
         return key, None
 
-    def handle_request(self, transport: httpx.HTTPTransport, request: httpx.Request):
+    def snapshot_request(self, transport: httpx.HTTPTransport, request: httpx.Request):
         key, rv = self.lookup_snapshot(request)
 
         if rv is None:
@@ -258,7 +263,13 @@ class SnapshotHttpx:
 
         return rv
 
-    async def handle_async_request(self, transport: httpx.AsyncHTTPTransport, request: httpx.Request):
+    def handle_request(self, transport: httpx.HTTPTransport, request: httpx.Request):
+        if self.match_request(request):
+            return self.snapshot_request(transport, request)
+        else:
+            return self._real_handle_request(transport, request)
+
+    async def async_snapshot_request(self, transport: httpx.HTTPTransport, request: httpx.Request):
         key, rv = self.lookup_snapshot(request)
 
         if rv is None:
@@ -266,6 +277,12 @@ class SnapshotHttpx:
             self.requests.append(RequestSnapshot(key, rv))
 
         return rv
+
+    async def handle_async_request(self, transport: httpx.AsyncHTTPTransport, request: httpx.Request):
+        if self.match_request(request):
+            return await self.async_snapshot_request(transport, request)
+        else:
+            return await self._real_handle_async_request(transport, request)
 
     def start(self):
         self._real_handle_request = httpx.HTTPTransport.handle_request
@@ -329,7 +346,9 @@ class SnapshotHttpx:
 def snapshot_httpx(lose_request_details=True,
                    ignore_headers=True,
                    json_to_hash=None,
-                   encode_body=None):
+                   encode_body=None,
+                   match_request=None,
+                   url=None):
     """
     @param lose_request_details Saves no request details to avoid leaking keys
     @param ignore_headers Ignores all headers (True) or specific header list
@@ -339,6 +358,18 @@ def snapshot_httpx(lose_request_details=True,
     @param encode_body allows adding your own body encoding for removing e.g. platform or time details from
            request bodies. this needs to always return a string. encode body method receives body, url and method
     """
+    matchers = []
+    if match_request is not None:
+        matchers.append(match_request)
+    if url is not None:
+        url_regex = re.compile(url)
+        matchers.append(lambda x: url_regex.match(str(x.url)))
+
+    if len(matchers) > 0:
+        matcher = lambda x:any([i(x) for i in matchers])
+    else:
+        matcher = accept_all
+
     def decorator_depends(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
@@ -347,7 +378,7 @@ def snapshot_httpx(lose_request_details=True,
                 t = args[1]
             else:
                 t = args[0]
-            with SnapshotHttpx(t, lose_request_details, ignore_headers, json_to_hash, encode_body):
+            with SnapshotHttpx(t, lose_request_details, ignore_headers, json_to_hash, encode_body, matcher):
                 return await maybe_async_call(func , args, kwargs)
         wrapper._original_function = func
         return wrapper

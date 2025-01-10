@@ -21,7 +21,7 @@ jobs:
           build
           --user
       - name: Install poetry
-        run: pip install poetry
+        run: pip install poetry==1.8.5
       - name: Install dependencies
         run: poetry install
       - name: Run unit tests
