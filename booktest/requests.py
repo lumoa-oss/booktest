@@ -2,6 +2,7 @@ import contextlib
 import functools
 import hashlib
 import os
+import re
 import types
 import booktest as bt
 import requests
@@ -15,7 +16,7 @@ import base64
 
 from booktest.coroutines import maybe_async_call
 from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
-from booktest.utils import file_or_resource_exists, open_file_or_resource
+from booktest.utils import file_or_resource_exists, open_file_or_resource, accept_all
 
 
 def json_to_sha1(json_object):
@@ -180,13 +181,15 @@ class SnapshotAdapter(adapters.BaseAdapter):
                  capture_snapshots,
                  ignore_headers,
                  json_to_hash=None,
-                 encode_body=None):
+                 encode_body=None,
+                 match_request=accept_all):
         self.snapshots = snapshots
         self.capture_snapshots = capture_snapshots
         self.ignore_headers = ignore_headers
         self.json_to_hash = json_to_hash
         self.encode_body = encode_body
         self.requests = []
+        self.match_request = match_request
 
     def mark_order(self, key: RequestKey):
         for i in self.requests:
@@ -215,7 +218,7 @@ class SnapshotAdapter(adapters.BaseAdapter):
 
         return key, None
 
-    def send(self, request, **kwargs):
+    def snapshot(self, request):
         key, rv = self.lookup_snapshot(request)
 
         if rv is None:
@@ -223,6 +226,12 @@ class SnapshotAdapter(adapters.BaseAdapter):
             self.requests.append(RequestSnapshot(key, rv))
 
         return rv
+
+    def send(self, request, **kwargs):
+        if self.match_request(request):
+            return self.snapshot(request)
+        else:
+            return adapters.HTTPAdapter().send(request)
 
 
 _original_send = requests.Session.send
@@ -281,7 +290,8 @@ class SnapshotRequests:
                  lose_request_details=True,
                  ignore_headers=True,
                  json_to_hash=None,
-                 encode_body=None):
+                 encode_body=None,
+                 match_request=accept_all):
         self.t = t
         self.legacy_snapshot_path = os.path.join(t.exp_dir_name, ".requests")
         self.snapshot_file = frozen_snapshot_path(t, "requests.json")
@@ -319,7 +329,8 @@ class SnapshotRequests:
                                         self.refresh_snapshots or self.complete_snapshots,
                                         ignore_headers,
                                         json_to_hash,
-                                        encode_body)
+                                        encode_body,
+                                        match_request)
 
     def start(self):
         """Start mocking requests.
@@ -387,7 +398,9 @@ class SnapshotRequests:
 def snapshot_requests(lose_request_details=True,
                       ignore_headers=True,
                       json_to_hash=None,
-                      encode_body=None):
+                      encode_body=None,
+                      match_request=None,
+                      url=None):
     """
     @param lose_request_details Saves no request details to avoid leaking keys
     @param ignore_headers Ignores all headers (True) or specific header list
@@ -397,6 +410,18 @@ def snapshot_requests(lose_request_details=True,
     @param encode_body allows adding your own body encoding for removing e.g. platform or time details from
            request bodies. this needs to always return a string. encode body method receives body, url and method
     """
+    matchers = []
+    if match_request is not None:
+        matchers.append(match_request)
+    if url is not None:
+        url_regex = re.compile(url)
+        matchers.append(lambda x: url_regex.match(str(x.url)))
+
+    if len(matchers) > 0:
+        matcher = lambda x:any([i(x) for i in matchers])
+    else:
+        matcher = accept_all
+
     def decorator_depends(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
@@ -405,7 +430,7 @@ def snapshot_requests(lose_request_details=True,
                 t = args[1]
             else:
                 t = args[0]
-            with SnapshotRequests(t, lose_request_details, ignore_headers, json_to_hash, encode_body):
+            with SnapshotRequests(t, lose_request_details, ignore_headers, json_to_hash, encode_body, matcher):
                 return await maybe_async_call(func , args, kwargs)
         wrapper._original_function = func
         return wrapper

@@ -2,8 +2,11 @@ import functools
 
 from booktest.coroutines import maybe_async_call
 import importlib.resources as rs
-import importlib
 import os
+
+
+def accept_all(_):
+    return True
 
 
 def path_to_module_resource(path: str):

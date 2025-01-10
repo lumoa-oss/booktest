@@ -51,6 +51,7 @@
  * test/examples/snapshots/env..ok
  * test/examples/snapshots/function_snapshots..ok
  * test/examples/snapshots/httpx..ok
+ * test/examples/snapshots/httpx_filter..ok
  * test/examples/snapshots/httpx_sequence..ok
  * test/examples/snapshots/mock_env..ok
  * test/examples/snapshots/mock_env_deletions..ok
@@ -58,6 +59,7 @@
  * test/examples/snapshots/requests..ok
  * test/examples/snapshots/requests_and_env..ok
  * test/examples/snapshots/requests_deterministic_hashes..ok
+ * test/examples/snapshots/requests_filter..ok
  * test/examples/snapshots/requests_sequence..ok
  * test/examples/snapshots/requests_with_headers..ok
  * test/examples/snapshots/saved_request..ok
@@ -69,4 +71,4 @@
  * test/test_names/url_ops/names..ok
  * test/utils/all_caps/names..ok
 
-count: 68
+count: 70
