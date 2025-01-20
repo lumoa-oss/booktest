@@ -7,6 +7,7 @@ from collections import defaultdict
 from copy import copy
 
 from booktest.cache import LruCache
+from booktest.config import DEFAULT_TIMEOUT
 from booktest.detection import BookTestSetup
 from booktest.review import create_index, report_case, start_report, \
     end_report, report_case_begin, report_case_result
@@ -149,6 +150,7 @@ class ParallelRunner:
 
         self.batches_dir = batches_dir
         self.run_batch = RunBatch(exp_dir, out_dir, tests, job_config, setup)
+        self.timeout = int(config.get("timeout", DEFAULT_TIMEOUT))
 
         dependencies = defaultdict(set)
         resources = defaultdict(set)
@@ -209,15 +211,18 @@ class ParallelRunner:
                 if name not in self.done and name not in scheduled:
                     # allocate resources
                     self.reserved_resources |= self.resources[name]
-                    scheduled[name] = self.pool.apply_async(self.run_batch, args=[name])
+                    scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name]), time.time())
 
             #
             # 3. run test in a process pool
             #
             done_tasks = set()
             while len(done_tasks) == 0 and not self._abort:
-                for name, task in scheduled.items():
+                for name, task_begin in scheduled.items():
+                    task, begin = task_begin
                     if task.ready():
+                        done_tasks.add(name)
+                    elif time.time() - begin > self.timeout:
                         done_tasks.add(name)
                 if len(done_tasks) == 0:
                     time.sleep(0.001)
@@ -225,13 +230,18 @@ class ParallelRunner:
             self.done |= done_tasks
             reports = []
             for i in done_tasks:
+                begin = scheduled[i][1]
                 del scheduled[i]
                 self.reserved_resources -= self.resources[i]
                 report_file = case_batch_dir_and_report_file(self.batches_dir, i)[1]
+                i_case_report = None
                 if os.path.exists(report_file):
-                    reports.append(CaseReports.of_file(report_file).cases[0])
-                else:
-                    reports.append(CaseReports.make_case(i, TestResult.FAIL, 0))
+                    i_report = CaseReports.of_file(report_file)
+                    if len(i_report.cases) > 0:
+                        i_case_report = i_report.cases[0]
+                if i_case_report is None:
+                    i_case_report = CaseReports.make_case(i, TestResult.FAIL, 1000*(time.time() - begin))
+                reports.append(i_case_report)
 
             with self.lock:
                 self.left -= len(reports)

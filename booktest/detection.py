@@ -147,12 +147,7 @@ def detect_tests(path):
             for f in files:
                 if f.endswith("_test.py") or f.endswith("_book.py") or f.endswith("_suite.py") or \
                    (f.startswith("test_") and f.endswith(".py")):
-                    try:
-                        tests.extend(get_file_tests(root, f))
-                    except Exception as e:
-                        print(f"Error while loading tests from {f}: {e}", file=sys.stderr)
-                        logging.exception(e)
-
+                    tests.extend(get_file_tests(root, f))
 
     return tests
 

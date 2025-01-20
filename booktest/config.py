@@ -16,6 +16,8 @@ DEFAULT_CONFIG = None
 
 DEFAULT_PYTHON_PATH = "src:."
 
+DEFAULT_TIMEOUT = "3600"
+
 
 def parse_config_value(value):
     if value == "1":
