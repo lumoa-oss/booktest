@@ -42,6 +42,7 @@
          * [parallel](test/cli/parallel.md)
          * [pytest](test/cli/pytest.md)
          * [run](test/cli/run.md)
+         * [timeout](test/cli/timeout.md)
 
      * utils
          * all_caps

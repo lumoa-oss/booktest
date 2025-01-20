@@ -103,6 +103,12 @@ def test_parallel(t: bt.TestCaseRun):
     t_cli(t, ["-p"])
 
 
+def test_timeout(t: bt.TestCaseRun):
+    t.h1("description:")
+    t.tln("this test verifies that the slow test will fail with 1s timeout")
+    t_cli(t, ["-p", "--timeout", "1"], context="examples/timeout")
+
+
 def test_context(t: bt.TestCaseRun):
     t_cli(t, ["--context", "examples/predictor"], context=".")
 

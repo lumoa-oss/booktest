@@ -1,4 +1,4 @@
-from booktest.config import get_default_config
+from booktest.config import get_default_config, DEFAULT_TIMEOUT
 import os
 
 
@@ -83,7 +83,13 @@ config_comments = {
 """#
 # books_path specifies directory, where results and books are stored
 #
+""",
+    "timeout":
+"""#
+# timeout specifies the test timeout in seconds for parallel runs. 
+#
 """
+
 }
 
 config_defaults = {
@@ -94,7 +100,8 @@ config_defaults = {
     "python_path": "src:.",
     "test_paths": "test,book,run",
     "default_tests": "test,book",
-    "books_path": "books"
+    "books_path": "books",
+    "timeout": DEFAULT_TIMEOUT
 }
 
 
@@ -157,6 +164,7 @@ def setup_project():
     configs.append(prompt_config("test_paths", config))
     configs.append(prompt_config("default_tests", config))
     configs.append(prompt_config("books_path", config))
+    configs.append(prompt_config("timeout", config))
 
     with open("booktest.ini", "w") as f:
         f.write(project_comment)

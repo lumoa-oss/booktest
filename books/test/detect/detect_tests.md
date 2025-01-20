@@ -7,6 +7,7 @@
  * test/cli/parallel..ok
  * test/cli/pytest..ok
  * test/cli/run..ok
+ * test/cli/timeout..ok
  * test/dependencies/cross_dependency/cross_use_data..ok
  * test/dependencies/data_source/create_data..ok
  * test/dependencies/data_source/use_data..ok
@@ -71,4 +72,4 @@
  * test/test_names/url_ops/names..ok
  * test/utils/all_caps/names..ok
 
-count: 70
+count: 71

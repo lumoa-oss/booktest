@@ -167,7 +167,7 @@ class CaseReports:
     def make_case(case_name,
                   res: TestResult,
                   duration):
-        return (case_name, res.name, duration)
+        return (case_name, res, duration)
 
     def to_dir(self, out_dir):
         report_file = os.path.join(out_dir, "cases.txt")

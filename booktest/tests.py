@@ -264,6 +264,12 @@ class Tests:
             dest="resource_snapshots",
             action='store_true',
             help="use this flag, if snapshot files are stored as packaged resources (e.g. in PEX file)")
+        parser.add_argument(
+            "--timeout",
+            dest='timeout',
+            type=int,
+            help="fail tests on a timeout. works only with parallel runs"
+        )
 
         parser.add_argument(
             '-l',
@@ -413,6 +419,10 @@ class Tests:
             config["coverage"] = True
         if parsed.resource_snapshots:
             config["resource_snapshots"] = True
+        if parsed.timeout:
+            config["timeout"] = parsed.timeout
+            if config.get("parallel") is None:
+                raise ValueError("timeout requires parallel run")
         if parsed.md_viewer:
             config["md_viewer"] = parsed.md_viewer
         if parsed.diff_tool:
