@@ -4,7 +4,7 @@ this test verifies that the slow test will fail with 1s timeout
 
 # command:
 
-booktest -p --timeout 1
+booktest -p --timeout 2
 
 # configuration:
 
