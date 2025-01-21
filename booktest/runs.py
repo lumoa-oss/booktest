@@ -206,15 +206,21 @@ class ParallelRunner:
         while len(self.done) < len(self.todo) and not self._abort:
             planned_tasks = self.plan(self.todo - self.done - scheduled.keys())
 
-            # start async jobs
+            #
+            # 1. start async jobs
+            #
             for name in planned_tasks:
                 if name not in self.done and name not in scheduled:
                     # allocate resources
                     self.reserved_resources |= self.resources[name]
                     scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name]), time.time())
 
+            if len(scheduled) == 0:
+                print(f"no tasks to run, while only {len(self.done)}/{self.todo} done. todo: {', '.join(planned_tasks)}")
+                break
+
             #
-            # 3. run test in a process pool
+            # 2. collect done tasks
             #
             done_tasks = set()
             while len(done_tasks) == 0 and not self._abort:
@@ -227,6 +233,9 @@ class ParallelRunner:
                 if len(done_tasks) == 0:
                     time.sleep(0.001)
 
+            #
+            # 3. remove done tasks and collect their reports
+            #
             self.done |= done_tasks
             reports = []
             for i in done_tasks:
@@ -243,6 +252,9 @@ class ParallelRunner:
                     i_case_report = CaseReports.make_case(i, TestResult.FAIL, 1000*(time.time() - begin))
                 reports.append(i_case_report)
 
+            #
+            # 4. make reports visible to the interactive thread vis shared list
+            #
             with self.lock:
                 self.left -= len(reports)
                 self.reports.extend(reports)

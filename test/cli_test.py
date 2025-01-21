@@ -11,6 +11,16 @@ import re
 EXEC_PATH = None
 
 
+# create resources for each test to avoid race conditions, when running
+# multiple tests on a single project
+
+PREDICTOR_CONTEXT = bt.Resource("examples/predictor")
+CONFIGURATIONS_CONTEXT = bt.Resource("examples/configurations")
+PYTEST_CONTEXT = bt.Resource("examples/pytest")
+TIMEOUT_CONTEXT = bt.Resource("examples/timeout")
+
+
+
 def booktest_exec_path():
     if EXEC_PATH is None:
         EXEC_PAT = subprocess.check_output(["which", "booktest"]).decode("utf-8").strip()
@@ -19,7 +29,7 @@ def booktest_exec_path():
 
 class BooktestProcess:
 
-    def __init__(self, args, context = None, out_file = None, err_file = None):
+    def __init__(self, args, context, out_file = None, err_file = None):
         self.args = args
         if context is None:
             context = os.getcwd()
@@ -52,7 +62,7 @@ class BooktestProcess:
         self.err.close()
 
 
-def t_cli(t: bt.TestCaseRun, args, context=None):
+def t_cli(t: bt.TestCaseRun, args, context):
     out_file = t.tmp_file("out.txt")
     err_file = t.tmp_file("err.txt")
     if context is None:
@@ -87,39 +97,47 @@ def t_cli(t: bt.TestCaseRun, args, context=None):
         t.tln(err)
 
 
-def test_help(t: bt.TestCaseRun):
-    t_cli(t, ["-h"])
+@bt.depends_on(PREDICTOR_CONTEXT)
+def test_help(t: bt.TestCaseRun, context: str):
+    t_cli(t, ["-h"], context)
 
 
-def test_list(t: bt.TestCaseRun):
-    t_cli(t, ["-l"])
+@bt.depends_on(PREDICTOR_CONTEXT)
+def test_list(t: bt.TestCaseRun, context: str):
+    t_cli(t, ["-l"], context)
 
 
-def test_run(t: bt.TestCaseRun):
-    t_cli(t, [])
+@bt.depends_on(PREDICTOR_CONTEXT)
+def test_run(t: bt.TestCaseRun, context: str):
+    t_cli(t, [], context)
 
 
-def test_parallel(t: bt.TestCaseRun):
-    t_cli(t, ["-p"])
+@bt.depends_on(PREDICTOR_CONTEXT)
+def test_parallel(t: bt.TestCaseRun, context: str):
+    t_cli(t, ["-p"], context)
 
 
-def test_timeout(t: bt.TestCaseRun):
+@bt.depends_on(TIMEOUT_CONTEXT)
+def test_timeout(t: bt.TestCaseRun, context: str):
     t.h1("description:")
     t.tln("this test verifies that the slow test will fail with 1s timeout")
-    t_cli(t, ["-p", "--timeout", "1"], context="examples/timeout")
+    t_cli(t, ["-p", "--timeout", "2"], context)
 
 
-def test_context(t: bt.TestCaseRun):
-    t_cli(t, ["--context", "examples/predictor"], context=".")
+@bt.depends_on(PREDICTOR_CONTEXT)
+def test_context(t: bt.TestCaseRun, context: str):
+    t_cli(t, ["--context", context], ".")
 
 
-def test_configurations(t: bt.TestCaseRun):
-    t_cli(t, ["-v"], context="examples/configurations")
+@bt.depends_on(CONFIGURATIONS_CONTEXT)
+def test_configurations(t: bt.TestCaseRun, context: str):
+    t_cli(t, ["-v"], context)
 
 
-def test_pytest(t: bt.TestCaseRun):
+@bt.depends_on(PYTEST_CONTEXT)
+def test_pytest(t: bt.TestCaseRun, context: str):
     t.h1("testing pytest project with booktest")
-    t_cli(t, ["-v"], context="examples/pytest")
+    t_cli(t, ["-v"], context)
 
     t.h1("testing pytest project with pytest")
 

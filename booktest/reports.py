@@ -130,7 +130,7 @@ class CaseReports:
     @staticmethod
     def of_file(file_name):
         cases = []
-        for j in read_lines(file_name):
+        for at, j in enumerate(read_lines(file_name)):
             if len(j.strip()) > 0:
                 parts = j.split("\t")
                 try:
@@ -150,7 +150,7 @@ class CaseReports:
                                   result,
                                   duration))
                 except Exception as e:
-                    logging.exception(f"parsing line {j} failed with {e}")
+                    logging.exception(f"parsing line {at}: '{j}' in {os.path.abspath(file_name)} failed with {e}")
 
         return CaseReports(cases)
 
