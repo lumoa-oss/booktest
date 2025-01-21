@@ -1,27 +1,12 @@
-import contextlib
 import functools
-import hashlib
 import os
 import re
-import types
-from base64 import encode
-
-from anyio import open_file
-from httpx import SyncByteStream
-from httpx._content import IteratorByteStream, ByteStream
-
-from httpx import URL
 
 import booktest as bt
 import httpx
 import json
-import threading
-import sys
-import six
 import copy
 import base64
-
-from unittest import mock
 
 from booktest.coroutines import maybe_async_call
 from booktest.requests import json_to_sha1, default_encode_body

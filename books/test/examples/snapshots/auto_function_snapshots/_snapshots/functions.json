@@ -1,36 +1,12 @@
 [
     {
         "call": {
-            "func": "time_ns",
-            "args": [],
-            "kwargs": {},
-            "hash": "bc2e0043f8879f6f886da0f550eb552d0a839f8f"
-        },
-        "result": 1734676751674126060
-    },
-    {
-        "call": {
             "func": "Random.random",
             "args": [],
             "kwargs": {},
             "hash": "c55c1fc1edcaa1de562846c288daaad1ae261c5d"
         },
         "result": 0.7650177001195492
-    },
-    {
-        "call": {
-            "func": "non_deterministic_and_slow_algorithm",
-            "args": [
-                124
-            ],
-            "kwargs": {},
-            "hash": "a148fb7ca76c7213dac7aa8acd0a4387d04c5021"
-        },
-        "result": [
-            8983,
-            94,
-            2900
-        ]
     },
     {
         "call": {
@@ -98,5 +74,29 @@
                 "e": 5
             }
         }
+    },
+    {
+        "call": {
+            "func": "non_deterministic_and_slow_algorithm",
+            "args": [
+                124
+            ],
+            "kwargs": {},
+            "hash": "a148fb7ca76c7213dac7aa8acd0a4387d04c5021"
+        },
+        "result": [
+            8983,
+            94,
+            2900
+        ]
+    },
+    {
+        "call": {
+            "func": "time_ns",
+            "args": [],
+            "kwargs": {},
+            "hash": "bc2e0043f8879f6f886da0f550eb552d0a839f8f"
+        },
+        "result": 1734676751674126060
     }
 ]
