@@ -73,6 +73,7 @@
 
          * snapshots
              * [auto_function_snapshots](test/examples/snapshots/auto_function_snapshots.md)
+             * [complex_function_snapshots](test/examples/snapshots/complex_function_snapshots.md)
              * [env](test/examples/snapshots/env.md)
              * [function_snapshots](test/examples/snapshots/function_snapshots.md)
              * [httpx](test/examples/snapshots/httpx.md)

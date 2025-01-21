@@ -49,6 +49,7 @@
  * test/examples/simple/cache_use..ok
  * test/examples/simple/simple..ok
  * test/examples/snapshots/auto_function_snapshots..ok
+ * test/examples/snapshots/complex_function_snapshots..ok
  * test/examples/snapshots/env..ok
  * test/examples/snapshots/function_snapshots..ok
  * test/examples/snapshots/httpx..ok
@@ -72,4 +73,4 @@
  * test/test_names/url_ops/names..ok
  * test/utils/all_caps/names..ok
 
-count: 71
+count: 72

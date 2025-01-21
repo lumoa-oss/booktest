@@ -5,6 +5,7 @@ import os
 import pickle
 import json
 import sys
+from collections import defaultdict
 
 from booktest import TestCaseRun
 from booktest.coroutines import maybe_async_call
@@ -78,6 +79,9 @@ class FunctionCallSnapshot:
         }
         return rv
 
+    def func(self):
+        return self.call.func()
+
     def hash(self):
         return self.call.hash
 
@@ -132,22 +136,25 @@ class SnapshotFunctions:
 
     def snapshot(self, func, *args, **kwargs):
         call = FunctionCall.from_properties(func, args, kwargs)
+        function_calls = self.calls[call.func()]
 
-        for snapshot in reversed(self.snapshots):
-            if snapshot.match(call):
-                if snapshot not in self.calls:
-                    self.calls.append(snapshot)
-                return snapshot.result
+        snapshot = self.snapshots[call.func()].get(call.hash)
+        if snapshot is not None:
+            if snapshot.hash() not in function_calls:
+                function_calls[call.hash] = snapshot
+            return snapshot.result
 
         if not self.capture_snapshots:
             raise ValueError(f"missing snapshot for function call {call.func()} - {call.hash}. "
                              f"try running booktest with '-s' flag to capture the missing snapshot")
 
-        rv = func(*args, **kwargs)
+        # assume determinism and use past calls as cache
+        snapshot = function_calls.get(call.hash)
+        if snapshot is not None:
+            return snapshot.result
 
-        # remove old version, it may have been timeout
-        self.calls = list([i for i in self.calls if not i.call == call])
-        self.calls.append(FunctionCallSnapshot(call, rv))
+        rv = func(*args, **kwargs)
+        function_calls[call.hash] = FunctionCallSnapshot(call, rv)
 
         return rv
 
@@ -155,13 +162,13 @@ class SnapshotFunctions:
         if self.snapshots is not None:
             raise RuntimeError('FunctionSnapshots has already been started')
 
-        snapshots = []
+        snapshots = defaultdict(dict)
 
         if file_or_resource_exists(self.snapshot_file, self.t.resource_snapshots) and not self.refresh_snapshots:
             with open_file_or_resource(self.snapshot_file, self.t.resource_snapshots) as f:
                 for value in json.load(f):
                     snapshot = FunctionCallSnapshot.from_json_object(value)
-                    snapshots.append(snapshot)
+                    snapshots[snapshot.func()][snapshot.hash()] = snapshot
 
         snapshotters = []
 
@@ -171,7 +178,7 @@ class SnapshotFunctions:
             snapshotters.append(snapshotter)
 
         self.snapshots = snapshots
-        self.calls = []
+        self.calls = defaultdict(dict)
         self.snapshotters = snapshotters
 
     def stop(self):
@@ -180,8 +187,9 @@ class SnapshotFunctions:
             set_function(func, func)
 
         stored = []
-        for snapshot in self.calls:
-            stored.append(snapshot.json_object())
+        for _, function_snapshots in sorted(list(self.calls.items()), key=lambda x: x[0]):
+            for hash, snapshot in sorted(list(function_snapshots.items()), key=lambda x: x[0]):
+                stored.append(snapshot.json_object())
 
         have_snapshots_dir(self.t)
         with open(self.snapshot_out_file, "w") as f:
@@ -193,8 +201,21 @@ class SnapshotFunctions:
 
     def t_snapshots(self):
         self.t.h1("function call snapshots:")
-        for i in self.calls:
-            self.t.tln(f" * {i.call.func()} - {i.call.hash}")
+
+        for function, function_snapshots in sorted(list(self.calls.items()), key=lambda x: x[0]):
+            hashes = sorted(list(function_snapshots.keys()))
+            h = hashlib.sha1()
+            for i in hashes:
+                h.update(i.encode())
+            aggregate_hash = str(h.hexdigest())
+
+            self.t.tln(f" * {function} - {aggregate_hash}:")
+            show_n = 4
+            for hash in hashes[:show_n]:
+                self.t.tln(f"   * {hash}")
+            if len(hashes) > show_n:
+                self.t.tln(f"   * ...")
+                self.t.tln(f"   * {len(hashes)} unique call in total")
 
     def __enter__(self):
         self.start()

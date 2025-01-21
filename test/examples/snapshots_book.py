@@ -322,13 +322,47 @@ def test_auto_function_snapshots(t: bt.TestCaseRun):
     t.keyvalueln(" * named args:", multiargs(a=1, b=2, c=3, d=4, e=5))
 
 
+def plus_one(value):
+    return value + 1
+
+def minus_one(value):
+    return value - 1
+
+@bt.snapshot_functions(plus_one, minus_one)
+async def test_complex_function_snapshots(t: bt.TestCaseRun):
+    t.h1("running 20 snapshots in random order to 2 different methods:")
+
+    values = list(range(20))
+    r = random.Random(time.time())
+    r.shuffle(values) # use true randomization
+
+    results = {}
+
+    for value in values:
+        if value % 2 == 0:
+            results[value] = plus_one(value)
+        else:
+            results[value] = minus_one(value)
+
+    t.tln("done.")
+    t.tln()
+    t.iln(f"randomized order is {', '.join(map(str, values))}")
+
+    t.h1("results:")
+    check_sum = 0
+    for value, result in sorted(list(results.items())):
+        t.keyvalueln(f" * {value}:", result)
+        check_sum += result
+
+    t.tln()
+    t.keyvalueln("check sum:", check_sum)
+
 def mock_time_ns():
     return 10000000000000
 
 
 def mock_random():
     return 42
-
 
 
 async def async_random():
