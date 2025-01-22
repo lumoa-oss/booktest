@@ -167,6 +167,21 @@ class ParallelRunner:
             batch_dir, batch_report_file = case_batch_dir_and_report_file(self.batches_dir, name)
             os.makedirs(batch_dir, exist_ok=True)
 
+        # prioritize each task based on the heaviest chain of tasks depending on it
+        priorities = defaultdict(lambda: 0)
+
+        def assign_priority(name, dependent_duration):
+            duration = self.case_durations.get(name, 1) # assume task to take 1s by default
+            total_duration = duration + dependent_duration
+            priorities[name] = max(priorities[name], total_duration)
+            for dependent in dependencies[name]:
+                assign_priority(dependent, total_duration)
+
+        for name in todo:
+            assign_priority(name, 0)
+
+        self.priorities = priorities
+
         self._log = None
         self.todo = todo
         self.dependencies = dependencies
@@ -186,7 +201,7 @@ class ParallelRunner:
 
         # run slowest jobs first
         todo = list(todo)
-        todo.sort(key=lambda name: (-self.case_durations.get(name, 0), name))
+        todo.sort(key=lambda name: (-self.priorities[name], name))
 
         for name in todo:
             runnable = True
@@ -212,7 +227,10 @@ class ParallelRunner:
         self._log.flush()
 
     def thread_function(self):
-        self.log(f"parallel run started for {len(self.todo)} tasks.")
+        self.log(f"parallel run started for {len(self.todo)} prioritized tasks:")
+        for i in sorted(list([(self.priorities[i], i) for i in self.todo]), key=lambda x: (-x[0], x[1])):
+            self.log(f" - {i[0]} {i[1]}")
+
         scheduled = dict()
 
         while len(self.done) < len(self.todo) and not self._abort:
