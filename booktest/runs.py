@@ -233,7 +233,8 @@ class ParallelRunner:
                         self.log(f" - reserved {resource}.")
                     scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name]), time.time())
 
-            self.log(f"{len(scheduled)} / {len(self.todo) - len(self.done)} tasks are scheduled.")
+            scheduled_example = ", ".join(list(scheduled)[:3] + ["..."] if len(scheduled) > 3 else list(scheduled))
+            self.log(f"{len(scheduled)} / {len(self.todo) - len(self.done)} tasks are scheduled: {scheduled_example}")
             self.log(f"{len(self.reserved_resources)} resources reserved")
 
             if len(scheduled) == 0:
