@@ -183,6 +183,11 @@ class ParallelRunner:
     def plan(self, todo):
         rv = []
         reserved_resources = copy(self.reserved_resources)
+
+        # run slowest jobs first
+        todo = list(todo)
+        todo.sort(key=lambda name: (-self.case_durations.get(name, 0), name))
+
         for name in todo:
             runnable = True
             for dependency in self.dependencies[name]:
@@ -194,8 +199,6 @@ class ParallelRunner:
                 rv.append(name)
                 reserved_resources |= self.resources[name]
 
-        # run slowest jobs first
-        rv.sort(key=lambda name: (-self.case_durations.get(name, 0), name))
 
         return rv
 
@@ -208,8 +211,7 @@ class ParallelRunner:
         self._log.write(f"{timestamp}: {message}\n")
 
     def thread_function(self):
-        total = len(self.todo)
-        self.log(f"parallel run started for {total} tasks.")
+        self.log(f"parallel run started for {len(self.todo)} tasks.")
         scheduled = dict()
 
         while len(self.done) < len(self.todo) and not self._abort:
@@ -218,14 +220,20 @@ class ParallelRunner:
             #
             # 1. start async jobs
             #
+            self.log(f"can schedule {len(planned_tasks)} / {len(self.todo) - len(self.done)} tasks")
+            self.log(f"{len(self.reserved_resources)} resources reserved")
+
             for name in planned_tasks:
                 if name not in self.done and name not in scheduled:
                     # allocate resources
-                    self.reserved_resources |= self.resources[name]
-                    scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name]), time.time())
                     self.log(f"scheduled {name}.")
+                    self.reserved_resources |= self.resources[name]
+                    for resource in self.resources[name]:
+                        self.log(f" - reserved {resource}.")
+                    scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name]), time.time())
 
-            self.log(f"scheduled {len(scheduled)} / {len(self.todo)} tasks.")
+            self.log(f"{len(scheduled)} / {len(self.todo) - len(self.done)} tasks are scheduled.")
+            self.log(f"{len(self.reserved_resources)} resources reserved")
 
             if len(scheduled) == 0:
                 self.log(f"no tasks to run, while only {len(self.done)}/{self.todo} done. todo: {', '.join(planned_tasks)}")
@@ -257,7 +265,6 @@ class ParallelRunner:
             for i in done_tasks:
                 begin = scheduled[i][1]
                 del scheduled[i]
-                self.reserved_resources -= self.resources[i]
                 report_file = case_batch_dir_and_report_file(self.batches_dir, i)[1]
                 i_case_report = None
                 if os.path.exists(report_file):
@@ -268,8 +275,11 @@ class ParallelRunner:
                     i_case_report = CaseReports.make_case(i, TestResult.FAIL, 1000*(time.time() - begin))
                 reports.append(i_case_report)
                 self.log(f"{i} reported as {i_case_report[1]} after {i_case_report[2]}.")
+                for resource in self.resources[i]:
+                    self.log(f" - freed {resource}")
+                self.reserved_resources -= self.resources[i]
 
-            self.log(f"done {len(self.done)}/{total} tasks.")
+            self.log(f"done {len(self.done)}/{len(self.done)} tasks.")
 
             #
             # 4. make reports visible to the interactive thread vis shared list
