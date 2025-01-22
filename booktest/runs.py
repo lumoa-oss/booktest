@@ -152,6 +152,8 @@ class ParallelRunner:
         self.run_batch = RunBatch(exp_dir, out_dir, tests, job_config, setup)
         self.timeout = int(config.get("timeout", DEFAULT_TIMEOUT))
 
+        self.log_path = os.path.join(out_dir, "log.txt")
+
         dependencies = defaultdict(set)
         resources = defaultdict(set)
         todo = set()
@@ -165,6 +167,7 @@ class ParallelRunner:
             batch_dir, batch_report_file = case_batch_dir_and_report_file(self.batches_dir, name)
             os.makedirs(batch_dir, exist_ok=True)
 
+        self._log = None
         self.todo = todo
         self.dependencies = dependencies
         self.resources = resources
@@ -200,7 +203,13 @@ class ParallelRunner:
         with self.lock:
             self._abort = True
 
+    def log(self, message):
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        self._log.write(f"{timestamp}: {message}\n")
+
     def thread_function(self):
+        total = len(self.todo)
+        self.log(f"parallel run started for {total} tasks.")
         scheduled = dict()
 
         while len(self.done) < len(self.todo) and not self._abort:
@@ -214,9 +223,12 @@ class ParallelRunner:
                     # allocate resources
                     self.reserved_resources |= self.resources[name]
                     scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name]), time.time())
+                    self.log(f"scheduled {name}.")
+
+            self.log(f"scheduled {len(scheduled)} / {len(self.todo)} tasks.")
 
             if len(scheduled) == 0:
-                print(f"no tasks to run, while only {len(self.done)}/{self.todo} done. todo: {', '.join(planned_tasks)}")
+                self.log(f"no tasks to run, while only {len(self.done)}/{self.todo} done. todo: {', '.join(planned_tasks)}")
                 break
 
             #
@@ -226,10 +238,14 @@ class ParallelRunner:
             while len(done_tasks) == 0 and not self._abort:
                 for name, task_begin in scheduled.items():
                     task, begin = task_begin
-                    if task.ready():
+                    if task in done_tasks:
+                        pass # already added
+                    elif task.ready():
                         done_tasks.add(name)
+                        self.log(f"{name} ready.")
                     elif time.time() - begin > self.timeout:
                         done_tasks.add(name)
+                        self.log(f"{name} timeouted after {time.time() - begin}.")
                 if len(done_tasks) == 0:
                     time.sleep(0.001)
 
@@ -251,13 +267,19 @@ class ParallelRunner:
                 if i_case_report is None:
                     i_case_report = CaseReports.make_case(i, TestResult.FAIL, 1000*(time.time() - begin))
                 reports.append(i_case_report)
+                self.log(f"{i} reported as {i_case_report[1]} after {i_case_report[2]}.")
+
+            self.log(f"done {len(self.done)}/{total} tasks.")
 
             #
             # 4. make reports visible to the interactive thread vis shared list
             #
             with self.lock:
+                self.log(f"reporting {len(reports)}.")
                 self.left -= len(reports)
                 self.reports.extend(reports)
+
+        self.log("parallel run ended.")
 
     def batch_dirs(self):
         rv = []
@@ -286,6 +308,8 @@ class ParallelRunner:
     def __enter__(self):
         import coverage
         self.finished = False
+        self._log = open(self.log_path, "w")
+
         self.pool = multiprocessing.get_context('spawn').Pool(self.process_count, initializer=coverage.process_startup)
         self.pool.__enter__()
 
@@ -302,6 +326,7 @@ class ParallelRunner:
         # for some reason, this will get stuck on keyboard interruptions
         # yet, it is necessary to get coverage correctly
         self.pool.join()
+        self._log.close()
 
 
 def parallel_run_tests(exp_dir,
