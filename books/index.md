@@ -97,6 +97,9 @@
              * [requests](test/examples/async/requests.md)
              * [wait](test/examples/async/wait.md)
 
+         * memory
+             * [memory](test/examples/memory/memory.md)
+
          * resource
              * [resource_use_1](test/examples/resource/resource_use_1.md)
              * [resource_use_2](test/examples/resource/resource_use_2.md)

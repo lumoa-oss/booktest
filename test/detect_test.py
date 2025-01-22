@@ -19,7 +19,7 @@ def test_detect_tests(t: bt.TestCaseRun):
         module_set.add(module[0])
 
     for case in list(sorted(cases)):
-        t.t(f" * {case}..").assertln(case in fs_set and case in module_set)
+        t.anchor(f" * {case}..").assertln(case in fs_set and case in module_set)
         if case not in fs_set:
             t.fail().tln("   * not detected via fs")
         if case not in module_set:

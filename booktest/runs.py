@@ -209,6 +209,7 @@ class ParallelRunner:
     def log(self, message):
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         self._log.write(f"{timestamp}: {message}\n")
+        self._log.flush()
 
     def thread_function(self):
         self.log(f"parallel run started for {len(self.todo)} tasks.")
@@ -232,7 +233,8 @@ class ParallelRunner:
                         self.log(f" - reserved {resource}.")
                     scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name]), time.time())
 
-            self.log(f"{len(scheduled)} / {len(self.todo) - len(self.done)} tasks are scheduled.")
+            scheduled_example = ", ".join(list(scheduled)[:3] + ["..."] if len(scheduled) > 3 else list(scheduled))
+            self.log(f"{len(scheduled)} / {len(self.todo) - len(self.done)} tasks are scheduled: {scheduled_example}")
             self.log(f"{len(self.reserved_resources)} resources reserved")
 
             if len(scheduled) == 0:
@@ -279,7 +281,7 @@ class ParallelRunner:
                     self.log(f" - freed {resource}")
                 self.reserved_resources -= self.resources[i]
 
-            self.log(f"done {len(self.done)}/{len(self.done)} tasks.")
+            self.log(f"done {len(self.done)}/{len(self.todo)} tasks.")
 
             #
             # 4. make reports visible to the interactive thread vis shared list
