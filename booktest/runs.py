@@ -209,6 +209,7 @@ class ParallelRunner:
     def log(self, message):
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         self._log.write(f"{timestamp}: {message}\n")
+        self._log.flush()
 
     def thread_function(self):
         self.log(f"parallel run started for {len(self.todo)} tasks.")
@@ -279,7 +280,7 @@ class ParallelRunner:
                     self.log(f" - freed {resource}")
                 self.reserved_resources -= self.resources[i]
 
-            self.log(f"done {len(self.done)}/{len(self.done)} tasks.")
+            self.log(f"done {len(self.done)}/{len(self.todo)} tasks.")
 
             #
             # 4. make reports visible to the interactive thread vis shared list

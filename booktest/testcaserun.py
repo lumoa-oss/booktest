@@ -616,6 +616,20 @@ s
         else:
             self.iln()
 
+    def ivalueln(self, value, unit = None):
+        old = self.head_exp_token()
+
+        if unit is not None:
+            postfix = f" {unit}"
+        else:
+            postfix = ""
+
+        self.i(f"{value}{postfix}")
+        if old is not None:
+            self.iln(f" (was {old}{postfix})")
+        else:
+            self.iln()
+
     def tmsln(self, f, max_ms):
         """
         runs the function f and measures the time milliseconds it took.
