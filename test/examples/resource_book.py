@@ -8,6 +8,9 @@ class Box:
     def __init__(self, value):
         self.value = value
 
+    def __repr__(self):
+        return f"Box({self.value})"
+
 
 THE_GLOBAL_BOX = Box(1)
 

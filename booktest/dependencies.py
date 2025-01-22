@@ -26,6 +26,12 @@ class Resource:
     def __hash__(self):
         return hash(self.identifier)
 
+    def __repr__(self):
+        if self.identifier:
+            return str(self.identifier)
+        else:
+            return str(self.value)
+
 
 def port(value: int):
     """
