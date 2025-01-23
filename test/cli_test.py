@@ -18,6 +18,7 @@ PREDICTOR_CONTEXT = bt.Resource("examples/predictor")
 CONFIGURATIONS_CONTEXT = bt.Resource("examples/configurations")
 PYTEST_CONTEXT = bt.Resource("examples/pytest")
 TIMEOUT_CONTEXT = bt.Resource("examples/timeout")
+FAILURES_CONTEXT = bt.Resource("examples/failures")
 
 
 
@@ -131,6 +132,11 @@ def test_context(t: bt.TestCaseRun, context: str):
 
 @bt.depends_on(CONFIGURATIONS_CONTEXT)
 def test_configurations(t: bt.TestCaseRun, context: str):
+    t_cli(t, ["-v"], context)
+
+
+@bt.depends_on(FAILURES_CONTEXT)
+def test_failures(t: bt.TestCaseRun, context: str):
     t_cli(t, ["-v"], context)
 
 

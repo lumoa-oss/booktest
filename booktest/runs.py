@@ -60,24 +60,25 @@ class RunBatch:
         self.setup = setup
 
     def __call__(self, case):
-        path = case.split("/")
-        batch_name = ".".join(path)
-        batch_dir = \
-            os.path.join(
-                self.out_dir,
-                ".batches",
-                batch_name)
-
-        output_file = \
-            os.path.join(
-                self.out_dir,
-                ".batches",
-                batch_name,
-                "output.txt")
-
-        output = open(output_file, "w")
-
+        output = None
         try:
+            path = case.split("/")
+            batch_name = ".".join(path)
+            batch_dir = \
+                os.path.join(
+                    self.out_dir,
+                    ".batches",
+                    batch_name)
+
+            os.makedirs(batch_dir, exist_ok=True)
+
+            output_file = \
+                os.path.join(
+                    batch_dir,
+                    "output.txt")
+
+            output = open(output_file, "w")
+
             run = TestRun(
                 self.exp_dir,
                 self.out_dir,
@@ -90,11 +91,16 @@ class RunBatch:
 
             with self.setup.setup_teardown():
                 rv = test_result_to_exit_code(run.run())
+
         except Exception as e:
             print(f"{case} failed with {e}")
+            if output:
+                output.write(f"{case} failed with {e}\n")
             traceback.print_exc()
+            rv = test_result_to_exit_code(TestResult.FAIL)
         finally:
-            output.close()
+            if output:
+                output.close()
 
         return rv
 
@@ -214,7 +220,6 @@ class ParallelRunner:
                 rv.append(name)
                 reserved_resources |= self.resources[name]
 
-
         return rv
 
     def abort(self):
@@ -234,12 +239,13 @@ class ParallelRunner:
         scheduled = dict()
 
         while len(self.done) < len(self.todo) and not self._abort:
-            planned_tasks = self.plan(self.todo - self.done - scheduled.keys())
+            plan_target = (self.process_count - len(scheduled))
+            planned_tasks = self.plan(self.todo - self.done - scheduled.keys())[:plan_target]
 
             #
             # 1. start async jobs
             #
-            self.log(f"can schedule {len(planned_tasks)} / {len(self.todo) - len(self.done)} tasks")
+            self.log(f"planned {len(planned_tasks)} / {len(self.todo) - len(self.done)} tasks")
             self.log(f"{len(self.reserved_resources)} resources reserved")
 
             for name in planned_tasks:
@@ -354,7 +360,7 @@ class ParallelRunner:
         self.pool.close()
 
         # for some reason, this will get stuck on keyboard interruptions
-        # yet, it is necessary to get coverage correctly
+        # yet, it is necessary for getting the coverage correctly
         self.pool.join()
         self._log.close()
 

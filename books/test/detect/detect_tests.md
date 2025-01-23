@@ -2,6 +2,7 @@
 
  * test/cli/configurations..ok
  * test/cli/context..ok
+ * test/cli/failures..ok
  * test/cli/help..ok
  * test/cli/list..ok
  * test/cli/parallel..ok
@@ -74,4 +75,4 @@
  * test/test_names/url_ops/names..ok
  * test/utils/all_caps/names..ok
 
-count: 73
+count: 74

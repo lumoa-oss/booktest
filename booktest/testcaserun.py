@@ -422,6 +422,7 @@ s
         """
         self.out.write(self.out_line)
         self.out.write('\n')
+        self.out.flush()
         self.out_line = ""
         self.next_exp_line()
         self.line_number = self.line_number + 1
