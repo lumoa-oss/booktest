@@ -145,7 +145,11 @@ def test_configurations(t: bt.TestCaseRun, context: str):
 
 @bt.depends_on(FAILURES_CONTEXT)
 def test_failures(t: bt.TestCaseRun, context: str):
-    t_cli(t, ["-v"], context)
+    # let's not have -v parallel flag here, because python produces different
+    # exception stack traces depending of the python version
+    #
+    # the key thing to test here is that tests fail and they don't get stuck
+    t_cli(t, [], context)
 
 
 @bt.depends_on(PYTEST_CONTEXT)
