@@ -37,6 +37,7 @@
      * cli
          * [configurations](test/cli/configurations.md)
          * [context](test/cli/context.md)
+         * [failures](test/cli/failures.md)
          * [help](test/cli/help.md)
          * [list](test/cli/list.md)
          * [parallel](test/cli/parallel.md)

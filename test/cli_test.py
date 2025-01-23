@@ -18,6 +18,7 @@ PREDICTOR_CONTEXT = bt.Resource("examples/predictor")
 CONFIGURATIONS_CONTEXT = bt.Resource("examples/configurations")
 PYTEST_CONTEXT = bt.Resource("examples/pytest")
 TIMEOUT_CONTEXT = bt.Resource("examples/timeout")
+FAILURES_CONTEXT = bt.Resource("examples/failures")
 
 
 
@@ -83,14 +84,22 @@ def t_cli(t: bt.TestCaseRun, args, context):
     t.h1("output:")
     number = re.compile(r"\d+ ms")
 
+    workdir = os.getcwd()
+
+    def replace_wd(text: str):
+        return text.replace(workdir, "<workdir>")
+
     def replace_ms(text):
         return re.sub(number, "<number> ms", text)
 
+    def mask(text):
+        return replace_ms(replace_wd(text))
+
     with open(out_file) as f:
-        t.tln(replace_ms(f.read()))
+        t.tln(mask(f.read()))
 
     with open(err_file) as f:
-        err = replace_ms(f.read())
+        err = mask(f.read())
 
     if err:
         t.h1("error:")
@@ -132,6 +141,15 @@ def test_context(t: bt.TestCaseRun, context: str):
 @bt.depends_on(CONFIGURATIONS_CONTEXT)
 def test_configurations(t: bt.TestCaseRun, context: str):
     t_cli(t, ["-v"], context)
+
+
+@bt.depends_on(FAILURES_CONTEXT)
+def test_failures(t: bt.TestCaseRun, context: str):
+    # let's not have -v parallel flag here, because python produces different
+    # exception stack traces depending of the python version
+    #
+    # the key thing to test here is that tests fail and they don't get stuck
+    t_cli(t, [], context)
 
 
 @bt.depends_on(PYTEST_CONTEXT)

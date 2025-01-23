@@ -16,7 +16,9 @@ DEFAULT_CONFIG = None
 
 DEFAULT_PYTHON_PATH = "src:."
 
-DEFAULT_TIMEOUT = "3600"
+# let's have moderately long timeout, as the tool is aimed for data science projects, where individual tests
+# can be slow
+DEFAULT_TIMEOUT = "1800"
 
 
 def parse_config_value(value):
