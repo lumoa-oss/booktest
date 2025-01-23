@@ -26,16 +26,16 @@ test book/failing/decorated_async_exception...
   
 ! test raised exception this is an exception:                  | EOF
   Traceback (most recent call last):
-    File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 94, in run_case
+    File "<workdir>/booktest/testrun.py", line 94, in run_case
       rv = await case(t)
            ^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/booktest/env.py", line 202, in wrapper
+    File "<workdir>/booktest/env.py", line 202, in wrapper
       return await maybe_async_call(func , args, kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+    File "<workdir>/booktest/coroutines.py", line 6, in maybe_async_call
       return await func(*args2, **kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/examples/failures/book/failing_book.py", line 35, in test_decorated_async_exception
+    File "<workdir>/examples/failures/book/failing_book.py", line 35, in test_decorated_async_exception
       raise Exception("this is an exception")
   Exception: this is an exception
   
@@ -49,16 +49,16 @@ test book/failing/decorated_exception...
   
 ! test raised exception this is an exception:                  | EOF
   Traceback (most recent call last):
-    File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 94, in run_case
+    File "<workdir>/booktest/testrun.py", line 94, in run_case
       rv = await case(t)
            ^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/booktest/env.py", line 202, in wrapper
+    File "<workdir>/booktest/env.py", line 202, in wrapper
       return await maybe_async_call(func , args, kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 8, in maybe_async_call
+    File "<workdir>/booktest/coroutines.py", line 8, in maybe_async_call
       return func(*args2, **kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/examples/failures/book/failing_book.py", line 29, in test_decorated_exception
+    File "<workdir>/examples/failures/book/failing_book.py", line 29, in test_decorated_exception
       raise Exception("this is an exception")
   Exception: this is an exception
   
@@ -72,10 +72,10 @@ test book/failing/exception...
   
 ! test raised exception this is an exception:                  | EOF
   Traceback (most recent call last):
-    File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 96, in run_case
+    File "<workdir>/booktest/testrun.py", line 96, in run_case
       rv = case(t)
            ^^^^^^^
-    File "/home/arau/lumoa/src/booktest/examples/failures/book/failing_book.py", line 23, in test_exception
+    File "<workdir>/examples/failures/book/failing_book.py", line 23, in test_exception
       raise Exception("this is an exception")
   Exception: this is an exception
   
@@ -97,16 +97,16 @@ test book/failing/memory_monitor_exception...
   
 ! test raised exception this is an exception:                  | EOF
   Traceback (most recent call last):
-    File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 94, in run_case
+    File "<workdir>/booktest/testrun.py", line 94, in run_case
       rv = await case(t)
            ^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/booktest/memory.py", line 66, in wrapper
+    File "<workdir>/booktest/memory.py", line 66, in wrapper
       rv = await maybe_async_call(func , args, kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+    File "<workdir>/booktest/coroutines.py", line 6, in maybe_async_call
       return await func(*args2, **kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/lumoa/src/booktest/examples/failures/book/failing_book.py", line 41, in test_memory_monitor_exception
+    File "<workdir>/examples/failures/book/failing_book.py", line 41, in test_memory_monitor_exception
       raise Exception("this is an exception")
   Exception: this is an exception
   

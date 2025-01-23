@@ -84,14 +84,22 @@ def t_cli(t: bt.TestCaseRun, args, context):
     t.h1("output:")
     number = re.compile(r"\d+ ms")
 
+    workdir = os.getcwd()
+
+    def replace_wd(text: str):
+        return text.replace(workdir, "<workdir>")
+
     def replace_ms(text):
         return re.sub(number, "<number> ms", text)
 
+    def mask(text):
+        return replace_ms(replace_wd(text))
+
     with open(out_file) as f:
-        t.tln(replace_ms(f.read()))
+        t.tln(mask(f.read()))
 
     with open(err_file) as f:
-        err = replace_ms(f.read())
+        err = mask(f.read())
 
     if err:
         t.h1("error:")
