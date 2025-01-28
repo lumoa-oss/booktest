@@ -45,9 +45,11 @@ book/teardown/setup_teardown/setup_teardown ok in <number> ms.
 
 # testing pytest project with pytest
 
-test/test_books.py::test_fs_detect[book/test_hello/hello] PASSED         [ 25%]
-test/test_books.py::test_fs_detect[book/teardown/setup_teardown/setup_teardown] PASSED [ 50%]
-test/test_books.py::test_module_detect[book/teardown/setup_teardown/setup_teardown] PASSED [ 75%]
-test/test_books.py::test_module_detect[book/test_hello/hello] PASSED     [100%]
+test/test_books.py::test_fs_detect[book/test_hello/hello] PASSED         [ 16%]
+test/test_books.py::test_fs_detect[book/teardown/setup_teardown/setup_teardown] PASSED [ 33%]
+test/test_books.py::test_module_detect[book/teardown/setup_teardown/setup_teardown] PASSED [ 50%]
+test/test_books.py::test_module_detect[book/test_hello/hello] PASSED     [ 66%]
+test/test_books.py::test_books[book/teardown/setup_teardown/setup_teardown] PASSED [ 83%]
+test/test_books.py::test_books[book/test_hello/hello] PASSED             [100%]
 
 return code is 0..ok

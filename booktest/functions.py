@@ -165,10 +165,14 @@ class SnapshotFunctions:
         snapshots = defaultdict(dict)
 
         if file_or_resource_exists(self.snapshot_file, self.t.resource_snapshots) and not self.refresh_snapshots:
-            with open_file_or_resource(self.snapshot_file, self.t.resource_snapshots) as f:
-                for value in json.load(f):
-                    snapshot = FunctionCallSnapshot.from_json_object(value)
-                    snapshots[snapshot.func()][snapshot.hash()] = snapshot
+            try:
+                with open_file_or_resource(self.snapshot_file, self.t.resource_snapshots) as f:
+                    for value in json.load(f):
+                        snapshot = FunctionCallSnapshot.from_json_object(value)
+                        snapshots[snapshot.func()][snapshot.hash()] = snapshot
+            except Exception as e:
+                raise ValueError(f"test {self.t.name} snapshot file {self.snapshot_file} corrupted with {e}. "
+                                 f"Use -S to refresh snapshots")
 
         snapshotters = []
 
@@ -204,8 +208,12 @@ class SnapshotFunctions:
 
         for function, function_snapshots in sorted(list(self.calls.items()), key=lambda x: x[0]):
             hashes = sorted(list(function_snapshots.keys()))
+            stored = self.snapshots[function]
             h = hashlib.sha1()
             for i in hashes:
+                if i not in stored:
+                    # force snapshot creation, if a snapshot is missing
+                    self.t.diff()
                 h.update(i.encode())
             aggregate_hash = str(h.hexdigest())
 

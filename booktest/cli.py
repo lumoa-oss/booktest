@@ -21,7 +21,7 @@ def add_exec(parser, method):
         exec=method)
 
 
-def setup_test_suite(parser, python_path=None):
+def setup_test_suite(parser, python_path=None, detect_selection=None):
     config = get_default_config()
 
     default_paths = config.get("test_paths", "test,book,run").split(",")
@@ -34,7 +34,7 @@ def setup_test_suite(parser, python_path=None):
     tests = []
     setup = None
     for path in default_paths:
-        tests.extend(detect_tests(path))
+        tests.extend(detect_tests(path, detect_selection))
         path_setup = detect_setup(path)
         if path_setup is not None:
             setup = path_setup
@@ -61,6 +61,7 @@ def main(arguments=None):
 
     context = os.environ.get("BOOKTEST_CONTEXT", None)
     python_path = os.environ.get("PYTHON_PATH", None)
+    detect_selection = None
 
     if arguments and "--context" in arguments:
         context_pos = arguments.index("--context")
@@ -70,10 +71,18 @@ def main(arguments=None):
         python_path_pos = arguments.index("---python-path")
         python_path = arguments[python_path_pos+1]
 
+    if arguments and "--narrow-detection" in arguments:
+        detect_selection = []
+        for i in arguments:
+            if not i.startswith("-"):
+                detect_selection.append(i)
+        if len(detect_selection) == 0:
+            detect_selection = None
+
     if context is not None:
         os.chdir(context)
 
-    setup_test_suite(parser, python_path)
+    setup_test_suite(parser, python_path, detect_selection)
     argcomplete.autocomplete(parser)
 
     args = parser.parse_args(args=arguments)

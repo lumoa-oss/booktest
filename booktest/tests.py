@@ -14,40 +14,12 @@ from booktest.config import get_default_config
 import booktest.setup
 from booktest.testrun import method_identity, match_method
 
+from booktest.selection import is_selected
+
 
 class Tests:
     def __init__(self, cases):
         self.cases = cases
-
-    def is_selected(self, test_name, selection):
-        """
-        checks whether the test name is selected
-        based on the selection
-        """
-        # filter negatives
-        negatives = 0
-        skip_key = "skip:"
-        for s in selection:
-            if s.startswith(skip_key):
-                s = s[len(skip_key):]
-                if (test_name.startswith(s) and
-                    (len(s) == 0
-                     or len(test_name) == len(s)
-                     or test_name[len(s)] == '/')):
-                    return False
-                negatives += 1
-
-        if negatives == len(selection):
-            return True
-        else:
-            for s in selection:
-                if s == '*' or \
-                   (test_name.startswith(s) and
-                    (len(s) == 0
-                     or len(test_name) == len(s)
-                     or test_name[len(s)] == '/')):
-                    return True
-            return False
 
     def test_result_path(self, out_dir, case_path):
         return path.join(out_dir, case_path + ".bin")
@@ -77,7 +49,7 @@ class Tests:
                 bound_method = bind_dependent_method_if_unbound(method, dependency)
                 case = self.case_by_method(bound_method)
                 if case is not None:
-                    if self.is_selected(case, selection) or \
+                    if is_selected(case, selection) or \
                        cache_out_dir is None or \
                        not self.test_result_exists(cache_out_dir, case):
                         rv.append(case)
@@ -110,7 +82,7 @@ class Tests:
     def selected_names(self, selection, cache_out_dir=None):
         selected = []
         for c in self.cases:
-            if self.is_selected(c[0], selection):
+            if is_selected(c[0], selection):
                 dependencies = \
                     self.all_method_dependencies(c[1],
                                                  selection,
@@ -269,6 +241,12 @@ class Tests:
             dest='timeout',
             type=int,
             help="fail tests on a timeout. works only with parallel runs"
+        )
+        parser.add_argument(
+            "--narrow-detection",
+            dest='narrow_detection',
+            action='store_true',
+            help="only detect tests within the related files / modules. E.g. hello-selection opens only hello_book.py."
         )
 
         parser.add_argument(

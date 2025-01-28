@@ -43,6 +43,7 @@ def test_httpx_filter(t: bt.TestCaseRun):
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
 
+
 @bt.snapshot_requests()
 def test_requests_sequence(t: bt.TestCaseRun):
     t.h1("description:")
@@ -58,7 +59,6 @@ def test_requests_sequence(t: bt.TestCaseRun):
     t.h1("second response:")
     response = requests.get("https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam")
     t.tln(json.dumps(response.json()["dateTime"], indent=4))
-
 
 
 @bt.snapshot_httpx()

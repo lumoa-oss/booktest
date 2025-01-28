@@ -198,7 +198,16 @@ class SnapshotAdapter(adapters.BaseAdapter):
 
         return key
 
-    def lookup_snapshot(self, request):
+    def get_snapshot(self, key):
+        for snapshot in reversed(self.snapshots):
+            if snapshot.match(key):
+                if snapshot not in self.requests:
+                    self.requests.append(snapshot)
+                return snapshot
+
+        return None
+
+    def lookup_request_snapshot(self, request):
         key = RequestKey.from_request(request,
                                       self.ignore_headers,
                                       self.json_to_hash,
@@ -206,11 +215,9 @@ class SnapshotAdapter(adapters.BaseAdapter):
 
         key = self.mark_order(key)
 
-        for snapshot in reversed(self.snapshots):
-            if snapshot.match(key):
-                if snapshot not in self.requests:
-                    self.requests.append(snapshot)
-                return key, snapshot.response
+        snapshot = self.get_snapshot(key)
+        if snapshot:
+            return key, snapshot.response
 
         if not self.capture_snapshots:
             raise ValueError(f"missing snapshot for request {request.url} - {key.hash}. "
@@ -219,7 +226,7 @@ class SnapshotAdapter(adapters.BaseAdapter):
         return key, None
 
     def snapshot(self, request):
-        key, rv = self.lookup_snapshot(request)
+        key, rv = self.lookup_request_snapshot(request)
 
         if rv is None:
             rv = adapters.HTTPAdapter().send(request)
@@ -317,13 +324,16 @@ class SnapshotRequests:
                                                                       ignore_headers=ignore_headers,
                                                                       json_to_hash=json_to_hash))
 
-        if os.path.exists(self.snapshot_file) and not self.refresh_snapshots:
-            if file_or_resource_exists(self.snapshot_file, self.t.resource_snapshots) and not self.refresh_snapshots:
+        if file_or_resource_exists(self.snapshot_file, self.t.resource_snapshots) and not self.refresh_snapshots:
+            try:
                 with open_file_or_resource(self.snapshot_file, self.t.resource_snapshots) as f:
                     for key, value in json.load(f).items():
                         snapshots.append(RequestSnapshot.from_json_object(value,
                                                                           ignore_headers=ignore_headers,
                                                                           json_to_hash=json_to_hash))
+            except Exception as e:
+                raise ValueError(f"test {self.t.name} snapshot file {self.snapshot_file} corrupted with {e}. "
+                                 f"Use -S to refresh snapshots")
 
         self._adapter = SnapshotAdapter(snapshots,
                                         self.refresh_snapshots or self.complete_snapshots,
@@ -385,6 +395,8 @@ class SnapshotRequests:
     def t_snapshots(self):
         self.t.h1("request snaphots:")
         for i in sorted(self._adapter.requests, key=lambda i: (i.request.url(), i.hash())):
+            if not self._adapter.get_snapshot(i.request):
+                self.t.diff()  # force test to fail if snapshot was missing
             self.t.tln(f" * {i.request.url()} - {i.hash()}")
 
     def __enter__(self):
