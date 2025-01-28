@@ -200,11 +200,15 @@ class SnapshotHttpx:
                                                                       json_to_hash=json_to_hash))
 
         if file_or_resource_exists(self.snapshot_file, t.resource_snapshots) and not self.refresh_snapshots:
-            with open_file_or_resource(self.snapshot_file, t.resource_snapshots) as f:
-                for key, value in json.load(f).items():
-                    snapshots.append(RequestSnapshot.from_json_object(value,
-                                                                      ignore_headers=ignore_headers,
-                                                                      json_to_hash=json_to_hash))
+            try:
+                with open_file_or_resource(self.snapshot_file, t.resource_snapshots) as f:
+                    for key, value in json.load(f).items():
+                        snapshots.append(RequestSnapshot.from_json_object(value,
+                                                                          ignore_headers=ignore_headers,
+                                                                          json_to_hash=json_to_hash))
+            except Exception as e:
+                raise ValueError(f"test {self.t.name} snapshot file {self.snapshot_file} corrupted with {e}. "
+                                 f"Use -S to refresh snapshots")
 
         self.snapshots = snapshots
         self.requests = []
@@ -219,19 +223,24 @@ class SnapshotHttpx:
 
         return key
 
-    def lookup_snapshot(self, request: httpx.Request):
+    def get_snapshot(self, key):
+        for snapshot in reversed(self.snapshots):
+            if snapshot.match(key):
+                if snapshot not in self.requests:
+                    self.requests.append(snapshot)
+                return snapshot
+        return None
+
+    def lookup_request_snapshot(self, request: httpx.Request):
         key = RequestKey.from_request(request,
                                       self._ignore_headers,
                                       self._json_to_hash,
                                       self._encode_body)
 
         key = self.mark_order(key)
-
-        for snapshot in reversed(self.snapshots):
-            if snapshot.match(key):
-                if snapshot not in self.requests:
-                    self.requests.append(snapshot)
-                return key, snapshot.response
+        snapshot = self.get_snapshot(key)
+        if snapshot:
+            return key, snapshot.response
 
         if not self.capture_snapshots:
             raise ValueError(f"missing snapshot for request {request.url} - {key.hash}. "
@@ -240,7 +249,7 @@ class SnapshotHttpx:
         return key, None
 
     def snapshot_request(self, transport: httpx.HTTPTransport, request: httpx.Request):
-        key, rv = self.lookup_snapshot(request)
+        key, rv = self.lookup_request_snapshot(request)
 
         if rv is None:
             rv = self._real_handle_request(transport, request)
@@ -255,7 +264,7 @@ class SnapshotHttpx:
             return self._real_handle_request(transport, request)
 
     async def async_snapshot_request(self, transport: httpx.HTTPTransport, request: httpx.Request):
-        key, rv = self.lookup_snapshot(request)
+        key, rv = self.lookup_request_snapshot(request)
 
         if rv is None:
             rv = await self._real_handle_async_request(transport, request)
@@ -318,6 +327,8 @@ class SnapshotHttpx:
     def t_snapshots(self):
         self.t.h1("httpx snaphots:")
         for i in sorted(self.requests, key=lambda i: (i.request.url(), i.hash())):
+            if not self.get_snapshot(i.request):
+                self.t.diff() # force test to fail if snapshot was missing
             self.t.tln(f" * {i.request.url()} - {i.hash()}")
 
     def __enter__(self):

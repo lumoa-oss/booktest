@@ -19,6 +19,7 @@ CONFIGURATIONS_CONTEXT = bt.Resource("examples/configurations")
 PYTEST_CONTEXT = bt.Resource("examples/pytest")
 TIMEOUT_CONTEXT = bt.Resource("examples/timeout")
 FAILURES_CONTEXT = bt.Resource("examples/failures")
+BROKEN_SNAPSHOT_CONTEXT = bt.Resource("examples/broken_snapshots")
 
 
 
@@ -126,6 +127,16 @@ def test_parallel(t: bt.TestCaseRun, context: str):
     t_cli(t, ["-p"], context)
 
 
+@bt.depends_on(PREDICTOR_CONTEXT)
+def test_narrow_detection(t: bt.TestCaseRun, context: str):
+    t.h1("description:")
+
+    t.tln("narrow detection only run detection in related modules/test suites. ")
+    t.tln("this test merely verifies that nothing breaks, when invoking the code")
+
+    t_cli(t, ["--narrow-detection", "predictor"], context)
+
+
 @bt.depends_on(TIMEOUT_CONTEXT)
 def test_timeout(t: bt.TestCaseRun, context: str):
     t.h1("description:")
@@ -150,6 +161,23 @@ def test_failures(t: bt.TestCaseRun, context: str):
     #
     # the key thing to test here is that tests fail and they don't get stuck
     t_cli(t, [], context)
+
+
+@bt.depends_on(BROKEN_SNAPSHOT_CONTEXT)
+def test_broken_snapshots(t: bt.TestCaseRun, context: str):
+    t.h1("description:")
+    t.tln("this test verifies that broken snapshots will gracefully fail")
+    t_cli(t, [], context)
+
+
+@bt.depends_on(BROKEN_SNAPSHOT_CONTEXT)
+def test_refreshing_broken_snapshots(t: bt.TestCaseRun, context: str):
+    t.h1("description:")
+    t.tln("this test verifies that:")
+    t.tln()
+    t.tln(" 1) snapshots can be recreated")
+    t.tln(" 2) and tool requires user to accept & store recreated snapshot even if their hashes are the same")
+    t_cli(t, ["-S", "-v"], context)
 
 
 @bt.depends_on(PYTEST_CONTEXT)

@@ -35,13 +35,16 @@
          * [dependencies](test/dependencies/dependencies.md)
 
      * cli
+         * [broken_snapshots](test/cli/broken_snapshots.md)
          * [configurations](test/cli/configurations.md)
          * [context](test/cli/context.md)
          * [failures](test/cli/failures.md)
          * [help](test/cli/help.md)
          * [list](test/cli/list.md)
+         * [narrow_detection](test/cli/narrow_detection.md)
          * [parallel](test/cli/parallel.md)
          * [pytest](test/cli/pytest.md)
+         * [refreshing_broken_snapshots](test/cli/refreshing_broken_snapshots.md)
          * [run](test/cli/run.md)
          * [timeout](test/cli/timeout.md)
 

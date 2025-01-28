@@ -1,12 +1,15 @@
 # detecting tests:
 
+ * test/cli/broken_snapshots..ok
  * test/cli/configurations..ok
  * test/cli/context..ok
  * test/cli/failures..ok
  * test/cli/help..ok
  * test/cli/list..ok
+ * test/cli/narrow_detection..ok
  * test/cli/parallel..ok
  * test/cli/pytest..ok
+ * test/cli/refreshing_broken_snapshots..ok
  * test/cli/run..ok
  * test/cli/timeout..ok
  * test/dependencies/cross_dependency/cross_use_data..ok
@@ -75,4 +78,4 @@
  * test/test_names/url_ops/names..ok
  * test/utils/all_caps/names..ok
 
-count: 74
+count: 77

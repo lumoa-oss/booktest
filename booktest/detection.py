@@ -1,5 +1,3 @@
-import functools
-import logging
 import os.path
 
 import os
@@ -11,6 +9,7 @@ import types
 
 import booktest as bt
 from booktest.naming import clean_method_name, clean_test_postfix
+from booktest.selection import is_selected_test_suite
 
 from booktest.utils import SetupTeardown
 
@@ -69,6 +68,7 @@ def parse_booktest_setup(root, f):
 
 def get_module_tests(test_suite_name, module_name):
     rv = []
+
     module = importlib.import_module(module_name)
     test_cases = []
     for name in dir(module):
@@ -99,10 +99,13 @@ def get_module_tests(test_suite_name, module_name):
     return rv
 
 
-def get_file_tests(root, f):
+def get_file_tests(root, f, selection):
     test_suite_name = os.path.join(root, clean_test_postfix(f[:len(f) - 3]))
-    module_name = os.path.join(root, f[:len(f) - 3]).replace("/", ".")
-    return get_module_tests(test_suite_name, module_name)
+    if is_selected_test_suite(test_suite_name, selection):
+        module_name = os.path.join(root, f[:len(f) - 3]).replace("/", ".")
+        return get_module_tests(test_suite_name, module_name)
+    else:
+        return []
 
 
 def include_sys_path(python_path: str):
@@ -139,7 +142,7 @@ def detect_module_setup(module_name):
     return setup
 
 
-def detect_tests(path):
+def detect_tests(path, selection=None):
     """ Detects tests in a file system path"""
     tests = []
     if os.path.exists(path):
@@ -147,7 +150,7 @@ def detect_tests(path):
             for f in files:
                 if f.endswith("_test.py") or f.endswith("_book.py") or f.endswith("_suite.py") or \
                    (f.startswith("test_") and f.endswith(".py")):
-                    tests.extend(get_file_tests(root, f))
+                    tests.extend(get_file_tests(root, f, selection))
 
     return tests
 
@@ -158,7 +161,7 @@ def detect_test_suite(path):
     return bt.merge_tests(tests)
 
 
-def detect_module_tests(module_name):
+def detect_module_tests(module_name, selection=None):
     """ Detects tests in a module. This is needed e.g. in pants, where original FS is not easily accessible """
     tests = []
 
@@ -172,13 +175,14 @@ def detect_module_tests(module_name):
            test_name.startswith("test_"):
             submodule_path[len(submodule_path) - 1] = clean_test_postfix(test_name)
             test_suite_name = os.path.join(*submodule_path)
-            tests.extend(get_module_tests(test_suite_name, submodule_name))
+            if is_selected_test_suite(test_suite_name, selection):
+                tests.extend(get_module_tests(test_suite_name, submodule_name))
 
     return tests
 
 
-def detect_module_test_suite(path):
-    tests = detect_module_tests(path)
+def detect_module_test_suite(path, selection=None):
+    tests = detect_module_tests(path, selection)
 
     return bt.merge_tests(tests)
 
