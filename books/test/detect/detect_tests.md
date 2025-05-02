@@ -47,6 +47,10 @@
  * test/examples/example_suite/tokenizer..ok
  * test/examples/hello/hello..ok
  * test/examples/memory/memory..ok
+ * test/examples/pool/port_pool_1..ok
+ * test/examples/pool/port_pool_2..ok
+ * test/examples/pool/port_pool_3..ok
+ * test/examples/pool/port_pool_4..ok
  * test/examples/resource/resource_use_1..ok
  * test/examples/resource/resource_use_2..ok
  * test/examples/resource/resource_use_3..ok
@@ -78,4 +82,4 @@
  * test/test_names/url_ops/names..ok
  * test/utils/all_caps/names..ok
 
-count: 77
+count: 81

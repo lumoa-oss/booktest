@@ -31,19 +31,28 @@ from booktest.coroutines import maybe_async_call
 #
 
 class Allocator(abc.ABC):
+    """
+    Allocators are used to allocate resources for tests.
+
+    The big theme with python testing is that in parallel runs, resources need to preallocated
+    in main thread, before these resource allocations get passed to the actual test cases.
+    """
 
     @property
     @abc.abstractmethod
     def identity(self):
         """
-        The identity of the resource
+        The identity of the resource. This needs to be something that can be stored in a set
         """
         pass
 
     @abc.abstractmethod
     def allocate(self, allocations: set[tuple], preallocations: dict[any, any]) -> Optional[any]:
         """
-        Allocates a resource and returns it. If resource cannot be allocated, returns None
+        Allocates a resource and returns it. If resource cannot be allocated, returns None.
+
+        allocations - is a set consisting of (identity, resource) tuples. DO NOT double allocate these
+        preallocated resources - is a map from identity to resource. use these to guide allocation
         """
         pass
 
@@ -95,6 +104,9 @@ class Resource(Allocator):
 
 
 class Pool(Allocator):
+    """
+    A pool of resource like ports, that must not be used simultaneously.
+    """
 
     def __init__(self, identity, resources):
         self._identity = identity

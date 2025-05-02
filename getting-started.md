@@ -237,6 +237,11 @@ def test_resource_use_2(t: bt.TestCaseRun, global_box):
 You can find the example code [here](test/examples/resource_book.py) and 
 the results [here](books/test/examples/resource) .
 
+Check also Pool resources like `port_range(10000, 10100)`. You can find example code [here](test/examples/pool_book.py) 
+and results [here](books/test/examples/pool/). Port pool can be used to allocate a port range to be used
+in your tests without port collisions. 
+
+
 ### Tables, dataframes and images
 
 Tables can be printed with `t.ttable({"x":[1, 2], "y":[2, 4]})` call, 
