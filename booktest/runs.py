@@ -59,9 +59,10 @@ class RunBatch:
         self.config = config
         self.setup = setup
 
-    def __call__(self, case):
+    def __call__(self, case, preallocations={}):
         output = None
         try:
+            allocations = set()  # everything should be handled by preallocations
             path = case.split("/")
             batch_name = ".".join(path)
             batch_dir = \
@@ -87,7 +88,9 @@ class RunBatch:
                 [case],
                 self.config,
                 PROCESS_LOCAL_CACHE,
-                output)
+                output,
+                allocations,
+                preallocations)
 
             with self.setup.setup_teardown():
                 rv = test_result_to_exit_code(run.run())
@@ -199,11 +202,11 @@ class ParallelRunner:
 
         self.reports = []
         self.left = len(todo)
-        self.reserved_resources = set()
+        self.allocated_resources = set()
 
     def plan(self, todo):
         rv = []
-        reserved_resources = copy(self.reserved_resources)
+        allocated_resources = copy(self.allocated_resources)
 
         # run slowest jobs first
         todo = list(todo)
@@ -214,11 +217,22 @@ class ParallelRunner:
             for dependency in self.dependencies[name]:
                 if dependency in self.todo and dependency not in self.done:
                     runnable = False
-            if len(self.resources[name] & reserved_resources) > 0:
-                runnable = False
+
+            allocated_resources2 = copy(allocated_resources)
+            preallocation = {}
+
+            for resource in self.resources[name]:
+                allocation = resource.allocate(allocated_resources2, {})
+                if allocation is not None:
+                    preallocation[resource.identity] = allocation
+                    allocated_resources2.add((resource.identity, allocation))
+                else:
+                    runnable = False
+                    break
+
             if runnable:
-                rv.append(name)
-                reserved_resources |= self.resources[name]
+                rv.append((name, preallocation))
+                allocated_resources = allocated_resources2
 
         return rv
 
@@ -246,20 +260,20 @@ class ParallelRunner:
             # 1. start async jobs
             #
             self.log(f"planned {len(planned_tasks)} / {len(self.todo) - len(self.done)} tasks")
-            self.log(f"{len(self.reserved_resources)} resources reserved")
+            self.log(f"{len(self.allocated_resources)} resources reserved")
 
-            for name in planned_tasks:
+            for name, preallocations in planned_tasks:
                 if name not in self.done and name not in scheduled:
                     # allocate resources
                     self.log(f"scheduled {name}.")
-                    self.reserved_resources |= self.resources[name]
-                    for resource in self.resources[name]:
-                        self.log(f" - reserved {resource}.")
-                    scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name]), time.time())
+                    for resource_identity, allocation in preallocations.items():
+                        self.allocated_resources.add((resource_identity, allocation))
+                        self.log(f" - reserved {resource_identity}:{allocation}.")
+                    scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name, preallocations]), time.time(), preallocations)
 
             scheduled_example = ", ".join(list(scheduled)[:3] + ["..."] if len(scheduled) > 3 else list(scheduled))
             self.log(f"{len(scheduled)} / {len(self.todo) - len(self.done)} tasks are scheduled: {scheduled_example}")
-            self.log(f"{len(self.reserved_resources)} resources reserved")
+            self.log(f"{len(self.allocated_resources)} resources reserved")
 
             if len(scheduled) == 0:
                 self.log(f"no tasks to run, while only {len(self.done)}/{self.todo} done. todo: {', '.join(planned_tasks)}")
@@ -268,17 +282,17 @@ class ParallelRunner:
             #
             # 2. collect done tasks
             #
-            done_tasks = set()
+            done_tasks = list()
             while len(done_tasks) == 0 and not self._abort:
-                for name, task_begin in scheduled.items():
-                    task, begin = task_begin
+                for name, task_begin_preallocation in scheduled.items():
+                    task, begin, preallocation = task_begin_preallocation
                     if task in done_tasks:
                         pass # already added
                     elif task.ready():
-                        done_tasks.add(name)
+                        done_tasks.append((name, preallocation))
                         self.log(f"{name} ready.")
                     elif time.time() - begin > self.timeout:
-                        done_tasks.add(name)
+                        done_tasks.append((name, preallocation))
                         self.log(f"{name} timeouted after {time.time() - begin}.")
                 if len(done_tasks) == 0:
                     time.sleep(0.001)
@@ -286,9 +300,9 @@ class ParallelRunner:
             #
             # 3. remove done tasks and collect their reports
             #
-            self.done |= done_tasks
+            self.done |= {i[0] for i in done_tasks}
             reports = []
-            for i in done_tasks:
+            for i, preallocations in done_tasks:
                 begin = scheduled[i][1]
                 del scheduled[i]
                 report_file = case_batch_dir_and_report_file(self.batches_dir, i)[1]
@@ -301,9 +315,9 @@ class ParallelRunner:
                     i_case_report = CaseReports.make_case(i, TestResult.FAIL, 1000*(time.time() - begin))
                 reports.append(i_case_report)
                 self.log(f"{i} reported as {i_case_report[1]} after {i_case_report[2]}.")
-                for resource in self.resources[i]:
-                    self.log(f" - freed {resource}")
-                self.reserved_resources -= self.resources[i]
+                for resource_identity, allocation in preallocations.items():
+                    self.log(f" - freed {resource_identity}")
+                    self.allocated_resources.remove((resource_identity, allocation))
 
             self.log(f"done {len(self.done)}/{len(self.todo)} tasks.")
 
