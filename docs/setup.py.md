@@ -9,6 +9,7 @@
 
 **Global Variables**
 ---------------
+- **DEFAULT_TIMEOUT**
 - **personal_comment**
 - **project_comment**
 - **config_comments**
@@ -16,7 +17,7 @@
 
 ---
 
-<a href="../booktest/setup.py#L101"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/setup.py#L108"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `prompt_config`
 
@@ -31,7 +32,7 @@ prompt_config(key, config)
 
 ---
 
-<a href="../booktest/setup.py#L119"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/setup.py#L126"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `setup_personal`
 
@@ -46,7 +47,7 @@ setup_personal()
 
 ---
 
-<a href="../booktest/setup.py#L147"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/setup.py#L154"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `setup_project`
 
@@ -61,7 +62,7 @@ setup_project()
 
 ---
 
-<a href="../booktest/setup.py#L171"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/setup.py#L179"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `setup_booktest`
 

@@ -25,7 +25,7 @@ method_identity(method)
 
 ---
 
-<a href="../booktest/testrun.py#L28"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testrun.py#L29"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `match_method`
 
@@ -43,7 +43,7 @@ match_method(matcher, method)
 ## <kbd>class</kbd> `TestRun`
 Runs a selection of test cases from the test-object 
 
-<a href="../booktest/testrun.py#L38"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testrun.py#L39"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -56,7 +56,9 @@ __init__(
     selected_cases,
     config,
     cache,
-    output=None
+    output=None,
+    allocations=None,
+    preallocations=None
 )
 ```
 
@@ -69,7 +71,7 @@ __init__(
 
 ---
 
-<a href="../booktest/testrun.py#L59"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testrun.py#L68"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `get_test_result`
 
@@ -83,7 +85,7 @@ get_test_result(case, method)
 
 ---
 
-<a href="../booktest/testrun.py#L109"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testrun.py#L118"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `print`
 
@@ -97,7 +99,7 @@ print(*args, sep=' ', end='\n')
 
 ---
 
-<a href="../booktest/testrun.py#L193"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testrun.py#L202"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `run`
 
@@ -111,7 +113,7 @@ run()
 
 ---
 
-<a href="../booktest/testrun.py#L112"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testrun.py#L121"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `run_async`
 
@@ -125,7 +127,7 @@ run_async()
 
 ---
 
-<a href="../booktest/testrun.py#L88"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testrun.py#L97"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `run_case`
 
@@ -143,7 +145,7 @@ run_case(
 
 ---
 
-<a href="../booktest/testrun.py#L78"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/testrun.py#L87"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `save_test_result`
 

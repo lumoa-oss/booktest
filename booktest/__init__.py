@@ -1,4 +1,4 @@
-from booktest.dependencies import depends_on, Resource, port
+from booktest.dependencies import depends_on, Resource, Pool, port, port_range
 from booktest.naming import class_to_test_path
 from booktest.reports import TestResult
 from booktest.testbook import TestBook
@@ -34,7 +34,9 @@ __all__ = {
     "TestSuite",
     "depends_on",
     "Resource",
+    "Pool",
     "port",
+    "port_range",
     "TestBook",
     "merge_tests",
     "drop_prefix",

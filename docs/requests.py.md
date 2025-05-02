@@ -10,7 +10,7 @@
 
 ---
 
-<a href="../booktest/requests.py#L19"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L22"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `json_to_sha1`
 
@@ -25,7 +25,7 @@ json_to_sha1(json_object)
 
 ---
 
-<a href="../booktest/requests.py#L26"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L29"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `default_encode_body`
 
@@ -40,7 +40,7 @@ default_encode_body(body, _url, _method)
 
 ---
 
-<a href="../requests/py/threading_rlock#L234"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../requests/py/threading_rlock#L252"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `threading_rlock`
 
@@ -55,7 +55,7 @@ threading_rlock(timeout)
 
 ---
 
-<a href="../booktest/requests.py#L383"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L410"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `snapshot_requests`
 
@@ -64,7 +64,9 @@ snapshot_requests(
     lose_request_details=True,
     ignore_headers=True,
     json_to_hash=None,
-    encode_body=None
+    encode_body=None,
+    match_request=None,
+    url=None
 )
 ```
 
@@ -78,7 +80,7 @@ snapshot_requests(
 
 
 
-<a href="../booktest/requests.py#L38"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L41"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -95,7 +97,7 @@ __init__(json_object, ignore_headers=True, json_to_hash=None)
 
 ---
 
-<a href="../booktest/requests.py#L93"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L96"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `from_properties`
 
@@ -117,7 +119,7 @@ from_properties(
 
 ---
 
-<a href="../booktest/requests.py#L112"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L115"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `from_request`
 
@@ -136,7 +138,7 @@ from_request(
 
 ---
 
-<a href="../booktest/requests.py#L71"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L74"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `increase_order`
 
@@ -150,7 +152,7 @@ increase_order()
 
 ---
 
-<a href="../booktest/requests.py#L81"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L84"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `to_json_object`
 
@@ -164,7 +166,7 @@ to_json_object(hide_details)
 
 ---
 
-<a href="../booktest/requests.py#L78"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L81"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `url`
 
@@ -184,7 +186,7 @@ url()
 
 
 
-<a href="../booktest/requests.py#L131"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L134"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -201,7 +203,7 @@ __init__(request: RequestKey, response: Response)
 
 ---
 
-<a href="../booktest/requests.py#L140"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L143"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `from_json_object`
 
@@ -215,7 +217,7 @@ from_json_object(json_object, ignore_headers=True, json_to_hash=None)
 
 ---
 
-<a href="../booktest/requests.py#L166"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L169"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `hash`
 
@@ -229,7 +231,7 @@ hash()
 
 ---
 
-<a href="../booktest/requests.py#L153"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L156"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `json_object`
 
@@ -243,7 +245,7 @@ json_object(hide_details)
 
 ---
 
-<a href="../booktest/requests.py#L137"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L140"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `match`
 
@@ -261,7 +263,7 @@ match(request: RequestKey)
 ## <kbd>class</kbd> `SnapshotAdapter`
 A fake adapter than can return predefined responses. 
 
-<a href="../booktest/requests.py#L176"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L179"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -271,7 +273,8 @@ __init__(
     capture_snapshots,
     ignore_headers,
     json_to_hash=None,
-    encode_body=None
+    encode_body=None,
+    match_request=<function accept_all at 0x7b4e2dbf9440>
 )
 ```
 
@@ -284,12 +287,12 @@ __init__(
 
 ---
 
-<a href="../booktest/requests.py#L196"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L201"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
-### <kbd>function</kbd> `lookup_snapshot`
+### <kbd>function</kbd> `get_snapshot`
 
 ```python
-lookup_snapshot(request)
+get_snapshot(key)
 ```
 
 
@@ -298,7 +301,21 @@ lookup_snapshot(request)
 
 ---
 
-<a href="../booktest/requests.py#L189"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L210"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `lookup_request_snapshot`
+
+```python
+lookup_request_snapshot(request)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/requests.py#L194"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `mark_order`
 
@@ -312,12 +329,26 @@ mark_order(key: RequestKey)
 
 ---
 
-<a href="../booktest/requests.py#L216"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L237"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `send`
 
 ```python
 send(request, **kwargs)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/requests.py#L228"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `snapshot`
+
+```python
+snapshot(request)
 ```
 
 
@@ -332,7 +363,7 @@ send(request, **kwargs)
 
 
 
-<a href="../booktest/requests.py#L277"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L295"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -342,7 +373,8 @@ __init__(
     lose_request_details=True,
     ignore_headers=True,
     json_to_hash=None,
-    encode_body=None
+    encode_body=None,
+    match_request=<function accept_all at 0x7b4e2dbf9440>
 )
 ```
 
@@ -355,7 +387,7 @@ __init__(
 
 ---
 
-<a href="../booktest/requests.py#L321"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L345"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `start`
 
@@ -369,7 +401,7 @@ Start mocking requests.
 
 ---
 
-<a href="../booktest/requests.py#L351"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L375"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `stop`
 
@@ -383,7 +415,7 @@ This should have no impact if mocking has not been started. When nesting mockers
 
 ---
 
-<a href="../booktest/requests.py#L370"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/requests.py#L395"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `t_snapshots`
 

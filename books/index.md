@@ -101,6 +101,12 @@
              * [requests](test/examples/async/requests.md)
              * [wait](test/examples/async/wait.md)
 
+         * pool
+             * [port_pool_1](test/examples/pool/port_pool_1.md)
+             * [port_pool_2](test/examples/pool/port_pool_2.md)
+             * [port_pool_3](test/examples/pool/port_pool_3.md)
+             * [port_pool_4](test/examples/pool/port_pool_4.md)
+
          * memory
              * [memory](test/examples/memory/memory.md)
 

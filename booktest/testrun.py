@@ -25,6 +25,7 @@ def method_identity(method):
 
     return self, func
 
+
 def match_method(matcher, method):
     matcher_self, matcher_func = method_identity(matcher)
     method_self, method_func = method_identity(method)
@@ -43,7 +44,9 @@ class TestRun:
                  selected_cases,
                  config,
                  cache,
-                 output=None):
+                 output=None,
+                 allocations=None,
+                 preallocations=None):
         self.exp_dir = exp_dir
         self.report_dir = report_dir
         self.out_dir = out_dir
@@ -55,6 +58,12 @@ class TestRun:
         self.continue_test = config.get("continue", False)
         self.cache = cache
         self.output = output
+        if allocations is None:
+            allocations = set()
+        self.allocations = allocations
+        if preallocations is None:
+            preallocations = {}
+        self.preallocations = preallocations
 
     def get_test_result(self, case, method):
         for t in self.tests.cases:

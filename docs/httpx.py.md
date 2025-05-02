@@ -10,7 +10,7 @@
 
 ---
 
-<a href="../booktest/httpx.py#L324"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L342"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ## <kbd>function</kbd> `snapshot_httpx`
 
@@ -19,7 +19,9 @@ snapshot_httpx(
     lose_request_details=True,
     ignore_headers=True,
     json_to_hash=None,
-    encode_body=None
+    encode_body=None,
+    match_request=None,
+    url=None
 )
 ```
 
@@ -33,7 +35,7 @@ snapshot_httpx(
 
 
 
-<a href="../booktest/httpx.py#L28"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L19"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -50,7 +52,7 @@ __init__(json_object, ignore_headers=True, json_to_hash=None)
 
 ---
 
-<a href="../booktest/httpx.py#L83"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L74"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `from_properties`
 
@@ -72,7 +74,7 @@ from_properties(
 
 ---
 
-<a href="../booktest/httpx.py#L106"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L97"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `from_request`
 
@@ -91,7 +93,7 @@ from_request(
 
 ---
 
-<a href="../booktest/httpx.py#L61"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L52"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `increase_order`
 
@@ -105,7 +107,7 @@ increase_order()
 
 ---
 
-<a href="../booktest/httpx.py#L71"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L62"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `to_json_object`
 
@@ -119,7 +121,7 @@ to_json_object(hide_details)
 
 ---
 
-<a href="../booktest/httpx.py#L68"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L59"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `url`
 
@@ -139,7 +141,7 @@ url()
 
 
 
-<a href="../booktest/httpx.py#L125"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L116"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -156,7 +158,7 @@ __init__(request: RequestKey, response: Response)
 
 ---
 
-<a href="../booktest/httpx.py#L134"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L125"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `from_json_object`
 
@@ -170,7 +172,7 @@ from_json_object(json_object, ignore_headers=True, json_to_hash=None)
 
 ---
 
-<a href="../booktest/httpx.py#L168"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L159"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `hash`
 
@@ -184,7 +186,7 @@ hash()
 
 ---
 
-<a href="../booktest/httpx.py#L149"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L140"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `json_object`
 
@@ -198,7 +200,7 @@ json_object(hide_details)
 
 ---
 
-<a href="../booktest/httpx.py#L131"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L122"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `match`
 
@@ -218,7 +220,7 @@ match(request: RequestKey)
 
 
 
-<a href="../booktest/httpx.py#L177"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L168"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `__init__`
 
@@ -228,7 +230,8 @@ __init__(
     lose_request_details=True,
     ignore_headers=True,
     json_to_hash=None,
-    encode_body=None
+    encode_body=None,
+    match_request=<function accept_all at 0x7b4e2dbf9440>
 )
 ```
 
@@ -241,7 +244,35 @@ __init__(
 
 ---
 
-<a href="../booktest/httpx.py#L257"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L266"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `async_snapshot_request`
+
+```python
+async_snapshot_request(transport: HTTPTransport, request: Request)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/httpx.py#L226"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `get_snapshot`
+
+```python
+get_snapshot(key)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/httpx.py#L275"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `handle_async_request`
 
@@ -255,7 +286,7 @@ handle_async_request(transport: AsyncHTTPTransport, request: Request)
 
 ---
 
-<a href="../booktest/httpx.py#L248"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L260"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `handle_request`
 
@@ -269,12 +300,12 @@ handle_request(transport: HTTPTransport, request: Request)
 
 ---
 
-<a href="../booktest/httpx.py#L228"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L234"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
-### <kbd>function</kbd> `lookup_snapshot`
+### <kbd>function</kbd> `lookup_request_snapshot`
 
 ```python
-lookup_snapshot(request: Request)
+lookup_request_snapshot(request: Request)
 ```
 
 
@@ -283,7 +314,7 @@ lookup_snapshot(request: Request)
 
 ---
 
-<a href="../booktest/httpx.py#L221"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L219"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `mark_order`
 
@@ -297,7 +328,21 @@ mark_order(key: RequestKey)
 
 ---
 
-<a href="../booktest/httpx.py#L266"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L251"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+
+### <kbd>function</kbd> `snapshot_request`
+
+```python
+snapshot_request(transport: HTTPTransport, request: Request)
+```
+
+
+
+
+
+---
+
+<a href="../booktest/httpx.py#L281"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `start`
 
@@ -311,7 +356,7 @@ start()
 
 ---
 
-<a href="../booktest/httpx.py#L292"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L307"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `stop`
 
@@ -325,7 +370,7 @@ stop()
 
 ---
 
-<a href="../booktest/httpx.py#L311"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
+<a href="../booktest/httpx.py#L327"><img align="right" style="float:right;" src="https://img.shields.io/badge/-source-cccccc?style=flat-square"></a>
 
 ### <kbd>function</kbd> `t_snapshots`
 

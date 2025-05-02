@@ -31,7 +31,7 @@ add_exec(parser, method)
 ## <kbd>function</kbd> `setup_test_suite`
 
 ```python
-setup_test_suite(parser, python_path=None)
+setup_test_suite(parser, python_path=None, detect_selection=None)
 ```
 
 
