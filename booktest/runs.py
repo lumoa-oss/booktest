@@ -170,7 +170,7 @@ class ParallelRunner:
             method = tests.get_case(name)
             for dependency in tests.method_dependencies(method, cases):
                 dependencies[name].add(dependency)
-            resources[name] = set(tests.method_resources(method))
+            resources[name] = list(tests.method_resources(method))
             todo.add(name)
 
             batch_dir, batch_report_file = case_batch_dir_and_report_file(self.batches_dir, name)
@@ -204,7 +204,7 @@ class ParallelRunner:
         self.left = len(todo)
         self.allocated_resources = set()
 
-    def plan(self, todo):
+    def plan(self, todo, plan_target):
         rv = []
         allocated_resources = copy(self.allocated_resources)
 
@@ -213,28 +213,31 @@ class ParallelRunner:
         todo.sort(key=lambda name: (-self.priorities[name], name))
 
         for name in todo:
+            if len(rv) >= plan_target:
+                break
             runnable = True
             for dependency in self.dependencies[name]:
                 if dependency in self.todo and dependency not in self.done:
                     runnable = False
 
             allocated_resources2 = copy(allocated_resources)
-            preallocation = {}
+            preallocations = {}
 
-            for resource in self.resources[name]:
-                allocation = resource.allocate(allocated_resources2, {})
-                if allocation is not None:
-                    preallocation[resource.identity] = allocation
-                    allocated_resources2.add((resource.identity, allocation))
+            for pos, resource in enumerate(self.resources[name]):
+                resource_allocations_preallocations = resource.allocate((name, pos), allocated_resources2, preallocations)
+                if resource_allocations_preallocations is not None:
+                    _, new_allocations, new_preallocations = resource_allocations_preallocations
+                    allocated_resources2 = new_allocations
+                    preallocations = new_preallocations
                 else:
                     runnable = False
                     break
 
             if runnable:
-                rv.append((name, preallocation))
+                rv.append((name, preallocations))
                 allocated_resources = allocated_resources2
 
-        return rv
+        return rv, allocated_resources
 
     def abort(self):
         with self.lock:
@@ -247,14 +250,14 @@ class ParallelRunner:
 
     def thread_function(self):
         self.log(f"parallel run started for {len(self.todo)} prioritized tasks:")
-        for i in sorted(list([(self.priorities[i], i) for i in self.todo]), key=lambda x: (-x[0], x[1])):
-            self.log(f" - {i[0]} {i[1]}")
+        for name in sorted(list([(self.priorities[i], i) for i in self.todo]), key=lambda x: (-x[0], x[1])):
+            self.log(f" - {name[0]} {name[1]}")
 
         scheduled = dict()
 
         while len(self.done) < len(self.todo) and not self._abort:
             plan_target = (self.process_count - len(scheduled))
-            planned_tasks = self.plan(self.todo - self.done - scheduled.keys())[:plan_target]
+            planned_tasks, planned_allocated_resources = self.plan(self.todo - self.done - scheduled.keys(), plan_target)
 
             #
             # 1. start async jobs
@@ -263,13 +266,13 @@ class ParallelRunner:
             self.log(f"{len(self.allocated_resources)} resources reserved")
 
             for name, preallocations in planned_tasks:
-                if name not in self.done and name not in scheduled:
-                    # allocate resources
-                    self.log(f"scheduled {name}.")
-                    for resource_identity, allocation in preallocations.items():
-                        self.allocated_resources.add((resource_identity, allocation))
-                        self.log(f" - reserved {resource_identity}:{allocation}.")
-                    scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name, preallocations]), time.time(), preallocations)
+                self.log(f"scheduling {name} with resources:")
+                for allocation_id, resource_identity_allocation in preallocations.items():
+                    self.log(f" - {allocation_id}={resource_identity_allocation[0]}:{resource_identity_allocation[1]}")
+
+                scheduled[name] = (self.pool.apply_async(self.run_batch, args=[name, preallocations]), time.time(), preallocations)
+
+            self.allocated_resources = planned_allocated_resources
 
             scheduled_example = ", ".join(list(scheduled)[:3] + ["..."] if len(scheduled) > 3 else list(scheduled))
             self.log(f"{len(scheduled)} / {len(self.todo) - len(self.done)} tasks are scheduled: {scheduled_example}")
@@ -302,22 +305,28 @@ class ParallelRunner:
             #
             self.done |= {i[0] for i in done_tasks}
             reports = []
-            for i, preallocations in done_tasks:
-                begin = scheduled[i][1]
-                del scheduled[i]
-                report_file = case_batch_dir_and_report_file(self.batches_dir, i)[1]
+            for name, preallocations in done_tasks:
+                begin = scheduled[name][1]
+                del scheduled[name]
+                report_file = case_batch_dir_and_report_file(self.batches_dir, name)[1]
                 i_case_report = None
                 if os.path.exists(report_file):
                     i_report = CaseReports.of_file(report_file)
                     if len(i_report.cases) > 0:
                         i_case_report = i_report.cases[0]
                 if i_case_report is None:
-                    i_case_report = CaseReports.make_case(i, TestResult.FAIL, 1000*(time.time() - begin))
+                    i_case_report = CaseReports.make_case(name, TestResult.FAIL, 1000*(time.time() - begin))
                 reports.append(i_case_report)
-                self.log(f"{i} reported as {i_case_report[1]} after {i_case_report[2]}.")
-                for resource_identity, allocation in preallocations.items():
-                    self.log(f" - freed {resource_identity}")
-                    self.allocated_resources.remove((resource_identity, allocation))
+                self.log(f"{name} reported as {i_case_report[1]} after {i_case_report[2]}.")
+                self.log("freeing resources:")
+
+                for pos, resource in enumerate(self.resources[name]):
+                    allocation_id = (name, pos)
+                    if allocation_id not in preallocations:
+                        raise ValueError(f"missing {allocation_id} in {preallocations}")
+                    resource_identity_allocation = preallocations[allocation_id]
+                    self.log(f" - {allocation_id}={resource_identity_allocation[0]}:{resource_identity_allocation[1]}")
+                    self.allocated_resources = resource.deallocate(self.allocated_resources, resource_identity_allocation[1])
 
             self.log(f"done {len(self.done)}/{len(self.todo)} tasks.")
 

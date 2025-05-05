@@ -105,7 +105,8 @@
              * [port_pool_1](test/examples/pool/port_pool_1.md)
              * [port_pool_2](test/examples/pool/port_pool_2.md)
              * [port_pool_3](test/examples/pool/port_pool_3.md)
-             * [port_pool_4](test/examples/pool/port_pool_4.md)
+             * [port_pool_with_2_ports](test/examples/pool/port_pool_with_2_ports.md)
+             * [port_pool_with_2_ports_2](test/examples/pool/port_pool_with_2_ports_2.md)
 
          * memory
              * [memory](test/examples/memory/memory.md)

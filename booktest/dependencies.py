@@ -1,4 +1,5 @@
 import abc
+import copy
 import functools
 import inspect
 from typing import Optional
@@ -30,7 +31,24 @@ from booktest.coroutines import maybe_async_call
 # On allocation, we receive allocations and preallocations and return allocation_idq
 #
 
-class Allocator(abc.ABC):
+class ResourceAllocator(abc.ABC):
+    """
+    Allocators are used to allocate resources for tests.
+
+    The big theme with python testing is that in parallel runs, resources need to preallocated
+    in main thread, before these resource allocations get passed to the actual test cases.
+    """
+
+    @abc.abstractmethod
+    def allocate(self, allocation_id: any, allocations: set[tuple], preallocations: dict[any, any]) -> (any, set[tuple], dict[any, any]):
+        pass
+
+    @abc.abstractmethod
+    def deallocate(self, allocations: set[tuple], allocation) -> set[tuple]:
+        pass
+
+
+class SingleResourceAllocator(ResourceAllocator):
     """
     Allocators are used to allocate resources for tests.
 
@@ -46,18 +64,57 @@ class Allocator(abc.ABC):
         """
         pass
 
-    @abc.abstractmethod
-    def allocate(self, allocations: set[tuple], preallocations: dict[any, any]) -> Optional[any]:
+    def allocate(self, allocation_id: any, allocations: set[tuple], preallocations: dict[any, any]) -> (any, set[(any, any)], dict[any, (any, any)]):
         """
         Allocates a resource and returns it. If resource cannot be allocated, returns None.
 
+        allocation_id - unique identifier for this allocation, used for preallocations
         allocations - is a set consisting of (identity, resource) tuples. DO NOT double allocate these
-        preallocated resources - is a map from identity to resource. use these to guide allocation
+        preallocated resources - is a map from allocation_name to resource. use these to guide allocation
+        """
+        preallocation_key = allocation_id
+        identity_allocation = preallocations.get(preallocation_key)
+
+        if identity_allocation is not None:
+            allocation = identity_allocation[1]
+            preallocations2 = copy.copy(preallocations)
+        else:
+            allocation = self.do_allocate(allocations)
+            preallocations2 = copy.copy(preallocations)
+            preallocations2[allocation_id] = (self.identity, allocation)
+
+        if allocation is None:
+            return None
+
+        allocations2 = copy.copy(allocations)
+        allocations2.add((self.identity, allocation))
+
+        return allocation, allocations2, preallocations2
+
+    def deallocate(self, allocations: set[tuple], allocation) -> set[tuple]:
+        """
+        Deallocates a resource and returns it. If resource cannot be deallocated, returns None.
+
+        allocations - is a set consisting of (identity, resource) tuples. DO NOT double allocate these
+        allocation - is the allocation to deallocate
+        """
+        rv = copy.copy(allocations)
+        rv.remove((self.identity, allocation))
+        return rv
+
+    @abc.abstractmethod
+    def do_allocate(self, allocations: set[tuple]) -> Optional[any]:
+        """
+        Allocates a resource and returns it. If resource cannot be allocated, returns None.
+
+        allocation_name - unique name for this allocation, that for preallocations
+        allocations - is a set consisting of (identity, resource) tuples. DO NOT double allocate these
+        preallocated resources - is a map from allocation_name to resource. use these to guide allocation
         """
         pass
 
 
-class Resource(Allocator):
+class Resource(SingleResourceAllocator):
     """
     Represents an exclusive resources, which must not be
     shared simultaneously by several parallel tests
@@ -80,7 +137,7 @@ class Resource(Allocator):
         """
         return self._identity
 
-    def allocate(self, allocations: set[tuple], preallocations: dict[any, any]) -> any:
+    def do_allocate(self, allocations: set[tuple]) -> any:
         """
         Allocates a resource and returns it
         :return:
@@ -103,7 +160,7 @@ class Resource(Allocator):
             return str(self.value)
 
 
-class Pool(Allocator):
+class Pool(SingleResourceAllocator):
     """
     A pool of resource like ports, that must not be used simultaneously.
     """
@@ -119,17 +176,13 @@ class Pool(Allocator):
         """
         return self._identity
 
-    def allocate(self, allocations: set[tuple], preallocations: dict[any, any]) -> any:
-        rv = preallocations.get(self._identity)
+    def do_allocate(self, allocations: set[tuple]) -> any:
+        for i in self.resources:
+            entry = (self.identity, i)
+            if entry not in allocations:
+                return i
 
-        if rv is None:
-            for i in self.resources:
-                entry = (self.identity, i)
-                if entry not in allocations:
-                    rv = i
-                    break
-
-        return rv
+        return None
 
 def port_range(begin: int, end:int):
     return Pool("port", list(range(begin, end)))
@@ -167,95 +220,99 @@ def bind_dependent_method_if_unbound(method, dependency):
     else:
         return dependency
 
-def release_dependencies(dependencies, resolved, allocations):
+def release_dependencies(name, dependencies, resolved, allocations):
     """
     Releases all dependencies
     """
     for dependency, resource in zip(dependencies, resolved):
-        if isinstance(dependency, Allocator):
-            entry = (dependency.identity, resource)
-            allocations.remove(entry)
+        if isinstance(dependency, ResourceAllocator):
+            allocations = dependency.deallocate(allocations, resource)
+
+    return allocations
+
+
+async def call_test(method_caller, dependencies, func, case, kwargs) :
+    run = case.run
+
+    resolved = []
+    allocations = run.allocations
+    preallocations = run.preallocations
+
+    name = case.test_path
+    resource_pos = 0
+
+    for dependency in dependencies:
+        if isinstance(dependency, ResourceAllocator):
+            allocation_id = (name, resource_pos)
+            resource, allocations, _ = dependency.allocate(allocation_id, allocations, preallocations)
+            allocations.add((dependency.identity, resource))
+            resolved.append(resource)
+            resource_pos += 1
+        else:
+            resolved.append(method_caller(dependency))
+
+    args2 = []
+    args2.append(case)
+    args2.extend(resolved)
+
+    rv = await maybe_async_call(func, args2, kwargs)
+
+    run.allocations = release_dependencies(name, dependencies, resolved, allocations)
+
+    return rv
 
 
 async def call_class_method_test(dependencies, func, self, case, kwargs):
-    run = case.run
 
-    resolved = []
-    allocations = run.allocations
+    def class_method_caller(dependency):
+        run = case.run
+        unbound_method = dependency
+        # 1. Try first to find this method for this exact test instance.
+        #    This covers cases, where a test class has been instantiated
+        #    with several different parameters
 
-    for dependency in dependencies:
-        if isinstance(dependency, Allocator):
-            resource = dependency.allocate(allocations, run.preallocations)
-            allocations.add((dependency.identity, resource))
-            resolved.append(resource)
-        else:
-            unbound_method = dependency
-            # 1. Try first to find this method for this exact test instance.
-            #    This covers cases, where a test class has been instantiated
-            #    with several different parameters
+        bound_method = unbound_method.__get__(self, self.__class__)
+        found, result = \
+            run.get_test_result(
+                case,
+                bound_method)
 
-            bound_method = unbound_method.__get__(self, self.__class__)
+        # 2. If method is not exist for test instance, try to look elsewhere.
+        #    This allows for tests to share same data or prepared model
+        if not found:
             found, result = \
                 run.get_test_result(
                     case,
-                    bound_method)
+                    unbound_method)
 
-            # 2. If method is not exist for test instance, try to look elsewhere.
-            #    This allows for tests to share same data or prepared model
-            if not found:
-                found, result = \
-                    run.get_test_result(
-                        case,
-                        unbound_method)
+        if not found:
+            raise ValueError(f"could not find or make method {unbound_method} result")
 
-            if not found:
-                raise ValueError(f"could not find or make method {unbound_method} result")
+        return result
 
-            resolved.append(result)
+    async def func2(*args2, **kwargs):
+        args3 = []
+        args3.append(self)
+        args3.extend(args2)
+        return func(*args3, **kwargs)
 
-    args2 = []
-    args2.append(self)
-    args2.append(case)
-    args2.extend(resolved)
-
-    rv = await maybe_async_call(func, args2, kwargs)
-
-    release_dependencies(dependencies, resolved, allocations)
-
-    return rv
+    return await call_test(class_method_caller, dependencies, func2, case, kwargs)
 
 
 async def call_function_test(dependencies, func, case, kwargs):
-    run = case.run
 
-    resolved = []
-    allocations = run.allocations
+    def function_method_caller(dependency):
+        found, result = \
+            case.run.get_test_result(
+                case,
+                dependency)
 
-    for dependency in dependencies:
-        if isinstance(dependency, Allocator):
-            resource = dependency.allocate(allocations, run.preallocations)
-            allocations.add((dependency.identity, resource))
-            resolved.append(resource)
-        else:
-            found, result = \
-                run.get_test_result(
-                    case,
-                    dependency)
+        if not found:
+            raise ValueError(f"could not find or make method {dependency} result")
 
-            if not found:
-                raise ValueError(f"could not find or make method {dependency} result")
+        return result
 
-            resolved.append(result)
-
-    args2 = []
-    args2.append(case)
-    args2.extend(resolved)
-
-    rv = await maybe_async_call(func, args2, kwargs)
-
-    release_dependencies(dependencies, resolved, allocations)
-
-    return rv
+    return await call_test(function_method_caller, dependencies, func, case, kwargs)
 
 
 def depends_on(*dependencies):
@@ -265,7 +322,7 @@ def depends_on(*dependencies):
     methods = []
     resources = []
     for i in dependencies:
-        if isinstance(i, Allocator):
+        if isinstance(i, ResourceAllocator):
             resources.append(i)
         else:
             methods.append(i)
