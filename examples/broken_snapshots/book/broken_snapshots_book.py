@@ -10,18 +10,18 @@ import booktest as bt
 
 @bt.snapshot_requests()
 def test_requests(t: bt.TestCaseRun):
-    response = requests.get("https://api.weather.gov/")
+    response = requests.get("https://postman-echo.com/get")
 
-    t.h1("response:")
-    t.tln(json.dumps(response.json(), indent=4))
+    t.h1("response url parameter:")
+    t.tln(json.dumps(response.json()["url"], indent=4))
 
 
 @bt.snapshot_httpx()
 def test_httpx(t: bt.TestCaseRun):
-    response = httpx.get("https://api.weather.gov/")
+    response = httpx.get("https://postman-echo.com/get")
 
-    t.h1("response:")
-    t.tln(json.dumps(response.json(), indent=4))
+    t.h1("response url parameter:")
+    t.tln(json.dumps(response.json()["url"], indent=4))
 
 
 def hello_world():

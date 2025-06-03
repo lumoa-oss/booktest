@@ -84,6 +84,6 @@ def test_port_pool_with_2_ports_2(t: bt.TestCaseRun, port, port2):
     t_open_two_server_sockets(t, port, port2)
 
 @bt.depends_on(PORT_POOL)
-def test_port_pool_3(t: bt.TestCaseRun, port):
+async def test_port_pool_3(t: bt.TestCaseRun, port):
     t_open_server_socket(t, port)
 

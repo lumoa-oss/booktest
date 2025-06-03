@@ -33,29 +33,25 @@ book/broken_snapshots/function_snapshot DIFFERED in <number> ms
 
 test book/broken_snapshots/httpx...
 
-  # response:
+? # response url parameter:                                    | # response:
   
-  {
-      "status": "OK"
-  }
-  
+? "https://postman-echo.com/get"                               | {
+?                                                              |     "status": "OK"
   # httpx snaphots:
   
-?  * https://api.weather.gov/ - 7185541346b850c27b0a566841b088e6e39b146b |  * https://api.weather.gov/ - 7185541346b850c27b0a566841b088e6e39b146b
+?  * https://postman-echo.com/get - 0e88eb6e0a8953a80d7d4af2b621e3bd65098073 |  * https://api.weather.gov/ - 7185541346b850c27b0a566841b088e6e39b146b
 
 book/broken_snapshots/httpx DIFFERED in <number> ms
 
 test book/broken_snapshots/requests...
 
-  # response:
+? # response url parameter:                                    | # response:
   
-  {
-      "status": "OK"
-  }
-  
+? "https://postman-echo.com/get"                               | {
+?                                                              |     "status": "OK"
   # request snaphots:
   
-?  * https://api.weather.gov/ - 2e943733fabbffde11ad3f21b9f6d30ae70e4132 |  * https://api.weather.gov/ - 2e943733fabbffde11ad3f21b9f6d30ae70e4132
+?  * https://postman-echo.com/get - 085bbb060375440e09281c5b08f704d4a53a6d4a |  * https://api.weather.gov/ - 2e943733fabbffde11ad3f21b9f6d30ae70e4132
 
 book/broken_snapshots/requests DIFFERED in <number> ms
 
