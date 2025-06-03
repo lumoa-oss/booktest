@@ -16,29 +16,29 @@ from booktest.requests import json_to_sha1, default_encode_body
 
 @bt.snapshot_requests()
 def test_requests(t: bt.TestCaseRun):
-    response = requests.get("https://api.weather.gov/")
+    response = requests.get("https://postman-echo.com/get")
 
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
 
-@bt.snapshot_requests(url="https://api.weather.gov/")
+@bt.snapshot_requests(url="https://postman-echo.com/get")
 def test_requests_filter(t: bt.TestCaseRun):
-    response = requests.get("https://api.weather.gov/")
+    response = requests.get("https://postman-echo.com/get")
 
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
 
 @bt.snapshot_httpx()
 def test_httpx(t: bt.TestCaseRun):
-    response = httpx.get("https://api.weather.gov/")
+    response = httpx.get("https://postman-echo.com/get")
 
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
 
 
-@bt.snapshot_httpx(url="https://api.weather.gov/")
+@bt.snapshot_httpx(url="https://postman-echo.com/get")
 def test_httpx_filter(t: bt.TestCaseRun):
-    response = httpx.get("https://api.weather.gov/")
+    response = httpx.get("https://postman-echo.com/get")
 
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))

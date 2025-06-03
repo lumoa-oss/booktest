@@ -6,6 +6,7 @@ import time
 import traceback
 import pickle
 
+from booktest.coroutines import maybe_async_call
 from booktest.dependencies import remove_decoration, get_decorated_attr
 from booktest.testcaserun import TestCaseRun
 from booktest.reports import TestResult, CaseReports, UserRequest, Metrics
@@ -99,10 +100,7 @@ class TestRun:
         t = TestCaseRun(self, case_path, self.config, self.output)
         t.start(title)
         try:
-            if inspect.iscoroutinefunction(case):
-                rv = await case(t)
-            else:
-                rv = case(t)
+            rv = await maybe_async_call(case, [t], {})
         except Exception as e:
             t.iln().fail().iln(f"test raised exception {e}:")
             t.iln(traceback.format_exc())

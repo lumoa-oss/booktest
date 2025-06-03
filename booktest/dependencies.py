@@ -294,7 +294,7 @@ async def call_class_method_test(dependencies, func, self, case, kwargs):
         args3 = []
         args3.append(self)
         args3.extend(args2)
-        return func(*args3, **kwargs)
+        return await maybe_async_call(func, args3, kwargs)
 
     return await call_test(class_method_caller, dependencies, func2, case, kwargs)
 
