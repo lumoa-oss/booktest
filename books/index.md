@@ -68,6 +68,16 @@
      * setup_teardown
          * [setup_teardown](test/setup_teardown/setup_teardown.md)
 
+     * test_storage
+         * [git_storage_basic](test/test_storage/git_storage_basic.md)
+         * [git_storage_path_construction](test/test_storage/git_storage_path_construction.md)
+         * [dvc_storage_fallback](test/test_storage/dvc_storage_fallback.md)
+         * [storage_mode_detection](test/test_storage/storage_mode_detection.md)
+         * [manifest_operations](test/test_storage/manifest_operations.md)
+         * [content_hashing](test/test_storage/content_hashing.md)
+         * [promote_operation](test/test_storage/promote_operation.md)
+         * [snapshot_types](test/test_storage/snapshot_types.md)
+
      * examples
          * example_suite
              * [simple](test/examples/example_suite/simple.md)
