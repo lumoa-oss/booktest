@@ -83,22 +83,28 @@ Git contains tiny `.dvc` files under `_snapshots/` that reference CAS blobs.
 
 ## 5) Booktest CLI Flow (Ergonomics Preserved)
 
-1. **Run** (`booktest run`):  
-   - Pull approved digests from manifest; fetch gazettes from CAS; run tests.  
-   - On change, compute new digest, push blob to **staging**, render human‑readable MD locally (not committed).
+1. **Run with existing snapshots/replay** (`booktest`):
+   - Pull approved digests from manifest; fetch snapshots from CAS; run tests in replay mode.
+   - On snapshot mismatch, show DIFF but don't auto-update.
 
-2. **Review** (`booktest review`):  
-   - Show diffs of result MD & structured JSON/plots while tests run or after.  
-   - Reviewer decides what to approve.
+2. **Update missing snapshots** (`booktest -s`):
+   - Capture missing snapshots, push to **staging** area.
+   - Update manifest with new hashes for captured snapshots only.
 
-3. **Approve** (`booktest approve`):  
-   - Update manifest (or `.dvc` pointers) with new sha256(s).  
-   - Promote CAS objects from `staging/` → `keep/`.  
-   - Optionally write/update a minimal `result.md` if you keep one in Git.
+3. **Recreate all snapshots** (`booktest -S`):
+   - Force regenerate all snapshots, push to **staging** area.
+   - Update manifest with all new hashes.
 
-4. **CI Replay**:  
-   - `dvc pull` (or CAS fetch) → run tests in **replay** (no live GPT/HTTP).  
-   - Upload a single **HTML/MD report artifact** for PRs.
+4. **Review mode** (`booktest -i -v`):
+   - Show diffs of result MD & structured JSON/plots interactively.
+   - Reviewer can approve changes, which promotes snapshots from staging → keep.
+
+5. **Review last run** (`booktest -i -v -w`):
+   - Review previous test run results without re-running tests.
+
+6. **CI Replay**:
+   - `dvc pull` (or CAS fetch) → `booktest` runs in **replay** mode (no live HTTP/external calls).
+   - Upload single **HTML/MD report artifact** for PRs.
 
 ---
 
