@@ -1,6 +1,6 @@
 from booktest.dependencies import depends_on, Resource, Pool, port, port_range
 from booktest.naming import class_to_test_path
-from booktest.reports import TestResult
+from booktest.reports import TestResult, TwoDimensionalTestResult, SuccessState, SnapshotState, test_result_to_exit_code
 from booktest.testbook import TestBook
 from booktest.testcaserun import TestCaseRun, TestIt, value_format
 from booktest.testrun import TestRun
@@ -27,6 +27,10 @@ __all__ = {
     "TestTokenizer",
     "BufferIterator",
     "TestResult",
+    "TwoDimensionalTestResult",
+    "SuccessState",
+    "SnapshotState",
+    "test_result_to_exit_code",
     "TestCaseRun",
     "TestRun",
     "Tests",

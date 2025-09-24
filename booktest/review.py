@@ -2,7 +2,7 @@ import os.path as path
 import os
 import shutil
 
-from booktest.reports import TestResult, CaseReports, UserRequest, read_lines, Metrics
+from booktest.reports import TestResult, TwoDimensionalTestResult, CaseReports, UserRequest, read_lines, Metrics
 
 
 #
@@ -155,15 +155,30 @@ def report_case_result(printer,
 
     int_took_ms = int(took_ms)
 
-    if result == TestResult.OK:
-        if verbose:
-            printer(f"ok in {int_took_ms} ms.")
-        else:
-            printer(f"{int_took_ms} ms")
-    elif result == TestResult.DIFF:
-        printer(f"DIFFERED in {int_took_ms} ms")
-    elif result == TestResult.FAIL:
-        printer(f"FAILED in {int_took_ms} ms")
+    # Handle two-dimensional results if available
+    if isinstance(result, TwoDimensionalTestResult):
+        result_display = str(result)  # e.g., "OK/INTACT", "DIFF/UPDATED"
+
+        if result.success.name == "OK":
+            if verbose:
+                printer(f"{result_display} in {int_took_ms} ms.")
+            else:
+                printer(f"{int_took_ms} ms")
+        elif result.success.name == "DIFF":
+            printer(f"{result_display} in {int_took_ms} ms")
+        elif result.success.name == "FAIL":
+            printer(f"{result_display} in {int_took_ms} ms")
+    else:
+        # Legacy single-dimensional result
+        if result == TestResult.OK:
+            if verbose:
+                printer(f"ok in {int_took_ms} ms.")
+            else:
+                printer(f"{int_took_ms} ms")
+        elif result == TestResult.DIFF:
+            printer(f"DIFFERED in {int_took_ms} ms")
+        elif result == TestResult.FAIL:
+            printer(f"FAILED in {int_took_ms} ms")
 
 def maybe_print_logs(printer, config, out_dir, case_name):
     verbose = config.get("verbose", False)

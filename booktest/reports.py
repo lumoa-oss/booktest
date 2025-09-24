@@ -3,6 +3,7 @@ import os
 import json
 
 from enum import Enum
+from typing import NamedTuple
 
 
 #
@@ -11,12 +12,62 @@ from enum import Enum
 
 
 class TestResult(Enum):
+    """Legacy single-dimensional test result (for backward compatibility)"""
     OK = 1
     FAIL = 2
     DIFF = 3
 
 
+class SuccessState(Enum):
+    """Test logic outcome - independent of snapshot management"""
+    OK = "ok"       # Test logic passed, output matches expectations
+    DIFF = "diff"   # Test logic output differs, needs human review
+    FAIL = "fail"   # Test logic failed (exceptions, assertions)
+
+
+class SnapshotState(Enum):
+    """Snapshot integrity outcome - independent of test logic"""
+    INTACT = "intact"    # Snapshots are current and valid
+    UPDATED = "updated"  # Snapshots were refreshed during this run
+    FAIL = "fail"        # Snapshot mechanism failed
+
+
+class TwoDimensionalTestResult(NamedTuple):
+    """Two-dimensional test result separating logic success from snapshot management"""
+    success: SuccessState
+    snapshotting: SnapshotState
+
+    def to_legacy_result(self) -> TestResult:
+        """Convert to legacy single-dimensional result for backward compatibility"""
+        if self.success == SuccessState.OK:
+            return TestResult.OK
+        elif self.success == SuccessState.DIFF:
+            return TestResult.DIFF
+        else:  # FAIL
+            return TestResult.FAIL
+
+    def requires_review(self) -> bool:
+        """Check if this result requires human review"""
+        return self.success == SuccessState.DIFF
+
+    def is_success(self) -> bool:
+        """Check if the test logic succeeded (regardless of snapshots)"""
+        return self.success == SuccessState.OK
+
+    def can_auto_approve(self) -> bool:
+        """Check if this result can be auto-approved without human review"""
+        return self.success == SuccessState.OK
+
+    def __str__(self) -> str:
+        """String representation for CLI display"""
+        return f"{self.success.value.upper()}/{self.snapshotting.value.upper()}"
+
+
 def test_result_to_exit_code(test_result):
+    """Convert test result to exit code (supports both legacy and new format)"""
+    if isinstance(test_result, TwoDimensionalTestResult):
+        test_result = test_result.to_legacy_result()
+
     if test_result == TestResult.OK:
         return 0
     else:

@@ -11,12 +11,12 @@ booktest
 
 # test results:
 
-  book/failing/assert..FAILED in <number> ms
-  book/failing/decorated_async_exception..FAILED in <number> ms
-  book/failing/decorated_exception..FAILED in <number> ms
-  book/failing/exception..FAILED in <number> ms
-  book/failing/fail..FAILED in <number> ms
-  book/failing/memory_monitor_exception..FAILED in <number> ms
+  book/failing/assert..FAIL/INTACT in <number> ms
+  book/failing/decorated_async_exception..FAIL/INTACT in <number> ms
+  book/failing/decorated_exception..FAIL/INTACT in <number> ms
+  book/failing/exception..FAIL/INTACT in <number> ms
+  book/failing/fail..FAIL/INTACT in <number> ms
+  book/failing/memory_monitor_exception..FAIL/INTACT in <number> ms
   book/failing/success..<number> ms
 
 6/7 test failed in <number> ms:

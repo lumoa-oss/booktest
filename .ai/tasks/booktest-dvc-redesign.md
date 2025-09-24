@@ -83,7 +83,7 @@ Git contains tiny `.dvc` files under `_snapshots/` that reference CAS blobs.
 
 ## 5) Booktest CLI Flow (Ergonomics Preserved)
 
-1. **Run with existing snapshots/replay** (`booktest`):
+1. **Run with existing snapshots/replay** (`booktest`)
    - Pull approved digests from manifest; fetch snapshots from CAS; run tests in replay mode.
    - On snapshot mismatch, show DIFF but don't auto-update.
 

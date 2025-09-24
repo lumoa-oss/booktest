@@ -11,7 +11,7 @@ import json
 
 from booktest.review import report_case_begin, case_review, report_case_result, maybe_print_logs
 from booktest.tokenizer import TestTokenizer, BufferIterator
-from booktest.reports import TestResult
+from booktest.reports import TestResult, TwoDimensionalTestResult, SuccessState, SnapshotState
 from booktest.utils import file_or_resource_exists, open_file_or_resource
 
 
@@ -224,36 +224,57 @@ class TestCaseRun:
         Test ending step. This records the test time, closes resources,
         and sets up preliminary result (FAIL, DIFF, OK). This also
         reports the case and calls the review step.
-s
-        :return:
+
+        :return: (result, interaction) where result can be legacy TestResult or TwoDimensionalTestResult
         """
         self.ended = time.time()
         self.took_ms = 1000*(self.ended - self.started)
 
         self.close()
 
+        # Determine success state based on test logic
         if self.errors != 0:
-            rv = TestResult.FAIL
+            success_state = SuccessState.FAIL
+            legacy_result = TestResult.FAIL
         elif self.diffs != 0 or not path.exists(self.exp_file_name):
-            rv = TestResult.DIFF
+            success_state = SuccessState.DIFF
+            legacy_result = TestResult.DIFF
         else:
-            rv = TestResult.OK
+            success_state = SuccessState.OK
+            legacy_result = TestResult.OK
+
+        # Determine snapshot state (for now, assume INTACT - will be enhanced later)
+        snapshot_state = SnapshotState.INTACT
+
+        # Create two-dimensional result
+        two_dim_result = TwoDimensionalTestResult(
+            success=success_state,
+            snapshotting=snapshot_state
+        )
+
+        # Use two-dimensional result for reporting if available, fall back to legacy
+        display_result = two_dim_result if two_dim_result else legacy_result
 
         maybe_print_logs(self.print, self.config, self.out_base_dir, self.name)
 
         report_case_result(
             self.print,
             self.test_path,
-            rv,
+            display_result,
             self.took_ms,
             self.verbose)
+
+        # Use legacy result for backward compatibility with existing code that expects it
+        rv = legacy_result
 
         rv, interaction = self.review(rv)
 
         if self.verbose:
             self.print("")
 
+        # Store both results for future use
         self.result = rv
+        self.two_dimensional_result = two_dim_result
 
         return rv, interaction
 
@@ -911,14 +932,15 @@ s
         self.test_feed("\n")
         return self
 
+    def key(self, key):
+        return self.anchor(key).i(" ")
+
     def keyvalueln(self, key, value):
         """
         Prints a value of format "{key} {value}", and uses key as prefix anchor for
         adjusting the snapshot file cursor.
         """
-        self.anchor(key)
-        self.tln(f" {value}")
-        return self
+        return self.key(key).tln(value)
 
     def tln(self, text=""):
         """

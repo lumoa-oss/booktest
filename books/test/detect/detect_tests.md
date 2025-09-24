@@ -77,10 +77,35 @@
  * test/examples/snapshots/saved_request..ok
  * test/setup_teardown/setup_teardown..ok
  * test/stderr/stderr..ok
+ * test/test_auto_approval_demo/decision_matrix..ok
+ * test/test_auto_approval_demo/scenario_diff_intact..ok
+ * test/test_auto_approval_demo/scenario_fail_any..ok
+ * test/test_auto_approval_demo/scenario_ok_intact..ok
+ * test/test_auto_approval_demo/scenario_ok_updated..ok
+ * test/test_cli_display/ok_intact_result..ok
+ * test/test_cli_display/simulated_diff_result..ok
+ * test/test_cli_display/simulated_updated_result..ok
+ * test/test_demonstration/changing_case..ok
+ * test/test_demonstration/inspect_results..ok
+ * test/test_demonstration/passing_case..ok
  * test/test_names/api_v1/names..ok
  * test/test_names/camel_case_names/names..ok
  * test/test_names/get_url/names..ok
  * test/test_names/url_ops/names..ok
+ * test/test_storage/content_hashing..ok
+ * test/test_storage/dvc_storage_fallback..ok
+ * test/test_storage/git_storage_basic..ok
+ * test/test_storage/git_storage_path_construction..ok
+ * test/test_storage/manifest_operations..ok
+ * test/test_storage/promote_operation..ok
+ * test/test_storage/snapshot_types..ok
+ * test/test_storage/storage_mode_detection..ok
+ * test/test_two_dimensional_results/current_implementation_stores_two_dimensional_result..ok
+ * test/test_two_dimensional_results/legacy_compatibility..ok
+ * test/test_two_dimensional_results/review_logic..ok
+ * test/test_two_dimensional_results/snapshot_states..ok
+ * test/test_two_dimensional_results/success_states..ok
+ * test/test_two_dimensional_results/two_dimensional_result_creation..ok
  * test/utils/all_caps/names..ok
 
-count: 82
+count: 107
