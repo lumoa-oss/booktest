@@ -116,19 +116,18 @@ class SnapshotFunctions:
 
     def __init__(self, t: TestCaseRun, snapshot_funcs: list = None):
         self.t = t
+        self.storage = t.get_storage()
 
         if snapshot_funcs is None:
             snapshot_funcs = []
 
         self.snapshot_funcs = snapshot_funcs
 
-        self.snapshot_file = frozen_snapshot_path(t, "functions.json")
-        self.snapshot_out_file = out_snapshot_path(t, "functions.json")
-
         self.refresh_snapshots = t.config.get("refresh_snapshots", False)
         self.complete_snapshots = t.config.get("complete_snapshots", False)
 
         self.capture_snapshots = self.refresh_snapshots or self.complete_snapshots
+        self.stored_hash = None  # Store hash from storage layer
 
         self.snapshots = None
         self.calls = None
@@ -164,14 +163,16 @@ class SnapshotFunctions:
 
         snapshots = defaultdict(dict)
 
-        if file_or_resource_exists(self.snapshot_file, self.t.resource_snapshots) and not self.refresh_snapshots:
+        # Load from storage if not refreshing
+        if not self.refresh_snapshots:
             try:
-                with open_file_or_resource(self.snapshot_file, self.t.resource_snapshots) as f:
-                    for value in json.load(f):
+                content = self.storage.fetch(self.t.test_id, "func")
+                if content:
+                    for value in json.loads(content.decode('utf-8')):
                         snapshot = FunctionCallSnapshot.from_json_object(value)
                         snapshots[snapshot.func()][snapshot.hash()] = snapshot
             except Exception as e:
-                raise ValueError(f"test {self.t.name} snapshot file {self.snapshot_file} corrupted with {e}. "
+                raise ValueError(f"test {self.t.name} snapshot file corrupted with {e}. "
                                  f"Use -S to refresh snapshots")
 
         snapshotters = []
@@ -195,17 +196,26 @@ class SnapshotFunctions:
             for hash, snapshot in sorted(list(function_snapshots.items()), key=lambda x: x[0]):
                 stored.append(snapshot.json_object())
 
-        have_snapshots_dir(self.t)
-        with open(self.snapshot_out_file, "w") as f:
-            json.dump(stored, f, indent=4)
+        # Store via storage layer
+        content = json.dumps(stored, indent=4).encode('utf-8')
+        self.stored_hash = self.storage.store(self.t.test_id, "func", content)
 
         self.snapshotters = None
         self.snapshots = None
         self.calls = None
 
     def t_snapshots(self):
-        self.t.h1("function call snapshots:")
+        """Report snapshot usage to the system instead of printing to test results."""
+        from booktest.reports import SnapshotState
 
+        # Determine snapshot state
+        if self.complete_snapshots or self.refresh_snapshots:
+            state = SnapshotState.UPDATED
+        else:
+            state = SnapshotState.INTACT
+
+        # Build function summaries for details
+        function_summaries = {}
         for function, function_snapshots in sorted(list(self.calls.items()), key=lambda x: x[0]):
             hashes = sorted(list(function_snapshots.keys()))
             stored = self.snapshots[function]
@@ -217,13 +227,24 @@ class SnapshotFunctions:
                 h.update(i.encode())
             aggregate_hash = str(h.hexdigest())
 
-            self.t.tln(f" * {function} - {aggregate_hash}:")
-            show_n = 4
-            for hash in hashes[:show_n]:
-                self.t.tln(f"   * {hash}")
-            if len(hashes) > show_n:
-                self.t.tln(f"   * ...")
-                self.t.tln(f"   * {len(hashes)} unique call in total")
+            function_summaries[function] = {
+                'aggregate_hash': aggregate_hash,
+                'count': len(hashes),
+                'unique_calls': len(set(hashes)),
+                'hashes': hashes[:10]  # Store first 10 hashes for reference
+            }
+
+        # Use hash from storage layer
+        if function_summaries:
+            # Report to system using hash from storage
+            self.t.report_snapshot_usage(
+                snapshot_type="func",
+                hash_value=self.stored_hash,
+                state=state,
+                details={
+                    'functions': function_summaries
+                }
+            )
 
     def __enter__(self):
         self.start()

@@ -4,18 +4,14 @@
     "args": {},
     "headers": {
         "host": "postman-echo.com",
-        "x-request-start": "t1748940167.627",
+        "x-request-start": "t1759402754.328",
         "connection": "close",
         "x-forwarded-proto": "https",
         "x-forwarded-port": "443",
-        "x-amzn-trace-id": "Root=1-683eb587-7b8acf0737f801b376549f86",
+        "x-amzn-trace-id": "Root=1-68de5b02-0c688a0074e1bcb9569d91c0",
         "user-agent": "python-requests/2.32.3",
         "accept-encoding": "gzip, deflate",
         "accept": "*/*"
     },
     "url": "https://postman-echo.com/get"
 }
-
-# request snaphots:
-
- * https://postman-echo.com/get - 085bbb060375440e09281c5b08f704d4a53a6d4a

@@ -300,9 +300,8 @@ class SnapshotRequests:
                  encode_body=None,
                  match_request=accept_all):
         self.t = t
+        self.storage = t.get_storage()
         self.legacy_snapshot_path = os.path.join(t.exp_dir_name, ".requests")
-        self.snapshot_file = frozen_snapshot_path(t, "requests.json")
-        self.snapshot_out_file = out_snapshot_path(t, "requests.json")
         self._mock_target = requests.Session
         self._last_send = None
         self._last_get_adapter = None
@@ -312,6 +311,7 @@ class SnapshotRequests:
 
         self.refresh_snapshots = t.config.get("refresh_snapshots", False)
         self.complete_snapshots = t.config.get("complete_snapshots", False)
+        self.stored_hash = None  # Store hash from storage layer
 
         # load snapshots
         snapshots = []
@@ -324,15 +324,17 @@ class SnapshotRequests:
                                                                       ignore_headers=ignore_headers,
                                                                       json_to_hash=json_to_hash))
 
-        if file_or_resource_exists(self.snapshot_file, self.t.resource_snapshots) and not self.refresh_snapshots:
+        # Load from storage if not refreshing
+        if not self.refresh_snapshots:
             try:
-                with open_file_or_resource(self.snapshot_file, self.t.resource_snapshots) as f:
-                    for key, value in json.load(f).items():
+                content = self.storage.fetch(t.test_id, "http")
+                if content:
+                    for key, value in json.loads(content.decode('utf-8')).items():
                         snapshots.append(RequestSnapshot.from_json_object(value,
                                                                           ignore_headers=ignore_headers,
                                                                           json_to_hash=json_to_hash))
             except Exception as e:
-                raise ValueError(f"test {self.t.name} snapshot file {self.snapshot_file} corrupted with {e}. "
+                raise ValueError(f"test {self.t.name} snapshot file corrupted with {e}. "
                                  f"Use -S to refresh snapshots")
 
         self._adapter = SnapshotAdapter(snapshots,
@@ -382,22 +384,44 @@ class SnapshotRequests:
             self._mock_target.send = self._last_send
             self._last_send = None
 
-        # let's store everything in one file to avoid spamming git
+        # Store snapshots via storage layer
         stored = {}
         for snapshot in self._adapter.requests:
             name = snapshot.hash()
             stored[name] = snapshot.json_object(self._lose_request_details)
 
-        have_snapshots_dir(self.t)
-        with open(self.snapshot_out_file, "w") as f:
-            json.dump(stored, f, indent=4)
+        content = json.dumps(stored, indent=4).encode('utf-8')
+        self.stored_hash = self.storage.store(self.t.test_id, "http", content)
 
     def t_snapshots(self):
-        self.t.h1("request snaphots:")
-        for i in sorted(self._adapter.requests, key=lambda i: (i.request.url(), i.hash())):
-            if not self._adapter.get_snapshot(i.request):
-                self.t.diff()  # force test to fail if snapshot was missing
-            self.t.tln(f" * {i.request.url()} - {i.hash()}")
+        """Report snapshot usage to the system instead of printing to test results."""
+        from booktest.reports import SnapshotState
+
+        # Determine snapshot state
+        if self.complete_snapshots or self.refresh_snapshots:
+            state = SnapshotState.UPDATED
+        else:
+            state = SnapshotState.INTACT
+
+        # Use hash from storage layer
+        snapshots = sorted(self._adapter.requests, key=lambda i: (i.request.url(), i.hash()))
+        if snapshots:
+            # Report to system using hash from storage
+            self.t.report_snapshot_usage(
+                snapshot_type="http",
+                hash_value=self.stored_hash,
+                state=state,
+                details={
+                    'count': len(snapshots),
+                    'urls': [s.request.url() for s in snapshots],
+                    'hashes': [s.hash() for s in snapshots]
+                }
+            )
+
+            # Still mark test as failed if snapshot was missing
+            for i in snapshots:
+                if not self._adapter.get_snapshot(i.request):
+                    self.t.diff()  # force test to fail if snapshot was missing
 
     def __enter__(self):
         self.start()

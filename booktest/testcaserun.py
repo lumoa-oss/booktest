@@ -70,6 +70,14 @@ class TestCaseRun:
 
         # prepare std error output
         self.err_file_name = path.join(self.out_base_dir, name + ".log")
+
+        # snapshot usage tracking
+        self.snapshot_usage = {}  # Track snapshot usage for reporting
+
+        # storage initialization
+        self.storage = self._init_storage()
+        self.test_id = test_path  # Use test_path as test_id for storage
+
         self.err = None
         self.orig_err = None
 
@@ -243,8 +251,8 @@ class TestCaseRun:
             success_state = SuccessState.OK
             legacy_result = TestResult.OK
 
-        # Determine snapshot state (for now, assume INTACT - will be enhanced later)
-        snapshot_state = SnapshotState.INTACT
+        # Determine snapshot state from actual usage tracking
+        snapshot_state = self.get_snapshot_state()
 
         # Create two-dimensional result
         two_dim_result = TwoDimensionalTestResult(
@@ -276,7 +284,111 @@ class TestCaseRun:
         self.result = rv
         self.two_dimensional_result = two_dim_result
 
+        # Write snapshot metadata to separate file
+        if self.snapshot_usage:
+            metadata_file = self.file("_snapshots/metadata.json")
+            metadata_dir = path.dirname(metadata_file)
+            os.makedirs(metadata_dir, exist_ok=True)
+
+            import json
+            with open(metadata_file, 'w') as f:
+                json.dump({
+                    'test_id': self.test_path,
+                    'snapshots': self.snapshot_usage,
+                    'result': {
+                        'success': success_state.value,
+                        'snapshotting': snapshot_state.value
+                    },
+                    'timestamp': time.time()
+                }, f, indent=2)
+
         return rv, interaction
+
+    def report_snapshot_usage(self,
+                              snapshot_type: str,
+                              hash_value: str,
+                              state: SnapshotState,
+                              details: dict = None):
+        """
+        Report snapshot usage for this test.
+
+        Args:
+            snapshot_type: Type of snapshot (http, httpx, env, func)
+            hash_value: SHA256 hash of snapshot content
+            state: Current state (INTACT, UPDATED, FAIL)
+            details: Optional additional information about the snapshot
+        """
+        self.snapshot_usage[snapshot_type] = {
+            'hash': hash_value,
+            'state': state.value,
+            'details': details or {},
+            'timestamp': time.time()
+        }
+
+    def get_snapshot_state(self) -> SnapshotState:
+        """
+        Determine overall snapshot state from tracked usage.
+
+        Returns:
+            SnapshotState: INTACT if all snapshots valid, UPDATED if any updated,
+                          FAIL if any failed
+        """
+        if not self.snapshot_usage:
+            return SnapshotState.INTACT
+
+        states = [SnapshotState(u['state'])
+                 for u in self.snapshot_usage.values()]
+
+        # If any snapshot failed, overall state is FAIL
+        if any(s == SnapshotState.FAIL for s in states):
+            return SnapshotState.FAIL
+
+        # If any snapshot was updated, overall state is UPDATED
+        if any(s == SnapshotState.UPDATED for s in states):
+            return SnapshotState.UPDATED
+
+        # All snapshots intact
+        return SnapshotState.INTACT
+
+    def _init_storage(self):
+        """
+        Initialize storage backend based on configuration.
+
+        Returns:
+            SnapshotStorage: Configured storage instance (GitStorage or DVCStorage)
+        """
+        from booktest.storage import GitStorage, DVCStorage
+
+        mode = self.config.get("storage.mode", "auto")
+
+        # Use out_dir for writing (staging), exp_dir for reading (frozen)
+        # GitStorage will handle both locations
+        if mode == "auto":
+            # Auto-detect: use DVC if available, otherwise Git
+            if DVCStorage.is_available():
+                return DVCStorage(
+                    base_path=self.run.out_dir,  # Write to .out
+                    remote=self.config.get("storage.dvc.remote", "booktest-remote"),
+                    manifest_path=self.config.get("storage.dvc.manifest_path", "booktest.manifest.yaml")
+                )
+            return GitStorage(base_path=self.run.out_dir, frozen_path=self.run.exp_dir)
+        elif mode == "dvc":
+            return DVCStorage(
+                base_path=self.run.out_dir,  # Write to .out
+                remote=self.config.get("storage.dvc.remote", "booktest-remote"),
+                manifest_path=self.config.get("storage.dvc.manifest_path", "booktest.manifest.yaml")
+            )
+        else:  # mode == "git" or fallback
+            return GitStorage(base_path=self.run.out_dir, frozen_path=self.run.exp_dir)
+
+    def get_storage(self):
+        """
+        Get the storage backend for this test.
+
+        Returns:
+            SnapshotStorage: The storage instance
+        """
+        return self.storage
 
     def close_exp_reader(self):
         """

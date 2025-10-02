@@ -14,10 +14,8 @@ class SnapshotEnv:
                  t: bt.TestCaseRun,
                  names: list):
         self.t = t
+        self.storage = t.get_storage()
         self.names = names
-
-        self.snaphot_path = frozen_snapshot_path(t, "env.json")
-        self.snapshot_out_path = out_snapshot_path(t, "env.json")
 
         self.snaphots = {}
         self._old_env = {}
@@ -25,11 +23,13 @@ class SnapshotEnv:
 
         self.refresh_snapshots = t.config.get("refresh_snapshots", False)
         self.complete_snapshots = t.config.get("complete_snapshots", False)
+        self.stored_hash = None  # Store hash from storage layer
 
-        # load snapshots
-        if file_or_resource_exists(self.snaphot_path, t.resource_snapshots) and not self.refresh_snapshots:
-            with open_file_or_resource(self.snaphot_path, t.resource_snapshots) as f:
-                self.snaphots = json.load(f)
+        # Load snapshots from storage if not refreshing
+        if not self.refresh_snapshots:
+            content = self.storage.fetch(t.test_id, "env")
+            if content:
+                self.snaphots = json.loads(content.decode('utf-8'))
 
     def start(self):
         if self._old_env is None:
@@ -61,14 +61,34 @@ class SnapshotEnv:
             else:
                 os.environ[name] = self._old_env[name]
 
-        have_snapshots_dir(self.t)
-        with open(self.snapshot_out_path, "w") as f:
-            json.dump(self.capture, f, indent=4)
+        # Store via storage layer
+        content = json.dumps(self.capture, indent=4).encode('utf-8')
+        self.stored_hash = self.storage.store(self.t.test_id, "env", content)
 
     def t_snapshots(self):
-        self.t.h1("env snaphots:")
-        for name, value in self.capture.items():
-            self.t.tln(f" * {name}={value}")
+        """Report snapshot usage to the system instead of printing to test results."""
+        from booktest.reports import SnapshotState
+
+        # Determine snapshot state
+        if self.complete_snapshots or self.refresh_snapshots:
+            state = SnapshotState.UPDATED
+        else:
+            state = SnapshotState.INTACT
+
+        # Use hash from storage layer
+        if self.capture:
+            # Report to system using hash from storage
+            # Note: For security, we only include variable names, not values
+            self.t.report_snapshot_usage(
+                snapshot_type="env",
+                hash_value=self.stored_hash,
+                state=state,
+                details={
+                    'count': len(self.capture),
+                    'variables': list(self.capture.keys())
+                    # Intentionally not including values for security
+                }
+            )
 
     def __enter__(self):
         self.start()

@@ -108,14 +108,23 @@ class GitStorage(SnapshotStorage):
     Stores snapshots directly in the repository under _snapshots directories.
     """
 
-    def __init__(self, base_path: str = "books"):
+    def __init__(self, base_path: str = "books", frozen_path: str = None):
         """
         Initialize Git storage backend.
 
         Args:
-            base_path: Base directory for storing snapshots
+            base_path: Base directory for storing snapshots (usually books/.out)
+            frozen_path: Directory for reading frozen snapshots (usually books, defaults to base_path)
         """
         self.base_path = Path(base_path)
+        self.frozen_path = Path(frozen_path) if frozen_path else self.base_path
+        # Legacy filename mapping for backward compatibility
+        self.legacy_filenames = {
+            "http": "requests.json",  # HTTP requests used "requests.json"
+            "httpx": "httpx.json",    # HTTPX used "httpx.json"
+            "env": "env.json",        # Env used "env.json"
+            "func": "functions.json"   # Functions used "functions.json"
+        }
 
     def _get_snapshot_path(self, test_id: str, snapshot_type: str) -> Path:
         """Construct the file path for a snapshot."""
@@ -126,14 +135,33 @@ class GitStorage(SnapshotStorage):
 
     def fetch(self, test_id: str, snapshot_type: str) -> Optional[bytes]:
         """Fetch snapshot content from Git repository."""
-        path = self._get_snapshot_path(test_id, snapshot_type)
-        if path.exists():
-            return path.read_bytes()
+        # Check frozen location first (approved snapshots in books/)
+        parts = test_id.replace("::", "/").split("/")
+        snapshot_dir = self.frozen_path / "/".join(parts) / "_snapshots"
+
+        # Try legacy filename first for backward compatibility
+        if snapshot_type in self.legacy_filenames:
+            legacy_path = snapshot_dir / self.legacy_filenames[snapshot_type]
+            if legacy_path.exists():
+                return legacy_path.read_bytes()
+
+        # Try new filename
+        new_path = snapshot_dir / f"{snapshot_type}.json"
+        if new_path.exists():
+            return new_path.read_bytes()
+
         return None
 
     def store(self, test_id: str, snapshot_type: str, content: bytes) -> str:
         """Store snapshot content in Git repository."""
-        path = self._get_snapshot_path(test_id, snapshot_type)
+        # Use legacy filename for backward compatibility
+        if snapshot_type in self.legacy_filenames:
+            parts = test_id.replace("::", "/").split("/")
+            snapshot_dir = self.base_path / "/".join(parts) / "_snapshots"
+            path = snapshot_dir / self.legacy_filenames[snapshot_type]
+        else:
+            path = self._get_snapshot_path(test_id, snapshot_type)
+
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)
 
@@ -214,8 +242,9 @@ class DVCStorage(SnapshotStorage):
         # Check if DVC is available
         self._check_dvc_available()
 
-    def _check_dvc_available(self) -> bool:
-        """Check if DVC is installed and configured."""
+    @classmethod
+    def is_available(cls) -> bool:
+        """Check if DVC is installed and available."""
         try:
             result = subprocess.run(
                 ["dvc", "--version"],
@@ -226,6 +255,10 @@ class DVCStorage(SnapshotStorage):
             return result.returncode == 0
         except (subprocess.SubprocessError, FileNotFoundError):
             return False
+
+    def _check_dvc_available(self) -> bool:
+        """Check if DVC is installed and configured."""
+        return self.is_available()
 
     def _compute_hash(self, content: bytes) -> str:
         """Compute SHA256 hash of content."""
