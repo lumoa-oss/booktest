@@ -25,6 +25,12 @@ class SnapshotEnv:
         self.complete_snapshots = t.config.get("complete_snapshots", False)
         self.stored_hash = None  # Store hash from storage layer
 
+        # Legacy support - single file format (.env.json)
+        legacy_file_path = os.path.join(t.exp_dir_name, ".env.json")
+        if os.path.exists(legacy_file_path) and not self.refresh_snapshots:
+            with open(legacy_file_path, "r") as f:
+                self.snaphots = json.load(f)
+
         # Load snapshots from storage if not refreshing
         if not self.refresh_snapshots:
             content = self.storage.fetch(t.test_id, "env")

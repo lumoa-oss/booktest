@@ -9,7 +9,7 @@ File exists: True
 ## Test ID: test/nested/deep::test_func
 
 Path: test/nested/deep/test_func/_snapshots/http.json
-File exists: True
+File exists: False
 
 ## Test ID: examples/snapshots::httpx_test
 

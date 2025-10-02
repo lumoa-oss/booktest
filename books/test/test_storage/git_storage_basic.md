@@ -11,13 +11,13 @@ Fetched content matches: True
 
 ## Exists Check
 
-Snapshot exists: True
+Snapshot exists: False
 Non-existent snapshot: False
 
 ## Manifest Generation
 
 Manifest: {
   "test/example/test_case": {
-    "func": "sha256:9d6c1804e6649a401f8466715dd9e789c1017ecd0cc8289630b99fef0fa70789"
+    "functions": "sha256:9d6c1804e6649a401f8466715dd9e789c1017ecd0cc8289630b99fef0fa70789"
   }
 }
