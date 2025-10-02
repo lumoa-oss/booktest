@@ -200,9 +200,8 @@ class SnapshotFunctions:
         content = json.dumps(stored, indent=4).encode('utf-8')
         self.stored_hash = self.storage.store(self.t.test_id, "func", content)
 
+        # Keep snapshots and calls for t_snapshots() reporting, only clear snapshotters
         self.snapshotters = None
-        self.snapshots = None
-        self.calls = None
 
     def t_snapshots(self):
         """Report snapshot usage to the system instead of printing to test results."""
@@ -252,8 +251,8 @@ class SnapshotFunctions:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.t_snapshots()
         self.stop()
+        self.t_snapshots()
 
 
 def snapshot_functions(*snapshot_funcs):

@@ -191,11 +191,20 @@ class SnapshotHttpx:
         # load snapshots
         snapshots = []
 
-        # legacy support
+        # legacy support - directory format (.httpx/)
         if os.path.exists(self.legacy_mock_path) and not self.refresh_snapshots:
             for mock_file in os.listdir(self.legacy_mock_path):
                 with open(os.path.join(self.legacy_mock_path, mock_file), "r") as f:
                     snapshots.append(RequestSnapshot.from_json_object(json.load(f),
+                                                                      ignore_headers=ignore_headers,
+                                                                      json_to_hash=json_to_hash))
+
+        # legacy support - single file format (.httpx.json)
+        legacy_file_path = os.path.join(t.exp_dir_name, ".httpx.json")
+        if os.path.exists(legacy_file_path) and not self.refresh_snapshots:
+            with open(legacy_file_path, "r") as f:
+                for key, value in json.load(f).items():
+                    snapshots.append(RequestSnapshot.from_json_object(value,
                                                                       ignore_headers=ignore_headers,
                                                                       json_to_hash=json_to_hash))
 
