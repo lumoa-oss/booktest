@@ -191,6 +191,13 @@ class SnapshotFunctions:
             func = snapshotter.func
             set_function(func, func)
 
+        # Get old hash before storing new content
+        old_content = self.storage.fetch(self.t.test_id, "func")
+        old_hash = None
+        if old_content:
+            import hashlib
+            old_hash = f"sha256:{hashlib.sha256(old_content).hexdigest()}"
+
         stored = []
         for _, function_snapshots in sorted(list(self.calls.items()), key=lambda x: x[0]):
             for hash, snapshot in sorted(list(function_snapshots.items()), key=lambda x: x[0]):
@@ -200,6 +207,9 @@ class SnapshotFunctions:
         content = json.dumps(stored, indent=4).encode('utf-8')
         self.stored_hash = self.storage.store(self.t.test_id, "func", content)
 
+        # Store old hash for comparison in t_snapshots
+        self.old_hash = old_hash
+
         # Keep snapshots and calls for t_snapshots() reporting, only clear snapshotters
         self.snapshotters = None
 
@@ -207,8 +217,8 @@ class SnapshotFunctions:
         """Report snapshot usage to the system instead of printing to test results."""
         from booktest.reports import SnapshotState
 
-        # Determine snapshot state
-        if self.complete_snapshots or self.refresh_snapshots:
+        # Determine snapshot state by comparing hashes
+        if self.old_hash is None or self.old_hash != self.stored_hash:
             state = SnapshotState.UPDATED
         else:
             state = SnapshotState.INTACT

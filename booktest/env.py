@@ -67,16 +67,26 @@ class SnapshotEnv:
             else:
                 os.environ[name] = self._old_env[name]
 
+        # Get old hash before storing new content
+        old_content = self.storage.fetch(self.t.test_id, "env")
+        old_hash = None
+        if old_content:
+            import hashlib
+            old_hash = f"sha256:{hashlib.sha256(old_content).hexdigest()}"
+
         # Store via storage layer
         content = json.dumps(self.capture, indent=4).encode('utf-8')
         self.stored_hash = self.storage.store(self.t.test_id, "env", content)
+
+        # Store old hash for comparison in t_snapshots
+        self.old_hash = old_hash
 
     def t_snapshots(self):
         """Report snapshot usage to the system instead of printing to test results."""
         from booktest.reports import SnapshotState
 
-        # Determine snapshot state
-        if self.complete_snapshots or self.refresh_snapshots:
+        # Determine snapshot state by comparing hashes
+        if self.old_hash is None or self.old_hash != self.stored_hash:
             state = SnapshotState.UPDATED
         else:
             state = SnapshotState.INTACT
