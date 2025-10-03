@@ -254,6 +254,11 @@ class TestCaseRun:
         # Determine snapshot state from actual usage tracking
         snapshot_state = self.get_snapshot_state()
 
+        # If test failed, snapshots should not be marked as updated
+        # Failed tests don't produce valid snapshots
+        if success_state == SuccessState.FAIL:
+            snapshot_state = SnapshotState.FAIL
+
         # Create two-dimensional result
         two_dim_result = TwoDimensionalTestResult(
             success=success_state,
