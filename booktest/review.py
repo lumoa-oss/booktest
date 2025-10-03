@@ -157,22 +157,22 @@ def report_case_result(printer,
 
     # Handle two-dimensional results if available
     if isinstance(result, TwoDimensionalTestResult):
-        # Hide INTACT from display - users don't need to see it
-        # Only show snapshot state if it's UPDATED or FAIL
-        if result.snapshotting.name == "INTACT":
-            result_display = result.success.name  # Just show "OK", "DIFF", or "FAIL"
-        else:
-            result_display = str(result)  # Show "OK/UPDATED", "DIFF/FAIL", etc.
+        # Format snapshot status message
+        snapshot_msg = ""
+        if result.snapshotting.name == "UPDATED":
+            snapshot_msg = " (snapshots updated)"
+        elif result.snapshotting.name == "FAIL":
+            snapshot_msg = " (snapshot failure)"
 
         if result.success.name == "OK":
             if verbose:
-                printer(f"{result_display} in {int_took_ms} ms.")
+                printer(f"OK {int_took_ms} ms.{snapshot_msg}")
             else:
-                printer(f"{int_took_ms} ms")
+                printer(f"{int_took_ms} ms{snapshot_msg}")
         elif result.success.name == "DIFF":
-            printer(f"{result_display} in {int_took_ms} ms")
+            printer(f"DIFF {int_took_ms} ms{snapshot_msg}")
         elif result.success.name == "FAIL":
-            printer(f"{result_display} in {int_took_ms} ms")
+            printer(f"FAIL {int_took_ms} ms{snapshot_msg}")
     else:
         # Legacy single-dimensional result
         if result == TestResult.OK:
