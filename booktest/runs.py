@@ -90,7 +90,8 @@ class RunBatch:
                 PROCESS_LOCAL_CACHE,
                 output,
                 allocations,
-                preallocations)
+                preallocations,
+                batch_dir=batch_dir)  # Pass batch_dir for DVC manifest handling
 
             with self.setup.setup_teardown():
                 rv = test_result_to_exit_code(run.run())

@@ -244,10 +244,10 @@ class DVCStorage(SnapshotStorage):
         # For parallel runs, use batch-specific manifest to avoid race conditions
         self.batch_dir = Path(batch_dir) if batch_dir else None
         self.batch_manifest_path = None
+        self.pending_updates = {}
         if self.batch_dir:
             self.batch_manifest_path = self.batch_dir / "manifest_updates.yaml"
             # In batch mode, accumulate updates without writing to main manifest
-            self.pending_updates = {}
 
         # Check if DVC is available
         self._check_dvc_available()

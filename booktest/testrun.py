@@ -47,7 +47,8 @@ class TestRun:
                  cache,
                  output=None,
                  allocations=None,
-                 preallocations=None):
+                 preallocations=None,
+                 batch_dir=None):
         self.exp_dir = exp_dir
         self.report_dir = report_dir
         self.out_dir = out_dir
@@ -65,6 +66,7 @@ class TestRun:
         if preallocations is None:
             preallocations = {}
         self.preallocations = preallocations
+        self.batch_dir = batch_dir  # For parallel runs to avoid manifest race conditions
 
     def get_test_result(self, case, method):
         for t in self.tests.cases:

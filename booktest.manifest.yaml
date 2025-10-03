@@ -1,3 +1,7 @@
 storage_mode: dvc
 test/examples/snapshots/httpx:
-  httpx: sha256:8945b6bdb81940e4273cc053f5303bc9f728f80d2a1edbb997b5af6946456e25
+  httpx: sha256:6c1cefb45e84093193526e050f29fe9382570744925e50226d3e88f560ec7c32
+test/examples/snapshots/httpx_filter:
+  httpx: sha256:121d07b214b7eadd9a29a5a18634a30d4a5bb4b79c386e5a0803658facfb6645
+test/examples/snapshots/requests_filter:
+  http: sha256:d66769e4b56a6ccaf250218ab7de784b2598488b41928e6ca0c7d8f97af95421
