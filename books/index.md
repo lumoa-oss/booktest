@@ -106,6 +106,7 @@
      * datascience
          * gpt
              * [request](test/datascience/gpt/request.md)
+             * [review](test/datascience/gpt/review.md)
 
      * examples
          * example_suite
