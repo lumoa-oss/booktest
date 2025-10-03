@@ -13,16 +13,17 @@ so it should be syntactically valid python.
 # code:
 
 ```
-# Hello World -esimerkki, suomeksi kommentoituna lapselle
-# Tämä ohjelma näyttää näytöllä tekstin "Hello World!"
+# Tämä ohjelma näyttää konsolissa viestin "Hello World!".
+# Selitetään joka askel lapsille ymmärrettävästi.
 
-# Määritellään muuttuja nimeltä message. Muuttuja pitää tekstin (merkkijonon).
-message = "Hello World!"  # "Hello World!" on teksti lainausmerkeissä
+# 1) Teksti (merkkijono) kirjoitetaan lainausmerkkien sisään.
+#    Tässä tallennamme tekstin muuttujaan nimeltä 'viesti'.
+viesti = "Hello World!"
 
-# print-funktio tulostaa sen mitä sille annetaan näytölle.
-print(message)  # Tulostaa: Hello World!
+# 2) print-funktio kertoo Pythonille, että haluamme näyttää jotain näytöllä (konsolissa).
+print(viesti)
 
-# Ohjelma on nyt suoritettu loppuun.
+# 3) Valmista! Kun suoritat tämän ohjelman, näet konsolissa tekstin "Hello World!".
 ```
 
 # output:

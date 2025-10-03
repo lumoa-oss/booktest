@@ -18,7 +18,7 @@ test book/test_hello/hello...
 
   the message is hello world!
 
-book/test_hello/hello OK/INTACT in <number> ms.
+book/test_hello/hello OK <number> ms.
 
 test book/teardown/setup_teardown/setup_teardown...
 
@@ -36,7 +36,7 @@ test book/teardown/setup_teardown/setup_teardown...
   
   global variable is 'set'..ok
 
-book/teardown/setup_teardown/setup_teardown OK/INTACT in <number> ms.
+book/teardown/setup_teardown/setup_teardown OK <number> ms.
 
 
 2/2 test succeeded in <number> ms

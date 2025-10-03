@@ -24,7 +24,7 @@ test book/broken_snapshots/function_snapshot...
   
    * hello: hello world
 
-book/broken_snapshots/function_snapshot OK/UPDATED in <number> ms.
+book/broken_snapshots/function_snapshot OK <number> ms. (snapshots updated)
 
 test book/broken_snapshots/httpx...
 
@@ -32,7 +32,7 @@ test book/broken_snapshots/httpx...
   
 ? "https://postman-echo.com/get"                               | {
 
-book/broken_snapshots/httpx DIFF/UPDATED in <number> ms
+book/broken_snapshots/httpx DIFF <number> ms (snapshots updated)
 
 test book/broken_snapshots/requests...
 
@@ -40,7 +40,7 @@ test book/broken_snapshots/requests...
   
 ? "https://postman-echo.com/get"                               | {
 
-book/broken_snapshots/requests DIFF/UPDATED in <number> ms
+book/broken_snapshots/requests DIFF <number> ms (snapshots updated)
 
 
 2/3 test failed in <number> ms:

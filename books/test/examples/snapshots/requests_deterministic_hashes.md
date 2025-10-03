@@ -1,15 +1,11 @@
 # request:
 
- * random url component is: 391111
- * making post request to https://httpbin.org/anything/391111 in 860.412 ms (was 709.235 ms)
+ * random url component is: 7821190
+ * making post request to https://httpbin.org/anything/7821190 in 4038.043 ms (was 22.631 ms)
 
 # response:
 
 {
-    "date": "2024-09-26T09:39:40.058480",
+    "date": "2025-10-03T13:23:24.513159",
     "message": "hello"
 }
-
-# httpx snaphots:
-
- * https://httpbin.org/anything/391111 - 5d79d741579ef5e914e9cb6bfa4e01a280eca6a6

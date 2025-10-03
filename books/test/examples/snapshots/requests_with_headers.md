@@ -23,16 +23,16 @@ one snapshot is used twice.
         "Content-Type": "application/json",
         "Host": "httpbin.org",
         "User-Agent": "python-requests/2.32.3",
-        "X-Amzn-Trace-Id": "Root=1-66d81e1f-24dc721863390a6b54abf7be",
+        "X-Amzn-Trace-Id": "Root=1-68dfa4f1-5e3ee373740cd6e231174ed1",
         "X-Api-Key": "mock",
-        "X-Timestamp": "1725439519.2099848",
+        "X-Timestamp": "1759487217.0663369",
         "X-User-Id": "1"
     },
     "json": {
         "message": "hello"
     },
     "method": "POST",
-    "origin": "82.181.38.215",
+    "origin": "85.131.27.192",
     "url": "https://httpbin.org/anything"
 }
 
@@ -50,16 +50,16 @@ one snapshot is used twice.
         "Content-Type": "application/json",
         "Host": "httpbin.org",
         "User-Agent": "python-requests/2.32.3",
-        "X-Amzn-Trace-Id": "Root=1-66f6ae8e-6e045a7175f14467449bdabb",
+        "X-Amzn-Trace-Id": "Root=1-68dfa4f4-29a1c53245c0e82c4db96109",
         "X-Api-Key": "mock",
-        "X-Timestamp": "1727442573.6358528",
+        "X-Timestamp": "1759487219.9265873",
         "X-User-Id": "1"
     },
     "json": {
         "message": "hello"
     },
     "method": "POST",
-    "origin": "82.181.38.215",
+    "origin": "85.131.27.192",
     "url": "https://httpbin.org/anything"
 }
 
@@ -77,25 +77,15 @@ one snapshot is used twice.
         "Content-Type": "application/json",
         "Host": "httpbin.org",
         "User-Agent": "python-requests/2.32.3",
-        "X-Amzn-Trace-Id": "Root=1-66d81e20-70b545243100b97275adde0f",
+        "X-Amzn-Trace-Id": "Root=1-68dfa4fd-2f3fb34762b0c192465cc89a",
         "X-Api-Key": "mock",
-        "X-Timestamp": "1725439519.9294808",
+        "X-Timestamp": "1759487229.2296882",
         "X-User-Id": "2"
     },
     "json": {
         "message": "hello"
     },
     "method": "POST",
-    "origin": "82.181.38.215",
+    "origin": "85.131.27.192",
     "url": "https://httpbin.org/anything"
 }
-
-# request snaphots:
-
- * https://httpbin.org/anything - 3f887fcebc089421e4713ef161004859c8007d29
- * https://httpbin.org/anything - 655d501f55408bce98f364383a5f1d6b5378e30b
- * https://httpbin.org/anything - d360944caa4275ee6fb2da7159894b4ed90cd17f
-
-# env snaphots:
-
- * HOST_NAME=https://httpbin.org/anything

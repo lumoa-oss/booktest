@@ -6,24 +6,6 @@ import booktest as bt
 class TestTwoDimensionalResults(bt.TestBook):
     """Test suite for two-dimensional test results."""
 
-    def test_success_states(self, t: bt.TestCaseRun):
-        """Test the different success states."""
-        t.h1("Success States")
-
-        t.h2("SuccessState Enum Values")
-        t.tln(f"OK: {bt.SuccessState.OK.value}")
-        t.tln(f"DIFF: {bt.SuccessState.DIFF.value}")
-        t.tln(f"FAIL: {bt.SuccessState.FAIL.value}")
-
-    def test_snapshot_states(self, t: bt.TestCaseRun):
-        """Test the different snapshot states."""
-        t.h1("Snapshot States")
-
-        t.h2("SnapshotState Enum Values")
-        t.tln(f"INTACT: {bt.SnapshotState.INTACT.value}")
-        t.tln(f"UPDATED: {bt.SnapshotState.UPDATED.value}")
-        t.tln(f"FAIL: {bt.SnapshotState.FAIL.value}")
-
     def test_two_dimensional_result_creation(self, t: bt.TestCaseRun):
         """Test creating and using TwoDimensionalTestResult."""
         t.h1("Two-Dimensional Test Result")

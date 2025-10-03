@@ -34,11 +34,6 @@
 
          * [dependencies](test/dependencies/dependencies.md)
 
-     * test_demonstration
-         * [passing_case](test/test_demonstration/passing_case.md)
-         * [changing_case](test/test_demonstration/changing_case.md)
-         * [inspect_results](test/test_demonstration/inspect_results.md)
-
      * cli
          * [broken_snapshots](test/cli/broken_snapshots.md)
          * [configurations](test/cli/configurations.md)
@@ -53,14 +48,7 @@
          * [run](test/cli/run.md)
          * [timeout](test/cli/timeout.md)
 
-     * test_cli_display
-         * [ok_intact_result](test/test_cli_display/ok_intact_result.md)
-         * [simulated_diff_result](test/test_cli_display/simulated_diff_result.md)
-         * [simulated_updated_result](test/test_cli_display/simulated_updated_result.md)
-
      * test_two_dimensional_results
-         * [success_states](test/test_two_dimensional_results/success_states.md)
-         * [snapshot_states](test/test_two_dimensional_results/snapshot_states.md)
          * [two_dimensional_result_creation](test/test_two_dimensional_results/two_dimensional_result_creation.md)
          * [legacy_compatibility](test/test_two_dimensional_results/legacy_compatibility.md)
          * [review_logic](test/test_two_dimensional_results/review_logic.md)
@@ -95,13 +83,6 @@
          * [content_hashing](test/test_storage/content_hashing.md)
          * [promote_operation](test/test_storage/promote_operation.md)
          * [snapshot_types](test/test_storage/snapshot_types.md)
-
-     * test_auto_approval_demo
-         * [scenario_ok_intact](test/test_auto_approval_demo/scenario_ok_intact.md)
-         * [scenario_ok_updated](test/test_auto_approval_demo/scenario_ok_updated.md)
-         * [scenario_diff_intact](test/test_auto_approval_demo/scenario_diff_intact.md)
-         * [scenario_fail_any](test/test_auto_approval_demo/scenario_fail_any.md)
-         * [decision_matrix](test/test_auto_approval_demo/decision_matrix.md)
 
      * datascience
          * gpt

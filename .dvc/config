@@ -1,0 +1,4 @@
+[core]
+    remote = booktest-remote
+['remote "booktest-remote"']
+    url = /tmp/booktest-dvc-storage
