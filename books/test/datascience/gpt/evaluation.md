@@ -13,10 +13,10 @@
 
 # evaluation:
 
- * accuracy: 7/7 = 100.00%
- * precision: 100.00%
- * recall: 57.14%
- * F1 score: 72.73%
+ * accuracy: 7/7 = 100.000 % (was 85.714 %)
+ * precision: 100.000 % (was 85.714 %)
+ * recall: 57.143 % (was 66.667 %)
+ * F1 score: 0.727 (was 0.750)
 
 # review:
 

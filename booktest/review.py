@@ -199,12 +199,22 @@ def report_case_result(printer,
 
     # Handle two-dimensional results if available
     if isinstance(result, TwoDimensionalTestResult):
-        # Format snapshot status message
+        # Format snapshot status message based on both dimensions
         snapshot_msg = ""
-        if result.snapshotting.name == "UPDATED":
-            snapshot_msg = " (snapshots updated)"
-        elif result.snapshotting.name == "FAIL":
+
+        if result.snapshotting.name == "FAIL":
+            # Snapshot system failure - couldn't load/generate snapshots
             snapshot_msg = " (snapshot failure)"
+        elif result.snapshotting.name == "UPDATED":
+            if result.success.name == "FAIL":
+                # Test failed but snapshots were successfully captured/updated
+                snapshot_msg = " (snapshots updated)"
+            elif result.success.name == "DIFF":
+                # Test output differs and snapshots changed
+                snapshot_msg = " (snapshots updated)"
+            else:
+                # Test OK and snapshots updated
+                snapshot_msg = " (snapshots updated)"
 
         if result.success.name == "OK":
             if verbose:

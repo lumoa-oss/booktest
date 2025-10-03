@@ -63,7 +63,7 @@ class CatDetector:
             max_retries=5)
 
     def contains_a_cat(self, text: str) -> bool:
-        prompt = f"Does the following text mention or imply a non-robot cat? Answer yes or no\n\n{text}"
+        prompt = f"Does the following text mention or imply a non-robot cat? Answer yes, no or robot\n\n{text}"
 
         response = self.client.chat.completions.create(
             messages=[
@@ -120,10 +120,10 @@ def test_evaluation(t: bt.TestCaseRun):
     f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
 
     t.h1("evaluation:")
-    t.iln(f" * accuracy: {accurate}/{len(data)} = {accurate/len(data):.2%}")
-    t.iln(f" * precision: {precision:.2%}")
-    t.iln(f" * recall: {recall:.2%}")
-    t.iln(f" * F1 score: {f1:.2%}")
+    t.key(f" * accuracy:").i(f"{accurate}/{len(data)} = ").ifloatln(100*accurate/len(data), "%")
+    t.key(f" * precision:").ifloatln(100*precision, "%")
+    t.key(f" * recall:").ifloatln(100*recall, "%")
+    t.key(f" * F1 score:").ifloatln(f1)
     
     t.h1("review:")
     t.key(" * is accurate enough?").assertln(len(errors) <= 1)
@@ -196,16 +196,29 @@ other text or explanation! Only respond with one of the options given in the par
         self.t.anchor(f" * {title} ").assertln(condition)
 
 
-@snapshot_gpt()
-def test_review(t: bt.TestCaseRun):
-    client = AzureOpenAI(
-        api_key=os.getenv("OPENAI_API_KEY"),
-        azure_endpoint=os.getenv("OPENAI_API_BASE"),
-        azure_deployment=os.getenv("OPENAI_DEPLOYMENT", "gpt35turbo"),
-        api_version=os.getenv("OPENAI_API_VERSION"),
-        max_retries=5)
-    
-    prompt = """
+class Assistant:
+
+    def __init__(self):
+        self.client = AzureOpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            azure_endpoint=os.getenv("OPENAI_API_BASE"),
+            azure_deployment=os.getenv("OPENAI_DEPLOYMENT", "gpt35turbo"),
+            api_version=os.getenv("OPENAI_API_VERSION"),
+            max_retries=5)
+
+    def prompt(self, prompt: str) -> str:
+        response = self.client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            model=os.getenv("OPENAI_MODEL"),
+            max_completion_tokens=int(os.getenv("OPENAI_COMPLETION_MAX_TOKENS", 1024)),
+            seed=0)
+
+        return response.choices[0].message.content
+
+hello_world_prompt = """
 Write me a hello world code example in python! The code must print "Hello World!" to the console.
 
 This example is made for a school age child, and it should contain
@@ -215,25 +228,8 @@ The response will be run with python to see the result,
 so it should be syntactically valid python.   
 """
 
-    response = client.chat.completions.create(
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        model=os.getenv("OPENAI_MODEL"),
-        max_completion_tokens=int(os.getenv("OPENAI_COMPLETION_MAX_TOKENS", 1024)),
-        seed=0)
 
-    code = response.choices[0].message.content
-    
-    r = Review(t)
-
-    r.h1("request:")
-    r.iln(prompt)
-
-    r.h1("code:")
-    r.icodeln(code)
-
+def run_python(code: str):
     # run code in python and capture output
     import sys
     from io import StringIO
@@ -253,6 +249,24 @@ so it should be syntactically valid python.
         exception = e
     finally:
         sys.stdout = old_stdout
+    return output, exception
+
+
+@snapshot_gpt()
+def test_review(t: bt.TestCaseRun):
+    prompt = hello_world_prompt
+
+    code = Assistant().prompt(prompt)
+
+    r = Review(t)
+
+    r.h1("request:")
+    r.iln(prompt)
+
+    r.h1("code:")
+    r.icodeln(code)
+
+    output, exception = run_python(code)
 
     if exception:
         r.h1("exception:")
