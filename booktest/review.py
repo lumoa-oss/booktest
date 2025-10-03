@@ -101,9 +101,26 @@ def freeze_case(exp_dir,
 def case_review(exp_dir, out_dir, case_name, test_result, config):
     always_interactive = config.get("always_interactive", False)
     interactive = config.get("interactive", False)
+    complete_snapshots = config.get("complete_snapshots", False)
+
+    # Extract success status from two-dimensional results early for interaction check
+    from booktest.reports import TwoDimensionalTestResult, SuccessState, SnapshotState
+    if isinstance(test_result, TwoDimensionalTestResult):
+        success_status = test_result.success
+        snapshot_status = test_result.snapshotting
+        is_ok = (success_status == SuccessState.OK)
+    else:
+        success_status = test_result
+        snapshot_status = None
+        is_ok = (test_result == TestResult.OK)
+
+    # Skip interactive mode if test is OK and we're auto-freezing with -s
+    will_auto_freeze = (is_ok and complete_snapshots and
+                        snapshot_status is not None and
+                        snapshot_status == SnapshotState.UPDATED)
 
     do_interact = always_interactive
-    if test_result != TestResult.OK:
+    if not is_ok and not will_auto_freeze:
         do_interact = do_interact or interactive
 
     if do_interact:
@@ -115,22 +132,16 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
 
     auto_update = config.get("update", False)
     auto_freeze = config.get("accept", False)
-    complete_snapshots = config.get("complete_snapshots", False)
 
-    # Extract success status from two-dimensional results
-    from booktest.reports import TwoDimensionalTestResult, SuccessState, SnapshotState
+    # Use the already extracted status from above (for consistency with rv which may have changed)
     if isinstance(rv, TwoDimensionalTestResult):
-        success_status = rv.success
-        snapshot_status = rv.snapshotting
-        # For two-dimensional results, compare using SuccessState enum
-        is_ok = (success_status == SuccessState.OK)
-        is_diff = (success_status == SuccessState.DIFF)
+        rv_success = rv.success
+        rv_snapshot = rv.snapshotting
+        is_ok_after = (rv_success == SuccessState.OK)
+        is_diff_after = (rv_success == SuccessState.DIFF)
     else:
-        success_status = rv
-        snapshot_status = None
-        # For legacy results, compare using TestResult enum
-        is_ok = (success_status == TestResult.OK)
-        is_diff = (success_status == TestResult.DIFF)
+        is_ok_after = (rv == TestResult.OK)
+        is_diff_after = (rv == TestResult.DIFF)
 
     # Auto-freeze conditions:
     # 1. User explicitly requested freeze in interactive mode
@@ -139,10 +150,9 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
     # 4. Test passed (OK) with complete_snapshots (-s) and snapshots were updated
     should_freeze = (
         interaction == UserRequest.FREEZE or
-        (is_ok and auto_update) or
-        (is_diff and auto_freeze) or
-        (is_ok and complete_snapshots and
-         snapshot_status is not None and snapshot_status == SnapshotState.UPDATED)
+        (is_ok_after and auto_update) or
+        (is_diff_after and auto_freeze) or
+        will_auto_freeze
     )
 
     if should_freeze:

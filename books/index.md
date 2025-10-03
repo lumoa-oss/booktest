@@ -105,6 +105,7 @@
 
      * datascience
          * gpt
+             * [evaluation](test/datascience/gpt/evaluation.md)
              * [request](test/datascience/gpt/request.md)
              * [review](test/datascience/gpt/review.md)
 
