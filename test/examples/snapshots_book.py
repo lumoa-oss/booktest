@@ -51,13 +51,13 @@ def test_requests_sequence(t: bt.TestCaseRun):
     t.tln("following requests should provide different answer")
 
     t.h1("first response:")
-    response = requests.get("http://ip-api.com/json/")
+    response = requests.get("https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam")
     t.tln(json.dumps(response.json()["dateTime"], indent=4))
 
     time.sleep(0.1)
 
     t.h1("second response:")
-    response = requests.get("http://ip-api.com/json/")
+    response = requests.get("https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam")
     t.tln(json.dumps(response.json()["dateTime"], indent=4))
 
 

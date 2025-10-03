@@ -13,17 +13,13 @@ so it should be syntactically valid python.
 # code:
 
 ```
-# Tämä ohjelma näyttää konsolissa viestin "Hello World!".
-# Selitetään joka askel lapsille ymmärrettävästi.
-
-# 1) Teksti (merkkijono) kirjoitetaan lainausmerkkien sisään.
-#    Tässä tallennamme tekstin muuttujaan nimeltä 'viesti'.
-viesti = "Hello World!"
-
-# 2) print-funktio kertoo Pythonille, että haluamme näyttää jotain näytöllä (konsolissa).
-print(viesti)
-
-# 3) Valmista! Kun suoritat tämän ohjelman, näet konsolissa tekstin "Hello World!".
+# Tämä on yksinkertainen "Hello World!" -esimerkki Pythonilla.
+# Kommentit alkavat merkillä # ja Python jättää ne huomiotta.
+# Kommentteja käytetään selittämään, mitä koodi tekee, jotta lapset ymmärtävät.
+# print(...) on Pythonin komento, jolla näytetään teksti tietokoneen näytöllä.
+# Teksti eli merkkijono kirjoitetaan lainausmerkkien " " sisään.
+# Seuraava rivi suorittaa tulostuksen:
+print("Hello World!")  # Tämä tulostaa konsoliin täsmälleen: Hello World!
 ```
 
 # output:

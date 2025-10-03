@@ -321,7 +321,12 @@ class DVCStorage(SnapshotStorage):
         hash_str = manifest[test_id][snapshot_type]
         cas_path = self._get_cas_path(hash_str, snapshot_type)
 
-        # Check local cache first
+        # Check staging area first (newly created snapshots)
+        staging_path = self.staging_dir / cas_path
+        if staging_path.exists():
+            return staging_path.read_bytes()
+
+        # Check local cache
         local_path = self.cache_dir / cas_path
         if local_path.exists():
             return local_path.read_bytes()
@@ -343,7 +348,7 @@ class DVCStorage(SnapshotStorage):
         return None
 
     def store(self, test_id: str, snapshot_type: str, content: bytes) -> str:
-        """Store snapshot content in staging area."""
+        """Store snapshot content in staging area and update manifest."""
         hash_str = self._compute_hash(content)
         cas_path = self._get_cas_path(hash_str, snapshot_type)
 
@@ -351,6 +356,9 @@ class DVCStorage(SnapshotStorage):
         staging_path = self.staging_dir / cas_path
         staging_path.parent.mkdir(parents=True, exist_ok=True)
         staging_path.write_bytes(content)
+
+        # Update manifest with the hash mapping
+        self.update_manifest({test_id: {snapshot_type: hash_str}})
 
         return hash_str
 

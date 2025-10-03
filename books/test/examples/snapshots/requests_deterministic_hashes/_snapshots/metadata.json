@@ -1,0 +1,24 @@
+{
+  "test_id": "test/examples/snapshots/requests_deterministic_hashes",
+  "snapshots": {
+    "httpx": {
+      "hash": "sha256:b38ffc3e974aab492182cab1cc4691128181d3bac86b371f960d7b78ee3e2a74",
+      "state": "updated",
+      "details": {
+        "count": 1,
+        "urls": [
+          "https://httpbin.org/anything/4487367"
+        ],
+        "hashes": [
+          "5d79d741579ef5e914e9cb6bfa4e01a280eca6a6"
+        ]
+      },
+      "timestamp": 1759488062.16983
+    }
+  },
+  "result": {
+    "success": "diff",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1759488062.1707184
+}

@@ -1,0 +1,24 @@
+{
+  "test_id": "test/examples/snapshots/requests",
+  "snapshots": {
+    "http": {
+      "hash": "sha256:d55e8a45725dc0395a83edf8566b2cc9c49cc7e5d0d42183989002accc50dace",
+      "state": "updated",
+      "details": {
+        "count": 1,
+        "urls": [
+          "https://postman-echo.com/get"
+        ],
+        "hashes": [
+          "085bbb060375440e09281c5b08f704d4a53a6d4a"
+        ]
+      },
+      "timestamp": 1759488061.1771739
+    }
+  },
+  "result": {
+    "success": "diff",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1759488061.1780229
+}
