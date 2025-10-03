@@ -2,8 +2,8 @@
   "test_id": "test/examples/snapshots/auto_function_snapshots",
   "snapshots": {
     "func": {
-      "hash": "sha256:36cd5e8a43ce56dcb07481b95bede21670c7f26ce85650d1fd4d89850a5ef272",
-      "state": "updated",
+      "hash": "sha256:5e3032ca3453d751ec53d95967da748ee65624470bde8e8cbfdca78cc0932c63",
+      "state": "intact",
       "details": {
         "functions": {
           "Random.random": {
@@ -42,12 +42,12 @@
           }
         }
       },
-      "timestamp": 1759489218.438597
+      "timestamp": 1759490802.2183292
     }
   },
   "result": {
     "success": "diff",
-    "snapshotting": "updated"
+    "snapshotting": "intact"
   },
-  "timestamp": 1759489218.438944
+  "timestamp": 1759490802.2188928
 }

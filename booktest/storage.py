@@ -370,34 +370,74 @@ class DVCStorage(SnapshotStorage):
                 return data
 
     def _save_manifest(self, manifest: Dict[str, Dict[str, str]]) -> None:
-        """Save manifest to YAML file."""
+        """Save manifest to YAML file atomically."""
+        import tempfile
+
+        # Write to temporary file first
+        temp_fd, temp_path = tempfile.mkstemp(
+            dir=self.manifest_path.parent,
+            prefix='.manifest_',
+            suffix='.tmp'
+        )
+
         try:
-            import yaml
-            data = {"storage_mode": "dvc"}
-            data.update(manifest)
-            with open(self.manifest_path, 'w') as f:
-                yaml.safe_dump(data, f, default_flow_style=False, sort_keys=True)
-        except ImportError:
-            # Fall back to JSON if PyYAML not available
-            import json
-            data = {"storage_mode": "dvc"}
-            data.update(manifest)
-            with open(self.manifest_path, 'w') as f:
-                json.dump(data, f, indent=2, sort_keys=True)
+            try:
+                import yaml
+                data = {"storage_mode": "dvc"}
+                data.update(manifest)
+                with os.fdopen(temp_fd, 'w') as f:
+                    yaml.safe_dump(data, f, default_flow_style=False, sort_keys=True)
+            except ImportError:
+                # Fall back to JSON if PyYAML not available
+                import json
+                data = {"storage_mode": "dvc"}
+                data.update(manifest)
+                with os.fdopen(temp_fd, 'w') as f:
+                    json.dump(data, f, indent=2, sort_keys=True)
+
+            # Atomic rename - replaces old file atomically
+            os.replace(temp_path, self.manifest_path)
+        except Exception:
+            # Clean up temp file if something went wrong
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
+            raise
 
     def _save_batch_manifest(self) -> None:
-        """Save batch-specific manifest updates."""
+        """Save batch-specific manifest updates atomically."""
         if not self.batch_manifest_path:
             return
 
+        import tempfile
+
+        # Write to temporary file first
+        temp_fd, temp_path = tempfile.mkstemp(
+            dir=self.batch_manifest_path.parent,
+            prefix='.manifest_updates_',
+            suffix='.tmp'
+        )
+
         try:
-            import yaml
-            with open(self.batch_manifest_path, 'w') as f:
-                yaml.safe_dump(self.pending_updates, f, default_flow_style=False, sort_keys=True)
-        except ImportError:
-            import json
-            with open(self.batch_manifest_path, 'w') as f:
-                json.dump(self.pending_updates, f, indent=2, sort_keys=True)
+            try:
+                import yaml
+                with os.fdopen(temp_fd, 'w') as f:
+                    yaml.safe_dump(self.pending_updates, f, default_flow_style=False, sort_keys=True)
+            except ImportError:
+                import json
+                with os.fdopen(temp_fd, 'w') as f:
+                    json.dump(self.pending_updates, f, indent=2, sort_keys=True)
+
+            # Atomic rename
+            os.replace(temp_path, self.batch_manifest_path)
+        except Exception:
+            # Clean up temp file if something went wrong
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
+            raise
 
     def fetch(self, test_id: str, snapshot_type: str) -> Optional[bytes]:
         """Fetch snapshot content from DVC storage."""
@@ -436,14 +476,38 @@ class DVCStorage(SnapshotStorage):
         return None
 
     def store(self, test_id: str, snapshot_type: str, content: bytes) -> str:
-        """Store snapshot content in staging area and update manifest."""
+        """Store snapshot content in staging area atomically and update manifest."""
         hash_str = self._compute_hash(content)
         cas_path = self._get_cas_path(hash_str, snapshot_type)
 
-        # Store in staging area
+        # Store in staging area atomically
         staging_path = self.staging_dir / cas_path
         staging_path.parent.mkdir(parents=True, exist_ok=True)
-        staging_path.write_bytes(content)
+
+        # Write to temporary file first
+        import tempfile
+        temp_fd, temp_path = tempfile.mkstemp(
+            dir=staging_path.parent,
+            prefix='.snapshot_',
+            suffix='.tmp'
+        )
+
+        try:
+            os.write(temp_fd, content)
+            os.close(temp_fd)
+            # Atomic rename
+            os.replace(temp_path, staging_path)
+        except Exception:
+            # Clean up temp file if something went wrong
+            try:
+                os.close(temp_fd)
+            except OSError:
+                pass
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
+            raise
 
         # Update manifest with the hash mapping
         self.update_manifest({test_id: {snapshot_type: hash_str}})
