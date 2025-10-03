@@ -1,0 +1,26 @@
+{
+  "test_id": "test/examples/snapshots/requests_sequence",
+  "snapshots": {
+    "http": {
+      "hash": "sha256:2533b09a4fa2f3f818b16cd41bfe047da1836dd025cb4a7b3207f8be5fa98907",
+      "state": "updated",
+      "details": {
+        "count": 2,
+        "urls": [
+          "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam",
+          "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam"
+        ],
+        "hashes": [
+          "1ae53133617f92562bda2414f19d09faae5774f3",
+          "61a85a10ba34bfb5cdee47cba501dee356846bbb"
+        ]
+      },
+      "timestamp": 1759489282.170966
+    }
+  },
+  "result": {
+    "success": "diff",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1759489282.1716633
+}

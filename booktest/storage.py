@@ -223,7 +223,8 @@ class DVCStorage(SnapshotStorage):
 
     def __init__(self, base_path: str = "books",
                  remote: str = "booktest-remote",
-                 manifest_path: str = "booktest.manifest.yaml"):
+                 manifest_path: str = "booktest.manifest.yaml",
+                 batch_dir: str = None):
         """
         Initialize DVC storage backend.
 
@@ -231,6 +232,7 @@ class DVCStorage(SnapshotStorage):
             base_path: Base directory for local cache
             remote: DVC remote name
             manifest_path: Path to manifest file
+            batch_dir: Optional batch directory for parallel test runs
         """
         self.base_path = Path(base_path)
         self.cache_dir = Path(".booktest_cache")
@@ -238,6 +240,14 @@ class DVCStorage(SnapshotStorage):
         self.remote = remote
         self.staging_dir = self.cache_dir / "staging"
         self.staging_dir.mkdir(parents=True, exist_ok=True)
+
+        # For parallel runs, use batch-specific manifest to avoid race conditions
+        self.batch_dir = Path(batch_dir) if batch_dir else None
+        self.batch_manifest_path = None
+        if self.batch_dir:
+            self.batch_manifest_path = self.batch_dir / "manifest_updates.yaml"
+            # In batch mode, accumulate updates without writing to main manifest
+            self.pending_updates = {}
 
         # Check if DVC is available
         self._check_dvc_available()
@@ -255,6 +265,70 @@ class DVCStorage(SnapshotStorage):
             return result.returncode == 0
         except (subprocess.SubprocessError, FileNotFoundError):
             return False
+
+    @staticmethod
+    def merge_batch_manifests(manifest_path: str, batch_dirs: list) -> None:
+        """
+        Merge manifest updates from parallel batch runs into main manifest.
+
+        Args:
+            manifest_path: Path to main manifest file
+            batch_dirs: List of batch directory paths
+        """
+        # Load main manifest
+        main_manifest_path = Path(manifest_path)
+        if main_manifest_path.exists():
+            try:
+                import yaml
+                with open(main_manifest_path, 'r') as f:
+                    data = yaml.safe_load(f) or {}
+                    if "storage_mode" in data:
+                        del data["storage_mode"]
+                    main_manifest = data
+            except ImportError:
+                import json
+                with open(main_manifest_path, 'r') as f:
+                    data = json.load(f)
+                    if "storage_mode" in data:
+                        del data["storage_mode"]
+                    main_manifest = data
+        else:
+            main_manifest = {}
+
+        # Merge batch manifests
+        for batch_dir in batch_dirs:
+            batch_manifest_file = Path(batch_dir) / "manifest_updates.yaml"
+            if not batch_manifest_file.exists():
+                continue
+
+            try:
+                import yaml
+                with open(batch_manifest_file, 'r') as f:
+                    batch_updates = yaml.safe_load(f) or {}
+            except ImportError:
+                import json
+                with open(batch_manifest_file, 'r') as f:
+                    batch_updates = json.load(f) or {}
+
+            # Merge updates
+            for test_id, snapshots in batch_updates.items():
+                if test_id not in main_manifest:
+                    main_manifest[test_id] = {}
+                main_manifest[test_id].update(snapshots)
+
+        # Save merged manifest
+        try:
+            import yaml
+            data = {"storage_mode": "dvc"}
+            data.update(main_manifest)
+            with open(main_manifest_path, 'w') as f:
+                yaml.safe_dump(data, f, default_flow_style=False, sort_keys=True)
+        except ImportError:
+            import json
+            data = {"storage_mode": "dvc"}
+            data.update(main_manifest)
+            with open(main_manifest_path, 'w') as f:
+                json.dump(data, f, indent=2, sort_keys=True)
 
     def _check_dvc_available(self) -> bool:
         """Check if DVC is installed and configured."""
@@ -310,6 +384,20 @@ class DVCStorage(SnapshotStorage):
             data.update(manifest)
             with open(self.manifest_path, 'w') as f:
                 json.dump(data, f, indent=2, sort_keys=True)
+
+    def _save_batch_manifest(self) -> None:
+        """Save batch-specific manifest updates."""
+        if not self.batch_manifest_path:
+            return
+
+        try:
+            import yaml
+            with open(self.batch_manifest_path, 'w') as f:
+                yaml.safe_dump(self.pending_updates, f, default_flow_style=False, sort_keys=True)
+        except ImportError:
+            import json
+            with open(self.batch_manifest_path, 'w') as f:
+                json.dump(self.pending_updates, f, indent=2, sort_keys=True)
 
     def fetch(self, test_id: str, snapshot_type: str) -> Optional[bytes]:
         """Fetch snapshot content from DVC storage."""
@@ -373,14 +461,24 @@ class DVCStorage(SnapshotStorage):
 
     def update_manifest(self, updates: Dict[str, Dict[str, str]]) -> None:
         """Update manifest with new hashes."""
-        manifest = self._load_manifest()
+        # In batch mode, accumulate updates and write to batch-specific file
+        if self.batch_dir:
+            for test_id, snapshots in updates.items():
+                if test_id not in self.pending_updates:
+                    self.pending_updates[test_id] = {}
+                self.pending_updates[test_id].update(snapshots)
+            # Write to batch-specific manifest file
+            self._save_batch_manifest()
+        else:
+            # Normal mode: update main manifest directly
+            manifest = self._load_manifest()
 
-        for test_id, snapshots in updates.items():
-            if test_id not in manifest:
-                manifest[test_id] = {}
-            manifest[test_id].update(snapshots)
+            for test_id, snapshots in updates.items():
+                if test_id not in manifest:
+                    manifest[test_id] = {}
+                manifest[test_id].update(snapshots)
 
-        self._save_manifest(manifest)
+            self._save_manifest(manifest)
 
     def promote(self, test_id: str, snapshot_type: str) -> None:
         """Promote snapshot from staging to permanent storage."""

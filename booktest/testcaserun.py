@@ -365,20 +365,25 @@ class TestCaseRun:
 
         # Use out_dir for writing (staging), exp_dir for reading (frozen)
         # GitStorage will handle both locations
+        # For parallel runs, pass batch_dir to avoid manifest race conditions
+        batch_dir = self.run.batch_dir if hasattr(self.run, 'batch_dir') else None
+
         if mode == "auto":
             # Auto-detect: use DVC if available, otherwise Git
             if DVCStorage.is_available():
                 return DVCStorage(
                     base_path=self.run.out_dir,  # Write to .out
                     remote=self.config.get("storage.dvc.remote", "booktest-remote"),
-                    manifest_path=self.config.get("storage.dvc.manifest_path", "booktest.manifest.yaml")
+                    manifest_path=self.config.get("storage.dvc.manifest_path", "booktest.manifest.yaml"),
+                    batch_dir=batch_dir
                 )
             return GitStorage(base_path=self.run.out_dir, frozen_path=self.run.exp_dir)
         elif mode == "dvc":
             return DVCStorage(
                 base_path=self.run.out_dir,  # Write to .out
                 remote=self.config.get("storage.dvc.remote", "booktest-remote"),
-                manifest_path=self.config.get("storage.dvc.manifest_path", "booktest.manifest.yaml")
+                manifest_path=self.config.get("storage.dvc.manifest_path", "booktest.manifest.yaml"),
+                batch_dir=batch_dir
             )
         else:  # mode == "git" or fallback
             return GitStorage(base_path=self.run.out_dir, frozen_path=self.run.exp_dir)

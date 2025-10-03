@@ -504,6 +504,16 @@ def parallel_run_tests(exp_dir,
                     if name != "cases.txt":
                         write_lines(out_dir, name, lines)
 
+                # Merge DVC manifest updates from batch runs
+                try:
+                    from booktest.storage import DVCStorage
+                    manifest_path = config.get("storage.dvc.manifest_path", "booktest.manifest.yaml")
+                    DVCStorage.merge_batch_manifests(manifest_path, runner.batch_dirs())
+                except Exception as e:
+                    # Non-fatal: DVC may not be in use or merge may fail
+                    import warnings
+                    warnings.warn(f"Failed to merge DVC manifests: {e}")
+
                 #
                 # 4. do test reporting & review
                 #

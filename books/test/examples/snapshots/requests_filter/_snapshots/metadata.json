@@ -2,7 +2,7 @@
   "test_id": "test/examples/snapshots/requests_filter",
   "snapshots": {
     "http": {
-      "hash": "sha256:239094406694972f46fda6ee54ee4eef9879367cb38408af5866080800de4c43",
+      "hash": "sha256:4a1c9af0e3be1641364e3f7ed0c8868dc78a692eb8086aa36dcabd01fd49e5f1",
       "state": "updated",
       "details": {
         "count": 1,
@@ -13,12 +13,12 @@
           "085bbb060375440e09281c5b08f704d4a53a6d4a"
         ]
       },
-      "timestamp": 1759488047.49183
+      "timestamp": 1759489216.6697786
     }
   },
   "result": {
     "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1759488047.4985018
+  "timestamp": 1759489216.6703558
 }

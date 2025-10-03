@@ -2,8 +2,8 @@
   "test_id": "test/examples/snapshots/httpx_filter",
   "snapshots": {
     "httpx": {
-      "hash": "sha256:2b05dcbcb720cf94f2204724c18fc84b1f5ae1d9f7db7b9ecc19ec25b8817433",
-      "state": "updated",
+      "hash": "sha256:368f820c6a6e1e015b167df11f4b0ba4a533bde544c77d14715a859d01e13e20",
+      "state": "intact",
       "details": {
         "count": 1,
         "urls": [
@@ -13,12 +13,12 @@
           "0e88eb6e0a8953a80d7d4af2b621e3bd65098073"
         ]
       },
-      "timestamp": 1759488060.0495114
+      "timestamp": 1759489215.4875996
     }
   },
   "result": {
     "success": "diff",
-    "snapshotting": "updated"
+    "snapshotting": "intact"
   },
-  "timestamp": 1759488060.0501027
+  "timestamp": 1759489215.4880824
 }
