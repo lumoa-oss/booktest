@@ -107,11 +107,27 @@ class TestRun:
             rv = None
 
         result, interaction = t.end()
-        if result is TestResult.OK or result is TestResult.DIFF:
+
+        # Handle both legacy and two-dimensional results
+        from booktest.reports import TwoDimensionalTestResult
+        if isinstance(result, TwoDimensionalTestResult):
+            success = result.success
+            from booktest.reports import SuccessState
+            should_save = (success == SuccessState.OK or success == SuccessState.DIFF)
+        else:
+            should_save = (result is TestResult.OK or result is TestResult.DIFF)
+
+        if should_save:
             # if the test case return a value, store it in a cache
             self.save_test_result(case_path, rv)
 
-        return result, interaction, t.took_ms
+        # Convert two-dimensional result to legacy format for compatibility with CaseReports
+        if isinstance(result, TwoDimensionalTestResult):
+            legacy_result = result.to_legacy_result()
+        else:
+            legacy_result = result
+
+        return legacy_result, interaction, t.took_ms
 
     def print(self, *args, sep=' ', end='\n'):
         print(*args, sep=sep, end=end, file=self.output)

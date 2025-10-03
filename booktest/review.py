@@ -115,12 +115,44 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
 
     auto_update = config.get("update", False)
     auto_freeze = config.get("accept", False)
+    complete_snapshots = config.get("complete_snapshots", False)
 
-    if (interaction == UserRequest.FREEZE or
-       (rv == TestResult.OK and auto_update) or
-       (rv == TestResult.DIFF and auto_freeze)):
+    # Extract success status from two-dimensional results
+    from booktest.reports import TwoDimensionalTestResult, SuccessState, SnapshotState
+    if isinstance(rv, TwoDimensionalTestResult):
+        success_status = rv.success
+        snapshot_status = rv.snapshotting
+        # For two-dimensional results, compare using SuccessState enum
+        is_ok = (success_status == SuccessState.OK)
+        is_diff = (success_status == SuccessState.DIFF)
+    else:
+        success_status = rv
+        snapshot_status = None
+        # For legacy results, compare using TestResult enum
+        is_ok = (success_status == TestResult.OK)
+        is_diff = (success_status == TestResult.DIFF)
+
+    # Auto-freeze conditions:
+    # 1. User explicitly requested freeze in interactive mode
+    # 2. Test passed (OK) and auto_update is enabled
+    # 3. Test differed (DIFF) and auto_freeze is enabled
+    # 4. Test passed (OK) with complete_snapshots (-s) and snapshots were updated
+    should_freeze = (
+        interaction == UserRequest.FREEZE or
+        (is_ok and auto_update) or
+        (is_diff and auto_freeze) or
+        (is_ok and complete_snapshots and
+         snapshot_status is not None and snapshot_status == SnapshotState.UPDATED)
+    )
+
+    if should_freeze:
         freeze_case(exp_dir, out_dir, case_name)
-        rv = TestResult.OK
+        # If we froze, update the result to OK
+        if isinstance(rv, TwoDimensionalTestResult):
+            # Keep as two-dimensional but mark success as OK
+            rv = TwoDimensionalTestResult(SuccessState.OK, rv.snapshotting)
+        else:
+            rv = TestResult.OK
 
     return rv, interaction
 

@@ -272,10 +272,8 @@ class TestCaseRun:
             self.took_ms,
             self.verbose)
 
-        # Use legacy result for backward compatibility with existing code that expects it
-        rv = legacy_result
-
-        rv, interaction = self.review(rv)
+        # Pass two-dimensional result to review for proper snapshot handling
+        rv, interaction = self.review(two_dim_result)
 
         if self.verbose:
             self.print("")
@@ -728,7 +726,7 @@ class TestCaseRun:
             check = self.last_checked and self.exp_line is not None
             self.feed_token("\n", check=check)
         self.anchorln(header)
-        self.tln("")
+        self.iln("")
         return self
 
     def ifloatln(self, value, unit = None):

@@ -52,6 +52,83 @@ def test_request(t: bt.TestCaseRun):
     t.key(" * contains Helsinki..").assertln("helsinki" in result.lower())
 
 
+class CatDetector:
+
+    def __init__(self):
+        self.client = AzureOpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            azure_endpoint=os.getenv("OPENAI_API_BASE"),
+            azure_deployment=os.getenv("OPENAI_DEPLOYMENT", "gpt35turbo"),
+            api_version=os.getenv("OPENAI_API_VERSION"),
+            max_retries=5)
+
+    def contains_a_cat(self, text: str) -> bool:
+        prompt = f"Does the following text mention or imply a non-robot cat? Answer yes or no\n\n{text}"
+
+        response = self.client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": "You are a pedantic assistant providing very precise and concise answers."},
+                {"role": "user", "content": prompt}
+            ],
+            model=os.getenv("OPENAI_MODEL"),
+            max_completion_tokens=int(os.getenv("OPENAI_COMPLETION_MAX_TOKENS", 1024)),
+            seed=0)
+
+        result = response.choices[0].message.content.lower()
+        return "yes" in result
+
+
+@snapshot_gpt()
+def test_evaluation(t: bt.TestCaseRun):
+    detector = CatDetector()
+
+    data = [
+        ("I have a cat named Whiskers.", True),
+        ("The dog barked loudly.", False),
+        ("My pet is very playful.", False),  # ambiguous, but no direct mention of
+        ("Cats are great companions.", True),
+        ("I love my feline friend.", True),
+        ("It walks like a cat, meows like a cat and looks like a cat", True),
+        ("It walks like a cat, meows like a cat and looks like a cat, but it's actually a robot", False)
+    ]
+
+    t.h1("cat detection results:")
+
+    cats = 0
+    accurate = 0
+    n = 0
+    errors = []
+
+    for text, ground in data:
+        result = detector.contains_a_cat(text)
+        if result == ground:
+            t.iln(f" * {text} -> {result}")
+            accurate += 1
+        else:
+            t.iln(f" * {text} -> {result} (expected {ground})")
+            errors.append((text, result, ground))
+        if ground:
+            cats += 1
+        n += 1
+
+    t.h1("errors:")
+    for text, result, ground in errors:
+        t.iln(f" * {text} -> {result} (expected {ground})")
+
+    precision = accurate/(accurate + len(errors))
+    recall = cats / accurate if accurate > 0 else 0
+    f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+    t.h1("evaluation:")
+    t.iln(f" * accuracy: {accurate}/{len(data)} = {accurate/len(data):.2%}")
+    t.iln(f" * precision: {precision:.2%}")
+    t.iln(f" * recall: {recall:.2%}")
+    t.iln(f" * F1 score: {f1:.2%}")
+    
+    t.h1("review:")
+    t.key(" * is accurate enough?").assertln(len(errors) <= 1)
+
+
 class Review:
     
     def __init__(self, t: bt.TestCaseRun):
