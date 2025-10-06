@@ -1,8 +1,8 @@
 {
-  "test_id": "test/examples/snapshots/requests",
+  "test_id": "test/examples/async/requests",
   "snapshots": {
     "http": {
-      "hash": "sha256:e8f1fa2f94c5fba144eb76f72938a15a0461c5f55de918257fd03bedc63e28eb",
+      "hash": "sha256:ede6b3a83b24151ddd0ae69a6f463402321a1a64bcd02c44937c4649aec88bb3",
       "state": "intact",
       "details": {
         "count": 1,
@@ -13,12 +13,12 @@
           "085bbb060375440e09281c5b08f704d4a53a6d4a"
         ]
       },
-      "timestamp": 1759501594.9627109
+      "timestamp": 1759743369.638756
     }
   },
   "result": {
     "success": "diff",
     "snapshotting": "intact"
   },
-  "timestamp": 1759501594.963226
+  "timestamp": 1759743369.639053
 }

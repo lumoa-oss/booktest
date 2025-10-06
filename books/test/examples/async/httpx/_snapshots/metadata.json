@@ -1,8 +1,8 @@
 {
-  "test_id": "test/examples/snapshots/httpx_filter",
+  "test_id": "test/examples/async/httpx",
   "snapshots": {
     "httpx": {
-      "hash": "sha256:742ff9c6566d3341de0aa2cb8c51a8476a3d960d5e4d06ea2f8747f6fd2cf1a1",
+      "hash": "sha256:60de7428195bd3b264c9a4d4d97a9ceb06426b4e4c9d316f43f8b3ebceef2eee",
       "state": "intact",
       "details": {
         "count": 1,
@@ -13,12 +13,12 @@
           "0e88eb6e0a8953a80d7d4af2b621e3bd65098073"
         ]
       },
-      "timestamp": 1759501594.7063253
+      "timestamp": 1759743369.6675396
     }
   },
   "result": {
     "success": "diff",
     "snapshotting": "intact"
   },
-  "timestamp": 1759501594.7067788
+  "timestamp": 1759743369.6678345
 }

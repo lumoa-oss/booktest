@@ -23,9 +23,9 @@ one snapshot is used twice.
         "Content-Type": "application/json",
         "Host": "httpbin.org",
         "User-Agent": "python-requests/2.32.3",
-        "X-Amzn-Trace-Id": "Root=1-68dfb3b7-7675352f3ac0ad5f737c0346",
+        "X-Amzn-Trace-Id": "Root=1-68dfddfe-5dd465cf1e5c720b29105a53",
         "X-Api-Key": "mock",
-        "X-Timestamp": "1759490999.1804047",
+        "X-Timestamp": "1759501822.064442",
         "X-User-Id": "1"
     },
     "json": {
@@ -50,9 +50,9 @@ one snapshot is used twice.
         "Content-Type": "application/json",
         "Host": "httpbin.org",
         "User-Agent": "python-requests/2.32.3",
-        "X-Amzn-Trace-Id": "Root=1-68dfb3b8-00fe79c40f2a7e672274e938",
+        "X-Amzn-Trace-Id": "Root=1-68dfde01-453e0f1e1dfcf6bd0ad7d7ff",
         "X-Api-Key": "mock",
-        "X-Timestamp": "1759491000.1399927",
+        "X-Timestamp": "1759501824.4660969",
         "X-User-Id": "1"
     },
     "json": {
@@ -77,9 +77,9 @@ one snapshot is used twice.
         "Content-Type": "application/json",
         "Host": "httpbin.org",
         "User-Agent": "python-requests/2.32.3",
-        "X-Amzn-Trace-Id": "Root=1-68dfb3b9-3733fff24ff432560578df49",
+        "X-Amzn-Trace-Id": "Root=1-68dfde17-54d4a7c665007a9b25fff8f2",
         "X-Api-Key": "mock",
-        "X-Timestamp": "1759491001.3160596",
+        "X-Timestamp": "1759501846.684503",
         "X-User-Id": "2"
     },
     "json": {
