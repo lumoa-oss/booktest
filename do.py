@@ -14,11 +14,12 @@ TEST_ROOT_DIR = "books"
 
 MIN_COVERAGE_PERCENT = 25
 
-# Check and perform automatic migration if needed
-check_and_migrate()
-
+# Detect tests first
 tests = bt.detect_test_suite("test")
 bt_setup = bt.detect_setup("test")
+
+# Check and perform automatic migration with test discovery
+check_and_migrate(tests=tests)
 
 
 def coverage(parsed) -> int:

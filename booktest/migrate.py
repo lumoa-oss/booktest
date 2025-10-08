@@ -5,88 +5,150 @@ Automatic migration from v1 (legacy) to v2 (pytest-style) filesystem layout.
 import os
 import shutil
 from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Optional
 import warnings
 
 from booktest.config import get_fs_version, set_fs_version, PROJECT_CONFIG_FILE
 
 
-def detect_legacy_test_files(base_dir: str) -> List[Tuple[Path, Path]]:
+def pytest_name_to_legacy_path(pytest_name: str) -> str:
     """
-    Detect test files in legacy format that need migration.
+    Convert pytest-style name to legacy filesystem path.
 
-    Returns list of (old_path, new_path) tuples.
-
-    Legacy format detection heuristics:
-    - Files under test/ directory
-    - Path does NOT contain .py/
-    - Has typical test output extensions (.md, .bin, .txt, .log)
+    Examples:
+        test/foo_test.py::test_bar → test/foo/bar
+        test/foo_test.py::FooBook/test_bar → test/foo/bar
+        test/examples/simple_book.py::test_hello → test/examples/simple/hello
     """
-    base_path = Path(base_dir)
-    if not base_path.exists():
-        return []
+    # Remove .py extension and split on ::
+    if "::" not in pytest_name:
+        # Not pytest format, return as-is
+        return pytest_name
 
-    migrations = []
+    # Split file path and test path
+    parts = pytest_name.split("::")
+    file_part = parts[0].replace(".py", "")
 
-    # Find all test output files
-    for pattern in ["**/*.md", "**/*.bin", "**/*.txt", "**/*.log"]:
-        for old_path in base_path.glob(pattern):
-            # Skip if this looks like it's already in new format
-            # New format has .py/ in the path
-            if ".py/" in str(old_path):
-                continue
+    # Clean file name: remove _test, _book, _suite suffixes
+    file_part_segments = file_part.split("/")
+    last_segment = file_part_segments[-1]
 
-            # Skip files that don't look like test outputs
-            rel_path = old_path.relative_to(base_path)
-            if not str(rel_path).startswith("test/"):
-                continue
+    # Remove common suffixes
+    for suffix in ["_test", "_book", "_suite"]:
+        if last_segment.endswith(suffix):
+            last_segment = last_segment[:-len(suffix)]
+            break
 
-            # This looks like a legacy test file
-            # For now, we'll skip migration and let tests regenerate
-            # (Safer than trying to guess the new path)
-            pass
+    file_part_segments[-1] = last_segment
+    cleaned_file_path = "/".join(file_part_segments)
 
-    return migrations
+    if len(parts) == 2:
+        # Standalone function: test/foo_test.py::test_bar
+        method_name = parts[1]
+        # Remove test_ prefix
+        if method_name.startswith("test_"):
+            method_name = method_name[5:]  # Remove "test_"
+
+        return f"{cleaned_file_path}/{method_name}"
+
+    elif len(parts) == 3:
+        # Class method: test/foo_test.py::FooBook/test_bar
+        # Last part is the method name
+        method_name = parts[-1]
+        if method_name.startswith("test_"):
+            method_name = method_name[5:]
+
+        return f"{cleaned_file_path}/{method_name}"
+
+    else:
+        # Fallback
+        return pytest_name
 
 
-def migrate_filesystem(base_dir: str = "books", dry_run: bool = False) -> int:
+def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) -> int:
     """
-    Migrate filesystem from v1 to v2 format.
+    Migrate test output files from legacy to pytest-style paths.
 
-    Strategy: Rather than trying to move files (risky), we let tests
-    regenerate with new format. This function just cleans up to prepare.
+    Uses actual test discovery to know what files to migrate where.
 
-    Returns: Number of files that would be affected.
+    Returns: Number of files migrated.
     """
     base_path = Path(base_dir)
     if not base_path.exists():
         return 0
 
-    legacy_files = detect_legacy_test_files(base_dir)
+    migrated_count = 0
 
-    if len(legacy_files) > 0:
-        warnings.warn(
-            f"Found {len(legacy_files)} test output files in legacy format. "
-            f"These will be regenerated with pytest-style naming on next test run. "
-            f"Run with -s flag to update snapshots."
-        )
+    # Get all test cases
+    for test_name, test_method in tests.cases:
+        # Convert pytest name to legacy path
+        legacy_path = pytest_name_to_legacy_path(test_name)
 
-    # Don't actually move files - let tests regenerate
-    # This is safer and handles all edge cases
+        # Skip if same (shouldn't happen but be safe)
+        # Convert :: to / for filesystem comparison
+        new_path = test_name.replace("::", "/")
+        if legacy_path == new_path:
+            continue
 
-    return len(legacy_files)
+        # Check for files at legacy location
+        for ext in [".md", ".bin", ".txt", ".log"]:
+            old_file = base_path / f"{legacy_path}{ext}"
+            new_file = base_path / f"{new_path}{ext}"
+
+            if old_file.exists():
+                if dry_run:
+                    print(f"Would migrate: {old_file} → {new_file}")
+                    migrated_count += 1
+                else:
+                    # Create parent directory
+                    new_file.parent.mkdir(parents=True, exist_ok=True)
+
+                    # Move file
+                    shutil.move(str(old_file), str(new_file))
+                    print(f"Migrated: {old_file.relative_to(base_path)} → {new_file.relative_to(base_path)}")
+                    migrated_count += 1
+
+        # Also migrate associated directory if it exists
+        old_dir = base_path / legacy_path
+        new_dir = base_path / new_path
+
+        if old_dir.is_dir() and not new_dir.exists():
+            if dry_run:
+                print(f"Would migrate directory: {old_dir} → {new_dir}")
+                migrated_count += 1
+            else:
+                new_dir.parent.mkdir(parents=True, exist_ok=True)
+                shutil.move(str(old_dir), str(new_dir))
+                print(f"Migrated directory: {old_dir.relative_to(base_path)} → {new_dir.relative_to(base_path)}")
+                migrated_count += 1
+
+    return migrated_count
 
 
-def maybe_migrate_dvc_manifest(manifest_path: str = "booktest.manifest.yaml") -> bool:
+def migrate_dvc_manifest_keys(manifest_path: str = "booktest.manifest.yaml",
+                               tests=None,
+                               dry_run: bool = False) -> int:
     """
-    Check if DVC manifest needs migration.
+    Migrate DVC manifest keys from legacy to pytest-style format.
 
-    Returns True if migration was needed (will happen naturally on next run).
+    Returns: Number of keys migrated.
     """
     if not os.path.exists(manifest_path):
-        return False
+        return 0
 
-    # Check if manifest has legacy-format keys
+    if tests is None:
+        # Can't migrate without knowing test structure
+        return 0
+
+    # Build mapping from legacy paths to new paths
+    legacy_to_new = {}
+    for test_name, test_method in tests.cases:
+        legacy_path = pytest_name_to_legacy_path(test_name)
+        new_path = test_name.replace("::", "/")
+        if legacy_path != new_path:
+            legacy_to_new[legacy_path] = new_path
+
+    # Load manifest
     try:
         import yaml
         with open(manifest_path, 'r') as f:
@@ -96,34 +158,57 @@ def maybe_migrate_dvc_manifest(manifest_path: str = "booktest.manifest.yaml") ->
         with open(manifest_path, 'r') as f:
             manifest = json.load(f)
 
-    # Remove storage_mode key
-    manifest.pop("storage_mode", None)
+    # Extract storage_mode
+    storage_mode = manifest.pop("storage_mode", "dvc")
 
-    # Check if any keys look like legacy format (no .py in path)
-    has_legacy = False
-    for key in manifest.keys():
-        if key.startswith("test/") and ".py" not in key:
-            has_legacy = True
-            break
+    # Migrate keys
+    new_manifest = {}
+    migrated_count = 0
 
-    if has_legacy:
-        warnings.warn(
-            f"DVC manifest contains legacy-format test names. "
-            f"These will be updated automatically on next test run."
-        )
+    for old_key, value in manifest.items():
+        if old_key in legacy_to_new:
+            new_key = legacy_to_new[old_key]
+            new_manifest[new_key] = value
+            if not dry_run:
+                print(f"Migrated manifest key: {old_key} → {new_key}")
+            migrated_count += 1
+        else:
+            # Keep unchanged
+            new_manifest[old_key] = value
 
-    return has_legacy
+    if migrated_count > 0 and not dry_run:
+        # Save updated manifest
+        new_manifest["storage_mode"] = storage_mode
+
+        try:
+            import yaml
+            with open(manifest_path, 'w') as f:
+                yaml.safe_dump(new_manifest, f, default_flow_style=False, sort_keys=True)
+        except ImportError:
+            import json
+            with open(manifest_path, 'w') as f:
+                json.dump(new_manifest, f, indent=2, sort_keys=True)
+
+    return migrated_count
 
 
 def check_and_migrate(config_file: str = PROJECT_CONFIG_FILE,
                       base_dir: str = "books",
                       manifest_path: str = "booktest.manifest.yaml",
+                      tests=None,
                       force: bool = False) -> bool:
     """
     Check filesystem version and migrate if needed.
 
     This is called automatically at test startup.
     Uses booktest.ini (project config) for fs_version tracking.
+
+    Args:
+        config_file: Path to config file (default: booktest.ini)
+        base_dir: Base directory for test outputs (default: books)
+        manifest_path: Path to DVC manifest
+        tests: Tests object with discovered tests (needed for migration)
+        force: Force migration even if already on v2
 
     Returns: True if migration was performed or scheduled.
     """
@@ -137,24 +222,39 @@ def check_and_migrate(config_file: str = PROJECT_CONFIG_FILE,
         # Need to migrate
         print("Detected legacy filesystem layout (v1)")
         print("Migrating to pytest-style naming (v2)...")
+        print()
 
-        # Check what needs migration
-        file_count = migrate_filesystem(base_dir, dry_run=True)
-        manifest_needs_migration = maybe_migrate_dvc_manifest(manifest_path)
-
-        if file_count > 0 or manifest_needs_migration:
-            print(f"  → {file_count} test output files will be regenerated")
-            if manifest_needs_migration:
-                print(f"  → DVC manifest will be updated")
+        if tests is None:
+            # Can't do actual migration without test discovery
+            # Just mark as migrated and let tests regenerate
+            print("⚠️  Test discovery not available - files will regenerate on next run")
             print()
-            print("Migration strategy: Tests will regenerate outputs with new naming.")
-            print("Old test outputs will be ignored and can be cleaned up later.")
+        else:
+            # Perform actual migration
+            print("Migrating test output files...")
+            file_count = migrate_test_files(tests, base_dir, dry_run=False)
+
+            if file_count > 0:
+                print(f"✓ Migrated {file_count} files")
+            else:
+                print("✓ No legacy files found")
+            print()
+
+            # Migrate DVC manifest
+            print("Migrating DVC manifest keys...")
+            manifest_count = migrate_dvc_manifest_keys(manifest_path, tests, dry_run=False)
+
+            if manifest_count > 0:
+                print(f"✓ Migrated {manifest_count} manifest keys")
+            else:
+                print("✓ No legacy manifest keys found")
             print()
 
         # Mark as migrated
         set_fs_version("v2", config_file)
-        print(f"Updated {config_file}: fs_version=v2")
-        print("Migration complete! Tests will now use pytest-style naming.")
+        print(f"✓ Updated {config_file}: fs_version=v2")
+        print()
+        print("Migration complete! Tests now use pytest-style naming.")
         print()
 
         return True
