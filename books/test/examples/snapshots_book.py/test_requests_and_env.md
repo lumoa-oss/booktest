@@ -1,6 +1,6 @@
 # request:
 
-making post request to https://httpbin.org/anything in 2219.895 ms (was 0.897 ms)
+making post request to https://httpbin.org/anything in 1.153 ms (was 2219.895 ms)
 
 # response:
 

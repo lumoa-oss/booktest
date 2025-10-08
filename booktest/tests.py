@@ -15,6 +15,7 @@ import booktest.setup
 from booktest.testrun import method_identity, match_method
 
 from booktest.selection import is_selected
+from booktest.naming import to_filesystem_path
 
 
 class Tests:
@@ -22,7 +23,9 @@ class Tests:
         self.cases = cases
 
     def test_result_path(self, out_dir, case_path):
-        return path.join(out_dir, case_path + ".bin")
+        # Convert pytest-style names to filesystem paths (:: → /)
+        case_path_fs = to_filesystem_path(case_path)
+        return path.join(out_dir, case_path_fs + ".bin")
 
     def test_result_exists(self, out_dir, case_path):
         return path.exists(self.test_result_path(out_dir, case_path))

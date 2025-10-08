@@ -11,21 +11,22 @@ booktest
 
 # test results:
 
-  book/failing/assert..FAIL <number> ms
-  book/failing/decorated_async_exception..FAIL <number> ms
-  book/failing/decorated_exception..FAIL <number> ms
-  book/failing/exception..FAIL <number> ms
-  book/failing/fail..FAIL <number> ms
-  book/failing/memory_monitor_exception..FAIL <number> ms
-  book/failing/success..<number> ms
+  book/failing_book.py::test_assert..FAIL <number> ms
+  book/failing_book.py::test_decorated_async_exception..FAIL <number> ms
+  book/failing_book.py::test_decorated_exception..FAIL <number> ms
+  book/failing_book.py::test_exception..FAIL <number> ms
+  book/failing_book.py::test_fail..FAIL <number> ms
+  book/failing_book.py::test_memory_monitor_exception..FAIL <number> ms
+  book/failing_book.py::test_success..DIFF <number> ms
 
-6/7 test failed in <number> ms:
+7/7 test failed in <number> ms:
 
-  book/failing/assert
-  book/failing/decorated_async_exception
-  book/failing/decorated_exception
-  book/failing/exception
-  book/failing/fail
-  book/failing/memory_monitor_exception
+  book/failing_book.py::test_assert
+  book/failing_book.py::test_decorated_async_exception
+  book/failing_book.py::test_decorated_exception
+  book/failing_book.py::test_exception
+  book/failing_book.py::test_fail
+  book/failing_book.py::test_memory_monitor_exception
+  book/failing_book.py::test_success
 
 

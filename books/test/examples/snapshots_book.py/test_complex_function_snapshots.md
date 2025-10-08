@@ -1,30 +1,27 @@
 # running 20 snapshots in random order to 2 different methods:
 
-done.
 
-randomized order is 0, 16, 17, 6, 9, 8, 7, 2, 12, 1, 11, 19, 3, 15, 10, 14, 18, 4, 13, 5
+test raised exception missing snapshot for function call plus_one - 50a89c548410f5be533462ca83734b64459c7c82. try running booktest with '-s' flag to capture the missing snapshot:
+Traceback (most recent call last):
+  File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 105, in run_case
+    rv = await maybe_async_call(case, [t], {})
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+    return await func(*args2, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/functions.py", line 282, in wrapper
+    return await maybe_async_call(func, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+    return await func(*args2, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/test/examples/snapshots_book.py", line 344, in test_complex_function_snapshots
+    results[value] = plus_one(value)
+                     ^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/functions.py", line 99, in __call__
+    return self.t.snapshot(self.func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/functions.py", line 147, in snapshot
+    raise ValueError(f"missing snapshot for function call {call.func()} - {call.hash}. "
+ValueError: missing snapshot for function call plus_one - 50a89c548410f5be533462ca83734b64459c7c82. try running booktest with '-s' flag to capture the missing snapshot
 
-# results:
-
- * 0: 1
- * 1: 0
- * 2: 3
- * 3: 2
- * 4: 5
- * 5: 4
- * 6: 7
- * 7: 6
- * 8: 9
- * 9: 8
- * 10: 11
- * 11: 10
- * 12: 13
- * 13: 12
- * 14: 15
- * 15: 14
- * 16: 17
- * 17: 16
- * 18: 19
- * 19: 18
-
-check sum: 190

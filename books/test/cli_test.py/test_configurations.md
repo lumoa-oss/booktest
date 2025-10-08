@@ -11,13 +11,15 @@ booktest -v
 
 # test results:
 
-test booktests/test_hello/hello...
+test booktests/test_hello.py::test_hello...
 
   the message is hello world!
 
-booktests/test_hello/hello OK <number> ms.
+booktests/test_hello.py::test_hello DIFF <number> ms
 
 
-1/1 test succeeded in <number> ms
+1/1 test failed in <number> ms:
+
+  booktests/test_hello.py::test_hello
 
 

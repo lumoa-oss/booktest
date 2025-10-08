@@ -15,14 +15,14 @@ booktest
 
 # test results:
 
-  book/broken_snapshots/function_snapshot..FAIL <number> ms
-  book/broken_snapshots/httpx..FAIL <number> ms
-  book/broken_snapshots/requests..FAIL <number> ms
+  book/broken_snapshots_book.py::test_function_snapshot..FAIL <number> ms (snapshots updated)
+  book/broken_snapshots_book.py::test_httpx..FAIL <number> ms
+  book/broken_snapshots_book.py::test_requests..FAIL <number> ms
 
 3/3 test failed in <number> ms:
 
-  book/broken_snapshots/function_snapshot
-  book/broken_snapshots/httpx
-  book/broken_snapshots/requests
+  book/broken_snapshots_book.py::test_function_snapshot
+  book/broken_snapshots_book.py::test_httpx
+  book/broken_snapshots_book.py::test_requests
 
 

@@ -8,6 +8,6 @@ booktest -l
 
 # output:
 
-  book/predictor/predictor
-  book/predictor/predict_dog
+  book/predictor_book.py::PredictorBook/test_predictor
+  book/predictor_book.py::PredictorBook/test_predict_dog
 

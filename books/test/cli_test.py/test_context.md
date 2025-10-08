@@ -11,9 +11,12 @@ booktest --context examples/predictor
 
 # test results:
 
-  book/predictor/predictor..<number> ms
-  book/predictor/predict_dog..<number> ms
+  book/predictor_book.py::PredictorBook/test_predictor..DIFF <number> ms
+  book/predictor_book.py::PredictorBook/test_predict_dog..DIFF <number> ms
 
-2/2 test succeeded in <number> ms
+2/2 test failed in <number> ms:
+
+  book/predictor_book.py::PredictorBook/test_predictor
+  book/predictor_book.py::PredictorBook/test_predict_dog
 
 

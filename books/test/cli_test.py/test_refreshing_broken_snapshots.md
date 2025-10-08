@@ -18,34 +18,35 @@ booktest -S -v
 
 # test results:
 
-test book/broken_snapshots/function_snapshot...
+test book/broken_snapshots_book.py::test_function_snapshot...
 
   # snapshot:
   
    * hello: hello world
 
-book/broken_snapshots/function_snapshot OK <number> ms. (snapshots updated)
+book/broken_snapshots_book.py::test_function_snapshot DIFF <number> ms (snapshots updated)
 
-test book/broken_snapshots/httpx...
+test book/broken_snapshots_book.py::test_httpx...
 
-? # response url parameter:                                    | # response:
+  # response url parameter:
   
-? "https://postman-echo.com/get"                               | {
+  "https://postman-echo.com/get"
 
-book/broken_snapshots/httpx DIFF <number> ms (snapshots updated)
+book/broken_snapshots_book.py::test_httpx DIFF <number> ms (snapshots updated)
 
-test book/broken_snapshots/requests...
+test book/broken_snapshots_book.py::test_requests...
 
-? # response url parameter:                                    | # response:
+  # response url parameter:
   
-? "https://postman-echo.com/get"                               | {
+  "https://postman-echo.com/get"
 
-book/broken_snapshots/requests DIFF <number> ms (snapshots updated)
+book/broken_snapshots_book.py::test_requests DIFF <number> ms (snapshots updated)
 
 
-2/3 test failed in <number> ms:
+3/3 test failed in <number> ms:
 
-  book/broken_snapshots/httpx
-  book/broken_snapshots/requests
+  book/broken_snapshots_book.py::test_function_snapshot
+  book/broken_snapshots_book.py::test_httpx
+  book/broken_snapshots_book.py::test_requests
 
 
