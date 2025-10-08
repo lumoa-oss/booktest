@@ -13,6 +13,7 @@ from booktest.review import report_case_begin, case_review, report_case_result, 
 from booktest.tokenizer import TestTokenizer, BufferIterator
 from booktest.reports import TestResult, TwoDimensionalTestResult, SuccessState, SnapshotState
 from booktest.utils import file_or_resource_exists, open_file_or_resource
+from booktest.naming import to_filesystem_path, from_filesystem_path
 
 
 class TestCaseRun:
@@ -25,12 +26,17 @@ class TestCaseRun:
                  test_path,
                  config,
                  output):
-        relative_dir, name = path.split(test_path)
+        # test_path may be in pytest format (with ::) or legacy format
+        # Store both display name and filesystem-safe path
+        self.test_path = test_path  # Display name (pytest format or legacy)
+        self.test_path_fs = to_filesystem_path(test_path)  # Filesystem-safe path
+
+        # Split using filesystem path for file operations
+        relative_dir, name = path.split(self.test_path_fs)
 
         # name & context
         self.run = run
         self.name = name
-        self.test_path = test_path
 
         # configuration
         self.always_interactive = config.get("always_interactive", False)
@@ -76,7 +82,8 @@ class TestCaseRun:
 
         # storage initialization
         self.storage = self._init_storage()
-        self.test_id = test_path  # Use test_path as test_id for storage
+        # Use filesystem path for storage (DVC manifest keys must be filesystem-safe)
+        self.test_id = self.test_path_fs
 
         self.err = None
         self.orig_err = None

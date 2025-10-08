@@ -8,7 +8,7 @@ from inspect import signature, Parameter
 import types
 
 import booktest as bt
-from booktest.naming import clean_method_name, clean_test_postfix
+from booktest.naming import clean_method_name, clean_test_postfix, function_to_pytest_name
 from booktest.selection import is_selected_test_suite
 
 from booktest.utils import SetupTeardown
@@ -91,7 +91,9 @@ def get_module_tests(test_suite_name, module_name):
             for parameter in member_signature.parameters.values():
                 if parameter.default == Parameter.empty:
                     needed_arguments += 1
-            test_cases.append((os.path.join(test_suite_name, clean_method_name(name)), member))
+            # Generate pytest-style name for standalone functions
+            pytest_name = function_to_pytest_name(module_name, name)
+            test_cases.append((pytest_name, member))
 
     if len(test_cases) > 0:
         rv.append(bt.Tests(test_cases))

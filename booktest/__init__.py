@@ -1,5 +1,14 @@
 from booktest.dependencies import depends_on, Resource, Pool, port, port_range
-from booktest.naming import class_to_test_path
+from booktest.naming import (
+    class_to_test_path,
+    class_to_pytest_name,
+    method_to_pytest_name,
+    function_to_pytest_name,
+    to_filesystem_path,
+    from_filesystem_path,
+    is_pytest_name,
+    normalize_test_name
+)
 from booktest.reports import TestResult, TwoDimensionalTestResult, SuccessState, SnapshotState, test_result_to_exit_code
 from booktest.testbook import TestBook
 from booktest.testcaserun import TestCaseRun, TestIt, value_format
@@ -46,6 +55,13 @@ __all__ = {
     "drop_prefix",
     "value_format",
     "class_to_test_path",
+    "class_to_pytest_name",
+    "method_to_pytest_name",
+    "function_to_pytest_name",
+    "to_filesystem_path",
+    "from_filesystem_path",
+    "is_pytest_name",
+    "normalize_test_name",
     "detect_tests",
     "detect_test_suite",
     "detect_setup",

@@ -1,6 +1,11 @@
 import inspect
 
-from booktest.naming import class_to_test_path, clean_method_name
+from booktest.naming import (
+    class_to_test_path,
+    clean_method_name,
+    class_to_pytest_name,
+    method_to_pytest_name
+)
 from booktest.testsuite import TestSuite
 
 
@@ -64,12 +69,14 @@ class TestBook(metaclass=OrderedClass):
         generated names (e.g. caused by all caps abbreviations).
         """
         if full_path is None:
-            full_path = class_to_test_path(type(self))
+            # Generate pytest-style name for the class
+            full_path = class_to_pytest_name(type(self))
             if name is not None:
-                parts = full_path.split("/")
-                parts = parts[:len(parts)-1]
-                parts.append(name)
-                full_path = "/".join(parts)
+                # For custom name, replace the last part (class name)
+                # e.g. "test/foo_test.py::FooTestBook" -> "test/foo_test.py::CustomName"
+                parts = full_path.split("::")
+                parts[-1] = name
+                full_path = "::".join(parts)
         cases = []
 
         for name in self.member_names:
@@ -79,7 +86,10 @@ class TestBook(metaclass=OrderedClass):
                         unbound = m[1].__func__
                         if not hasattr(unbound, "_self_type"):
                             unbound._self_type = type(self)
-                        cases.append([clean_method_name(name), m[1]])
+                        # Generate full pytest-style name for each test method
+                        # e.g. "test/foo_test.py::FooTestBook::test_bar"
+                        test_name = method_to_pytest_name(type(self), name)
+                        cases.append([test_name, m[1]])
 
         self.test_suite = TestSuite(full_path, cases)
         self.cases = self.test_suite.cases

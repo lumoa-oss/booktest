@@ -2,9 +2,18 @@ def is_selected(test_name, selection):
     """
     checks whether the test name is selected
     based on the selection
+
+    Supports both pytest format (test/foo_test.py::test_bar)
+    and legacy format (test/foo/bar).
     """
+    from booktest.naming import normalize_test_name
+
     if selection is None:
         return True
+
+    # Normalize test name to filesystem format for comparison
+    # This handles both pytest format (with ::) and legacy format
+    test_name_fs = normalize_test_name(test_name)
 
     # filter negatives
     negatives = 0
@@ -12,10 +21,12 @@ def is_selected(test_name, selection):
     for s in selection:
         if s.startswith(skip_key):
             s = s[len(skip_key):]
-            if (test_name.startswith(s) and
-                    (len(s) == 0
-                     or len(test_name) == len(s)
-                     or test_name[len(s)] == '/')):
+            # Normalize selection pattern
+            s_fs = normalize_test_name(s)
+            if (test_name_fs.startswith(s_fs) and
+                    (len(s_fs) == 0
+                     or len(test_name_fs) == len(s_fs)
+                     or test_name_fs[len(s_fs)] == '/')):
                 return False
             negatives += 1
 
@@ -23,11 +34,13 @@ def is_selected(test_name, selection):
         return True
     else:
         for s in selection:
+            # Normalize selection pattern
+            s_fs = normalize_test_name(s)
             if s == '*' or \
-                    (test_name.startswith(s) and
-                     (len(s) == 0
-                      or len(test_name) == len(s)
-                      or test_name[len(s)] == '/')):
+                    (test_name_fs.startswith(s_fs) and
+                     (len(s_fs) == 0
+                      or len(test_name_fs) == len(s_fs)
+                      or test_name_fs[len(s_fs)] == '/')):
                 return True
         return False
 
@@ -36,9 +49,17 @@ def is_selected_test_suite(test_suite_name, selection):
     """
     checks whether the test suiite is selected
     based on the selection
+
+    Supports both pytest format (test/foo_test.py::TestClass)
+    and legacy format (test/foo).
     """
+    from booktest.naming import normalize_test_name
+
     if selection is None:
         return True
+
+    # Normalize to filesystem format
+    test_suite_name_fs = normalize_test_name(test_suite_name)
 
     # filter negatives
     negatives = 0
@@ -46,10 +67,11 @@ def is_selected_test_suite(test_suite_name, selection):
     for s in selection:
         if s.startswith(skip_key):
             s = s[len(skip_key):]
-            if (test_suite_name.startswith(s) and
-                    (len(s) == 0
-                     or len(test_suite_name) == len(s)
-                     or test_suite_name[len(s)] == '/')):
+            s_fs = normalize_test_name(s)
+            if (test_suite_name_fs.startswith(s_fs) and
+                    (len(s_fs) == 0
+                     or len(test_suite_name_fs) == len(s_fs)
+                     or test_suite_name_fs[len(s_fs)] == '/')):
                 return False
             negatives += 1
 
@@ -57,11 +79,12 @@ def is_selected_test_suite(test_suite_name, selection):
         return True
     else:
         for s in selection:
+            s_fs = normalize_test_name(s)
             if (s == '*' or
-                s.startswith(test_suite_name + "/") or
-                (test_suite_name.startswith(s) and
-                 (len(s) == 0
-                  or len(test_suite_name) == len(s)
-                  or test_suite_name[len(s)] == '/'))):
+                s_fs.startswith(test_suite_name_fs + "/") or
+                (test_suite_name_fs.startswith(s_fs) and
+                 (len(s_fs) == 0
+                  or len(test_suite_name_fs) == len(s_fs)
+                  or test_suite_name_fs[len(s_fs)] == '/'))):
                 return True
         return False
