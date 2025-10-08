@@ -71,3 +71,56 @@ def get_default_config():
         DEFAULT_CONFIG = resolve_default_config()
 
     return DEFAULT_CONFIG
+
+
+def update_config_value(config_file: str, key: str, value: str):
+    """
+    Update or add a configuration value in a config file.
+
+    This preserves comments and formatting of the config file.
+    """
+    lines = []
+    key_found = False
+
+    if path.exists(config_file):
+        with open(config_file, 'r') as f:
+            lines = f.readlines()
+
+    # Try to update existing key
+    for i, line in enumerate(lines):
+        if not line.startswith(';') and not line.startswith('#') and line.strip():
+            if '=' in line:
+                existing_key = line.split('=', 1)[0].strip()
+                if existing_key == key:
+                    lines[i] = f"{key}={value}\n"
+                    key_found = True
+                    break
+
+    # If key not found, add it
+    if not key_found:
+        # Add newline before if file doesn't end with one
+        if lines and not lines[-1].endswith('\n'):
+            lines[-1] += '\n'
+        lines.append(f"{key}={value}\n")
+
+    # Write back
+    with open(config_file, 'w') as f:
+        f.writelines(lines)
+
+
+def get_fs_version(config_file: str = DOT_CONFIG_FILE) -> str:
+    """
+    Get the filesystem version from config.
+
+    Returns "v1" (legacy) if not found, "v2" for pytest-style naming.
+    """
+    config = {}
+    parse_config_file(config_file, config)
+    return config.get("fs_version", "v1")
+
+
+def set_fs_version(version: str, config_file: str = DOT_CONFIG_FILE):
+    """
+    Set the filesystem version in config.
+    """
+    update_config_value(config_file, "fs_version", version)

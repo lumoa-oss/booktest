@@ -13,6 +13,7 @@ import sys
 import booktest as bt
 from booktest.config import get_default_config, DEFAULT_PYTHON_PATH
 from booktest.detection import detect_tests, detect_setup, include_sys_path
+from booktest.migrate import check_and_migrate
 import os
 
 
@@ -81,6 +82,9 @@ def main(arguments=None):
 
     if context is not None:
         os.chdir(context)
+
+    # Check and perform automatic migration if needed
+    check_and_migrate()
 
     setup_test_suite(parser, python_path, detect_selection)
     argcomplete.autocomplete(parser)
