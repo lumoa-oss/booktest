@@ -108,19 +108,22 @@ def update_config_value(config_file: str, key: str, value: str):
         f.writelines(lines)
 
 
-def get_fs_version(config_file: str = DOT_CONFIG_FILE) -> str:
+def get_fs_version(config_file: str = PROJECT_CONFIG_FILE) -> str:
     """
     Get the filesystem version from config.
 
     Returns "v1" (legacy) if not found, "v2" for pytest-style naming.
+    Reads from booktest.ini (project config) as this is project state.
     """
     config = {}
     parse_config_file(config_file, config)
     return config.get("fs_version", "v1")
 
 
-def set_fs_version(version: str, config_file: str = DOT_CONFIG_FILE):
+def set_fs_version(version: str, config_file: str = PROJECT_CONFIG_FILE):
     """
     Set the filesystem version in config.
+
+    Writes to booktest.ini (project config) as this should be in Git.
     """
     update_config_value(config_file, "fs_version", version)

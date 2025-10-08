@@ -1,7 +1,7 @@
 # Books overview:
 
  * book
-     * predictor
-         * [predictor](book/predictor/predictor.md)
-         * [predict_dog](book/predictor/predict_dog.md)
+     * predictor_book.py::PredictorBook
+         * [test_predictor](book/predictor_book.py::PredictorBook/test_predictor.md)
+         * [test_predict_dog](book/predictor_book.py::PredictorBook/test_predict_dog.md)
 

@@ -12,6 +12,10 @@ test/examples/async/httpx:
   httpx: sha256:60de7428195bd3b264c9a4d4d97a9ceb06426b4e4c9d316f43f8b3ebceef2eee
 test/examples/async/requests:
   http: sha256:ede6b3a83b24151ddd0ae69a6f463402321a1a64bcd02c44937c4649aec88bb3
+test/examples/async_book.py/test_httpx:
+  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+test/examples/async_book.py/test_requests:
+  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 test/examples/snapshots/auto_function_snapshots:
   func: sha256:7ddf588286cce6cab15fd32fb901851913bd09fb6449f531a1007c05a84e41ba
 test/examples/snapshots/complex_function_snapshots:
@@ -42,3 +46,25 @@ test/examples/snapshots/requests_with_headers:
   http: sha256:dab9b6103b7c64e113f3ed1a2bf82fe967d3f4f2411e78ad6641c42c543e6541
 test/examples/snapshots/saved_request:
   http: sha256:0ac74edbfeeee1a8396a20a661d123a20217428a8ea0a0ab68a5643c893ae141
+test/examples/snapshots_book.py/test_auto_function_snapshots:
+  func: sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+test/examples/snapshots_book.py/test_complex_function_snapshots:
+  func: sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+test/examples/snapshots_book.py/test_function_snapshots:
+  func: sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+test/examples/snapshots_book.py/test_httpx:
+  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+test/examples/snapshots_book.py/test_httpx_filter:
+  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+test/examples/snapshots_book.py/test_httpx_sequence:
+  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+test/examples/snapshots_book.py/test_requests:
+  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+test/examples/snapshots_book.py/test_requests_deterministic_hashes:
+  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+test/examples/snapshots_book.py/test_requests_filter:
+  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+test/examples/snapshots_book.py/test_requests_sequence:
+  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+test/examples/snapshots_book.py/test_saved_request:
+  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a

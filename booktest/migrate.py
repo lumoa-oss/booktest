@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Tuple, Dict
 import warnings
 
-from booktest.config import get_fs_version, set_fs_version, DOT_CONFIG_FILE
+from booktest.config import get_fs_version, set_fs_version, PROJECT_CONFIG_FILE
 
 
 def detect_legacy_test_files(base_dir: str) -> List[Tuple[Path, Path]]:
@@ -115,7 +115,7 @@ def maybe_migrate_dvc_manifest(manifest_path: str = "booktest.manifest.yaml") ->
     return has_legacy
 
 
-def check_and_migrate(config_file: str = DOT_CONFIG_FILE,
+def check_and_migrate(config_file: str = PROJECT_CONFIG_FILE,
                       base_dir: str = "books",
                       manifest_path: str = "booktest.manifest.yaml",
                       force: bool = False) -> bool:
@@ -123,6 +123,7 @@ def check_and_migrate(config_file: str = DOT_CONFIG_FILE,
     Check filesystem version and migrate if needed.
 
     This is called automatically at test startup.
+    Uses booktest.ini (project config) for fs_version tracking.
 
     Returns: True if migration was performed or scheduled.
     """
@@ -161,7 +162,7 @@ def check_and_migrate(config_file: str = DOT_CONFIG_FILE,
     return False
 
 
-def get_migration_status(config_file: str = DOT_CONFIG_FILE) -> Dict[str, str]:
+def get_migration_status(config_file: str = PROJECT_CONFIG_FILE) -> Dict[str, str]:
     """
     Get current migration status information.
     """
