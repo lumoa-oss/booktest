@@ -16,12 +16,12 @@ usage: booktest [-h] [-i] [-I] [-v] [-L] [-f] [-c] [-r] [-u] [-a] [-p] [-p1]
                 [--narrow-detection] [-l] [--setup] [--garbage] [--clean]
                 [--config] [--print] [--view] [--path] [--review] [-w]
                 [--forget]
-                [{*,book,skip:book,book/predictor,skip:book/predictor,book/predictor/predictor,skip:book/predictor/predictor,book/predictor/predict_dog,skip:book/predictor/predict_dog} ...]
+                [{*,book,skip:book,book/predictor_book.py::PredictorBook,skip:book/predictor_book.py::PredictorBook,book/predictor_book.py::PredictorBook/test_predictor,skip:book/predictor_book.py::PredictorBook/test_predictor,book/predictor_book.py::PredictorBook/test_predict_dog,skip:book/predictor_book.py::PredictorBook/test_predict_dog} ...]
 
 booktest - review driven test tool
 
 positional arguments:
-  {*,book,skip:book,book/predictor,skip:book/predictor,book/predictor/predictor,skip:book/predictor/predictor,book/predictor/predict_dog,skip:book/predictor/predict_dog}
+  {*,book,skip:book,book/predictor_book.py::PredictorBook,skip:book/predictor_book.py::PredictorBook,book/predictor_book.py::PredictorBook/test_predictor,skip:book/predictor_book.py::PredictorBook/test_predictor,book/predictor_book.py::PredictorBook/test_predict_dog,skip:book/predictor_book.py::PredictorBook/test_predict_dog}
 
 options:
   -h, --help            show this help message and exit
