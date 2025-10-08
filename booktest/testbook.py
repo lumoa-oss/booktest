@@ -86,10 +86,9 @@ class TestBook(metaclass=OrderedClass):
                         unbound = m[1].__func__
                         if not hasattr(unbound, "_self_type"):
                             unbound._self_type = type(self)
-                        # Generate full pytest-style name for each test method
-                        # e.g. "test/foo_test.py::FooTestBook::test_bar"
-                        test_name = method_to_pytest_name(type(self), name)
-                        cases.append([test_name, m[1]])
+                        # Just use method name - TestSuite will prepend class path
+                        # Method name in pytest format: "test_bar" (not cleaned)
+                        cases.append([name, m[1]])
 
         self.test_suite = TestSuite(full_path, cases)
         self.cases = self.test_suite.cases
