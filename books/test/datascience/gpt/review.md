@@ -13,13 +13,16 @@ so it should be syntactically valid python.
 # code:
 
 ```
-# Tämä on yksinkertainen "Hello World!" -esimerkki Pythonilla.
-# Kommentit alkavat merkillä # ja Python jättää ne huomiotta.
-# Kommentteja käytetään selittämään, mitä koodi tekee, jotta lapset ymmärtävät.
-# print(...) on Pythonin komento, jolla näytetään teksti tietokoneen näytöllä.
-# Teksti eli merkkijono kirjoitetaan lainausmerkkien " " sisään.
-# Seuraava rivi suorittaa tulostuksen:
-print("Hello World!")  # Tämä tulostaa konsoliin täsmälleen: Hello World!
+# Tämä ohjelma näyttää, miten tulostetaan teksti Pythonissa.
+# Selitykset ovat suomeksi ja kertovat jokaisen askeleen lapselle ymmärrettävästi.
+
+# print(...) on Pythonin sisäänrakennettu funktio, joka näyttää (tulostaa) jotain
+# näytölle tai konsoliin.
+# Merkkijono (string) on teksti, joka kirjoitetaan lainausmerkkien " " tai ' ' sisään.
+# Tässä haluamme näyttää merkkijonon Hello World! näytöllä.
+print("Hello World!")
+
+# Ohjelma päättyy tähän. Kun ajat tämän tiedoston, edellinen print-rivi tulostaa viestin.
 ```
 
 # output:

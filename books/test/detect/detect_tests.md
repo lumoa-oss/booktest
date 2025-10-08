@@ -12,6 +12,9 @@
  * test/cli/refreshing_broken_snapshots..ok
  * test/cli/run..ok
  * test/cli/timeout..ok
+ * test/datascience/gpt/evaluation..ok
+ * test/datascience/gpt/request..ok
+ * test/datascience/gpt/review..ok
  * test/dependencies/cross_dependency/cross_use_data..ok
  * test/dependencies/data_source/create_data..ok
  * test/dependencies/data_source/use_data..ok
@@ -77,17 +80,6 @@
  * test/examples/snapshots/saved_request..ok
  * test/setup_teardown/setup_teardown..ok
  * test/stderr/stderr..ok
- * test/test_auto_approval_demo/decision_matrix..ok
- * test/test_auto_approval_demo/scenario_diff_intact..ok
- * test/test_auto_approval_demo/scenario_fail_any..ok
- * test/test_auto_approval_demo/scenario_ok_intact..ok
- * test/test_auto_approval_demo/scenario_ok_updated..ok
- * test/test_cli_display/ok_intact_result..ok
- * test/test_cli_display/simulated_diff_result..ok
- * test/test_cli_display/simulated_updated_result..ok
- * test/test_demonstration/changing_case..ok
- * test/test_demonstration/inspect_results..ok
- * test/test_demonstration/passing_case..ok
  * test/test_names/api_v1/names..ok
  * test/test_names/camel_case_names/names..ok
  * test/test_names/get_url/names..ok
@@ -103,9 +95,7 @@
  * test/test_two_dimensional_results/current_implementation_stores_two_dimensional_result..ok
  * test/test_two_dimensional_results/legacy_compatibility..ok
  * test/test_two_dimensional_results/review_logic..ok
- * test/test_two_dimensional_results/snapshot_states..ok
- * test/test_two_dimensional_results/success_states..ok
  * test/test_two_dimensional_results/two_dimensional_result_creation..ok
  * test/utils/all_caps/names..ok
 
-count: 107
+count: 97

@@ -1,13 +1,13 @@
 storage_mode: dvc
 test/datascience/gpt/evaluation:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
-  httpx: sha256:c9ac816b7b51043a518d2ccfb4f2f90bf0be7632c10d7cd490cac9f40b081799
+  httpx: sha256:91eea683bb240deb23d10ee661c84f4af90f38564094e0e6668def8c4cf9e754
 test/datascience/gpt/request:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
   httpx: sha256:f17543dc018c55fecd921228a1c4f87e01077941ebaa2b698c583bf6bd581646
 test/datascience/gpt/review:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
-  httpx: sha256:7dcedf7e561a1d892e018c3e3ea6a8f5be9674381f37a2837728da65cb739175
+  httpx: sha256:cb76fd8f23b864bff7eb5492c96f642b8e1e0cdcc8d5fc82880adb68c055d289
 test/examples/async/httpx:
   httpx: sha256:60de7428195bd3b264c9a4d4d97a9ceb06426b4e4c9d316f43f8b3ebceef2eee
 test/examples/async/requests:
