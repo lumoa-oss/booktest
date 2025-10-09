@@ -3,6 +3,7 @@ import os
 import shutil
 
 from booktest.reports import TestResult, TwoDimensionalTestResult, CaseReports, UserRequest, read_lines, Metrics
+from booktest.naming import to_filesystem_path
 
 
 #
@@ -26,9 +27,11 @@ def run_tool(config, tool, args):
 
 
 def interact(exp_dir, out_dir, case_name, test_result, config):
-    exp_file_name = os.path.join(exp_dir, case_name + ".md")
-    out_file_name = os.path.join(out_dir, case_name + ".md")
-    log_file_name = os.path.join(out_dir, case_name + ".log")
+    # Convert pytest-style name to filesystem path (:: → /)
+    case_name_fs = to_filesystem_path(case_name)
+    exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
+    out_file_name = os.path.join(out_dir, case_name_fs + ".md")
+    log_file_name = os.path.join(out_dir, case_name_fs + ".log")
 
     rv = test_result
     user_request = UserRequest.NONE
@@ -85,10 +88,12 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
 def freeze_case(exp_dir,
                 out_dir,
                 case_name):
-    exp_dir_name = os.path.join(exp_dir, case_name)
-    exp_file_name = os.path.join(exp_dir, case_name + ".md")
-    out_dir_name = os.path.join(out_dir, case_name)
-    out_file_name = os.path.join(out_dir, case_name + ".md")
+    # Convert pytest-style name to filesystem path (:: → /)
+    case_name_fs = to_filesystem_path(case_name)
+    exp_dir_name = os.path.join(exp_dir, case_name_fs)
+    exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
+    out_dir_name = os.path.join(out_dir, case_name_fs)
+    out_file_name = os.path.join(out_dir, case_name_fs + ".md")
 
     # destroy old test related files
     if path.exists(exp_dir_name):
@@ -99,6 +104,8 @@ def freeze_case(exp_dir,
 
 
 def case_review(exp_dir, out_dir, case_name, test_result, config):
+    # Convert pytest-style name to filesystem path (:: → /)
+    case_name_fs = to_filesystem_path(case_name)
     always_interactive = config.get("always_interactive", False)
     interactive = config.get("interactive", False)
     complete_snapshots = config.get("complete_snapshots", False)
@@ -238,12 +245,14 @@ def report_case_result(printer,
             printer(f"FAILED in {int_took_ms} ms")
 
 def maybe_print_logs(printer, config, out_dir, case_name):
+    # Convert pytest-style name to filesystem path (:: → /)
+    case_name_fs = to_filesystem_path(case_name)
     verbose = config.get("verbose", False)
     print_logs = config.get("print_logs", False)
 
     if print_logs:
         if verbose:
-            lines = read_lines(out_dir, case_name + ".log")
+            lines = read_lines(out_dir, case_name_fs + ".log")
             if len(lines) > 0:
                 printer()
                 printer(f"{case_name} logs:")
@@ -252,7 +261,7 @@ def maybe_print_logs(printer, config, out_dir, case_name):
                 for i in lines:
                     printer("  " + i)
         else:
-            lines = read_lines(out_dir, case_name + ".log")
+            lines = read_lines(out_dir, case_name_fs + ".log")
             if len(lines) > 0:
                 printer()
                 for i in lines:
@@ -269,6 +278,8 @@ def report_case(printer,
                 result,
                 took_ms,
                 config):
+    # Convert pytest-style name to filesystem path (:: → /)
+    case_name_fs = to_filesystem_path(case_name)
     verbose = config.get("verbose", False)
     report_case_begin(printer,
                       case_name,
@@ -277,7 +288,7 @@ def report_case(printer,
 
     if verbose:
         # report case content
-        for i in read_lines(out_dir, case_name + ".txt"):
+        for i in read_lines(out_dir, case_name_fs + ".txt"):
             printer(i)
 
     maybe_print_logs(printer, config, out_dir, case_name)
