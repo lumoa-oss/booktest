@@ -169,6 +169,7 @@ This test uses snapshots
         t.tln("Checking that legacy files were moved (not copied):")
         t.tln(f" - legacy hello.md exists: {legacy_hello.exists()}")
         t.tln(f" - legacy snapshot.md exists: {legacy_snapshot.exists()}")
+        t.tln(f" - legacy directory exists: {legacy_dir.exists()}")
 
         t.h1("Test Results")
         # Verify all assertions
@@ -177,6 +178,7 @@ This test uses snapshots
         assert new_snapshot_dir.exists(), "New snapshot directory should exist"
         assert not legacy_hello.exists(), "Legacy hello.md should be moved (not exist)"
         assert not legacy_snapshot.exists(), "Legacy snapshot.md should be moved (not exist)"
+        assert not legacy_dir.exists(), "Empty legacy directory should be cleaned up"
         assert get_fs_version(str(config_file)) == "v2", "fs_version should be updated to v2"
 
         t.tln("✓ All migration checks passed!")

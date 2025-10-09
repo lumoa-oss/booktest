@@ -67,6 +67,45 @@ def pytest_name_to_legacy_path(pytest_name: str) -> str:
         return pytest_name
 
 
+def cleanup_empty_directories(base_path: Path, directories: set):
+    """
+    Remove empty directories after migration.
+    Only removes directories if they contain no files or subdirectories.
+
+    Args:
+        base_path: Base directory (not removed even if empty)
+        directories: Set of directories to check for cleanup
+    """
+    # Sort directories by depth (deepest first) to clean up from bottom to top
+    sorted_dirs = sorted(directories, key=lambda d: len(d.parts), reverse=True)
+
+    for directory in sorted_dirs:
+        if not directory.exists():
+            continue
+
+        try:
+            # Check if directory is empty (no files or subdirs)
+            if not any(directory.iterdir()):
+                directory.rmdir()
+                print(f"Cleaned up empty directory: {directory.relative_to(base_path)}")
+
+                # Also try to clean up parent directories if they're now empty
+                parent = directory.parent
+                while parent != base_path and parent.exists():
+                    try:
+                        if not any(parent.iterdir()):
+                            parent.rmdir()
+                            print(f"Cleaned up empty directory: {parent.relative_to(base_path)}")
+                            parent = parent.parent
+                        else:
+                            break
+                    except OSError:
+                        break
+        except OSError:
+            # Directory not empty or cannot be removed
+            pass
+
+
 def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) -> int:
     """
     Migrate test output files from legacy to pytest-style paths.
@@ -80,6 +119,7 @@ def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) ->
         return 0
 
     migrated_count = 0
+    legacy_dirs_to_cleanup = set()
 
     # Get all test cases
     for test_name, test_method in tests.cases:
@@ -102,6 +142,9 @@ def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) ->
                     print(f"Would migrate: {old_file} → {new_file}")
                     migrated_count += 1
                 else:
+                    # Track parent directory for cleanup
+                    legacy_dirs_to_cleanup.add(old_file.parent)
+
                     # Create parent directory
                     new_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -119,10 +162,17 @@ def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) ->
                 print(f"Would migrate directory: {old_dir} → {new_dir}")
                 migrated_count += 1
             else:
+                # Track parent directory for cleanup
+                legacy_dirs_to_cleanup.add(old_dir.parent)
+
                 new_dir.parent.mkdir(parents=True, exist_ok=True)
                 shutil.move(str(old_dir), str(new_dir))
                 print(f"Migrated directory: {old_dir.relative_to(base_path)} → {new_dir.relative_to(base_path)}")
                 migrated_count += 1
+
+    # Cleanup empty directories after migration
+    if not dry_run and legacy_dirs_to_cleanup:
+        cleanup_empty_directories(base_path, legacy_dirs_to_cleanup)
 
     return migrated_count
 

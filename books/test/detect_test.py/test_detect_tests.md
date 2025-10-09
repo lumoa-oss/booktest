@@ -80,10 +80,16 @@
  * test/examples/snapshots_book.py::test_saved_request..ok
  * test/setup_teardown_test.py::test_setup_teardown..ok
  * test/stderr_test.py::StdErrBook/test_stderr..ok
+ * test/test_migration.py::TestMigration/test_legacy_to_pytest_migration..ok
+ * test/test_migration.py::TestMigration/test_pytest_name_conversion..ok
  * test/test_names_test.py::ApiV1TestBook/test_names..ok
  * test/test_names_test.py::CamelCaseNamesTestBook/test_names..ok
  * test/test_names_test.py::GetURLTestBook/test_names..ok
  * test/test_names_test.py::url_ops/test_names..ok
+ * test/test_selection.py::TestSelection/test_class_selection..ok
+ * test/test_selection.py::TestSelection/test_directory_selection..ok
+ * test/test_selection.py::TestSelection/test_exact_match..ok
+ * test/test_selection.py::TestSelection/test_file_selection..ok
  * test/test_storage.py::TestStorage/test_content_hashing..ok
  * test/test_storage.py::TestStorage/test_dvc_storage_fallback..ok
  * test/test_storage.py::TestStorage/test_git_storage_basic..ok
@@ -98,4 +104,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 97
+count: 103

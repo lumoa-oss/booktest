@@ -48,6 +48,7 @@ Checking that new pytest-style files exist:
 Checking that legacy files were moved (not copied):
  - legacy hello.md exists: False
  - legacy snapshot.md exists: False
+ - legacy directory exists: False
 
 # Test Results
 

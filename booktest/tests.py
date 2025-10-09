@@ -327,16 +327,51 @@ class Tests:
             help="Removes reviews from test cases. This stages them for rerun even with -c flag.")
 
         test_choices = ["*"]
+        from booktest.naming import normalize_test_name
+
         for name in self.all_names():
-            parts = name.split('/')
-            prefix = ""
+            # Add the full pytest-style name
+            if name not in test_choices:
+                test_choices.append(name)
+                test_choices.append("skip:" + name)
+
+            # Normalize to filesystem format for prefix extraction
+            name_fs = normalize_test_name(name)
+            parts = name_fs.split('/')
+
+            # Build all prefixes from filesystem path
+            prefix_fs = ""
             for p in parts:
-                if len(prefix) > 0:
-                    prefix += "/"
-                prefix += p
-                if prefix not in test_choices:
-                    test_choices.append(prefix)
-                    test_choices.append("skip:" + prefix)
+                if len(prefix_fs) > 0:
+                    prefix_fs += "/"
+                prefix_fs += p
+                if prefix_fs not in test_choices:
+                    test_choices.append(prefix_fs)
+                    test_choices.append("skip:" + prefix_fs)
+
+            # Also extract pytest-style prefixes (file path and class path)
+            # For test/foo_test.py::ClassName/test_method:
+            # - Add test/foo_test.py
+            # - Add test/foo_test.py::ClassName
+            if "::" in name:
+                parts_pytest = name.split("::")
+                if len(parts_pytest) >= 2:
+                    # File path (test/foo_test.py)
+                    file_path = parts_pytest[0]
+                    if file_path not in test_choices:
+                        test_choices.append(file_path)
+                        test_choices.append("skip:" + file_path)
+
+                    # Class path (test/foo_test.py::ClassName)
+                    # Handle both :: and / separators in test part
+                    test_part = parts_pytest[1]
+                    if "/" in test_part:
+                        # Has class, extract just class name
+                        class_name = test_part.split("/")[0]
+                        class_path = f"{file_path}::{class_name}"
+                        if class_path not in test_choices:
+                            test_choices.append(class_path)
+                            test_choices.append("skip:" + class_path)
 
         parser.add_argument('test_cases',
                             nargs='*',
