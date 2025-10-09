@@ -79,6 +79,10 @@
          * [test_promote_operation](test/test_storage.py::TestStorage/test_promote_operation.md)
          * [test_snapshot_types](test/test_storage.py::TestStorage/test_snapshot_types.md)
 
+     * test_migration.py::TestMigration
+         * [test_legacy_to_pytest_migration](test/test_migration.py::TestMigration/test_legacy_to_pytest_migration.md)
+         * [test_pytest_name_conversion](test/test_migration.py::TestMigration/test_pytest_name_conversion.md)
+
      * datascience
          * [gpt_test.py::test_evaluation](test/datascience/gpt_test.py::test_evaluation.md)
          * [gpt_test.py::test_request](test/datascience/gpt_test.py::test_request.md)

@@ -43,20 +43,22 @@ def pytest_name_to_legacy_path(pytest_name: str) -> str:
     cleaned_file_path = "/".join(file_part_segments)
 
     if len(parts) == 2:
-        # Standalone function: test/foo_test.py::test_bar
-        method_name = parts[1]
+        # Could be standalone function or class method
+        test_part = parts[1]
+
+        # Check if it contains a class (has /)
+        if "/" in test_part:
+            # Class method: test/foo_test.py::FooBook/test_bar
+            # Split on / to separate class from method
+            class_method_parts = test_part.split("/")
+            method_name = class_method_parts[-1]  # Last part after /
+        else:
+            # Standalone function: test/foo_test.py::test_bar
+            method_name = test_part
+
         # Remove test_ prefix
         if method_name.startswith("test_"):
             method_name = method_name[5:]  # Remove "test_"
-
-        return f"{cleaned_file_path}/{method_name}"
-
-    elif len(parts) == 3:
-        # Class method: test/foo_test.py::FooBook/test_bar
-        # Last part is the method name
-        method_name = parts[-1]
-        if method_name.startswith("test_"):
-            method_name = method_name[5:]
 
         return f"{cleaned_file_path}/{method_name}"
 
