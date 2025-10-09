@@ -1,8 +1,8 @@
 # request:
 
- * random url component is: 7827981
- * making post request to https://httpbin.org/anything/7827981 in 
-test raised exception missing snapshot for request https://httpbin.org/anything/7827981 - 5d79d741579ef5e914e9cb6bfa4e01a280eca6a6. try running booktest with '-s' flag to capture the missing snapshot:
+ * random url component is: 1862304
+ * making post request to https://httpbin.org/anything/1862304 in 
+test raised exception missing snapshot for request https://httpbin.org/anything/1862304 - 5d79d741579ef5e914e9cb6bfa4e01a280eca6a6. try running booktest with '-s' flag to capture the missing snapshot:
 Traceback (most recent call last):
   File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 105, in run_case
     rv = await maybe_async_call(case, [t], {})
@@ -58,5 +58,5 @@ Traceback (most recent call last):
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/arau/lumoa/src/booktest/booktest/httpx.py", line 257, in lookup_request_snapshot
     raise ValueError(f"missing snapshot for request {request.url} - {key.hash}. "
-ValueError: missing snapshot for request https://httpbin.org/anything/7827981 - 5d79d741579ef5e914e9cb6bfa4e01a280eca6a6. try running booktest with '-s' flag to capture the missing snapshot
+ValueError: missing snapshot for request https://httpbin.org/anything/1862304 - 5d79d741579ef5e914e9cb6bfa4e01a280eca6a6. try running booktest with '-s' flag to capture the missing snapshot
 
