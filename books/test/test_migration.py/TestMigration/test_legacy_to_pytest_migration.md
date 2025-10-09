@@ -1,7 +1,7 @@
 # Migration Test Setup
 
-Created test environment at /tmp/tmpytp2tl89
-Config file: /tmp/tmpytp2tl89/booktest.ini
+Created test environment at /tmp/tmp8rucrrww
+Config file: /tmp/tmp8rucrrww/booktest.ini
 
 # Legacy Filesystem Structure
 
