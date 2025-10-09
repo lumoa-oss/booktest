@@ -1,7 +1,7 @@
 # Migration Test Setup
 
-Created test environment at /tmp/tmp8rucrrww
-Config file: /tmp/tmp8rucrrww/booktest.ini
+Created test environment at books/.out/test/test_migration.py/TestMigration/test_legacy_to_pytest_migration.tmp/test
+Config file: books/.out/test/test_migration.py/TestMigration/test_legacy_to_pytest_migration.tmp/test/booktest.ini
 
 # Legacy Filesystem Structure
 

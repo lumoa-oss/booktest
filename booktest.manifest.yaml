@@ -23,7 +23,7 @@ test/examples/snapshots_book.py/test_function_snapshots:
 test/examples/snapshots_book.py/test_httpx:
   httpx: sha256:7c4722baaaba1d7880cb1b6d8c848d9f0fb5be67b5abf1dee2b4e78895ab6364
 test/examples/snapshots_book.py/test_httpx_filter:
-  httpx: sha256:7600040ef2bda95a23166d7f050b28eaedf33467e3768a8ae88efd546a6cade7
+  httpx: sha256:bcf43cd7e7d39bfee0b023330038c3f33d764d509e43b6f65b47a61d032c41e1
 test/examples/snapshots_book.py/test_httpx_sequence:
   httpx: sha256:44a3c926330b3abea4e39690887d29b0f23730457a98a28458bd424287da19cb
 test/examples/snapshots_book.py/test_requests:
