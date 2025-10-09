@@ -9,36 +9,36 @@ test/datascience/gpt_test.py/test_review:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
   httpx: sha256:cb76fd8f23b864bff7eb5492c96f642b8e1e0cdcc8d5fc82880adb68c055d289
 test/examples/async_book.py/test_httpx:
-  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  httpx: sha256:b0d253434ccfaeab76d3047645f54c12522a4cf4731a650ef2a53dc91f2998c4
 test/examples/async_book.py/test_requests:
-  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  http: sha256:26f3e4835de2147a5195fd13fd144473d8a11bc11723c849792cffefa564740d
 test/examples/snapshots_book.py/test_auto_function_snapshots:
-  func: sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  func: sha256:0e3306ce65492e83e833772022deab53fe328f29e397522daeccf6b0bf3cf2d2
 test/examples/snapshots_book.py/test_complex_function_snapshots:
-  func: sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  func: sha256:9960cb0464c93d2820e525ff30e844776a7b879eccd83e6455cdbfeac1e0de7a
 test/examples/snapshots_book.py/test_env:
   env: sha256:3495dbd68a5dbb9038fa7d285d7a8b61e53fb8a252966874c83cb3fc1476edcb
 test/examples/snapshots_book.py/test_function_snapshots:
-  func: sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  func: sha256:5f03a275d2dd32f4d92e9c023acdd8bc2b594005709ca3c85dd3872b671b5b52
 test/examples/snapshots_book.py/test_httpx:
   httpx: sha256:7c4722baaaba1d7880cb1b6d8c848d9f0fb5be67b5abf1dee2b4e78895ab6364
 test/examples/snapshots_book.py/test_httpx_filter:
-  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  httpx: sha256:7600040ef2bda95a23166d7f050b28eaedf33467e3768a8ae88efd546a6cade7
 test/examples/snapshots_book.py/test_httpx_sequence:
-  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  httpx: sha256:44a3c926330b3abea4e39690887d29b0f23730457a98a28458bd424287da19cb
 test/examples/snapshots_book.py/test_requests:
-  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  http: sha256:357e951c0ac56c3192658b7847ac9bd73b57967b86e1be3c682efea7e9cd429e
 test/examples/snapshots_book.py/test_requests_and_env:
   env: sha256:3a5d6353d8a66b969a76499857c183741dbb4b2950ec8bba39e398ae1796d3fe
   http: sha256:7929f49c8d070cfac4e1d89774c96710d93ff07e5ec45243c6d6f9922250b9ec
 test/examples/snapshots_book.py/test_requests_deterministic_hashes:
-  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  httpx: sha256:7be80cd4ba869973c285409982bb4c000495028e31771d0482e3dc65840382f0
 test/examples/snapshots_book.py/test_requests_filter:
-  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  http: sha256:2d367731a8f93c3c2783cf81b32f31a15b6dced397942a5fbc8e61a8516d4dac
 test/examples/snapshots_book.py/test_requests_sequence:
-  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  http: sha256:6259f18d7c6fb043a8e2ef35993eab7fc573bde549acf2cf6e04a9a1abfafb42
 test/examples/snapshots_book.py/test_requests_with_headers:
   env: sha256:3a5d6353d8a66b969a76499857c183741dbb4b2950ec8bba39e398ae1796d3fe
   http: sha256:dab9b6103b7c64e113f3ed1a2bf82fe967d3f4f2411e78ad6641c42c543e6541
 test/examples/snapshots_book.py/test_saved_request:
-  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  http: sha256:7954e1eac43a321fd4292f2390eddaf221bc0adc809af93f709fad898abce0b9
