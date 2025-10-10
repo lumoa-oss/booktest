@@ -13,7 +13,7 @@ class Colors:
     YELLOW = '\033[93m'   # Bright yellow for diffs
     GREEN = '\033[92m'    # Bright green
     BLUE = '\033[94m'     # Bright blue
-    GRAY = '\033[90m'     # Gray
+    GRAY = '\033[90m'     # Gray (bright black)
 
 
 def _supports_color():

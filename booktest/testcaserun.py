@@ -603,7 +603,7 @@ class TestCaseRun:
 
             # Colorize the sections:
             # - Left side (symbol + new line) in yellow/red
-            # - Separator (|) in white (no color)
+            # - Separator (|) in default terminal color
             # - Right side (old line) in gray
             left_side = color_fn(f"{symbol} {self.out_line:60s}")
 
