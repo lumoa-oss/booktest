@@ -48,7 +48,8 @@ class SnapshotEnv:
             if name in self.snaphots:
                 value = self.snaphots[name]
                 if value is None:
-                    del os.environ[name]
+                    if name in os.environ:
+                        del os.environ[name]
                 else:
                     os.environ[name] = self.snaphots[name]
                 self.capture[name] = value

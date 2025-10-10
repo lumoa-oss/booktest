@@ -16,12 +16,12 @@ usage: booktest [-h] [-i] [-I] [-v] [-L] [-f] [-c] [-r] [-u] [-a] [-p] [-p1]
                 [--narrow-detection] [-l] [--setup] [--garbage] [--clean]
                 [--config] [--print] [--view] [--path] [--review] [-w]
                 [--forget]
-                [{*,book,skip:book,book/predictor_book.py::PredictorBook,skip:book/predictor_book.py::PredictorBook,book/predictor_book.py::PredictorBook/test_predictor,skip:book/predictor_book.py::PredictorBook/test_predictor,book/predictor_book.py::PredictorBook/test_predict_dog,skip:book/predictor_book.py::PredictorBook/test_predict_dog} ...]
+                [{*,book/predictor_book.py::PredictorBook/test_predictor,skip:book/predictor_book.py::PredictorBook/test_predictor,book,skip:book,book/predictor_book.py,skip:book/predictor_book.py,book/predictor_book.py/PredictorBook,skip:book/predictor_book.py/PredictorBook,book/predictor_book.py/PredictorBook/test_predictor,skip:book/predictor_book.py/PredictorBook/test_predictor,book/predictor_book.py::PredictorBook,skip:book/predictor_book.py::PredictorBook,book/predictor_book.py::PredictorBook/test_predict_dog,skip:book/predictor_book.py::PredictorBook/test_predict_dog,book/predictor_book.py/PredictorBook/test_predict_dog,skip:book/predictor_book.py/PredictorBook/test_predict_dog} ...]
 
 booktest - review driven test tool
 
 positional arguments:
-  {*,book,skip:book,book/predictor_book.py::PredictorBook,skip:book/predictor_book.py::PredictorBook,book/predictor_book.py::PredictorBook/test_predictor,skip:book/predictor_book.py::PredictorBook/test_predictor,book/predictor_book.py::PredictorBook/test_predict_dog,skip:book/predictor_book.py::PredictorBook/test_predict_dog}
+  {*,book/predictor_book.py::PredictorBook/test_predictor,skip:book/predictor_book.py::PredictorBook/test_predictor,book,skip:book,book/predictor_book.py,skip:book/predictor_book.py,book/predictor_book.py/PredictorBook,skip:book/predictor_book.py/PredictorBook,book/predictor_book.py/PredictorBook/test_predictor,skip:book/predictor_book.py/PredictorBook/test_predictor,book/predictor_book.py::PredictorBook,skip:book/predictor_book.py::PredictorBook,book/predictor_book.py::PredictorBook/test_predict_dog,skip:book/predictor_book.py::PredictorBook/test_predict_dog,book/predictor_book.py/PredictorBook/test_predict_dog,skip:book/predictor_book.py/PredictorBook/test_predict_dog}
 
 options:
   -h, --help            show this help message and exit
