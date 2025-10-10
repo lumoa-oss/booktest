@@ -33,11 +33,45 @@ def parse_config_value(value):
 def parse_config_file(config_file, config):
     if path.exists(config_file):
         with open(config_file) as f:
-            for line in f:
-                if line.startswith(';') or line.startswith('#') or not line.strip():
-                    continue
+            lines = f.readlines()
+
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+
+            # Skip comments and empty lines
+            if line.startswith(';') or line.startswith('#') or not line.strip():
+                i += 1
+                continue
+
+            # Parse key=value
+            if '=' in line:
                 key, value = line.strip().split('=', 1)
-                config[key] = parse_config_value(value)
+                key = key.strip()
+                value = value.strip()
+
+                # Check if this is a multiline value (empty or whitespace after =)
+                if not value:
+                    # Collect subsequent indented lines
+                    multiline_values = []
+                    i += 1
+                    while i < len(lines):
+                        next_line = lines[i]
+                        # Check if line is indented (starts with whitespace)
+                        if next_line.strip() and (next_line.startswith(' ') or next_line.startswith('\t')):
+                            multiline_values.append(next_line.strip())
+                            i += 1
+                        else:
+                            break
+
+                    # Join multiline values
+                    if multiline_values:
+                        config[key] = '\n'.join(multiline_values)
+                else:
+                    config[key] = parse_config_value(value)
+                    i += 1
+            else:
+                i += 1
 
 
 def resolve_default_config():
@@ -127,3 +161,39 @@ def set_fs_version(version: str, config_file: str = PROJECT_CONFIG_FILE):
     Writes to booktest.ini (project config) as this should be in Git.
     """
     update_config_value(config_file, "fs_version", version)
+
+
+def extract_env_vars(config: dict) -> dict:
+    """
+    Extract environment variables from config.
+
+    Supports pytest-style format:
+        env =
+            FOO=bar
+            BAZ=qux
+
+    Also supports legacy env_ prefix format:
+        env_FOO=bar
+
+    Returns a dictionary of environment variable names to values.
+    """
+    env_vars = {}
+
+    # Check for pytest-style 'env' key with multiline value
+    if 'env' in config:
+        env_value = config['env']
+        if isinstance(env_value, str) and '\n' in env_value:
+            # Parse multiline env value
+            for line in env_value.split('\n'):
+                line = line.strip()
+                if line and '=' in line:
+                    var_name, var_value = line.split('=', 1)
+                    env_vars[var_name.strip()] = var_value.strip()
+
+    # Also support legacy env_ prefix format for backward compatibility
+    for key, value in config.items():
+        if key.startswith("env_"):
+            env_name = key[4:]  # Remove 'env_' prefix
+            env_vars[env_name] = value
+
+    return env_vars

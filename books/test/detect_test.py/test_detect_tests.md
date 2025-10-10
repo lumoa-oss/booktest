@@ -80,6 +80,10 @@
  * test/examples/snapshots_book.py::test_saved_request..ok
  * test/setup_teardown_test.py::test_setup_teardown..ok
  * test/stderr_test.py::StdErrBook/test_stderr..ok
+ * test/test_env_config.py::TestEnvConfig/test_env_cleanup..ok
+ * test/test_env_config.py::TestEnvConfig/test_env_vars_at_module_load..ok
+ * test/test_env_config.py::TestEnvConfig/test_extract_env_vars_legacy..ok
+ * test/test_env_config.py::TestEnvConfig/test_extract_env_vars_pytest_style..ok
  * test/test_migration.py::TestMigration/test_legacy_to_pytest_migration..ok
  * test/test_migration.py::TestMigration/test_pytest_name_conversion..ok
  * test/test_names_test.py::ApiV1TestBook/test_names..ok
@@ -104,4 +108,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 103
+count: 107

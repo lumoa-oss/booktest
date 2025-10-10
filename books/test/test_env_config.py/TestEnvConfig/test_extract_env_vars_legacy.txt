@@ -1,0 +1,16 @@
+  # Extract Environment Variables from Config (Legacy Format)
+  
+  Config:
+    python_path = .
+    test_paths = test
+    env_FOO = bar
+    env_BAZ = qux
+    env_MULTI_WORD = hello world
+    timeout = 3600
+  
+  Extracted environment variables:
+    FOO = bar
+    BAZ = qux
+    MULTI_WORD = hello world
+  
+  ✓ All legacy format extraction tests passed!

@@ -7,6 +7,12 @@
      * [detect_test.py::test_detect_setup](test/detect_test.py::test_detect_setup.md)
      * [detect_test.py::test_detect_tests](test/detect_test.py::test_detect_tests.md)
 
+     * test_env_config.py::TestEnvConfig
+         * [test_extract_env_vars_legacy](test/test_env_config.py::TestEnvConfig/test_extract_env_vars_legacy.md)
+         * [test_extract_env_vars_pytest_style](test/test_env_config.py::TestEnvConfig/test_extract_env_vars_pytest_style.md)
+         * [test_env_vars_at_module_load](test/test_env_config.py::TestEnvConfig/test_env_vars_at_module_load.md)
+         * [test_env_cleanup](test/test_env_config.py::TestEnvConfig/test_env_cleanup.md)
+
      * dependencies
          * parametrized1
              * [test_create_data](test/dependencies/parametrized1/test_create_data.md)

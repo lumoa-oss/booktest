@@ -1,0 +1,17 @@
+  # Extract Environment Variables from Config (Pytest Style)
+  
+  Config:
+    python_path = .
+    test_paths = test
+    env =
+        FOO=bar
+        BAZ=qux
+        MULTI_WORD=hello world
+    timeout = 3600
+  
+  Extracted environment variables:
+    FOO = bar
+    BAZ = qux
+    MULTI_WORD = hello world
+  
+  ✓ All pytest-style extraction tests passed!

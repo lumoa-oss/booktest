@@ -1,0 +1,2 @@
+temporary_value
+another_temporary
