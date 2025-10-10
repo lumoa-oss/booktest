@@ -187,10 +187,10 @@ def report_case_begin(printer,
     if verbose:
         if title is None:
             title = "test"
-        printer(f"{title} {case_name}...")
+        printer(f"{title} {case_name}")
         printer()
     else:
-        printer(f"  {case_name}..", end="")
+        printer(f"  {case_name} - ", end="")
 
 
 def report_case_result(printer,

@@ -15,9 +15,9 @@ booktest
 
 # test results:
 
-  book/broken_snapshots_book.py::test_function_snapshot..FAIL <number> ms (snapshots updated)
-  book/broken_snapshots_book.py::test_httpx..FAIL <number> ms
-  book/broken_snapshots_book.py::test_requests..FAIL <number> ms
+  book/broken_snapshots_book.py::test_function_snapshot - FAIL <number> ms (snapshots updated)
+  book/broken_snapshots_book.py::test_httpx - FAIL <number> ms
+  book/broken_snapshots_book.py::test_requests - FAIL <number> ms
 
 3/3 test failed in <number> ms:
 

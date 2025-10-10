@@ -14,13 +14,13 @@ booktest -v
 
 # test results:
 
-test book/test_hello.py::test_hello...
+test book/test_hello.py::test_hello
 
   the message is hello world!
 
 book/test_hello.py::test_hello OK <number> ms.
 
-test book/teardown/setup_teardown_test.py::test_setup_teardown...
+test book/teardown/setup_teardown_test.py::test_setup_teardown
 
   # description:
   

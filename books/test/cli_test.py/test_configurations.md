@@ -11,7 +11,7 @@ booktest -v
 
 # test results:
 
-test booktests/test_hello.py::test_hello...
+test booktests/test_hello.py::test_hello
 
   the message is hello world!
 

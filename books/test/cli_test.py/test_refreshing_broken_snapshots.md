@@ -18,7 +18,7 @@ booktest -S -v
 
 # test results:
 
-test book/broken_snapshots_book.py::test_function_snapshot...
+test book/broken_snapshots_book.py::test_function_snapshot
 
   # snapshot:
   
@@ -26,7 +26,7 @@ test book/broken_snapshots_book.py::test_function_snapshot...
 
 book/broken_snapshots_book.py::test_function_snapshot DIFF <number> ms (snapshots updated)
 
-test book/broken_snapshots_book.py::test_httpx...
+test book/broken_snapshots_book.py::test_httpx
 
   # response url parameter:
   
@@ -34,7 +34,7 @@ test book/broken_snapshots_book.py::test_httpx...
 
 book/broken_snapshots_book.py::test_httpx DIFF <number> ms (snapshots updated)
 
-test book/broken_snapshots_book.py::test_requests...
+test book/broken_snapshots_book.py::test_requests
 
   # response url parameter:
   
