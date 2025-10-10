@@ -1,0 +1,10 @@
+  # Colorize Utility Test
+  
+  Testing different colors:
+    red:    '\x1b[91mThis is red\x1b[0m'
+    yellow: '\x1b[93mThis is yellow\x1b[0m'
+    green:  '\x1b[92mThis is green\x1b[0m'
+    blue:   '\x1b[94mThis is blue\x1b[0m'
+    gray:   '\x1b[90mThis is gray\x1b[0m'
+  
+  ✓ All colors verified!

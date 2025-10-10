@@ -198,6 +198,8 @@ def report_case_result(printer,
                        result,
                        took_ms,
                        verbose):
+    from booktest.colors import yellow, red
+
     if verbose:
         printer()
         printer(f"{case_name} ", end="")
@@ -229,9 +231,9 @@ def report_case_result(printer,
             else:
                 printer(f"{int_took_ms} ms{snapshot_msg}")
         elif result.success.name == "DIFF":
-            printer(f"DIFF {int_took_ms} ms{snapshot_msg}")
+            printer(f"{yellow('DIFF')} {int_took_ms} ms{snapshot_msg}")
         elif result.success.name == "FAIL":
-            printer(f"FAIL {int_took_ms} ms{snapshot_msg}")
+            printer(f"{red('FAIL')} {int_took_ms} ms{snapshot_msg}")
     else:
         # Legacy single-dimensional result
         if result == TestResult.OK:
@@ -240,9 +242,9 @@ def report_case_result(printer,
             else:
                 printer(f"{int_took_ms} ms")
         elif result == TestResult.DIFF:
-            printer(f"DIFFERED in {int_took_ms} ms")
+            printer(f"{yellow('DIFFERED')} in {int_took_ms} ms")
         elif result == TestResult.FAIL:
-            printer(f"FAILED in {int_took_ms} ms")
+            printer(f"{red('FAILED')} in {int_took_ms} ms")
 
 def maybe_print_logs(printer, config, out_dir, case_name):
     # Convert pytest-style name to filesystem path (:: → /)

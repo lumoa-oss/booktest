@@ -587,20 +587,28 @@ class TestCaseRun:
         """
 
         if self.line_error is not None or self.line_diff is not None:
+            from booktest.colors import yellow, red
+
             symbol = "?"
+            color_fn = yellow
             pos = None
             if self.line_diff is not None:
                 self.diffs += 1
                 pos = self.line_diff
             if self.line_error is not None:
                 symbol = "!"
+                color_fn = red
                 self.errors += 1
                 pos = self.line_error
+
+            # Colorize the marker symbol
+            colored_symbol = color_fn(symbol)
+
             if self.exp_line is not None:
-                self.report(f"{symbol} {self.out_line:60s} | "
+                self.report(f"{colored_symbol} {self.out_line:60s} | "
                             f"{self.exp_line}")
             else:
-                self.report(f"{symbol} {self.out_line:60s} | EOF")
+                self.report(f"{colored_symbol} {self.out_line:60s} | EOF")
             if self.point_error_pos:
                 self.report("  " + (" " * pos) + "^")
 

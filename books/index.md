@@ -51,6 +51,11 @@
      * [cli_test.py::test_run](test/cli_test.py::test_run.md)
      * [cli_test.py::test_timeout](test/cli_test.py::test_timeout.md)
 
+     * test_colors.py::TestColors
+         * [test_color_functions](test/test_colors.py::TestColors/test_color_functions.md)
+         * [test_no_color_env_var](test/test_colors.py::TestColors/test_no_color_env_var.md)
+         * [test_colorize_utility](test/test_colors.py::TestColors/test_colorize_utility.md)
+
      * test_two_dimensional_results.py::TestTwoDimensionalResults
          * [test_two_dimensional_result_creation](test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation.md)
          * [test_legacy_compatibility](test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_legacy_compatibility.md)
