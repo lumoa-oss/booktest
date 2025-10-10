@@ -587,7 +587,7 @@ class TestCaseRun:
         """
 
         if self.line_error is not None or self.line_diff is not None:
-            from booktest.colors import yellow, red
+            from booktest.colors import yellow, red, gray
 
             symbol = "?"
             color_fn = yellow
@@ -601,14 +601,18 @@ class TestCaseRun:
                 self.errors += 1
                 pos = self.line_error
 
-            # Colorize the marker symbol
-            colored_symbol = color_fn(symbol)
+            # Colorize the sections:
+            # - Left side (symbol + new line) in yellow/red
+            # - Separator (|) in white (no color)
+            # - Right side (old line) in gray
+            left_side = color_fn(f"{symbol} {self.out_line:60s}")
 
             if self.exp_line is not None:
-                self.report(f"{colored_symbol} {self.out_line:60s} | "
-                            f"{self.exp_line}")
+                right_side = gray(self.exp_line)
+                self.report(f"{left_side} | {right_side}")
             else:
-                self.report(f"{colored_symbol} {self.out_line:60s} | EOF")
+                right_side = gray("EOF")
+                self.report(f"{left_side} | {right_side}")
             if self.point_error_pos:
                 self.report("  " + (" " * pos) + "^")
 
