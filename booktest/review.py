@@ -198,7 +198,7 @@ def report_case_result(printer,
                        result,
                        took_ms,
                        verbose):
-    from booktest.colors import yellow, red
+    from booktest.colors import yellow, red, green
 
     if verbose:
         printer()
@@ -227,9 +227,9 @@ def report_case_result(printer,
 
         if result.success.name == "OK":
             if verbose:
-                printer(f"OK {int_took_ms} ms.{snapshot_msg}")
+                printer(f"{green('OK')} {int_took_ms} ms.{snapshot_msg}")
             else:
-                printer(f"{int_took_ms} ms{snapshot_msg}")
+                printer(f"{green(str(int_took_ms) + ' ms')}{snapshot_msg}")
         elif result.success.name == "DIFF":
             printer(f"{yellow('DIFF')} {int_took_ms} ms{snapshot_msg}")
         elif result.success.name == "FAIL":
@@ -238,9 +238,9 @@ def report_case_result(printer,
         # Legacy single-dimensional result
         if result == TestResult.OK:
             if verbose:
-                printer(f"ok in {int_took_ms} ms.")
+                printer(f"{green('ok')} in {int_took_ms} ms.")
             else:
-                printer(f"{int_took_ms} ms")
+                printer(f"{green(str(int_took_ms) + ' ms')}")
         elif result == TestResult.DIFF:
             printer(f"{yellow('DIFFERED')} in {int_took_ms} ms")
         elif result == TestResult.FAIL:
