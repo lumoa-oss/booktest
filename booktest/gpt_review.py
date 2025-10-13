@@ -71,70 +71,29 @@ class GptReview(OutputWriter):
         else:
             self.client = client
 
+    # ========== Primitive methods implementation ==========
+
     def h(self, level: int, title: str):
-        """Write a header at the specified level."""
+        """Write a header at the specified level (primitive method)."""
         label = "#" * level + " " + title
         self.buffer += f"\n{label}\n"
         self.t.h(level, title)
+        return self
+
+    def t(self, text: str):
+        """Write tested text inline (primitive method)."""
+        self.buffer += text
+        self.t.t(text)
+        return self
 
     def i(self, text: str):
-        """Write inline info text."""
+        """Write info text inline (primitive method)."""
         self.buffer += text
         self.t.i(text)
         return self
 
-    def iln(self, text: str = ""):
-        """Write a line of info text."""
-        self.buffer += text + "\n"
-        self.t.iln(text)
-        return self
-
-    def tln(self, text: str = ""):
-        """Write a line of tested text."""
-        self.buffer += text + "\n"
-        self.t.tln(text)
-        return self
-
-    def key(self, key: str):
-        """Write a key for key-value output."""
-        self.buffer += key
-        self.t.key(key)
-        return self
-
-    def anchor(self, anchor: str):
-        """Create an anchor point for non-linear snapshot comparison."""
-        self.buffer += anchor
-        self.t.anchor(anchor)
-        return self
-
-    def ttable(self, table: dict):
-        """Write a table from a dictionary."""
-        # Format table as markdown for buffer
-        if table:
-            headers = list(table.keys())
-            rows = list(zip(*table.values()))
-
-            # Add headers
-            self.buffer += "| " + " | ".join(headers) + " |\n"
-            self.buffer += "| " + " | ".join(["---"] * len(headers)) + " |\n"
-
-            # Add rows
-            for row in rows:
-                self.buffer += "| " + " | ".join(str(cell) for cell in row) + " |\n"
-
-        self.t.ttable(table)
-        return self
-
-    def tdf(self, df):
-        """Write a pandas dataframe as a table."""
-        # Convert dataframe to markdown for buffer
-        if df is not None:
-            self.buffer += df.to_markdown() + "\n"
-        self.t.tdf(df)
-        return self
-
     def fail(self):
-        """Mark the test as failed."""
+        """Mark the test as failed (primitive method)."""
         self.t.fail()
         return self
 

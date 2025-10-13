@@ -14,9 +14,10 @@ from booktest.tokenizer import TestTokenizer, BufferIterator
 from booktest.reports import TestResult, TwoDimensionalTestResult, SuccessState, SnapshotState
 from booktest.utils import file_or_resource_exists, open_file_or_resource
 from booktest.naming import to_filesystem_path, from_filesystem_path
+from booktest.output import OutputWriter
 
 
-class TestCaseRun:
+class TestCaseRun(OutputWriter):
     """
     A utility, that manages an invidiual test run, and provides the
     main API for the test case
@@ -856,33 +857,18 @@ class TestCaseRun:
         """
         return self.tmsln(f, sys.maxsize)
 
-    def h(self, level, title):
-        """ Markdown style header at level specified by `level` parameter """
-        self.header(f"{'#' * level} {title}")
-        return self
-
-    def h1(self, title):
+    def h(self, level: int, title: str):
         """
-        Markdown style header 1st level header
+        Markdown style header (primitive method for OutputWriter).
 
-        This method is used to mark titles as in
+        This method is used to mark titles. Use h1(), h2(), h3() convenience methods instead.
 
         ```python
         t.h1("This is my title")
-        t.tln("This is my title")
+        t.h2("Subsection")
         ```
         """
-        self.header("# " + title)
-        return self
-
-    def h2(self, title):
-        """ Markdown style header 2nd level header """
-        self.header("## " + title)
-        return self
-
-    def h3(self, title):
-        """ Markdown style header 3rd level header """
-        self.header("### " + title)
+        self.header("#" * level + " " + title)
         return self
 
     def timage(self, file, alt_text=None):
@@ -892,60 +878,6 @@ class TestCaseRun:
         self.tln(f"![{alt_text}]({self.rel_path(file)})")
         return self
 
-    def ttable(self, table: dict):
-        """
-        Writes a markdown table based on the `table` parameter columns. It uses column
-        keys as column names
-
-        ```python
-        t.ttable({
-          "x": [1, 2, 3],
-          "y": [2, 3, 4]
-        })
-        ```
-        """
-        import pandas as pd
-        self.tdf(pd.DataFrame(table))
-        return self
-
-    def tdf(self, df):
-        """
-        Writes the `df` dataframe as a markdown table.
-
-        NOTE: df should be of pd.DataFrame or compatible type
-        """
-        pads = []
-        for column in df.columns:
-            max_len = len(column)
-            for i in df.index:
-                max_len = max(max_len, len(str(df[column][i])))
-            pads.append(max_len)
-
-        buf = ""
-        buf += "|"
-        for i, column in enumerate(df.columns):
-            buf += column.ljust(pads[i])
-            buf += "|"
-        self.iln(buf)
-        buf = "|"
-        for i in pads:
-            buf += "-" * i
-            buf += "|"
-        self.tln(buf)
-        for i in df.index:
-            self.t("|")
-            for j, column in enumerate(df.columns):
-                buf = str(df[column][i])\
-                          .replace("\r", " ")\
-                          .replace("\n", " ")\
-                          .strip()
-
-                self.t(buf)
-                self.i(" " * (pads[j]-len(buf)))
-
-                self.t("|")
-            self.tln()
-        return self
 
     def tlist(self, list, prefix=" * "):
         """
@@ -1003,25 +935,6 @@ class TestCaseRun:
                 self.diff()
             self.jump(end)
 
-    def assertln(self, cond, error_message=None):
-        """
-        Fails the line if the assertion is false.
-
-        This is typically used in unit testing style assertions like:
-
-        ```python
-        t.t("is HTTP response code 200? ").assertln(response.code() == 200)
-        ```
-        """
-
-        if cond:
-            self.iln("ok")
-        else:
-            self.fail()
-            if error_message:
-                self.iln(error_message)
-            else:
-                self.iln("FAILED")
 
     def must_apply(self, it, title, cond, error_message=None):
         """
@@ -1076,13 +989,6 @@ class TestCaseRun:
         """
         return TestIt(self, name, it)
 
-    def t(self, text):
-        """
-        Writes the text into test stream. NOTE: this will not print a newline.
-        """
-        self.test_feed(text)
-        return self
-
     def tformat(self, value):
         """
         Converts the value into json like structure containing only the value types.
@@ -1094,14 +1000,8 @@ class TestCaseRun:
         self.tln(json.dumps(value_format(value), indent=2))
         return self
 
-    def tln(self):
-        """
-        Prints a newline to tests stream. NOTE: this will commit and check the buffered test line
-        """
-        self.test_feed("\n")
-        return self
-
     def key(self, key):
+        """Override key() to add anchor() functionality specific to TestCaseRun."""
         return self.anchor(key).i(" ")
 
     def keyvalueln(self, key, value):
@@ -1111,31 +1011,23 @@ class TestCaseRun:
         """
         return self.key(key).tln(value)
 
-    def tln(self, text=""):
+    def t(self, text):
         """
-        Writes the text and new line into test stream. This will commit the test line.
+        Writes tested text inline (primitive method for OutputWriter).
+
+        In TestCaseRun, this text is compared against snapshots.
         """
         self.test_feed(text)
-        self.test_feed("\n")
         return self
 
     def i(self, text):
         """
-        Writes the text into test stream without testing the text against snapshot.
+        Writes info text inline (primitive method for OutputWriter).
 
+        In TestCaseRun, this text bypasses snapshot comparison.
         'i' comes from 'info'/'ignore'.
         """
         self.feed(text)
-        return self
-
-    def iln(self, text=""):
-        """
-        Writes the text and new line into test stream without testing the text against the snapshot.
-
-        'i' comes from 'info'/'ignore'.
-        """
-        self.feed(text)
-        self.feed("\n")
         return self
 
 
