@@ -155,6 +155,10 @@ class CaseReports:
     def failed(self):
         return [i[0] for i in self.cases if i[1] != TestResult.OK]
 
+    def failed_with_details(self):
+        """Return failed test cases with their result type and duration."""
+        return [(i[0], i[1], i[2]) for i in self.cases if i[1] != TestResult.OK]
+
     def by_name(self, name):
         return list([i for i in self.cases if i[0] == name])
 

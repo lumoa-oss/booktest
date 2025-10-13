@@ -18,8 +18,8 @@ test booktests/test_hello.py::test_hello
 booktests/test_hello.py::test_hello DIFF <number> ms
 
 
-1/1 test failed in <number> ms:
+1/1 test 1 differed in <number> ms:
 
-  booktests/test_hello.py::test_hello
+  booktests/test_hello.py::test_hello - DIFF
 
 

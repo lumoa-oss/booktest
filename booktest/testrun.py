@@ -186,7 +186,7 @@ class TestRun:
                     if rv != TestResult.FAIL:
                         rv = res
                     # treat both FAIL and DIFF as failures
-                    failed.append(case_name)
+                    failed.append((case_name, res, duration))
                     fails += 1
                     tests += 1
                 else:

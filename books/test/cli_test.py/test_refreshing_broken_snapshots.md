@@ -43,10 +43,10 @@ test book/broken_snapshots_book.py::test_requests
 book/broken_snapshots_book.py::test_requests DIFF <number> ms (snapshots updated)
 
 
-3/3 test failed in <number> ms:
+3/3 test 3 differed in <number> ms:
 
-  book/broken_snapshots_book.py::test_function_snapshot
-  book/broken_snapshots_book.py::test_httpx
-  book/broken_snapshots_book.py::test_requests
+  book/broken_snapshots_book.py::test_function_snapshot - DIFF
+  book/broken_snapshots_book.py::test_httpx - DIFF
+  book/broken_snapshots_book.py::test_requests - DIFF
 
 

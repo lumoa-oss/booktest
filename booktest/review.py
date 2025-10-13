@@ -313,13 +313,64 @@ def report_case(printer,
 
 
 def end_report(printer, failed, tests, took_ms):
+    """
+    Print end of test run summary.
+
+    Args:
+        printer: Function to print output
+        failed: List of failed test names OR list of (name, result, duration) tuples
+        tests: Total number of tests
+        took_ms: Total time taken in milliseconds
+    """
+    from booktest.colors import yellow, red
+
     printer()
     if len(failed) > 0:
-        printer(f"{len(failed)}/{tests} test "
-                f"failed in {took_ms} ms:")
+        # Check if failed contains detailed info (tuples) or just names (strings)
+        has_details = len(failed) > 0 and isinstance(failed[0], tuple)
+
+        # Count DIFFs and FAILs
+        if has_details:
+            diff_count = sum(1 for _, result, _ in failed if result == TestResult.DIFF)
+            fail_count = sum(1 for _, result, _ in failed if result == TestResult.FAIL)
+        else:
+            diff_count = 0
+            fail_count = len(failed)
+
+        # Build summary message
+        parts = []
+        if diff_count > 0:
+            parts.append(f"{diff_count} differed")
+        if fail_count > 0:
+            parts.append(f"{fail_count} failed")
+
+        summary = " and ".join(parts) if parts else "failed"
+        printer(f"{len(failed)}/{tests} test {summary} in {took_ms} ms:")
         printer()
-        for f in failed:
-            printer(f"  {f}")
+
+        # Print each failed test with details
+        for item in failed:
+            if has_details:
+                name, result, duration = item
+                # Extract file path for clickable link
+                # Format: test/foo_test.py::ClassName/test_method
+                file_path = name.split("::")[0] if "::" in name else name
+
+                # Add color and status
+                if result == TestResult.DIFF:
+                    status = yellow("DIFF")
+                else:
+                    status = red("FAIL")
+
+                # Format: file_path (clickable) :: rest of test name - STATUS
+                if "::" in name:
+                    rest = name[len(file_path):]  # Keep the ::
+                    printer(f"  {file_path}{rest} - {status}")
+                else:
+                    printer(f"  {file_path} - {status}")
+            else:
+                # Legacy format: just test name
+                printer(f"  {item}")
     else:
         printer(f"{tests}/{tests} test "
                 f"succeeded in {took_ms} ms")
@@ -418,7 +469,7 @@ def review(exp_dir,
     updated_case_reports.to_file(report_txt)
 
     end_report(print,
-               updated_case_reports.failed(),
+               updated_case_reports.failed_with_details(),
                len(updated_case_reports.cases),
                metrics.took_ms)
 

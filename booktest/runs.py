@@ -525,7 +525,7 @@ def parallel_run_tests(exp_dir,
                 updated_case_reports = CaseReports(reviewed)
 
                 end_report(print,
-                           updated_case_reports.failed(),
+                           updated_case_reports.failed_with_details(),
                            len(updated_case_reports.cases),
                            took_ms)
 

@@ -18,9 +18,9 @@ booktest -p --timeout 2
   book/timeout_book.py::test_fast - DIFFERED in <number> ms
   book/timeout_book.py::test_slow - FAILED in <number> ms
 
-2/2 test failed in <number> ms:
+2/2 test 1 differed and 1 failed in <number> ms:
 
-  book/timeout_book.py::test_fast
-  book/timeout_book.py::test_slow
+  book/timeout_book.py::test_fast - DIFF
+  book/timeout_book.py::test_slow - FAIL
 
 
