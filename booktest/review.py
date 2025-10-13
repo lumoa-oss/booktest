@@ -366,6 +366,15 @@ def review(exp_dir,
     report_txt = os.path.join(out_dir, "cases.txt")
     case_reports = CaseReports.of_file(report_txt)
 
+    # Filter out test cases that no longer exist in the test suite
+    if cases is not None:
+        cases_set = set(cases)
+        case_reports.cases = [
+            (case_name, result, duration)
+            for (case_name, result, duration) in case_reports.cases
+            if case_name in cases_set
+        ]
+
     if passed is None:
         passed = case_reports.passed()
 

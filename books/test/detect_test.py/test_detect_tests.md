@@ -80,6 +80,7 @@
  * test/examples/snapshots_book.py::test_saved_request..ok
  * test/setup_teardown_test.py::test_setup_teardown..ok
  * test/stderr_test.py::StdErrBook/test_stderr..ok
+ * test/test_case_filtering.py::test_removed_tests_filtered..ok
  * test/test_colors.py::TestColors/test_color_functions..ok
  * test/test_colors.py::TestColors/test_colorize_utility..ok
  * test/test_colors.py::TestColors/test_no_color_env_var..ok
@@ -111,4 +112,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 110
+count: 111

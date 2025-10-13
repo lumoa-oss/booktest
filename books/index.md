@@ -6,6 +6,7 @@
 
      * [detect_test.py::test_detect_setup](test/detect_test.py::test_detect_setup.md)
      * [detect_test.py::test_detect_tests](test/detect_test.py::test_detect_tests.md)
+     * [test_case_filtering.py::test_removed_tests_filtered](test/test_case_filtering.py::test_removed_tests_filtered.md)
 
      * test_env_config.py::TestEnvConfig
          * [test_extract_env_vars_legacy](test/test_env_config.py::TestEnvConfig/test_extract_env_vars_legacy.md)
