@@ -171,6 +171,37 @@ class TestCaseRun:
             os.mkdir(self.out_dir_name)
         return path.join(self.out_dir_name, filename)
 
+    def start_review(self, client=None):
+        """
+        Start a GPT-assisted review session.
+
+        Returns a GptReview instance that accumulates output and can use GPT
+        to answer questions about the test results.
+
+        Args:
+            client: Optional OpenAI client. If None, creates AzureOpenAI client
+                   from environment variables.
+
+        Returns:
+            GptReview: Review instance for writing output and performing GPT-based validation
+
+        Example:
+            def test_code_generation(t: bt.TestCaseRun):
+                r = t.start_review()
+
+                r.h1("Generated Code:")
+                r.icode(code, "python")
+
+                r.start_review()
+                r.reviewln("Is code well formatted?", "Yes", "No")
+
+        Requires:
+            - openai package
+            - Environment variables for OpenAI/Azure API
+        """
+        from booktest.gpt_review import GptReview
+        return GptReview(self, client=client)
+
     def rename_file_to_hash(self, file, postfix=""):
         """
         this can be useful with images or similar resources it avoids overwrites

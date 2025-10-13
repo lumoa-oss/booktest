@@ -30,6 +30,8 @@ from booktest.env import snapshot_env, mock_env, mock_missing_env
 from booktest.utils import combine_decorators, setup_teardown
 from booktest.memory import monitor_memory, MemoryMonitor
 from booktest.books import Books
+from booktest.gpt_review import GptReview
+from booktest.output import OutputWriter
 
 
 __all__ = {
@@ -76,6 +78,8 @@ __all__ = {
     "setup_teardown",
     "monitor_memory",
     "MemoryMonitor",
-    "Books"
+    "Books",
+    "GptReview",
+    "OutputWriter"
 }
 

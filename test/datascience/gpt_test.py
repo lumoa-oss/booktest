@@ -129,71 +129,8 @@ def test_evaluation(t: bt.TestCaseRun):
     t.key(" * is accurate enough?").assertln(len(errors) <= 1)
 
 
-class Review:
-    
-    def __init__(self, t: bt.TestCaseRun):
-        self.t = t
-        self.buffer = ""
-        self.client = AzureOpenAI(
-            api_key=os.getenv("OPENAI_API_KEY"),
-            azure_endpoint=os.getenv("OPENAI_API_BASE"),
-            azure_deployment=os.getenv("OPENAI_DEPLOYMENT", "gpt35turbo"),
-            api_version=os.getenv("OPENAI_API_VERSION"),
-            max_retries=5)
-
-    def i(self, text):
-        self.buffer += text
-        self.t.i(text)
-
-    def fail(self):
-        self.t.fail()
-        
-    def h(self, level, title):
-        label = "#" * level + " " + title
-        self.buffer += f"\n{label}\n"
-        self.t.h(level, title)
-
-    def h1(self, title):
-        self.h(1, title)
-        
-    def iln(self, text):
-        self.i(text + "\n")
-
-    def icodeln(self, code):
-        self.i(f"```\n{code}\n```\n")
-
-    def start_review(self):
-        self.t.h1("review:")
-        
-    def reviewln(self, prompt, expected, *fail):
-
-        system_prompt = \
-"""You are an expert reviewer for test results. You are given question in format:
-
-Question? (optionA|optionB|optionC|...)
-  
-reviewed material
-
-Respond only with the exact option that best answers the question! Do produce any 
-other text or explanation! Only respond with one of the options given in the parentheses."""
-
-        options = [expected] + list(fail)
-
-        response = self.client.chat.completions.create(
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"{prompt} ({'|'.join(options)})\n\n{self.buffer}"}
-            ],
-            model=os.getenv("OPENAI_MODEL"),
-            max_completion_tokens=int(os.getenv("OPENAI_COMPLETION_MAX_TOKENS", 1024)),
-            seed=0)
-        
-        result = response.choices[0].message.content
-        
-        self.t.anchor(f" * {prompt} ").i(result).i(" - ").assertln(result == expected)
-
-    def assertln(self, title, condition):
-        self.t.anchor(f" * {title} ").assertln(condition)
+# Review class moved to booktest.gpt_review.GptReview
+# Use t.start_review() to create a review instance
 
 
 class Assistant:
@@ -258,13 +195,13 @@ def test_review(t: bt.TestCaseRun):
 
     code = Assistant().prompt(prompt)
 
-    r = Review(t)
+    r = t.start_review()
 
     r.h1("request:")
     r.iln(prompt)
 
     r.h1("code:")
-    r.icodeln(code)
+    r.icode(code, "python")
 
     output, exception = run_python(code)
 
@@ -281,4 +218,4 @@ def test_review(t: bt.TestCaseRun):
     r.reviewln("Is code in python?", "Yes", "No")
     r.reviewln("How would you grade this response?", "Excellent", "Ok", "Bad")
     r.assertln("Does the code run without errors?", exception is None)
-    r.assertln("Does the code print 'Hello World!'?", output.strip()== "Hello World!")
+    r.assertln("Does the code print 'Hello World!'?", output.strip() == "Hello World!")
