@@ -127,6 +127,80 @@ other text or explanation! Only respond with one of the options given in the par
         self.t.anchor(f" * {prompt} ").i(result).i(" - ").assertln(result == expected)
         return self
 
+    def ireviewln(self, prompt: str, expected: str, *fail_options: str) -> str:
+        """
+        Use LLM to review accumulated output WITHOUT failing the test.
+
+        Returns the LLM's answer for later evaluation. Unlike reviewln(), this does
+        not assert - it just records the answer as info output.
+
+        Args:
+            prompt: Question to ask about the output
+            expected: Expected answer (for display/context)
+            *fail_options: Alternative answers (for display/context)
+
+        Returns:
+            The LLM's response
+
+        Example:
+            result = r.ireviewln("Is code well documented?", "Yes", "No")
+            # Test continues regardless of result
+        """
+        system_prompt = '''You are an expert reviewer for test results. You are given question in format:
+
+Question? (optionA|optionB|optionC|...)
+
+reviewed material
+
+Respond only with the exact option that best answers the question! Do not produce any
+other text or explanation! Only respond with one of the options given in the parentheses.'''
+
+        options = [expected] + list(fail_options)
+
+        request = f"{system_prompt}\n\n{prompt} ({'|'.join(options)})\n\n{self.buffer}"
+        result = self.llm.prompt(request)
+
+        # Just output the result, don't assert
+        self.t.anchor(f" * {prompt} ").iln(result)
+        return result
+
+    def treviewln(self, prompt: str, expected: str, *fail_options: str) -> str:
+        """
+        Use LLM to review accumulated output and snapshot the result (tested output).
+
+        Like ireviewln() but writes to tested output (tln) instead of info output (iln).
+        Still does not fail - just records for later evaluation.
+
+        Args:
+            prompt: Question to ask about the output
+            expected: Expected answer (for display/context)
+            *fail_options: Alternative answers (for display/context)
+
+        Returns:
+            The LLM's response
+
+        Example:
+            result = r.treviewln("Is code well documented?", "Yes", "No")
+            # Test continues regardless of result
+        """
+        system_prompt = '''You are an expert reviewer for test results. You are given question in format:
+
+Question? (optionA|optionB|optionC|...)
+
+reviewed material
+
+Respond only with the exact option that best answers the question! Do not produce any
+other text or explanation! Only respond with one of the options given in the parentheses.'''
+
+        options = [expected] + list(fail_options)
+
+        request = f"{system_prompt}\n\n{prompt} ({'|'.join(options)})\n\n{self.buffer}"
+        result = self.llm.prompt(request)
+
+        # Write to tested output so it's compared against snapshot
+        self.t.anchor(f" * {prompt} ").tln(result)
+        return result
+
     def assertln(self, title: str, condition: bool):
         """
         Assert a condition with a descriptive title.

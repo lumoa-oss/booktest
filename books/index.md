@@ -105,6 +105,7 @@
          * [gpt_test.py::test_evaluation](test/datascience/gpt_test.py::test_evaluation.md)
          * [gpt_test.py::test_request](test/datascience/gpt_test.py::test_request.md)
          * [gpt_test.py::test_review](test/datascience/gpt_test.py::test_review.md)
+         * [test_assistant.py::test_assistant](test/datascience/test_assistant.py::test_assistant.md)
 
      * examples
          * example_suite
