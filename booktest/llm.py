@@ -149,3 +149,103 @@ class LlmSentry:
         global _default_llm
         _default_llm = self.previous_llm
         return False
+
+
+def use_llm(llm: Llm):
+    """
+    Decorator to set the LLM for a specific test function.
+
+    This decorator temporarily sets the default LLM for the duration of the test,
+    then restores the previous default when the test completes. Works with both
+    sync and async test functions.
+
+    Args:
+        llm: The LLM instance to use for this test
+
+    Example:
+        @bt.use_llm(my_custom_llm)
+        def test_agent(t: bt.TestCaseRun):
+            r = t.start_review()
+            r.reviewln("Is output correct?", "Yes", "No")
+
+        @bt.use_llm(my_custom_llm)
+        async def test_async_agent(t: bt.TestCaseRun):
+            r = t.start_review()
+            r.reviewln("Is output correct?", "Yes", "No")
+
+    Alternative names available:
+        - with_llm(): More descriptive "with" prefix
+        - llm(): Short and simple
+    """
+    def decorator(func):
+        # Check if function is async
+        import asyncio
+        import inspect
+
+        if asyncio.iscoroutinefunction(func):
+            # Async wrapper
+            async def async_wrapper(*args, **kwargs):
+                with LlmSentry(llm):
+                    return await func(*args, **kwargs)
+
+            # Preserve function metadata
+            async_wrapper.__name__ = func.__name__
+            async_wrapper.__doc__ = func.__doc__
+            async_wrapper.__module__ = func.__module__
+            async_wrapper.__qualname__ = func.__qualname__
+
+            return async_wrapper
+        else:
+            # Sync wrapper
+            def sync_wrapper(*args, **kwargs):
+                with LlmSentry(llm):
+                    return func(*args, **kwargs)
+
+            # Preserve function metadata
+            sync_wrapper.__name__ = func.__name__
+            sync_wrapper.__doc__ = func.__doc__
+            sync_wrapper.__module__ = func.__module__
+            sync_wrapper.__qualname__ = func.__qualname__
+
+            return sync_wrapper
+
+    return decorator
+
+
+def with_llm(llm: Llm):
+    """
+    Decorator to set the LLM for a specific test function.
+
+    Alias for use_llm() with more descriptive "with" prefix.
+
+    Args:
+        llm: The LLM instance to use for this test
+
+    Example:
+        @bt.with_llm(my_custom_llm)
+        def test_agent(t: bt.TestCaseRun):
+            r = t.start_review()
+            r.reviewln("Is output correct?", "Yes", "No")
+    """
+    return use_llm(llm)
+
+
+def llm(llm_instance: Llm):
+    """
+    Decorator to set the LLM for a specific test function.
+
+    Short alias for use_llm(). Note: This shadows the module-level 'llm'
+    name when imported, so use 'from booktest import Llm' for the class.
+
+    Args:
+        llm_instance: The LLM instance to use for this test
+
+    Example:
+        from booktest import Llm, llm as use_llm_decorator
+
+        @use_llm_decorator(my_custom_llm)
+        def test_agent(t: bt.TestCaseRun):
+            r = t.start_review()
+            r.reviewln("Is output correct?", "Yes", "No")
+    """
+    return use_llm(llm_instance)

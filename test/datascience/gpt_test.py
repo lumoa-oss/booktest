@@ -1,3 +1,21 @@
+"""
+Tests demonstrating LLM-assisted review functionality with GPT.
+
+To use a custom LLM for specific tests, use the @use_llm or @with_llm decorator:
+
+    @bt.use_llm(my_custom_llm)
+    @snapshot_gpt()
+    def test_with_custom_llm(t: bt.TestCaseRun):
+        r = t.start_review()
+        r.reviewln("Is output correct?", "Yes", "No")
+
+Or set globally:
+    bt.set_llm(my_custom_llm)
+
+Or use context manager:
+    with bt.LlmSentry(my_custom_llm):
+        # tests here use custom LLM
+"""
 import booktest as bt
 import requests
 import json
