@@ -51,6 +51,10 @@ PROMPTS = [
             "Does answer mention snapshot or review-driven testing?",
             "Does answer mention data science focus?",
             "Does answer mention Git-tracked results?"
+        ],
+        "ratings": [
+            "How clear and concise is the explanation?",
+            "How compelling is the value proposition for using booktest?"
         ]
     },
     {
@@ -59,6 +63,10 @@ PROMPTS = [
             "Does answer mention expert review needs?",
             "Does answer mention non-deterministic or probabilistic results?",
             "Does answer mention data science workflows or caching?"
+        ],
+        "ratings": [
+            "How clearly are the use cases differentiated?",
+            "How helpful would this be for someone choosing a testing framework?"
         ]
     },
     {
@@ -69,6 +77,10 @@ PROMPTS = [
             "Does code use TestCaseRun parameter (like 't: bt.TestCaseRun')?",
             "Does code use output methods like t.h1() or t.tln()?",
             "Is the code syntactically valid Python?"
+        ],
+        "ratings": [
+            "How clear and understandable is the code example?",
+            "How well does the example demonstrate booktest features?"
         ]
     },
     {
@@ -77,6 +89,10 @@ PROMPTS = [
             "Does answer mention snapshots or snapshot testing?",
             "Does answer mention caching intermediate results?",
             "Does answer mention mocking functions or environment variables?"
+        ],
+        "ratings": [
+            "How well does the answer explain the technical approach?",
+            "How practical and actionable is the explanation?"
         ]
     },
     {
@@ -85,6 +101,10 @@ PROMPTS = [
             "Does answer mention 'pip install booktest' or installation?",
             "Does answer mention creating a test directory?",
             "Does answer mention running 'booktest' command or CLI?"
+        ],
+        "ratings": [
+            "How complete is the integration guide?",
+            "How easy would it be to follow these instructions?"
         ]
     }
 ]
@@ -116,26 +136,35 @@ def test_assistant(t: bt.TestCaseRun):
 
     # Load context
     t.h2("Loading Context")
-    context = t.cache(load_context)
+    context = load_context()
     context_lines = len(context.split('\n'))
     t.iln(f"Loaded {context_lines} lines of documentation")
     t.iln()
 
-    # Scoring scheme
-    scoring = {
+    # Scoring schemes
+    binary_scoring = {
         "Yes": 1,
         "Partially": 0.5,
         "No": 0
     }
 
+    rating_scoring = {
+        "Excellent": 1,
+        "Good": 0.75,
+        "Poor": 0
+    }
+
     # Test each prompt
     t.h2("Testing Prompts")
-    total_score = 0
-    max_score = 0
+    total_criteria_score = 0
+    max_criteria_score = 0
+    total_rating_score = 0
+    max_rating_score = 0
 
     for i, prompt_data in enumerate(PROMPTS, 1):
         question = prompt_data["question"]
         criteria = prompt_data["criteria"]
+        ratings = prompt_data.get("ratings", [])
 
         t.h3(f"Prompt {i}: {question}")
 
@@ -154,32 +183,54 @@ def test_assistant(t: bt.TestCaseRun):
         r.iln()
 
         # Evaluate using LLM review
-        r.h1("Evaluation:")
-        prompt_score = 0
-        prompt_max = len(criteria)
+        r.h4("Evaluation:")
 
+        # Binary criteria evaluation
+        criteria_score = 0
         for criterion in criteria:
             result = r.ireviewln(criterion, "Yes", "Partially", "No")
-            prompt_score += scoring.get(result, 0)
+            criteria_score += binary_scoring.get(result, 0)
 
-        total_score += prompt_score
-        max_score += prompt_max
+        total_criteria_score += criteria_score
+        max_criteria_score += len(criteria)
+
+        # Rating evaluation
+        rating_score = 0
+        if ratings:
+            r.h4("Quality ratings:")
+            for rating_question in ratings:
+                result = r.ireviewln(rating_question, "Excellent", "Good", "Poor")
+                rating_score += rating_scoring.get(result, 0)
+
+        total_rating_score += rating_score
+        max_rating_score += len(ratings)
 
         t.iln()
-        t.iln(f"**Score:** {prompt_score}/{prompt_max}")
+        t.iln(f" * **Criteria Score:** {criteria_score}/{len(criteria)}")
+        if ratings:
+            t.iln(f" * **Rating Score:** {rating_score}/{len(ratings)}")
         t.iln()
 
     # Final evaluation
     t.h2("Final Evaluation")
 
-    success_rate = (total_score / max_score) * 100 if max_score > 0 else 0
+    criteria_rate = (total_criteria_score / max_criteria_score) * 100 if max_criteria_score > 0 else 0
+    rating_rate = (total_rating_score / max_rating_score) * 100 if max_rating_score > 0 else 0
 
-    t.iln(f"Total Score: {total_score}/{max_score} ({success_rate:.1f}%)")
+    t.iln(f" * Criteria Score: {total_criteria_score}/{max_criteria_score} ({criteria_rate:.1f}%)")
+    t.iln(f" * Rating Score: {total_rating_score}/{max_rating_score} ({rating_rate:.1f}%)")
     t.iln()
 
-    # Require 80% success rate
-    required_score = max_score * 0.8
-    t.t(f"Require {required_score:.1f}+ score for 80% success rate.. ").assertln(
-        total_score >= required_score,
-        f"Only {total_score}/{max_score} ({success_rate:.1f}%) - need {required_score:.1f}+"
+    # Require 80% criteria success and 70% rating success
+    required_criteria_score = max_criteria_score * 0.8
+    required_rating_score = max_rating_score * 0.7
+
+    t.t(f" * Require {required_criteria_score:.1f}+ criteria score (80%).. ").assertln(
+        total_criteria_score >= required_criteria_score,
+        f"Only {total_criteria_score}/{max_criteria_score} ({criteria_rate:.1f}%)"
+    )
+
+    t.t(f" * Require {required_rating_score:.1f}+ rating score (70%).. ").assertln(
+        total_rating_score >= required_rating_score,
+        f"Only {total_rating_score}/{max_rating_score} ({rating_rate:.1f}%)"
     )

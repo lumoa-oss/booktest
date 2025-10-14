@@ -91,6 +91,16 @@ class OutputWriter(ABC):
         self.h(3, title)
         return self
 
+    def h4(self, title: str):
+        """Write a level 4 header."""
+        self.h(4, title)
+        return self
+
+    def h5(self, title: str):
+        """Write a level 4 header."""
+        self.h(5, title)
+        return self
+
     def tln(self, text: str = ""):
         """
         Write a line of tested text (compared against snapshots).

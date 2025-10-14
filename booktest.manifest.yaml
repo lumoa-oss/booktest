@@ -9,7 +9,8 @@ test/datascience/gpt_test.py/test_review:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
   httpx: sha256:6c1d4233291efab201500180bce8af037f3d27ee439f2e836388f3cb15b4753b
 test/datascience/test_assistant.py/test_assistant:
-  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+  env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
+  httpx: sha256:bd58dd4dfc94720c7cdb5d23d2a037f5dbc2afa54bb6b68df172ca19a7b948c0
 test/examples/async_book.py/test_httpx:
   httpx: sha256:b0d253434ccfaeab76d3047645f54c12522a4cf4731a650ef2a53dc91f2998c4
 test/examples/async_book.py/test_requests:
