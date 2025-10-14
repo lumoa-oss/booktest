@@ -43,75 +43,69 @@ Question: {question}
 Answer (be concise, 2-3 sentences max):"""
 
 
-# Define test prompts and success criteria
+# Define test prompts with LLM-based evaluation criteria
 PROMPTS = [
     {
         "question": "What is booktest?",
-        "keywords": ["snapshot", "review", "data science", "git", "test"],
-        "description": "Should mention snapshot/review-driven testing and data science focus"
+        "criteria": [
+            "Does answer mention snapshot or review-driven testing?",
+            "Does answer mention data science focus?",
+            "Does answer mention Git-tracked results?"
+        ]
     },
     {
         "question": "When should I use booktest instead of pytest?",
-        "keywords": ["expert review", "non-deterministic", "data science", "cache", "snapshot"],
-        "description": "Should mention expert review needs and data science workflows"
+        "criteria": [
+            "Does answer mention expert review needs?",
+            "Does answer mention non-deterministic or probabilistic results?",
+            "Does answer mention data science workflows or caching?"
+        ]
     },
     {
         "question": "Write a simple booktest example for fizzbuzz",
-        "keywords": ["def test_", "bt.TestCaseRun", "t.h1", "t.tln", "import booktest"],
-        "description": "Should provide working code with correct syntax"
+        "criteria": [
+            "Does code include 'import booktest' or 'import booktest as bt'?",
+            "Does code define a test function starting with 'test_'?",
+            "Does code use TestCaseRun parameter (like 't: bt.TestCaseRun')?",
+            "Does code use output methods like t.h1() or t.tln()?",
+            "Is the code syntactically valid Python?"
+        ]
     },
     {
         "question": "How does booktest handle non-deterministic results?",
-        "keywords": ["snapshot", "cache", "mock", "review", "expert"],
-        "description": "Should mention snapshots, caching, or function mocking"
+        "criteria": [
+            "Does answer mention snapshots or snapshot testing?",
+            "Does answer mention caching intermediate results?",
+            "Does answer mention mocking functions or environment variables?"
+        ]
     },
     {
         "question": "How do I integrate booktest into my existing Python project?",
-        "keywords": ["pip install", "test/", "booktest -v -i", ".booktest", "books/"],
-        "description": "Should mention installation and basic setup steps"
+        "criteria": [
+            "Does answer mention 'pip install booktest' or installation?",
+            "Does answer mention creating a test directory?",
+            "Does answer mention running 'booktest' command or CLI?"
+        ]
     }
 ]
 
 
-def evaluate_answer(answer: str, criteria: dict) -> tuple[bool, str]:
-    """
-    Evaluate if an answer meets the success criteria.
-
-    Returns:
-        (passes, reason) tuple
-    """
-    answer_lower = answer.lower()
-
-    # Count how many keywords are present
-    keywords_found = []
-    keywords_missing = []
-
-    for keyword in criteria["keywords"]:
-        if keyword.lower() in answer_lower:
-            keywords_found.append(keyword)
-        else:
-            keywords_missing.append(keyword)
-
-    # Pass if at least 40% of keywords are present
-    threshold = len(criteria["keywords"]) * 0.4
-    passes = len(keywords_found) >= threshold
-
-    reason = f"{len(keywords_found)}/{len(criteria['keywords'])} keywords found"
-    if not passes:
-        reason += f" (need {int(threshold)}+)"
-
-    return passes, reason
+def snapshot_gpt():
+    """Snapshot decorator for GPT/OpenAI API calls."""
+    return bt.combine_decorators(
+        bt.snapshot_httpx(lose_request_details=False),
+        bt.mock_missing_env({"OPENAI_API_KEY": "mock-key"}),
+        bt.snapshot_env(
+            "OPENAI_API_BASE",
+            "OPENAI_MODEL",
+            "OPENAI_DEPLOYMENT",
+            "OPENAI_API_VERSION",
+            "OPENAI_COMPLETION_MAX_TOKENS"
+        )
+    )
 
 
-@bt.snapshot_httpx(lose_request_details=False)
-@bt.mock_missing_env({"OPENAI_API_KEY": "mock-key"})
-@bt.snapshot_env(
-    "OPENAI_API_BASE",
-    "OPENAI_MODEL",
-    "OPENAI_DEPLOYMENT",
-    "OPENAI_API_VERSION",
-    "OPENAI_COMPLETION_MAX_TOKENS"
-)
+@snapshot_gpt()
 def test_assistant(t: bt.TestCaseRun):
     """Test LLM assistant with booktest documentation context."""
 
@@ -127,16 +121,23 @@ def test_assistant(t: bt.TestCaseRun):
     t.iln(f"Loaded {context_lines} lines of documentation")
     t.iln()
 
+    # Scoring scheme
+    scoring = {
+        "Yes": 1,
+        "Partially": 0.5,
+        "No": 0
+    }
+
     # Test each prompt
     t.h2("Testing Prompts")
-    results = []
+    total_score = 0
+    max_score = 0
 
     for i, prompt_data in enumerate(PROMPTS, 1):
         question = prompt_data["question"]
+        criteria = prompt_data["criteria"]
 
         t.h3(f"Prompt {i}: {question}")
-        t.iln(f"Expected: {prompt_data['description']}")
-        t.iln()
 
         # Get LLM answer
         full_prompt = create_assistant_prompt(context, question)
@@ -148,37 +149,37 @@ def test_assistant(t: bt.TestCaseRun):
         # Use LLM to answer
         answer = r.llm.prompt(full_prompt)
 
-        r.iln(f"**Answer:** {answer}")
+        r.iln(f"**Answer:**")
+        r.iln(answer)
         r.iln()
 
-        # Evaluate answer
-        passes, reason = evaluate_answer(answer, prompt_data)
-        results.append((question, passes, reason, answer))
+        # Evaluate using LLM review
+        r.h1("Evaluation:")
+        prompt_score = 0
+        prompt_max = len(criteria)
 
-        status = "✓ PASS" if passes else "✗ FAIL"
-        t.iln(f"**Evaluation:** {status} - {reason}")
+        for criterion in criteria:
+            result = r.ireviewln(criterion, "Yes", "Partially", "No")
+            prompt_score += scoring.get(result, 0)
+
+        total_score += prompt_score
+        max_score += prompt_max
+
+        t.iln()
+        t.iln(f"**Score:** {prompt_score}/{prompt_max}")
         t.iln()
 
     # Final evaluation
     t.h2("Final Evaluation")
 
-    passed_count = sum(1 for _, passes, _, _ in results if passes)
-    total_count = len(results)
-    success_rate = (passed_count / total_count) * 100
+    success_rate = (total_score / max_score) * 100 if max_score > 0 else 0
 
-    t.ttable({
-        "Prompt": [f"Prompt {i+1}" for i in range(total_count)],
-        "Status": ["✓ PASS" if p else "✗ FAIL" for _, p, _, _ in results],
-        "Reason": [r for _, _, r, _ in results]
-    })
-
-    t.iln()
-    t.iln(f"Success Rate: {passed_count}/{total_count} ({success_rate:.0f}%)")
+    t.iln(f"Total Score: {total_score}/{max_score} ({success_rate:.1f}%)")
     t.iln()
 
     # Require 80% success rate
-    required_passes = int(total_count * 0.8)
-    t.t(f"Require {required_passes}+ passes for 80% success rate.. ").assertln(
-        passed_count >= required_passes,
-        f"Only {passed_count}/{total_count} passed (need {required_passes}+)"
+    required_score = max_score * 0.8
+    t.t(f"Require {required_score:.1f}+ score for 80% success rate.. ").assertln(
+        total_score >= required_score,
+        f"Only {total_score}/{max_score} ({success_rate:.1f}%) - need {required_score:.1f}+"
     )
