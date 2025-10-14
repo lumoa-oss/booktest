@@ -1,29 +1,30 @@
 """
-GPT-assisted review functionality for booktest.
+LLM-assisted review functionality for booktest.
 
-This module provides GptReview class for using GPT models to automatically
+This module provides LlmReview class for using LLM models to automatically
 review test outputs and validate results against expectations.
 """
 
 import os
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, Optional
 
 from booktest.output import OutputWriter
+from booktest.llm import Llm, get_llm
 
 if TYPE_CHECKING:
     from booktest.testcaserun import TestCaseRun
 
 
-class GptReview(OutputWriter):
+class LlmReview(OutputWriter):
     """
-    GPT-assisted review for test outputs.
+    LLM-assisted review for test outputs.
 
-    GptReview accumulates test output in a buffer and uses GPT to answer
+    LlmReview accumulates test output in a buffer and uses an LLM to answer
     questions about the output, enabling automated validation of complex
     test results that would be difficult to assert programmatically.
 
     Example usage:
-        def test_gpt_output(t: bt.TestCaseRun):
+        def test_llm_output(t: bt.TestCaseRun):
             r = t.start_review()
 
             r.h1("Generated Code:")
@@ -37,39 +38,31 @@ class GptReview(OutputWriter):
             r.reviewln("Are comments helpful?", "Yes", "No")
             r.assertln("Does code run without errors?", no_errors)
 
-    Requires:
-        - openai package
-        - Environment variables:
-            - OPENAI_API_KEY: API key for OpenAI/Azure
-            - OPENAI_API_BASE: API endpoint (for Azure)
-            - OPENAI_MODEL: Model name
-            - OPENAI_DEPLOYMENT: Deployment name (for Azure)
-            - OPENAI_API_VERSION: API version (for Azure)
-            - OPENAI_COMPLETION_MAX_TOKENS: Max tokens (default: 1024)
+    The LLM used can be configured:
+    - Pass llm parameter to __init__()
+    - Use set_llm() to change the global default
+    - Use LlmSentry context manager for temporary changes
+
+    For GPT/Azure OpenAI (default), requires environment variables:
+        - OPENAI_API_KEY: API key for OpenAI/Azure
+        - OPENAI_API_BASE: API endpoint (for Azure)
+        - OPENAI_MODEL: Model name
+        - OPENAI_DEPLOYMENT: Deployment name (for Azure)
+        - OPENAI_API_VERSION: API version (for Azure)
+        - OPENAI_COMPLETION_MAX_TOKENS: Max tokens (default: 1024)
     """
 
-    def __init__(self, test_case_run: 'TestCaseRun', client=None):
+    def __init__(self, test_case_run: 'TestCaseRun', llm: Optional[Llm] = None):
         """
-        Initialize GPT review.
+        Initialize LLM review.
 
         Args:
             test_case_run: Parent TestCaseRun instance
-            client: Optional OpenAI client. If None, creates AzureOpenAI client
-                   from environment variables.
+            llm: Optional LLM instance. If None, uses get_llm() default.
         """
         self.t = test_case_run
         self.buffer = ""
-
-        if client is None:
-            from openai import AzureOpenAI
-            self.client = AzureOpenAI(
-                api_key=os.getenv("OPENAI_API_KEY"),
-                azure_endpoint=os.getenv("OPENAI_API_BASE"),
-                azure_deployment=os.getenv("OPENAI_DEPLOYMENT", "gpt35turbo"),
-                api_version=os.getenv("OPENAI_API_VERSION"),
-                max_retries=5)
-        else:
-            self.client = client
+        self.llm = llm if llm is not None else get_llm()
 
     # ========== Primitive methods implementation ==========
 
@@ -104,15 +97,15 @@ class GptReview(OutputWriter):
 
     def reviewln(self, prompt: str, expected: str, *fail_options: str):
         """
-        Use GPT to review accumulated output and validate against expected answer.
+        Use LLM to review accumulated output and validate against expected answer.
 
         Args:
             prompt: Question to ask about the output (e.g., "Does code follow PEP8?")
             expected: Expected answer (e.g., "Yes")
             *fail_options: Alternative answers that indicate failure (e.g., "No", "Partial")
 
-        The GPT is asked to choose one of the options based on the accumulated buffer
-        content. The test asserts that the GPT's answer matches the expected answer.
+        The LLM is asked to choose one of the options based on the accumulated buffer
+        content. The test asserts that the LLM's answer matches the expected answer.
 
         Example:
             r.reviewln("Is code well documented?", "Yes", "No", "Partial")
@@ -128,16 +121,8 @@ other text or explanation! Only respond with one of the options given in the par
 
         options = [expected] + list(fail_options)
 
-        response = self.client.chat.completions.create(
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"{prompt} ({'|'.join(options)})\n\n{self.buffer}"}
-            ],
-            model=os.getenv("OPENAI_MODEL"),
-            max_completion_tokens=int(os.getenv("OPENAI_COMPLETION_MAX_TOKENS", "1024")),
-            seed=0)
-
-        result = response.choices[0].message.content
+        request = f"{system_prompt}\n\n{prompt} ({'|'.join(options)})\n\n{self.buffer}"
+        result = self.llm.prompt(request)
 
         self.t.anchor(f" * {prompt} ").i(result).i(" - ").assertln(result == expected)
         return self
@@ -155,3 +140,7 @@ other text or explanation! Only respond with one of the options given in the par
         """
         self.t.anchor(f" * {title} ").assertln(condition)
         return self
+
+
+# Backwards compatibility alias
+GptReview = LlmReview

@@ -172,19 +172,18 @@ class TestCaseRun(OutputWriter):
             os.mkdir(self.out_dir_name)
         return path.join(self.out_dir_name, filename)
 
-    def start_review(self, client=None):
+    def start_review(self, llm=None):
         """
-        Start a GPT-assisted review session.
+        Start an LLM-assisted review session.
 
-        Returns a GptReview instance that accumulates output and can use GPT
+        Returns an LlmReview instance that accumulates output and can use an LLM
         to answer questions about the test results.
 
         Args:
-            client: Optional OpenAI client. If None, creates AzureOpenAI client
-                   from environment variables.
+            llm: Optional Llm instance. If None, uses get_llm() default.
 
         Returns:
-            GptReview: Review instance for writing output and performing GPT-based validation
+            LlmReview: Review instance for writing output and performing LLM-based validation
 
         Example:
             def test_code_generation(t: bt.TestCaseRun):
@@ -196,12 +195,12 @@ class TestCaseRun(OutputWriter):
                 r.start_review()
                 r.reviewln("Is code well formatted?", "Yes", "No")
 
-        Requires:
+        For GPT/Azure OpenAI (default LLM), requires:
             - openai package
-            - Environment variables for OpenAI/Azure API
+            - Environment variables: OPENAI_API_KEY, OPENAI_API_BASE, etc.
         """
-        from booktest.gpt_review import GptReview
-        return GptReview(self, client=client)
+        from booktest.llm_review import LlmReview
+        return LlmReview(self, llm=llm)
 
     def rename_file_to_hash(self, file, postfix=""):
         """
