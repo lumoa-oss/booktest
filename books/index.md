@@ -14,6 +14,12 @@
          * [test_env_vars_at_module_load](test/test_env_config.py::TestEnvConfig/test_env_vars_at_module_load.md)
          * [test_env_cleanup](test/test_env_config.py::TestEnvConfig/test_env_cleanup.md)
 
+     * [test_metrics.py::test_absolute_tolerance](test/test_metrics.py::test_absolute_tolerance.md)
+     * [test_metrics.py::test_direction_constraints](test/test_metrics.py::test_direction_constraints.md)
+     * [test_metrics.py::test_ml_pipeline_example](test/test_metrics.py::test_ml_pipeline_example.md)
+     * [test_metrics.py::test_percentage_tolerance](test/test_metrics.py::test_percentage_tolerance.md)
+     * [test_metrics.py::test_with_units](test/test_metrics.py::test_with_units.md)
+
      * dependencies
          * parametrized1
              * [test_create_data](test/dependencies/parametrized1/test_create_data.md)
@@ -102,10 +108,13 @@
          * [test_pytest_name_conversion](test/test_migration.py::TestMigration/test_pytest_name_conversion.md)
 
      * datascience
-         * [gpt_test.py::test_evaluation](test/datascience/gpt_test.py::test_evaluation.md)
-         * [gpt_test.py::test_request](test/datascience/gpt_test.py::test_request.md)
-         * [gpt_test.py::test_review](test/datascience/gpt_test.py::test_review.md)
+         * [test_gpt.py::test_evaluation](test/datascience/test_gpt.py::test_evaluation.md)
+         * [test_gpt.py::test_request](test/datascience/test_gpt.py::test_request.md)
+         * [test_gpt.py::test_review](test/datascience/test_gpt.py::test_review.md)
          * [test_assistant.py::test_assistant](test/datascience/test_assistant.py::test_assistant.md)
+         * [test_evaluate.py::test_multiclass_evaluation](test/datascience/test_evaluate.py::test_multiclass_evaluation.md)
+         * [test_evaluate.py::test_regression_evaluation](test/datascience/test_evaluate.py::test_regression_evaluation.md)
+         * [test_evaluate.py::test_sentiment_evaluation](test/datascience/test_evaluate.py::test_sentiment_evaluation.md)
 
      * examples
          * example_suite

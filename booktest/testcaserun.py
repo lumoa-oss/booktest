@@ -750,6 +750,13 @@ class TestCaseRun(OutputWriter):
             self.line_error = len(self.out_line)
         return self
 
+    def _get_expected_token(self):
+        """
+        Override to provide snapshot comparison capability for metric tracking.
+        Returns the next token from snapshot without advancing cursor.
+        """
+        return self.head_exp_token()
+
     def anchor(self, anchor):
         """
         creates a prefix anchor by seeking & printing prefix. e.g. if you have "key=" anchor,

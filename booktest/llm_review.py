@@ -85,6 +85,11 @@ class LlmReview(OutputWriter):
         self.t.i(text)
         return self
 
+    def diff(self):
+        """Mark the test as different (primitive method)."""
+        self.t.diff()
+        return self
+
     def fail(self):
         """Mark the test as failed (primitive method)."""
         self.t.fail()

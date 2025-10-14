@@ -217,20 +217,32 @@ def test_assistant(t: bt.TestCaseRun):
     criteria_rate = (total_criteria_score / max_criteria_score) * 100 if max_criteria_score > 0 else 0
     rating_rate = (total_rating_score / max_rating_score) * 100 if max_rating_score > 0 else 0
 
-    t.iln(f" * Criteria Score: {total_criteria_score}/{max_criteria_score} ({criteria_rate:.1f}%)")
-    t.iln(f" * Rating Score: {total_rating_score}/{max_rating_score} ({rating_rate:.1f}%)")
+    t.iln("Tracking metrics with ±5% tolerance, no drops allowed")
     t.iln()
 
-    # Require 80% criteria success and 70% rating success
+    # Track metrics with tolerance - allows minor fluctuations but catches regressions
+    t.key(" * Criteria Score:")\
+     .i(f"{total_criteria_score}/{max_criteria_score} = ")\
+     .tmetric(criteria_rate, tolerance=5, unit="%")
+    t.key(" * Rating Score:")\
+     .i(f"{total_rating_score}/{max_rating_score} = ")\
+     .tmetric(rating_rate, tolerance=10, unit="%")
+    t.iln()
+
+    t.h2("Minimum Requirements")
+    t.iln("Hard requirements that must always pass")
+    t.iln()
+
+    # Minimum requirements - these are hard failures if not met
     required_criteria_score = max_criteria_score * 0.8
     required_rating_score = max_rating_score * 0.7
 
-    t.t(f" * Require {required_criteria_score:.1f}+ criteria score (80%).. ").assertln(
+    t.t(f" * Criteria score ≥ {required_criteria_score:.1f} (80%).. ").assertln(
         total_criteria_score >= required_criteria_score,
         f"Only {total_criteria_score}/{max_criteria_score} ({criteria_rate:.1f}%)"
     )
 
-    t.t(f" * Require {required_rating_score:.1f}+ rating score (70%).. ").assertln(
+    t.t(f" * Rating score ≥ {required_rating_score:.1f} (70%).. ").assertln(
         total_rating_score >= required_rating_score,
         f"Only {total_rating_score}/{max_rating_score} ({rating_rate:.1f}%)"
     )

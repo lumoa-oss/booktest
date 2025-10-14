@@ -13,11 +13,18 @@
 
 # evaluation:
 
- * accuracy: 7/7 = 100.000 % (was 85.714 %)
- * precision: 100.000 % (was 85.714 %)
- * recall: 57.143 % (was 66.667 %)
- * F1 score: 0.727 (was 0.750)
+Tracking metrics with ±5% tolerance, no drops allowed
 
-# review:
+ * accuracy: 7/7 = 100.000% (was 100.000%, Δ+0.000%)
+ * precision: 100.000% (was 100.000%, Δ+0.000%)
+ * recall: 57.143% (was 57.143%, Δ-0.000%)
+ * F1 score: 0.727 (was 0.727, Δ+0.000)
 
- * is accurate enough? ok
+
+# minimum requirements:
+
+Hard requirements that must always pass
+
+ * accuracy ≥ 80%.. ok
+ * precision ≥ 80%.. ok
+ * errors ≤ 1.. ok

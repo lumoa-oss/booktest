@@ -12,20 +12,12 @@ so it should be syntactically valid python.
 
 # code:
 
-```
-# Tämä on yksinkertainen "Hello World!" -ohjelma Pythonilla.
-# Kommentit alkavat ristimerkillä (#) ja ne auttavat selittämään koodia.
-# Python ei suorita kommenttirivejä, ne ovat vain ihmisille luettavaksi.
-
-# Tässä luomme muuttujan nimeltä 'viesti'.
-# Muuttuja on paikka, johon voimme tallentaa tietoa (tässä tapauksessa tekstiä).
-viesti = "Hello World!"
-
-# print-funktio näyttää viestin näytöllä (konsolissa).
-# Se tulostaa muuttujan sisältämän tekstin sellaisenaan.
-print(viesti)
-
-# Ohjelma päättyy tähän. Kun ajat tämän tiedoston, näet konsolissa "Hello World!".
+```python
+# Tämä on yksinkertainen Python-esimerkki koululaiselle.
+# Kommentit selittävät mitä kukin osa tekee. Kommentit alkavat #-merkillä.
+# Seuraavaksi käytämme print-funktiota, joka näyttää tekstin näytöllä.
+# "Hello World!" on merkkijono (teksti), joten se laitetaan lainausmerkkeihin.
+print("Hello World!")  # Tulostaa tekstin konsoliin (ruudulle)
 ```
 
 # output:

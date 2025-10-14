@@ -136,15 +136,27 @@ def test_evaluation(t: bt.TestCaseRun):
     precision = accurate/(accurate + len(errors))
     recall = cats / accurate if accurate > 0 else 0
     f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+    accuracy_pct = 100 * accurate / len(data)
 
     t.h1("evaluation:")
-    t.key(f" * accuracy:").i(f"{accurate}/{len(data)} = ").ifloatln(100*accurate/len(data), "%")
-    t.key(f" * precision:").ifloatln(100*precision, "%")
-    t.key(f" * recall:").ifloatln(100*recall, "%")
-    t.key(f" * F1 score:").ifloatln(f1)
-    
-    t.h1("review:")
-    t.key(" * is accurate enough?").assertln(len(errors) <= 1)
+    t.iln("Tracking metrics with ±5% tolerance")
+    t.iln()
+
+    # Track metrics with tolerance - allows minor fluctuations but catches regressions
+    t.key(" * accuracy:").i(f"{accurate}/{len(data)} = ").tmetric(accuracy_pct, tolerance=5, unit="%")
+    t.key(" * precision:").tmetric(100*precision, tolerance=5, unit="%")
+    t.key(" * recall:").tmetric(100*recall, tolerance=5, unit="%")
+    t.key(" * F1 score:").tmetric(f1, tolerance=0.05)
+    t.iln()
+
+    t.h1("minimum requirements:")
+    t.iln("Hard requirements that must always pass")
+    t.iln()
+
+    # Minimum requirements - these are hard failures if not met
+    t.key(" * accuracy ≥ 80%..").assertln(accuracy_pct >= 80.0, f"only {accuracy_pct:.1f}%")
+    t.key(" * precision ≥ 80%..").assertln(precision >= 0.80, f"only {100*precision:.1f}%")
+    t.key(" * errors ≤ 1..").assertln(len(errors) <= 1, f"{len(errors)} errors")
 
 
 # Review class moved to booktest.gpt_review.GptReview
