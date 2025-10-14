@@ -172,15 +172,10 @@ def use_llm(llm: Llm):
         async def test_async_agent(t: bt.TestCaseRun):
             r = t.start_review()
             r.reviewln("Is output correct?", "Yes", "No")
-
-    Alternative names available:
-        - with_llm(): More descriptive "with" prefix
-        - llm(): Short and simple
     """
     def decorator(func):
         # Check if function is async
         import asyncio
-        import inspect
 
         if asyncio.iscoroutinefunction(func):
             # Async wrapper
@@ -210,42 +205,3 @@ def use_llm(llm: Llm):
             return sync_wrapper
 
     return decorator
-
-
-def with_llm(llm: Llm):
-    """
-    Decorator to set the LLM for a specific test function.
-
-    Alias for use_llm() with more descriptive "with" prefix.
-
-    Args:
-        llm: The LLM instance to use for this test
-
-    Example:
-        @bt.with_llm(my_custom_llm)
-        def test_agent(t: bt.TestCaseRun):
-            r = t.start_review()
-            r.reviewln("Is output correct?", "Yes", "No")
-    """
-    return use_llm(llm)
-
-
-def llm(llm_instance: Llm):
-    """
-    Decorator to set the LLM for a specific test function.
-
-    Short alias for use_llm(). Note: This shadows the module-level 'llm'
-    name when imported, so use 'from booktest import Llm' for the class.
-
-    Args:
-        llm_instance: The LLM instance to use for this test
-
-    Example:
-        from booktest import Llm, llm as use_llm_decorator
-
-        @use_llm_decorator(my_custom_llm)
-        def test_agent(t: bt.TestCaseRun):
-            r = t.start_review()
-            r.reviewln("Is output correct?", "Yes", "No")
-    """
-    return use_llm(llm_instance)

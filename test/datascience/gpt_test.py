@@ -1,7 +1,7 @@
 """
 Tests demonstrating LLM-assisted review functionality with GPT.
 
-To use a custom LLM for specific tests, use the @use_llm or @with_llm decorator:
+To use a custom LLM for specific tests, use the @use_llm decorator:
 
     @bt.use_llm(my_custom_llm)
     @snapshot_gpt()
@@ -12,7 +12,7 @@ To use a custom LLM for specific tests, use the @use_llm or @with_llm decorator:
 Or set globally:
     bt.set_llm(my_custom_llm)
 
-Or use context manager:
+Or use context manager for scoped changes:
     with bt.LlmSentry(my_custom_llm):
         # tests here use custom LLM
 """

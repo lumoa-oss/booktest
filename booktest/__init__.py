@@ -30,7 +30,7 @@ from booktest.env import snapshot_env, mock_env, mock_missing_env
 from booktest.utils import combine_decorators, setup_teardown
 from booktest.memory import monitor_memory, MemoryMonitor
 from booktest.books import Books
-from booktest.llm import Llm, GptLlm, get_llm, set_llm, LlmSentry, use_llm, with_llm
+from booktest.llm import Llm, GptLlm, get_llm, set_llm, LlmSentry, use_llm
 from booktest.llm_review import LlmReview, GptReview
 from booktest.output import OutputWriter
 
@@ -86,7 +86,6 @@ __all__ = {
     "set_llm",
     "LlmSentry",
     "use_llm",
-    "with_llm",
     "LlmReview",
     "GptReview",
     "OutputWriter"
