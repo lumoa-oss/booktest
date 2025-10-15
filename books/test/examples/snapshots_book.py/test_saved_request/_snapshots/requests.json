@@ -1,0 +1,29 @@
+{
+    "60dd61ad853e1c69c795a9b530b36f8afe643079": {
+        "request": {
+            "url": "https://httpbin.org/anything",
+            "method": "POST",
+            "headers": {
+                "Accept-Encoding": "gzip, deflate",
+                "Accept": "*/*",
+                "Connection": "keep-alive",
+                "Content-Length": "20",
+                "Content-Type": "application/json"
+            },
+            "body": "eyJtZXNzYWdlIjogImhlbGxvIn0=",
+            "hash": "60dd61ad853e1c69c795a9b530b36f8afe643079"
+        },
+        "response": {
+            "headers": {
+                "Server": "awselb/2.0",
+                "Date": "Wed, 15 Oct 2025 14:21:12 GMT",
+                "Content-Type": "text/html",
+                "Content-Length": "162",
+                "Connection": "keep-alive"
+            },
+            "statusCode": 503,
+            "encoding": "ISO-8859-1",
+            "content": "<html>\r\n<head><title>503 Service Temporarily Unavailable</title></head>\r\n<body>\r\n<center><h1>503 Service Temporarily Unavailable</h1></center>\r\n</body>\r\n</html>\r\n"
+        }
+    }
+}

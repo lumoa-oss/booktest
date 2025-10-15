@@ -5,28 +5,51 @@ Agent analyzes the question and creates an answering strategy
 
 ## Loading Context
 
-Loaded 27513 characters of documentation
+Loaded 27793 characters of documentation
 
 
 ## Creating Plan
 
-✓ Created plan with 136 words
 
-
-### Question
-
-How do I test a multi-step ML pipeline with booktest?
-
-
-### Plan
-
-- Highlight booktest features to use: TestCaseRun for structured tests (h1/tln for step headings), artifact logging (save intermediate outputs as CSV/NDJSON), checkpoints/caching to persist and re-use step outputs, and built‑in diff/review mechanisms for human grading. Key concept: treat each pipeline stage as a mini-test that emits artifacts you can inspect or compare.
-- Explain the test order/strategy: start with fast unit tests for each component (small deterministic inputs, mocked external services), then integration tests that chain a few steps together capturing intermediate artifacts, and finally end‑to‑end runs for full pipelines evaluated via booktest’s review/diff UI or numeric thresholds.
-- Practical tips to include: fix random seeds and mock external calls for reproducibility, save golden/intermediate artifacts for regression comparisons, reuse cached artifacts to speed runs, and annotate failing cases in the review UI to iterate on fixes.
-
-
-### Plan Review
-
- * Does plan address the question? Yes
- * Does plan reference relevant features? Yes
+test raised exception Must provide either the `api_version` argument or the `OPENAI_API_VERSION` environment variable:
+Traceback (most recent call last):
+  File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 105, in run_case
+    rv = await maybe_async_call(case, [t], {})
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+    return await func(*args2, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/env.py", line 128, in wrapper
+    return await maybe_async_call(func, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+    return await func(*args2, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/env.py", line 190, in wrapper
+    return await maybe_async_call(func, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+    return await func(*args2, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/httpx.py", line 421, in wrapper
+    return await maybe_async_call(func , args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 8, in maybe_async_call
+    return func(*args2, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/test/datascience/test_agent.py", line 42, in test_agent_step1_plan
+    agent = BooktestAgent(context)
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/test/datascience/booktest_agent.py", line 43, in __init__
+    self.llm = get_llm()
+               ^^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/llm.py", line 104, in get_llm
+    _default_llm = GptLlm()
+                   ^^^^^^^^
+  File "/home/arau/lumoa/src/booktest/booktest/llm.py", line 59, in __init__
+    self.client = AzureOpenAI(
+                  ^^^^^^^^^^^^
+  File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/openai/lib/azure.py", line 207, in __init__
+    raise ValueError(
+ValueError: Must provide either the `api_version` argument or the `OPENAI_API_VERSION` environment variable
 

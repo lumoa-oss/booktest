@@ -37,12 +37,6 @@ dist
 
 !.env.example
 
-# DVC-related files
-# Local cache of snapshot content (can be large, should not be in Git)
+# Booktest local cache (not needed in Git mode, but kept for safety)
 .booktest_cache/
-# Temporary DVC config file (user-specific)
-.booktest.dvc
-
-# Note: booktest.manifest.yaml should be tracked in Git (not ignored)
-# Note: .dvc/ directory should be tracked in Git (DVC has its own .dvc/.gitignore)
 .ai/

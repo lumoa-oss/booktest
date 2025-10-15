@@ -1,0 +1,11 @@
+  # request:
+  
+   * random url component is: 6184868
+   * making post request to https://httpbin.org/anything/6184868 in 3176.964 ms
+  
+  # response:
+  
+  {
+      "date": "2025-10-15T17:20:09.718351",
+      "message": "hello"
+  }

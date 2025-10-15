@@ -1,0 +1,25 @@
+{
+  "test_id": "test/datascience/test_gpt.py::test_review",
+  "snapshots": {
+    "env": {
+      "hash": "sha256:2c7843be4546d649663c9040b73a8232657f9fba8c043fe0589c45e5cc587377",
+      "state": "updated",
+      "details": {
+        "count": 5,
+        "variables": [
+          "OPENAI_API_BASE",
+          "OPENAI_MODEL",
+          "OPENAI_DEPLOYMENT",
+          "OPENAI_API_VERSION",
+          "OPENAI_COMPLETION_MAX_TOKENS"
+        ]
+      },
+      "timestamp": 1760537995.832427
+    }
+  },
+  "result": {
+    "success": "fail",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1760537995.8340132
+}

@@ -1,0 +1,24 @@
+{
+  "test_id": "test/examples/snapshots_book.py::test_requests_filter",
+  "snapshots": {
+    "http": {
+      "hash": "sha256:6bb6517a875accec7444dbd5df57e10eae8f27b17569e58e863eaa41f4f4e222",
+      "state": "updated",
+      "details": {
+        "count": 1,
+        "urls": [
+          "https://postman-echo.com/get"
+        ],
+        "hashes": [
+          "085bbb060375440e09281c5b08f704d4a53a6d4a"
+        ]
+      },
+      "timestamp": 1760538013.0978992
+    }
+  },
+  "result": {
+    "success": "diff",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1760538013.098368
+}

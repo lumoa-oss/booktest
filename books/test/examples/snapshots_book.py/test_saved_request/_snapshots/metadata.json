@@ -1,0 +1,24 @@
+{
+  "test_id": "test/examples/snapshots_book.py::test_saved_request",
+  "snapshots": {
+    "http": {
+      "hash": "sha256:a6a5287987d562fe0f3b2b818d254f5d9b2a6992e2866f872e92187e3ee0a8b0",
+      "state": "updated",
+      "details": {
+        "count": 1,
+        "urls": [
+          "https://httpbin.org/anything"
+        ],
+        "hashes": [
+          "60dd61ad853e1c69c795a9b530b36f8afe643079"
+        ]
+      },
+      "timestamp": 1760538072.9210396
+    }
+  },
+  "result": {
+    "success": "fail",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1760538072.925671
+}

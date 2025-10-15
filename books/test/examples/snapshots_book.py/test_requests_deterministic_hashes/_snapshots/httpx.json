@@ -1,0 +1,22 @@
+{
+    "5d79d741579ef5e914e9cb6bfa4e01a280eca6a6": {
+        "request": {
+            "url": "https://httpbin.org/anything/6184868",
+            "method": "POST",
+            "hash": "5d79d741579ef5e914e9cb6bfa4e01a280eca6a6"
+        },
+        "response": {
+            "headers": {
+                "date": "Wed, 15 Oct 2025 14:20:12 GMT",
+                "content-type": "application/json",
+                "content-length": "604",
+                "connection": "keep-alive",
+                "server": "gunicorn/19.9.0",
+                "access-control-allow-origin": "*",
+                "access-control-allow-credentials": "true"
+            },
+            "statusCode": 200,
+            "content": "ewogICJhcmdzIjoge30sIAogICJkYXRhIjogIntcIm1lc3NhZ2VcIjogXCJoZWxsb1wiLCBcImRhdGVcIjogXCIyMDI1LTEwLTE1VDE3OjIwOjA5LjcxODM1MVwifSIsIAogICJmaWxlcyI6IHt9LCAKICAiZm9ybSI6IHt9LCAKICAiaGVhZGVycyI6IHsKICAgICJBY2NlcHQiOiAiKi8qIiwgCiAgICAiQWNjZXB0LUVuY29kaW5nIjogImd6aXAsIGRlZmxhdGUiLCAKICAgICJDb250ZW50LUxlbmd0aCI6ICI1OCIsIAogICAgIkNvbnRlbnQtVHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwgCiAgICAiSG9zdCI6ICJodHRwYmluLm9yZyIsIAogICAgIlVzZXItQWdlbnQiOiAicHl0aG9uLWh0dHB4LzAuMjcuMiIsIAogICAgIlgtQW16bi1UcmFjZS1JZCI6ICJSb290PTEtNjhlZmFkOWEtNmRjNWY2YWE0N2I1OWMwMjE0YTlkZTM0IgogIH0sIAogICJqc29uIjogewogICAgImRhdGUiOiAiMjAyNS0xMC0xNVQxNzoyMDowOS43MTgzNTEiLCAKICAgICJtZXNzYWdlIjogImhlbGxvIgogIH0sIAogICJtZXRob2QiOiAiUE9TVCIsIAogICJvcmlnaW4iOiAiODUuMTMxLjI3LjE5MiIsIAogICJ1cmwiOiAiaHR0cHM6Ly9odHRwYmluLm9yZy9hbnl0aGluZy82MTg0ODY4Igp9Cg=="
+        }
+    }
+}

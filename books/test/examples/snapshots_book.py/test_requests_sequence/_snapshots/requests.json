@@ -1,0 +1,45 @@
+{
+    "61a85a10ba34bfb5cdee47cba501dee356846bbb": {
+        "request": {
+            "url": "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam",
+            "method": "GET",
+            "hash": "61a85a10ba34bfb5cdee47cba501dee356846bbb"
+        },
+        "response": {
+            "headers": {
+                "Server": "nginx/1.27.0",
+                "Date": "Wed, 15 Oct 2025 14:20:42 GMT",
+                "Content-Type": "application/json; charset=utf-8",
+                "Transfer-Encoding": "chunked",
+                "Connection": "keep-alive",
+                "Content-Encoding": "gzip",
+                "Vary": "Accept-Encoding"
+            },
+            "statusCode": 200,
+            "encoding": "utf-8",
+            "content": "{\"year\":2025,\"month\":10,\"day\":15,\"hour\":16,\"minute\":20,\"seconds\":42,\"milliSeconds\":80,\"dateTime\":\"2025-10-15T16:20:42.080791\",\"date\":\"10/15/2025\",\"time\":\"16:20\",\"timeZone\":\"Europe/Amsterdam\",\"dayOfWeek\":\"Wednesday\",\"dstActive\":true}"
+        }
+    },
+    "1ae53133617f92562bda2414f19d09faae5774f3": {
+        "request": {
+            "url": "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam",
+            "method": "GET",
+            "order": 1,
+            "hash": "1ae53133617f92562bda2414f19d09faae5774f3"
+        },
+        "response": {
+            "headers": {
+                "Server": "nginx/1.27.0",
+                "Date": "Wed, 15 Oct 2025 14:21:11 GMT",
+                "Content-Type": "application/json; charset=utf-8",
+                "Transfer-Encoding": "chunked",
+                "Connection": "keep-alive",
+                "Content-Encoding": "gzip",
+                "Vary": "Accept-Encoding"
+            },
+            "statusCode": 200,
+            "encoding": "utf-8",
+            "content": "{\"year\":2025,\"month\":10,\"day\":15,\"hour\":16,\"minute\":21,\"seconds\":11,\"milliSeconds\":986,\"dateTime\":\"2025-10-15T16:21:11.9860471\",\"date\":\"10/15/2025\",\"time\":\"16:21\",\"timeZone\":\"Europe/Amsterdam\",\"dayOfWeek\":\"Wednesday\",\"dstActive\":true}"
+        }
+    }
+}

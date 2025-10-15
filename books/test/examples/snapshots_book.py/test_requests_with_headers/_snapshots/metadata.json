@@ -1,0 +1,21 @@
+{
+  "test_id": "test/examples/snapshots_book.py::test_requests_with_headers",
+  "snapshots": {
+    "env": {
+      "hash": "sha256:90f6b560a66608383fc343f46cff7300bbfe157d9f7ced420d473e1b88432853",
+      "state": "updated",
+      "details": {
+        "count": 1,
+        "variables": [
+          "HOST_NAME"
+        ]
+      },
+      "timestamp": 1760538072.1058736
+    }
+  },
+  "result": {
+    "success": "fail",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1760538072.1079345
+}

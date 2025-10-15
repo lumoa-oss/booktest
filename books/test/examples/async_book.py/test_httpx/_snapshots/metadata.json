@@ -1,0 +1,24 @@
+{
+  "test_id": "test/examples/async_book.py::test_httpx",
+  "snapshots": {
+    "httpx": {
+      "hash": "sha256:a049df45610e5084cc2f83d8ac4268ceb9df4e79d46ed696c9006a4ce50afb31",
+      "state": "updated",
+      "details": {
+        "count": 1,
+        "urls": [
+          "https://postman-echo.com/get"
+        ],
+        "hashes": [
+          "0e88eb6e0a8953a80d7d4af2b621e3bd65098073"
+        ]
+      },
+      "timestamp": 1760538073.3142567
+    }
+  },
+  "result": {
+    "success": "diff",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1760538073.3144953
+}

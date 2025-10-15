@@ -1,0 +1,62 @@
+  # Test: LLM Assistant for Booktest Questions
+  
+  This test evaluates an LLM's ability to answer questions about booktest
+  using documentation as context.
+  
+  
+  ## Loading Context
+  
+  Loaded 940 lines of documentation
+  
+  
+  ## Testing Prompts
+  
+  
+  ### Prompt 1: What is booktest?
+  
+  
+! test raised exception Must provide either the `api_version` argument or the `OPENAI_API_VERSION` environment variable: | EOF
+  Traceback (most recent call last):
+    File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 105, in run_case
+      rv = await maybe_async_call(case, [t], {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+      return await func(*args2, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/env.py", line 128, in wrapper
+      return await maybe_async_call(func, args, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+      return await func(*args2, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/env.py", line 190, in wrapper
+      return await maybe_async_call(func, args, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
+      return await func(*args2, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/httpx.py", line 421, in wrapper
+      return await maybe_async_call(func , args, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 8, in maybe_async_call
+      return func(*args2, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/test/datascience/test_assistant.py", line 125, in test_assistant
+      r = t.start_review()
+          ^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/testcaserun.py", line 203, in start_review
+      return LlmReview(self, llm=llm)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/llm_review.py", line 65, in __init__
+      self.llm = llm if llm is not None else get_llm()
+                                             ^^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/llm.py", line 104, in get_llm
+      _default_llm = GptLlm()
+                     ^^^^^^^^
+    File "/home/arau/lumoa/src/booktest/booktest/llm.py", line 59, in __init__
+      self.client = AzureOpenAI(
+                    ^^^^^^^^^^^^
+    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/openai/lib/azure.py", line 207, in __init__
+      raise ValueError(
+  ValueError: Must provide either the `api_version` argument or the `OPENAI_API_VERSION` environment variable
+  
