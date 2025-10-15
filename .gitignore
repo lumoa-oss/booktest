@@ -45,3 +45,4 @@ dist
 
 # Note: booktest.manifest.yaml should be tracked in Git (not ignored)
 # Note: .dvc/ directory should be tracked in Git (DVC has its own .dvc/.gitignore)
+.ai/

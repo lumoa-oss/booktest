@@ -171,7 +171,7 @@ def test_evaluate(t: bt.TestCaseRun, model):
 
 # Step 4: Generate report (fast, depends on step 3)
 @bt.depends_on(test_evaluate)
-def test_report(t: bt.TestCaseRun, results):
+def test_report(t: bt.TestCaseRun results):
     report = generate_report(results)  # 5 minutes
     t.h1("Final Report")
     t.tln(report)
