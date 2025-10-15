@@ -8,9 +8,18 @@ test/datascience/gpt_test.py/test_request:
 test/datascience/gpt_test.py/test_review:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
   httpx: sha256:6c1d4233291efab201500180bce8af037f3d27ee439f2e836388f3cb15b4753b
+test/datascience/test_agent.py/test_agent_step1_plan:
+  env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
+  httpx: sha256:544fa6e8733a1779022f1bd6fe726536f4c57e783220478a2ea2f320b1afd17b
+test/datascience/test_agent.py/test_agent_step2_answer:
+  env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
+  httpx: sha256:74dee7ac89d7162a920cd40d01d1be51d9d0fb0ef84ea655e56a4b73506294bb
+test/datascience/test_agent.py/test_agent_step3_validate:
+  env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
+  httpx: sha256:62626d50f419a7fc23d182c594212824a4eafddb014179f8e30475ed8ce58404
 test/datascience/test_assistant.py/test_assistant:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
-  httpx: sha256:60086db654ed79d8ea58e7ea7ce08c7fe81c3ebd622a104e9d544757bf057514
+  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 test/datascience/test_gpt.py/test_evaluation:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
   httpx: sha256:ab80bdca07f0d0d380f09e9752e5f0dd5c4dbf01d68c280169eadf9fdef88557
@@ -19,7 +28,7 @@ test/datascience/test_gpt.py/test_request:
   httpx: sha256:c7b54961fc7523d8e1810689bae6a65b9a722aa1e650128542dfcdd7a668d156
 test/datascience/test_gpt.py/test_review:
   env: sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6
-  httpx: sha256:f94725ac973c0217a40952477bc0c453a23a98f6365d67bdf02eb440f6d63d57
+  httpx: sha256:d1ad3bc19e1947b0b22be929fdc904a67d350d8237bbf25d40ab08c9d93db16a
 test/examples/async_book.py/test_httpx:
   httpx: sha256:b0d253434ccfaeab76d3047645f54c12522a4cf4731a650ef2a53dc91f2998c4
 test/examples/async_book.py/test_requests:

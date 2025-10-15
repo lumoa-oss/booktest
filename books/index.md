@@ -115,6 +115,9 @@
          * [test_evaluate.py::test_multiclass_evaluation](test/datascience/test_evaluate.py::test_multiclass_evaluation.md)
          * [test_evaluate.py::test_regression_evaluation](test/datascience/test_evaluate.py::test_regression_evaluation.md)
          * [test_evaluate.py::test_sentiment_evaluation](test/datascience/test_evaluate.py::test_sentiment_evaluation.md)
+         * [test_agent.py::test_agent_step1_plan](test/datascience/test_agent.py::test_agent_step1_plan.md)
+         * [test_agent.py::test_agent_step2_answer](test/datascience/test_agent.py::test_agent_step2_answer.md)
+         * [test_agent.py::test_agent_step3_validate](test/datascience/test_agent.py::test_agent_step3_validate.md)
 
      * examples
          * example_suite

@@ -1,7 +1,7 @@
 # request:
 
- * random url component is: 1183777
- * making post request to https://httpbin.org/anything/1183777 in 2275.232 ms
+ * random url component is: 536651
+ * making post request to https://httpbin.org/anything/536651 in 24.882 ms (was 2275.232 ms)
 
 # response:
 

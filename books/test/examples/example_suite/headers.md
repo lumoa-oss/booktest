@@ -6,9 +6,6 @@ Quite nice test
 
 log line 0
 log line 1
-log line 2
-log line 3
-log line 4
 
 ## Tested results
 
@@ -22,10 +19,10 @@ tested line2
 
 content 2
 
-### header 1
-
-content 1
-
 ### header 3
 
 content 3
+
+### header 1
+
+content 1

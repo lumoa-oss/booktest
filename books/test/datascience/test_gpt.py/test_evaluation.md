@@ -13,7 +13,7 @@
 
 # evaluation:
 
-Tracking metrics with ±5% tolerance, no drops allowed
+Tracking metrics with ±5% tolerance
 
  * accuracy: 7/7 = 100.000% (was 100.000%, Δ+0.000%)
  * precision: 100.000% (was 100.000%, Δ+0.000%)

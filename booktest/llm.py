@@ -19,12 +19,13 @@ class Llm(ABC):
     """
 
     @abstractmethod
-    def prompt(self, request: str) -> str:
+    def prompt(self, request: str, max_completion_tokens: int = 1024) -> str:
         """
         Send a prompt to the LLM and get a response.
 
         Args:
             request: The prompt text to send to the LLM
+            max_completion_tokens: Maximum tokens for the LLM's response
 
         Returns:
             The LLM's response as a string
@@ -64,7 +65,7 @@ class GptLlm(Llm):
         else:
             self.client = client
 
-    def prompt(self, request: str) -> str:
+    def prompt(self, request: str, max_completion_tokens: int = 1024) -> str:
         """
         Send a prompt to GPT and get a response.
 
@@ -79,7 +80,7 @@ class GptLlm(Llm):
                 {"role": "user", "content": request}
             ],
             model=os.getenv("OPENAI_MODEL"),
-            max_completion_tokens=int(os.getenv("OPENAI_COMPLETION_MAX_TOKENS", "1024")),
+            max_completion_tokens=max_completion_tokens,
             seed=0)
 
         return response.choices[0].message.content

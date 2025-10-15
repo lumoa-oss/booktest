@@ -17,30 +17,10 @@ Or use context manager for scoped changes:
         # tests here use custom LLM
 """
 import booktest as bt
-import requests
-import json
-
 import os
 
 from openai import AzureOpenAI
-
-
-def snapshot_gpt():
-    """Snapshot decorator for GPT/OpenAI API calls."""
-    return bt.combine_decorators(
-        bt.snapshot_httpx(
-            lose_request_details=False),
-        bt.mock_missing_env({
-            "OPENAI_API_KEY": "mock-key"
-        }),
-        bt.snapshot_env(
-            "OPENAI_API_BASE",
-            "OPENAI_MODEL",
-            "OPENAI_DEPLOYMENT",
-            "OPENAI_API_VERSION",
-            "OPENAI_COMPLETION_MAX_TOKENS"
-        )
-    )
+from test.datascience.agent_helpers import snapshot_gpt
 
 
 @snapshot_gpt()

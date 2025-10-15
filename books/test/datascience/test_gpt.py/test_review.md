@@ -13,11 +13,16 @@ so it should be syntactically valid python.
 # code:
 
 ```python
-# Tämä on yksinkertainen Python-esimerkki koululaiselle.
-# Kommentit selittävät mitä kukin osa tekee. Kommentit alkavat #-merkillä.
-# Seuraavaksi käytämme print-funktiota, joka näyttää tekstin näytöllä.
-# "Hello World!" on merkkijono (teksti), joten se laitetaan lainausmerkkeihin.
-print("Hello World!")  # Tulostaa tekstin konsoliin (ruudulle)
+# Tämä ohjelma näyttää näytöllä tekstin "Hello World!".
+# Rivit, jotka alkavat #, ovat kommentteja. Python ei suorita kommentteja,
+# ne ovat vain selityksiä ihmisille.
+
+# Tekstin (merkkijonon) voi laittaa muuttujaan. Tässä luomme muuttujan nimeltä message.
+message = "Hello World!"
+
+# print() on Pythonin tapa näyttää jotain näytöllä.
+# Annamme print-funktiolle message-muuttujan, joten se tulostaa sen sisällön.
+print(message)
 ```
 
 # output:

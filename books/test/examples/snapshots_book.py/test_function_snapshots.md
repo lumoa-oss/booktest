@@ -5,7 +5,7 @@
 
 # algorithm snapshot:
 
- * calculating result..4000.524 ms
+ * calculating result..0.025 ms (was 4000.524 ms)
  * result: [8982, 94, 2900, 972]
 
 # args:
