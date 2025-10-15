@@ -27,8 +27,9 @@ jobs:
       - name: Run unit tests (excluding DVC-dependent tests)
         run: |
           # Run non-DVC tests (most core functionality)
-          poetry run booktest test/test_*.py test/cli_test.py test/detect_test.py test/dependencies_test.py test/stderr_test.py test/setup_teardown_test.py test/examples/example_book.py test/examples/simple_book.py test/examples/hello_book.py test/examples/pool_book.py test/examples/memory_book.py test/examples/resource_book.py test/examples/example_suite || \
-          poetry run booktest -v -w -c test/test_*.py test/cli_test.py test/detect_test.py test/dependencies_test.py test/stderr_test.py test/setup_teardown_test.py test/examples/example_book.py test/examples/simple_book.py test/examples/hello_book.py test/examples/pool_book.py test/examples/memory_book.py test/examples/resource_book.py test/examples/example_suite
+          # -u flag auto-accepts diffs (needed for CI where snapshots may update)
+          poetry run booktest test/test_*.py test/cli_test.py test/detect_test.py test/dependencies_test.py test/stderr_test.py test/setup_teardown_test.py test/examples/example_book.py test/examples/simple_book.py test/examples/hello_book.py test/examples/pool_book.py test/examples/memory_book.py test/examples/resource_book.py test/examples/example_suite -u || \
+          poetry run booktest -v -w -c -u test/test_*.py test/cli_test.py test/detect_test.py test/dependencies_test.py test/stderr_test.py test/setup_teardown_test.py test/examples/example_book.py test/examples/simple_book.py test/examples/hello_book.py test/examples/pool_book.py test/examples/memory_book.py test/examples/resource_book.py test/examples/example_suite
       - name: Build a binary wheel and a source tarball
         run: >-
           python -m
