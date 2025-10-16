@@ -45,7 +45,7 @@ Booktest created `books/test/test_hello.md` with your test output:
 Hello, World!
 ```
 
-**The magic**: This markdown file is now your **test snapshot**. Change your test output, and booktest will show you the diff. Review it, accept or reject the change.
+**The magic**: This markdown file is now your **test snapshot**. Change your test output, and booktest will show you the diff—automatically!
 
 Try it:
 
@@ -54,12 +54,19 @@ Try it:
 # Run again
 booktest test
 
-# See the diff - booktest will show you what changed
+# Booktest automatically shows you what changed:
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# FAILURE REPORT
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# [Shows the diff automatically - no flags needed!]
+
 # Accept the change
 booktest test -u
 ```
 
-**You just learned the core workflow**: Write test → Run → Review changes → Accept/Reject
+**You just learned the core workflow**: Write test → Run → See changes automatically → Accept/Reject
+
+**Note**: When tests fail, detailed reports appear automatically. No need to memorize flags!
 
 ---
 
@@ -282,16 +289,47 @@ This creates a `.booktest` configuration file where you can set:
 
 ### Development workflow
 ```bash
-# Write/modify test
-# Run and see changes
+# Write/modify test and run
+booktest test
+# Failures show detailed report automatically
+
+# View output during test run (optional)
 booktest test -v
 
-# Accept changes
+# Accept changes after reviewing
 booktest test -u
 
 # Commit
 git add books/
 git commit -m "Update test expectations"
+```
+
+### Understanding Test Output
+
+**When tests pass**: Silent by default (exit code 0)
+```bash
+$ booktest test
+# No output - all passed ✅
+```
+
+**When tests fail**: Auto-report shows details (exit code 1 or 255)
+```bash
+$ booktest test
+test/test_model.py::test_evaluation FAIL 2341 ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FAILURE REPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Full details of what failed and why...]
+
+💡 To review interactively, run: booktest -w
+💡 To accept all changes, run: booktest -u -c
+```
+
+**Disable auto-report** (if you prefer silent failures):
+```bash
+echo "auto_report=0" >> .booktest
 ```
 
 ### Updating snapshots (HTTP/LLM responses)
@@ -304,9 +342,10 @@ export OPENAI_API_KEY="sk-..."
 booktest test -S
 ```
 
-### Parallel execution
+### Parallel execution (recommended for CI)
 ```bash
 # Run 8 tests in parallel
+# Auto-report shows failures automatically - no fallback needed!
 booktest test -p8
 ```
 

@@ -270,14 +270,26 @@ t.tdf(predictions)  # Readable markdown table in Git
 
 **Result**: Fast Git operations, no repo bloat. Snapshots stored off-Git, markdown diffs stay reviewable.
 
+### 🎯 Auto-Report on Failures
+
+**Before**: Tests fail → "computer says no" → must memorize `-v -L -w -c` spell
+**After**: Tests fail → detailed report appears automatically
+
+```bash
+booktest -p8                       # Run in parallel
+# Failures automatically show detailed report - no extra flags needed!
+```
+
+**Result**: See exactly what failed immediately, no flag memorization required.
+
 ### ✅ Reviewable Changes
 
 **Before**: 47 tests fail → red/green panic
 **After**: See what changed → review → accept or reject
 
 ```bash
-booktest -p8                       # Run in parallel
-booktest -i -w                     # Interactive review on failures   
+booktest -w                        # Interactive review of failures
+booktest -u -c                     # Accept all changes
 ```
 
 **Result**: Regressions become manageable, not catastrophic.
@@ -303,7 +315,14 @@ def test_hello(t: bt.TestCaseRun):
 EOF
 
 # Run
-booktest -v -i   # -v = verbose, -i = interactive review
+booktest
+# Failures show detailed report automatically - no flags needed!
+
+# Or run with verbose output during execution
+booktest -v
+
+# Or run interactively to review each test
+booktest -v -i
 ```
 
 **Output**: Test results saved to `books/test/test_hello.md`
@@ -313,6 +332,8 @@ booktest -v -i   # -v = verbose, -i = interactive review
 
 Hello, World!
 ```
+
+**When tests fail**: Detailed failure report appears automatically. No need to memorize flags!
 
 **Next steps**: See [Getting Started Guide](getting-started.md) for LLM evaluation, metric tracking, and more.
 

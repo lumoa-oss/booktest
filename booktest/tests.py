@@ -644,8 +644,30 @@ class Tests:
                       LruCache or NoCache.
         :return: returns an exit value. 0 for success, 1 for error
         """
+        # Custom formatter to add workflow examples
+        class WorkflowHelpFormatter(argparse.RawDescriptionHelpFormatter):
+            def format_help(self):
+                help_text = super().format_help()
+                # Insert workflow examples after description
+                workflow_examples = """
+Common workflows:
+  booktest                       Run tests (auto-report shows failures)
+  booktest -v                    Run with verbose output
+  booktest -v -i                 Interactive development (pause on failures)
+  booktest -w                    Review failures from previous run
+  booktest -p8                   Parallel testing (recommended for CI)
+  booktest -u -c                 Auto-accept changes, continue on failure
+
+"""
+                # Insert after the description line
+                parts = help_text.split('\n\n', 1)
+                if len(parts) == 2:
+                    return parts[0] + '\n\n' + workflow_examples + parts[1]
+                return help_text
+
         parser = argparse.ArgumentParser(
-            description='run book test operations')
+            description='booktest - review-driven testing for data science',
+            formatter_class=WorkflowHelpFormatter)
         self.setup_parser(parser)
 
         parsed = parser.parse_args(args)
