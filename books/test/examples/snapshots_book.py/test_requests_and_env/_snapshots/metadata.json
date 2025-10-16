@@ -1,8 +1,22 @@
 {
   "test_id": "test/examples/snapshots_book.py::test_requests_and_env",
   "snapshots": {
+    "http": {
+      "hash": "sha256:b790156b0ba89db6e1cca19c469af1f7351665a93f0b830ce2941c1716e237f0",
+      "state": "updated",
+      "details": {
+        "count": 1,
+        "urls": [
+          "https://httpbin.org/anything"
+        ],
+        "hashes": [
+          "6ca07eb92b8e21296a2d798d1795e885ba1c9751"
+        ]
+      },
+      "timestamp": 1760613304.8260357
+    },
     "env": {
-      "hash": "sha256:90f6b560a66608383fc343f46cff7300bbfe157d9f7ced420d473e1b88432853",
+      "hash": "sha256:3a5d6353d8a66b969a76499857c183741dbb4b2950ec8bba39e398ae1796d3fe",
       "state": "updated",
       "details": {
         "count": 1,
@@ -10,12 +24,12 @@
           "HOST_NAME"
         ]
       },
-      "timestamp": 1760538009.7127416
+      "timestamp": 1760613304.8264437
     }
   },
   "result": {
-    "success": "fail",
+    "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1760538009.714843
+  "timestamp": 1760613304.8266847
 }

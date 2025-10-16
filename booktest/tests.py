@@ -97,6 +97,45 @@ class Tests:
                     selected.append(c[0])
         return selected
 
+    def _print_failure_report_if_needed(self, exit_code, exp_dir, out_dir, config, cases):
+        """
+        Automatically print failure report when tests fail.
+        Replaces the need for 'booktest -v -L -w -c' fallback.
+        """
+        # Don't print report if:
+        # - All tests passed (exit code 0)
+        # - Already in interactive mode (user is actively reviewing)
+        # - User disabled auto-report
+        if exit_code == 0:
+            return
+
+        if config.get("interactive", False):
+            return
+
+        if not config.get("auto_report", True):
+            return
+
+        # Print the report (equivalent to -v -L -w -c logic)
+        print()
+        print("━" * 70)
+        print("FAILURE REPORT")
+        print("━" * 70)
+        print()
+
+        # Call the review function with non-interactive flag
+        review_config = config.copy()
+        review_config["verbose"] = True
+        review_config["print_logs"] = True
+        review_config["interactive"] = False
+
+        review(exp_dir, out_dir, review_config, None, cases)
+
+        # Show helpful tips at the end
+        print()
+        print("💡 To review interactively, run: booktest -w")
+        print("💡 To rerun and review failed test results, run: booktest -v -i -c")
+        print()
+
     def setup_parser(self, parser):
         parser.add_argument(
             "-i",
@@ -580,9 +619,17 @@ class Tests:
 
                 cov.report()
 
+                # Print failure report if needed
+                self._print_failure_report_if_needed(rv, exp_dir, out_dir, config, cases)
+
                 return rv
             else:
-                return run()
+                rv = run()
+
+                # Print failure report if needed
+                self._print_failure_report_if_needed(rv, exp_dir, out_dir, config, cases)
+
+                return rv
 
     def exec(self,
              root_dir,

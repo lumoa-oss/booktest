@@ -1,24 +1,26 @@
+# Agent Step 2: Generating Answer
 
-test raised exception case test_agent_step2_answer dependency test/datascience/test_agent.py::test_agent_step1_plan missing in 'books/.out/test/datascience/test_agent.py/test_agent_step1_plan.bin':
-Traceback (most recent call last):
-  File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 105, in run_case
-    rv = await maybe_async_call(case, [t], {})
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
-    return await func(*args2, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/dependencies.py", line 338, in wrapper
-    return await call_function_test(dependencies, func, args[0], kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/dependencies.py", line 315, in call_function_test
-    return await call_test(function_method_caller, dependencies, func, case, kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/dependencies.py", line 252, in call_test
-    resolved.append(method_caller(dependency))
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/dependencies.py", line 306, in function_method_caller
-    case.run.get_test_result(
-  File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 82, in get_test_result
-    raise Exception(
-Exception: case test_agent_step2_answer dependency test/datascience/test_agent.py::test_agent_step1_plan missing in 'books/.out/test/datascience/test_agent.py/test_agent_step1_plan.bin'
+Agent uses the plan to generate a detailed answer
 
+
+## Inherited State from Step 1
+
+Question: How do I test a multi-step ML pipeline with booktest?
+Plan: - Relevant features: TestCaseRun (per-test context), saving intermediate artifacts/checkpoints or "snapshots" for human review, diffing/visualization ...
+
+
+## Generating Answer
+
+✓ Generated answer with 127 words
+
+
+### Generated Answer
+
+Break the pipeline into independent stages and write one Booktest TestCaseRun that runs each stage on deterministic or sampled inputs, saving intermediate artifacts/checkpoints (e.g., write snapshot files and log their paths) so you can inspect exactly what changed. For each stage use t.h1/t.iln (or t.tln) to record human-readable outputs, compute quick sanity metrics and report them with t.tmetric(..., tolerance=...) to automatically catch obvious regressions, and persist checkpoints for visual diffing. For things that need human judgment start a review (r = t.start_review()), attach the intermediate outputs with r.iln() and use r.reviewln() questions so reviewers see git-style diffs and can approve or comment. Keep tests fast by sampling inputs, assert only on stable metrics, and iterate by inspecting the saved snapshots/diffs to pinpoint which stage introduced a regression.
+
+
+### Answer Review
+
+ * Does answer follow the plan? Yes
+ * Is answer accurate per documentation? Yes
+ * Is answer clear and concise? Yes

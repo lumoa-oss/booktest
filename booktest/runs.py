@@ -524,10 +524,22 @@ def parallel_run_tests(exp_dir,
 
                 updated_case_reports = CaseReports(reviewed)
 
-                end_report(print,
-                           updated_case_reports.failed_with_details(),
-                           len(updated_case_reports.cases),
-                           took_ms)
+                # Only print end_report here if auto-report won't handle it
+                # Auto-report will show the summary if:
+                # - Tests failed (exit_code != 0)
+                # - Not in interactive mode
+                # - Auto-report is enabled (default)
+                will_auto_report = (
+                    exit_code != 0 and
+                    not config.get("interactive", False) and
+                    config.get("auto_report", True)
+                )
+
+                if not will_auto_report:
+                    end_report(print,
+                               updated_case_reports.failed_with_details(),
+                               len(updated_case_reports.cases),
+                               took_ms)
 
                 create_index(exp_dir, tests.all_names())
 

@@ -1,8 +1,26 @@
 {
   "test_id": "test/examples/snapshots_book.py::test_requests_with_headers",
   "snapshots": {
+    "http": {
+      "hash": "sha256:a0a5a2b80084177a8f6d97eab79ce32f8c7dcd24347c42c2169ded8d20f6dcae",
+      "state": "updated",
+      "details": {
+        "count": 3,
+        "urls": [
+          "https://httpbin.org/anything",
+          "https://httpbin.org/anything",
+          "https://httpbin.org/anything"
+        ],
+        "hashes": [
+          "3f887fcebc089421e4713ef161004859c8007d29",
+          "655d501f55408bce98f364383a5f1d6b5378e30b",
+          "d360944caa4275ee6fb2da7159894b4ed90cd17f"
+        ]
+      },
+      "timestamp": 1760613301.6258285
+    },
     "env": {
-      "hash": "sha256:90f6b560a66608383fc343f46cff7300bbfe157d9f7ced420d473e1b88432853",
+      "hash": "sha256:3a5d6353d8a66b969a76499857c183741dbb4b2950ec8bba39e398ae1796d3fe",
       "state": "updated",
       "details": {
         "count": 1,
@@ -10,12 +28,12 @@
           "HOST_NAME"
         ]
       },
-      "timestamp": 1760538072.1058736
+      "timestamp": 1760613301.6266015
     }
   },
   "result": {
-    "success": "fail",
+    "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1760538072.1079345
+  "timestamp": 1760613301.6269078
 }

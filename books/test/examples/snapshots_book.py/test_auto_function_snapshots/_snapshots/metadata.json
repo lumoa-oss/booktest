@@ -2,7 +2,7 @@
   "test_id": "test/examples/snapshots_book.py::test_auto_function_snapshots",
   "snapshots": {
     "func": {
-      "hash": "sha256:0b8e558a09f7173b3be2c524be10c0420e28cd5f82f7afc060af38d25bf5c401",
+      "hash": "sha256:9165f015c946875613a2b2ceaf4f1387fff4d438a1f7204cf0d4365001f618e0",
       "state": "updated",
       "details": {
         "functions": {
@@ -42,12 +42,12 @@
           }
         }
       },
-      "timestamp": 1760537999.862625
+      "timestamp": 1760613573.9272265
     }
   },
   "result": {
     "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1760537999.8629081
+  "timestamp": 1760613573.9275079
 }

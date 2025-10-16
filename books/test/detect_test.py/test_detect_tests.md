@@ -12,9 +12,16 @@
  * test/cli_test.py::test_refreshing_broken_snapshots..ok
  * test/cli_test.py::test_run..ok
  * test/cli_test.py::test_timeout..ok
- * test/datascience/gpt_test.py::test_evaluation..ok
- * test/datascience/gpt_test.py::test_request..ok
- * test/datascience/gpt_test.py::test_review..ok
+ * test/datascience/test_agent.py::test_agent_step1_plan..ok
+ * test/datascience/test_agent.py::test_agent_step2_answer..ok
+ * test/datascience/test_agent.py::test_agent_step3_validate..ok
+ * test/datascience/test_assistant.py::test_assistant..ok
+ * test/datascience/test_evaluate.py::test_multiclass_evaluation..ok
+ * test/datascience/test_evaluate.py::test_regression_evaluation..ok
+ * test/datascience/test_evaluate.py::test_sentiment_evaluation..ok
+ * test/datascience/test_gpt.py::test_evaluation..ok
+ * test/datascience/test_gpt.py::test_request..ok
+ * test/datascience/test_gpt.py::test_review..ok
  * test/dependencies/parametrized1/test_create_data..ok
  * test/dependencies/parametrized1/test_process_data..ok
  * test/dependencies/parametrized1/test_use_processed_data..ok
@@ -88,6 +95,11 @@
  * test/test_env_config.py::TestEnvConfig/test_env_vars_at_module_load..ok
  * test/test_env_config.py::TestEnvConfig/test_extract_env_vars_legacy..ok
  * test/test_env_config.py::TestEnvConfig/test_extract_env_vars_pytest_style..ok
+ * test/test_metrics.py::test_absolute_tolerance..ok
+ * test/test_metrics.py::test_direction_constraints..ok
+ * test/test_metrics.py::test_ml_pipeline_example..ok
+ * test/test_metrics.py::test_percentage_tolerance..ok
+ * test/test_metrics.py::test_with_units..ok
  * test/test_migration.py::TestMigration/test_legacy_to_pytest_migration..ok
  * test/test_migration.py::TestMigration/test_pytest_name_conversion..ok
  * test/test_names_test.py::ApiV1TestBook/test_names..ok
@@ -112,4 +124,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 111
+count: 123

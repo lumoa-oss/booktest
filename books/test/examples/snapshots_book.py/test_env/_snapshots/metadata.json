@@ -2,7 +2,7 @@
   "test_id": "test/examples/snapshots_book.py::test_env",
   "snapshots": {
     "env": {
-      "hash": "sha256:6191ce92e8300c8e218160b9ba5e4fcb78de2a2667f633b2d552ef319cda0602",
+      "hash": "sha256:3495dbd68a5dbb9038fa7d285d7a8b61e53fb8a252966874c83cb3fc1476edcb",
       "state": "updated",
       "details": {
         "count": 1,
@@ -10,12 +10,12 @@
           "TEST_ENV_VARIABLE"
         ]
       },
-      "timestamp": 1760537999.8744924
+      "timestamp": 1760613286.7787957
     }
   },
   "result": {
-    "success": "fail",
+    "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1760537999.8757393
+  "timestamp": 1760613286.7790403
 }

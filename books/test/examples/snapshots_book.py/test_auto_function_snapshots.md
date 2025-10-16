@@ -1,12 +1,12 @@
 # snapshots:
 
- * timestamp: 1760537995860728476
- * random: 0.011139590217221218
+ * timestamp: 1760613570924684757
+ * random: 0.5057008570039773
 
 # algorithm snapshot:
 
- * calculating result..4000.522 ms
- * result: [8983, 92, 2901, 970]
+ * calculating result..3000.375 ms (was 4000.522 ms)
+ * result: [8981, 92, 2902]
 
 # args:
 

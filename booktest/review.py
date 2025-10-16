@@ -37,9 +37,16 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
     user_request = UserRequest.NONE
     done = False
 
+    # Extract success status from two-dimensional results
+    from booktest.reports import TwoDimensionalTestResult, SuccessState
+    if isinstance(test_result, TwoDimensionalTestResult):
+        is_failed = (test_result.success == SuccessState.FAIL)
+    else:
+        is_failed = (test_result == TestResult.FAIL)
+
     while not done:
         options = []
-        if test_result != TestResult.FAIL:
+        if not is_failed:
             options.append("(a)ccept")
 
         options.extend([
@@ -58,7 +65,7 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
             print("    ", end="")
 
         answer = input(prompt)
-        if answer == "a" and test_result != TestResult.FAIL:
+        if answer == "a" and not is_failed:
             user_request = UserRequest.FREEZE
             done = True
         elif answer == "c":

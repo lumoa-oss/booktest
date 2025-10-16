@@ -10,46 +10,22 @@ Loaded 27793 characters of documentation
 
 ## Creating Plan
 
+✓ Created plan with 109 words
 
-test raised exception Must provide either the `api_version` argument or the `OPENAI_API_VERSION` environment variable:
-Traceback (most recent call last):
-  File "/home/arau/lumoa/src/booktest/booktest/testrun.py", line 105, in run_case
-    rv = await maybe_async_call(case, [t], {})
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
-    return await func(*args2, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/env.py", line 128, in wrapper
-    return await maybe_async_call(func, args, kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
-    return await func(*args2, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/env.py", line 190, in wrapper
-    return await maybe_async_call(func, args, kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 6, in maybe_async_call
-    return await func(*args2, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/httpx.py", line 421, in wrapper
-    return await maybe_async_call(func , args, kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/coroutines.py", line 8, in maybe_async_call
-    return func(*args2, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/test/datascience/test_agent.py", line 42, in test_agent_step1_plan
-    agent = BooktestAgent(context)
-            ^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/test/datascience/booktest_agent.py", line 43, in __init__
-    self.llm = get_llm()
-               ^^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/llm.py", line 104, in get_llm
-    _default_llm = GptLlm()
-                   ^^^^^^^^
-  File "/home/arau/lumoa/src/booktest/booktest/llm.py", line 59, in __init__
-    self.client = AzureOpenAI(
-                  ^^^^^^^^^^^^
-  File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/openai/lib/azure.py", line 207, in __init__
-    raise ValueError(
-ValueError: Must provide either the `api_version` argument or the `OPENAI_API_VERSION` environment variable
 
+### Question
+
+How do I test a multi-step ML pipeline with booktest?
+
+
+### Plan
+
+- Relevant features: TestCaseRun (per-test context), saving intermediate artifacts/checkpoints or "snapshots" for human review, diffing/visualization of outputs, and metric/threshold checks to auto-fail obvious regressions.
+- Key concepts to explain: break the pipeline into independent stages, use deterministic/sample inputs, capture and attach intermediate outputs for review (not just final output), combine automated checks (sanity metrics) with human review where needed, and keep tests fast by sampling.
+- Order to present: 1) design — define inputs and per-stage expectations; 2) implementation — show a test that runs each stage, saves checkpoints/artifacts, computes simple metrics and calls t.review or stores snapshots; 3) validation — run end-to-end on a sample, inspect diffs/metrics, iterate.
+
+
+### Plan Review
+
+ * Does plan address the question? Yes
+ * Does plan reference relevant features? Yes

@@ -43,10 +43,46 @@ test book/broken_snapshots_book.py::test_requests
 book/broken_snapshots_book.py::test_requests DIFF <number> ms (snapshots updated)
 
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FAILURE REPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+# test results:
+
+test book/broken_snapshots_book.py::test_function_snapshot
+
+  # snapshot:
+  
+   * hello: hello world
+
+book/broken_snapshots_book.py::test_function_snapshot DIFFERED in <number> ms
+
+test book/broken_snapshots_book.py::test_httpx
+
+  # response url parameter:
+  
+  "https://postman-echo.com/get"
+
+book/broken_snapshots_book.py::test_httpx DIFFERED in <number> ms
+
+test book/broken_snapshots_book.py::test_requests
+
+  # response url parameter:
+  
+  "https://postman-echo.com/get"
+
+book/broken_snapshots_book.py::test_requests DIFFERED in <number> ms
+
+
 3/3 test 3 differed in <number> ms:
 
   book/broken_snapshots_book.py::test_function_snapshot - DIFF
   book/broken_snapshots_book.py::test_httpx - DIFF
   book/broken_snapshots_book.py::test_requests - DIFF
+
+
+💡 To review interactively, run: booktest -w
+💡 To rerun and review failed test results, run: booktest -v -i -c
 
 

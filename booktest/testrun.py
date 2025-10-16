@@ -209,7 +209,19 @@ class TestRun:
             os.path.join(
                 self.out_dir, "metrics.json"))
 
-        end_report(self.print, failed, tests, took)
+        # Only print end_report here if auto-report won't handle it
+        # Auto-report will show the summary if:
+        # - Tests failed (rv != OK)
+        # - Not in interactive mode
+        # - Auto-report is enabled (default)
+        will_auto_report = (
+            rv != TestResult.OK and
+            not self.config.get("interactive", False) and
+            self.config.get("auto_report", True)
+        )
+
+        if not will_auto_report:
+            end_report(self.print, failed, tests, took)
 
         create_index(self.exp_dir, self.tests.all_names())
 
