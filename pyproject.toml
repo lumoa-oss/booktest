@@ -11,7 +11,7 @@ readme = "readme.md"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: BSD License",
+    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent"
 ]
 homepage = "https://github.com/lumoa-oss/booktest"
