@@ -8,14 +8,14 @@ booktest -h
 
 # output:
 
-usage: booktest [-h] [-i] [-I] [-v] [-L] [-f] [-c] [-r] [-u] [-a] [-p] [-p1]
-                [-p2] [-p3] [-p4] [-p6] [-p8] [-p16] [--parallel-count P] [-s]
-                [-S] [--cov] [--md-viewer MD_VIEWER] [--diff-tool DIFF_TOOL]
-                [--context CONTEXT] [--python-path PYTHON_PATH]
-                [--resource-snapshots] [--timeout TIMEOUT]
-                [--narrow-detection] [-l] [--setup] [--garbage] [--clean]
-                [--config] [--print] [--view] [--path] [--review] [-w]
-                [--forget]
+usage: booktest [-h] [-i] [-I] [-v] [-L] [-f] [-c] [-r] [-u] [-a] [-g] [-p]
+                [-p1] [-p2] [-p3] [-p4] [-p6] [-p8] [-p16]
+                [--parallel-count P] [-s] [-S] [--cov] [--md-viewer MD_VIEWER]
+                [--diff-tool DIFF_TOOL] [--context CONTEXT]
+                [--python-path PYTHON_PATH] [--resource-snapshots]
+                [--timeout TIMEOUT] [--narrow-detection] [-l] [--setup]
+                [--garbage] [--clean] [--config] [--print] [--view] [--path]
+                [--review] [-w] [--forget]
                 [{*,book/predictor_book.py::PredictorBook/test_predictor,skip:book/predictor_book.py::PredictorBook/test_predictor,book,skip:book,book/predictor_book.py,skip:book/predictor_book.py,book/predictor_book.py/PredictorBook,skip:book/predictor_book.py/PredictorBook,book/predictor_book.py/PredictorBook/test_predictor,skip:book/predictor_book.py/PredictorBook/test_predictor,book/predictor_book.py::PredictorBook,skip:book/predictor_book.py::PredictorBook,book/predictor_book.py::PredictorBook/test_predict_dog,skip:book/predictor_book.py::PredictorBook/test_predict_dog,book/predictor_book.py/PredictorBook/test_predict_dog,skip:book/predictor_book.py/PredictorBook/test_predict_dog} ...]
 
 booktest - review driven test tool
@@ -34,6 +34,8 @@ options:
   -r                    refresh test dependencies
   -u                    update test on success
   -a                    automatically accept differing tests
+  -g                    use AI to review test differences (requires LLM
+                        configuration)
   -p                    run test on N parallel processes, where is N relative
                         to CPU count
   -p1                   run test on 1 parallel processes

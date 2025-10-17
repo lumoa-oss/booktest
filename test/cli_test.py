@@ -138,7 +138,7 @@ def test_narrow_detection(t: bt.TestCaseRun, context: str):
     t.tln("narrow detection only run detection in related modules/test suites. ")
     t.tln("this test merely verifies that nothing breaks, when invoking the code")
 
-    t_cli(t, ["--narrow-detection", "predictor"], context)
+    t_cli(t, ["--narrow-detection", "book/predictor_book.py"], context)
 
 
 @bt.depends_on(TIMEOUT_CONTEXT)

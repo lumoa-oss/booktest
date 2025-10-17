@@ -92,6 +92,7 @@
          * [test_class_selection](test/test_selection.py::TestSelection/test_class_selection.md)
          * [test_directory_selection](test/test_selection.py::TestSelection/test_directory_selection.md)
          * [test_exact_match](test/test_selection.py::TestSelection/test_exact_match.md)
+         * [test_match_selection_with_test_suite_name](test/test_selection.py::TestSelection/test_match_selection_with_test_suite_name.md)
 
      * test_storage.py::TestStorage
          * [test_git_storage_basic](test/test_storage.py::TestStorage/test_git_storage_basic.md)

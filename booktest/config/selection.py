@@ -44,6 +44,20 @@ def is_selected(test_name, selection):
                 return True
         return False
 
+def match_selection_with_test_suite_name(s, test_suite_name):
+    from booktest.config.naming import normalize_test_name
+
+    test_suite_name_fs = normalize_test_name(test_suite_name)
+    s_fs = normalize_test_name(s)
+
+    return (s == '*' or
+            s_fs.startswith(test_suite_name_fs + "/") or
+            s_fs.startswith(test_suite_name_fs + "::") or
+            (test_suite_name_fs.startswith(s_fs) and
+             (len(s_fs) == 0
+              or len(test_suite_name_fs) == len(s_fs)
+              or test_suite_name_fs[len(s_fs)] == '/')))
+
 
 def is_selected_test_suite(test_suite_name, selection):
     """
@@ -58,33 +72,22 @@ def is_selected_test_suite(test_suite_name, selection):
     if selection is None:
         return True
 
-    # Normalize to filesystem format
-    test_suite_name_fs = normalize_test_name(test_suite_name)
-
     # filter negatives
     negatives = 0
     skip_key = "skip:"
     for s in selection:
         if s.startswith(skip_key):
             s = s[len(skip_key):]
-            s_fs = normalize_test_name(s)
-            if (test_suite_name_fs.startswith(s_fs) and
-                    (len(s_fs) == 0
-                     or len(test_suite_name_fs) == len(s_fs)
-                     or test_suite_name_fs[len(s_fs)] == '/')):
+
+            if match_selection_with_test_suite_name(s, test_suite_name):
                 return False
+
             negatives += 1
 
     if negatives == len(selection):
         return True
     else:
         for s in selection:
-            s_fs = normalize_test_name(s)
-            if (s == '*' or
-                s_fs.startswith(test_suite_name_fs + "/") or
-                (test_suite_name_fs.startswith(s_fs) and
-                 (len(s_fs) == 0
-                  or len(test_suite_name_fs) == len(s_fs)
-                  or test_suite_name_fs[len(s_fs)] == '/'))):
+            if match_selection_with_test_suite_name(s, test_suite_name):
                 return True
         return False
