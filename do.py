@@ -7,7 +7,7 @@ from coverage import Coverage
 import argcomplete
 
 import booktest as bt
-from booktest.migrate import check_and_migrate
+from booktest.migration.migrate import check_and_migrate
 
 TEST_ROOT_DIR = "books"
 
