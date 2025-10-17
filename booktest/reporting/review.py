@@ -1,6 +1,8 @@
 import os.path as path
 import os
 import shutil
+import difflib
+from typing import Optional
 
 from booktest.reporting.reports import TestResult, TwoDimensionalTestResult, CaseReports, UserRequest, read_lines, Metrics
 from booktest.config.naming import to_filesystem_path
@@ -12,6 +14,135 @@ from booktest.config.naming import to_filesystem_path
 
 
 BOOK_TEST_PREFIX = "BOOKTEST_"
+
+
+def perform_ai_review(exp_file_name: str, out_file_name: str, case_name: str, ai_review_file: str) -> Optional['AIReviewResult']:
+    """
+    Perform AI review of test differences and store result.
+
+    Args:
+        exp_file_name: Path to expected output file
+        out_file_name: Path to actual output file
+        case_name: Test case name
+        ai_review_file: Path where AI review result should be stored
+
+    Returns:
+        AIReviewResult or None if review fails
+    """
+    try:
+        from booktest.llm.llm_review import LlmReview, AIReviewResult
+        from booktest.llm.llm import get_llm
+
+        # Read expected and actual outputs
+        if not os.path.exists(exp_file_name):
+            print("    Error: Expected output file not found")
+            return None
+
+        if not os.path.exists(out_file_name):
+            print("    Error: Actual output file not found")
+            return None
+
+        with open(exp_file_name, 'r') as f:
+            expected = f.read()
+
+        with open(out_file_name, 'r') as f:
+            actual = f.read()
+
+        # Generate unified diff
+        expected_lines = expected.splitlines(keepends=True)
+        actual_lines = actual.splitlines(keepends=True)
+        diff = ''.join(difflib.unified_diff(
+            expected_lines,
+            actual_lines,
+            fromfile='expected',
+            tofile='actual',
+            lineterm=''
+        ))
+
+        print("    Analyzing differences with AI...")
+
+        # Create a dummy test case run for LlmReview (we only need the LLM)
+        # We'll call review_test_diff directly without needing a full TestCaseRun
+        llm = get_llm()
+
+        # Create a minimal LlmReview instance
+        class MinimalTestCaseRun:
+            pass
+
+        review = LlmReview(MinimalTestCaseRun(), llm)
+
+        # Perform the review
+        result = review.review_test_diff(
+            test_name=case_name,
+            expected=expected,
+            actual=actual,
+            diff=diff
+        )
+
+        # Store the result
+        os.makedirs(os.path.dirname(ai_review_file), exist_ok=True)
+        with open(ai_review_file, 'w') as f:
+            f.write(result.to_json())
+
+        return result
+
+    except ImportError:
+        print("    Error: LLM not configured. Set OPENAI_API_KEY or configure another LLM provider.")
+        return None
+    except Exception as e:
+        print(f"    Error performing AI review: {e}")
+        return None
+
+
+def print_ai_review_result(result: 'AIReviewResult', verbose: bool = False):
+    """
+    Print AI review result to console.
+
+    Args:
+        result: The AI review result to print
+        verbose: Whether to print full details or summary
+    """
+    from booktest.reporting.colors import yellow, red, green, gray
+
+    print()
+    print(f"    AI Review (confidence: {result.confidence:.2f}):")
+
+    # Color-code the category
+    category_str = result.category_name()
+    if result.category <= 2:  # FAIL or RECOMMEND FAIL
+        category_colored = red(category_str)
+    elif result.category == 3:  # UNSURE
+        category_colored = yellow(category_str)
+    else:  # RECOMMEND ACCEPT or ACCEPT
+        category_colored = green(category_str)
+
+    print(f"      Category: {category_colored}")
+    print(f"      Summary: {result.summary}")
+
+    if verbose or result.category <= 3:
+        # Show details for failures, unsure cases, or in verbose mode
+        print()
+        print(f"      Rationale:")
+        for line in result.rationale.split('\n'):
+            print(f"        {line}")
+
+        if result.issues:
+            print()
+            print(f"      Issues:")
+            for issue in result.issues:
+                print(f"        - {issue}")
+
+        if result.suggestions:
+            print()
+            print(f"      Suggestions:")
+            for suggestion in result.suggestions:
+                print(f"        - {suggestion}")
+
+    if result.flags_for_human:
+        print()
+        print(f"      {yellow('⚠ Flagged for human review')}")
+
+    print()
 
 
 def run_tool(config, tool, args):
@@ -32,6 +163,7 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
     exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
     out_file_name = os.path.join(out_dir, case_name_fs + ".md")
     log_file_name = os.path.join(out_dir, case_name_fs + ".log")
+    ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
 
     rv = test_result
     user_request = UserRequest.NONE
@@ -41,8 +173,13 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
     from booktest.reporting.reports import TwoDimensionalTestResult, SuccessState
     if isinstance(test_result, TwoDimensionalTestResult):
         is_failed = (test_result.success == SuccessState.FAIL)
+        is_diff = (test_result.success == SuccessState.DIFF)
     else:
         is_failed = (test_result == TestResult.FAIL)
+        is_diff = (test_result == TestResult.DIFF)
+
+    # Check if AI review is available for DIFF tests
+    ai_review_available = is_diff and not is_failed
 
     while not done:
         options = []
@@ -57,6 +194,10 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
             "(d)iff",
             "fast (D)iff"
         ])
+
+        if ai_review_available:
+            options.append("(g) AI review")
+
         prompt = \
             ", ".join(options[:len(options) - 1]) + \
             " or " + options[len(options) - 1]
@@ -89,6 +230,23 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
             run_tool(config,
                      "fast_diff_tool",
                      f"{exp_file_name} {out_file_name}")
+        elif answer == "g" and ai_review_available:
+            # Perform AI review
+            ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
+            if ai_result:
+                print_ai_review_result(ai_result, config.get("verbose", False))
+
+                # If AI recommends auto-accept/reject with high confidence, ask user
+                if ai_result.should_auto_accept():
+                    confirm = input("    AI recommends accepting. Accept? (y/n): ")
+                    if confirm.lower() == 'y':
+                        user_request = UserRequest.FREEZE
+                        done = True
+                elif ai_result.should_auto_reject():
+                    print("    AI recommends rejecting (failing) this test.")
+                    confirm = input("    Continue without accepting? (y/n): ")
+                    if confirm.lower() == 'y':
+                        done = True
     return rv, user_request
 
 
@@ -116,6 +274,7 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
     always_interactive = config.get("always_interactive", False)
     interactive = config.get("interactive", False)
     complete_snapshots = config.get("complete_snapshots", False)
+    ai_review_enabled = config.get("ai_review", False)
 
     # Extract success status from two-dimensional results early for interaction check
     from booktest.reporting.reports import TwoDimensionalTestResult, SuccessState, SnapshotState
@@ -123,10 +282,25 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
         success_status = test_result.success
         snapshot_status = test_result.snapshotting
         is_ok = (success_status == SuccessState.OK)
+        is_diff = (success_status == SuccessState.DIFF)
     else:
         success_status = test_result
         snapshot_status = None
         is_ok = (test_result == TestResult.OK)
+        is_diff = (test_result == TestResult.DIFF)
+
+    # Perform automatic AI review if enabled and test has differences
+    ai_result = None
+    if ai_review_enabled and is_diff and not is_ok:
+        exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
+        out_file_name = os.path.join(out_dir, case_name_fs + ".md")
+        ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
+
+        ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
+
+        if ai_result and not interactive:
+            # Show AI review result in non-interactive mode
+            print_ai_review_result(ai_result, config.get("verbose", False))
 
     # Skip interactive mode if test is OK and we're auto-freezing with -s
     will_auto_freeze = (is_ok and complete_snapshots and
@@ -143,6 +317,15 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
     else:
         rv = test_result
         interaction = UserRequest.NONE
+
+        # In non-interactive AI review mode, check if we should auto-freeze based on AI recommendation
+        if ai_result and ai_review_enabled:
+            if ai_result.should_auto_accept():
+                print(f"    AI auto-accepting (confidence: {ai_result.confidence:.2f})")
+                interaction = UserRequest.FREEZE
+            elif ai_result.should_auto_reject():
+                print(f"    AI auto-rejecting (confidence: {ai_result.confidence:.2f})")
+                # Keep as DIFF/FAIL, don't change rv
 
     auto_update = config.get("update", False)
     auto_freeze = config.get("accept", False)
