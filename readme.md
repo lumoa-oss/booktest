@@ -249,7 +249,24 @@ r.reviewln("Does it solve the problem?", "Yes", "No")
 r.reviewln("Code quality?", "Excellent", "Good", "Poor")
 ```
 
-**Result**: Scalable evaluation without human bottleneck.
+**New in 1.0**: AI-assisted diff review with `-g` flag:
+
+```bash
+# AI automatically reviews test differences
+booktest -g
+
+# Interactive mode: press 'g' to get AI recommendations
+booktest -g -i
+```
+
+AI analyzes output differences and provides 5-category recommendations:
+- **ACCEPT** (5): No significant changes, clear improvements → auto-accept
+- **RECOMMEND ACCEPT** (4): Minor changes, likely acceptable
+- **UNSURE** (3): Complex changes requiring human judgment
+- **RECOMMEND FAIL** (2): Suspicious changes, likely issues
+- **FAIL** (1): Clear regressions, critical errors → auto-reject
+
+**Result**: Scalable evaluation without human bottleneck. AI triages test failures, humans focus on truly ambiguous cases.
 
 ### 💾 DVC Integration
 
@@ -420,7 +437,7 @@ More examples: [test/examples/](test/examples/) and [test/datascience/](test/dat
 
 **For the Good vs Bad Problem:**
 - 📝 **Human review via markdown** - Git-tracked outputs, review changes like code diffs
-- 🤖 **AI-assisted review** - LLM evaluates LLM outputs automatically
+- 🤖 **AI-assisted review** - LLM evaluates LLM outputs automatically (use `-g` flag for AI diff review)
 - 📊 **Tolerance metrics & asserts** - Track trends with `tmetric()`, set thresholds with `assertln()`
 
 **For Regression Whack-a-Mole:**
