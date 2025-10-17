@@ -301,8 +301,13 @@ class DVCStorage(SnapshotStorage):
             if not batch_manifest_file.exists():
                 continue
 
-            # Skip empty files to avoid JSON parse errors
-            if batch_manifest_file.stat().st_size == 0:
+            # Skip empty or whitespace-only files to avoid parse errors
+            try:
+                content = batch_manifest_file.read_text().strip()
+                if not content:
+                    continue
+            except Exception:
+                # If we can't read the file, skip it
                 continue
 
             try:
