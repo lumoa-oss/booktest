@@ -6,7 +6,7 @@ using documentation as context.
 
 ## Loading Context
 
-Loaded 940 lines of documentation
+Loaded 1000 lines of documentation
 
 
 ## Testing Prompts
@@ -17,21 +17,21 @@ Loaded 940 lines of documentation
 **Question:** What is booktest?
 
 **Answer:**
-Booktest is a Python testing framework for data science that treats test outputs as reviewable markdown snapshots and adds AI-assisted reviews, tolerance-based metrics, and snapshotting/mocking for HTTP/LLM calls. It also provides a build-like dependency system (caching and parallel execution) and DVC integration so you can review, track, and accept/reject changes instead of noisy pass/fail tests.
+Booktest is a review-driven testing framework for data science that makes non-deterministic outputs reviewable by snapshotting test results as markdown, using AI-assisted reviews, and tracking metrics with tolerances. It also functions as a build system for tests—caching expensive steps, mocking HTTP/LLM calls, and running dependency-aware, parallel test pipelines so you can review and accept regressions like code.
 
 
 #### Evaluation:
 
  * Does answer mention snapshot or review-driven testing? Yes
  * Does answer mention data science focus? Yes
- * Does answer mention Git-tracked results? Partially
+ * Does answer mention Git-tracked results? No
 
 #### Quality ratings:
 
  * How clear and concise is the explanation? Excellent
  * How compelling is the value proposition for using booktest? Excellent
 
- * **Criteria Score:** 2.5/3
+ * **Criteria Score:** 2/3
  * **Rating Score:** 2/2
 
 
@@ -40,7 +40,7 @@ Booktest is a Python testing framework for data science that treats test outputs
 **Question:** When should I use booktest instead of pytest?
 
 **Answer:**
-Use booktest when you need review-driven, snapshot-based testing for data science—LLM apps, model evaluation, non‑deterministic outputs, or multi‑step/expensive pipelines where you want AI+human review, tolerance metrics, HTTP/LLM mocking, and cached dependencies. For strict unit tests with deterministic, binary pass/fail logic, stick with pytest.
+Use booktest for data‑science/ML/LLM integration tests where outputs are non‑deterministic or require expert (human or AI) review, tolerance‑based metrics, snapshot diffs, and pipeline caching/parallelism for expensive steps. Use pytest for traditional unit tests with precise, deterministic assertions.
 
 
 #### Evaluation:
@@ -63,17 +63,23 @@ Use booktest when you need review-driven, snapshot-based testing for data scienc
 **Question:** Write a simple booktest example for fizzbuzz
 
 **Answer:**
-Here’s a tiny Booktest example that snapshots the first 15 FizzBuzz outputs for review:
+Here's a minimal booktest fizzbuzz example you can drop into test/test_fizzbuzz.py:
 
 ```python
 import booktest as bt
 
-def fizzbuzz(n):
-    return ["FizzBuzz" if i%15==0 else "Fizz" if i%3==0 else "Buzz" if i%5==0 else str(i) for i in range(1, n+1)]
-
 def test_fizzbuzz(t: bt.TestCaseRun):
-    t.h1("FizzBuzz 1..15")
-    t.tln("\n".join(fizzbuzz(15)))
+    t.h1("FizzBuzz")
+    for i in range(1, 16):
+        if i % 15 == 0:
+            out = "FizzBuzz"
+        elif i % 3 == 0:
+            out = "Fizz"
+        elif i % 5 == 0:
+            out = "Buzz"
+        else:
+            out = str(i)
+        t.tln(f"{i}: {out}")
 ```
 
 
@@ -99,7 +105,7 @@ def test_fizzbuzz(t: bt.TestCaseRun):
 **Question:** How does booktest handle non-deterministic results?
 
 **Answer:**
-Booktest makes non-deterministic outputs deterministic by recording and replaying snapshots and mocking sources of randomness: use decorators like @bt.snapshot_functions(time.time, random.random) to freeze timestamps/randomness and @bt.snapshot_httpx() (or snapshot_requests/snapshot_functions) to record external HTTP/LLM calls. Subsequent runs reuse these snapshots (and cached test returns), so tests are stable and fast until you deliberately re-record.
+Booktest makes nondeterministic outputs reproducible by snapshotting and replaying external/unstable sources (LLM/HTTP calls, random/time functions) so subsequent runs reuse recorded results. You make tests deterministic with decorators like @bt.snapshot_httpx(), @bt.snapshot_requests(), or @bt.snapshot_functions(time.time, random.random).
 
 
 #### Evaluation:
@@ -122,7 +128,7 @@ Booktest makes non-deterministic outputs deterministic by recording and replayin
 **Question:** How do I integrate booktest into my existing Python project?
 
 **Answer:**
-Install it (pip install booktest) and optionally run booktest --setup to create a config. Then add tests in your repo (e.g. test/ files) using the booktest API (bt.TestCaseRun, t.h1/t.tdf/t.tmetric, decorators like @bt.snapshot_httpx or @bt.depends_on) and run them with booktest test (use -p for parallel, -i for interactive review and -u to update snapshots); call booktest test from your CI to integrate into your pipeline.
+Install and initialize booktest (pip install booktest and optionally booktest --setup), then add tests under your test/ directory using the booktest API (test functions take a bt.TestCaseRun). Use decorators like @bt.snapshot_httpx() and @bt.depends_on() to mock external calls and share/cache expensive results, run with booktest test, and commit the generated books/ snapshots to Git for reviewable diffs.
 
 
 #### Evaluation:
@@ -144,8 +150,8 @@ Install it (pip install booktest) and optionally run booktest --setup to create 
 
 Tracking metrics with ±5% tolerance, no drops allowed
 
- * Criteria Score: 16.0/17 = 94.118% (was 70.588%, Δ+23.530<5.000!%)
- * Rating Score: 9.25/10 = 92.500% (was 75.000%, Δ+17.500<10.000!%)
+ * Criteria Score: 15.5/17 = 91.176% (was 94.118%, Δ-2.942%)
+ * Rating Score: 9.25/10 = 92.500% (was 92.500%, Δ+0.000%)
 
 
 ## Minimum Requirements

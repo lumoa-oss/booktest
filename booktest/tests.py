@@ -134,6 +134,7 @@ class Tests:
         print()
         print("💡 To review interactively, run: booktest -w")
         print("💡 To rerun and review failed test results, run: booktest -v -i -c")
+        print("💡 To update missing snapshots, run: 'booktest -c -s' or 'booktest -c -S' to refresh all")
         print()
 
     def setup_parser(self, parser):

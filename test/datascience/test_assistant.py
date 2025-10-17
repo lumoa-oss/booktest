@@ -168,7 +168,7 @@ def test_assistant(t: bt.TestCaseRun):
     criteria_rate = (total_criteria_score / max_criteria_score) * 100 if max_criteria_score > 0 else 0
     rating_rate = (total_rating_score / max_rating_score) * 100 if max_rating_score > 0 else 0
 
-    t.iln("Tracking metrics with ±5% tolerance, no drops allowed")
+    t.iln("Tracking metrics with ±5% tolerance")
     t.iln()
 
     # Track metrics with tolerance - allows minor fluctuations but catches regressions

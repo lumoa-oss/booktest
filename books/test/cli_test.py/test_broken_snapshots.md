@@ -173,5 +173,6 @@ book/broken_snapshots_book.py::test_requests FAILED in <number> ms
 
 💡 To review interactively, run: booktest -w
 💡 To rerun and review failed test results, run: booktest -v -i -c
+💡 To update missing snapshots, run: 'booktest -c -s' or 'booktest -c -S' to refresh all
 
 
