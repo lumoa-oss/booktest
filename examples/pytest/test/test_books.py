@@ -1,7 +1,7 @@
 import argparse
 
 import booktest as bt
-from booktest.testsuite import cases_of
+from booktest import cases_of
 
 import pytest
 

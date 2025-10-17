@@ -1,8 +1,8 @@
 import os
 import argparse
 
-from booktest import detect_module_test_suite, detect_module_setup
-from booktest.testsuite import cases_of
+from booktest.config.detection import detect_module_test_suite, detect_module_setup
+from booktest.core.testsuite import cases_of
 
 
 class Books:

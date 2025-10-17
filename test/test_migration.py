@@ -8,8 +8,8 @@ import tempfile
 from pathlib import Path
 
 import booktest as bt
-from booktest.migrate import check_and_migrate, pytest_name_to_legacy_path
-from booktest.config import set_fs_version, get_fs_version
+from booktest.migration.migrate import check_and_migrate, pytest_name_to_legacy_path
+from booktest.config.config import set_fs_version, get_fs_version
 
 
 class TestMigration(bt.TestBook):

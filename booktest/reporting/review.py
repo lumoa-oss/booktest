@@ -2,8 +2,8 @@ import os.path as path
 import os
 import shutil
 
-from booktest.reports import TestResult, TwoDimensionalTestResult, CaseReports, UserRequest, read_lines, Metrics
-from booktest.naming import to_filesystem_path
+from booktest.reporting.reports import TestResult, TwoDimensionalTestResult, CaseReports, UserRequest, read_lines, Metrics
+from booktest.config.naming import to_filesystem_path
 
 
 #
@@ -38,7 +38,7 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
     done = False
 
     # Extract success status from two-dimensional results
-    from booktest.reports import TwoDimensionalTestResult, SuccessState
+    from booktest.reporting.reports import TwoDimensionalTestResult, SuccessState
     if isinstance(test_result, TwoDimensionalTestResult):
         is_failed = (test_result.success == SuccessState.FAIL)
     else:
@@ -118,7 +118,7 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
     complete_snapshots = config.get("complete_snapshots", False)
 
     # Extract success status from two-dimensional results early for interaction check
-    from booktest.reports import TwoDimensionalTestResult, SuccessState, SnapshotState
+    from booktest.reporting.reports import TwoDimensionalTestResult, SuccessState, SnapshotState
     if isinstance(test_result, TwoDimensionalTestResult):
         success_status = test_result.success
         snapshot_status = test_result.snapshotting
@@ -205,7 +205,7 @@ def report_case_result(printer,
                        result,
                        took_ms,
                        verbose):
-    from booktest.colors import yellow, red, green
+    from booktest.reporting.colors import yellow, red, green
 
     if verbose:
         printer()
@@ -329,7 +329,7 @@ def end_report(printer, failed, tests, took_ms):
         tests: Total number of tests
         took_ms: Total time taken in milliseconds
     """
-    from booktest.colors import yellow, red
+    from booktest.reporting.colors import yellow, red
 
     printer()
     if len(failed) > 0:

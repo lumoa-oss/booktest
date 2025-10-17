@@ -1,6 +1,6 @@
 import booktest as bt
 
-from booktest.memory import monitor_memory, t_memory
+from booktest.dependencies.memory import monitor_memory, t_memory
 
 
 @monitor_memory()

@@ -6,11 +6,11 @@ import time
 import traceback
 import pickle
 
-from booktest.coroutines import maybe_async_call
-from booktest.dependencies import remove_decoration, get_decorated_attr
-from booktest.testcaserun import TestCaseRun
-from booktest.reports import TestResult, CaseReports, UserRequest, Metrics
-from booktest.review import end_report, create_index, start_report
+from booktest.utils.coroutines import maybe_async_call
+from booktest.dependencies.dependencies import remove_decoration, get_decorated_attr
+from booktest.core.testcaserun import TestCaseRun
+from booktest.reporting.reports import TestResult, CaseReports, UserRequest, Metrics
+from booktest.reporting.review import end_report, create_index, start_report
 
 
 #
@@ -111,10 +111,10 @@ class TestRun:
         result, interaction = t.end()
 
         # Handle both legacy and two-dimensional results
-        from booktest.reports import TwoDimensionalTestResult
+        from booktest.reporting.reports import TwoDimensionalTestResult
         if isinstance(result, TwoDimensionalTestResult):
             success = result.success
-            from booktest.reports import SuccessState
+            from booktest.reporting.reports import SuccessState
             should_save = (success == SuccessState.OK or success == SuccessState.DIFF)
         else:
             should_save = (result is TestResult.OK or result is TestResult.DIFF)

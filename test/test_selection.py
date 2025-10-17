@@ -2,7 +2,7 @@
 Test for pytest-style test selection.
 """
 import booktest as bt
-from booktest.selection import is_selected
+from booktest.config.selection import is_selected
 
 
 class TestSelection(bt.TestBook):

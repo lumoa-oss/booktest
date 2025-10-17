@@ -8,9 +8,9 @@ import sys
 from collections import defaultdict
 
 from booktest import TestCaseRun
-from booktest.coroutines import maybe_async_call
-from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
-from booktest.utils import open_file_or_resource, file_or_resource_exists
+from booktest.utils.coroutines import maybe_async_call
+from booktest.snapshots.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
+from booktest.utils.utils import open_file_or_resource, file_or_resource_exists
 
 
 class FunctionCall:
@@ -215,7 +215,7 @@ class SnapshotFunctions:
 
     def t_snapshots(self):
         """Report snapshot usage to the system instead of printing to test results."""
-        from booktest.reports import SnapshotState
+        from booktest.reporting.reports import SnapshotState
 
         # Determine snapshot state by comparing hashes
         if self.old_hash is None or self.old_hash != self.stored_hash:

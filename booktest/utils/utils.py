@@ -1,6 +1,6 @@
 import functools
 
-from booktest.coroutines import maybe_async_call
+from booktest.utils.coroutines import maybe_async_call
 import importlib.resources as rs
 import os
 

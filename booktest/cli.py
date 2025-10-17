@@ -11,10 +11,10 @@ import argcomplete
 import sys
 
 import booktest as bt
-from booktest.config import get_default_config, DEFAULT_PYTHON_PATH, extract_env_vars
-from booktest.detection import detect_tests, detect_setup, include_sys_path
-from booktest.migrate import check_and_migrate
-from booktest.env import MockEnv
+from booktest.config.config import get_default_config, DEFAULT_PYTHON_PATH, extract_env_vars
+from booktest.config.detection import detect_tests, detect_setup, include_sys_path
+from booktest.migration.migrate import check_and_migrate
+from booktest.snapshots.env import MockEnv
 import os
 
 

@@ -3,7 +3,7 @@ import threading
 import psutil
 import time
 
-from booktest.coroutines import maybe_async_call
+from booktest.utils.coroutines import maybe_async_call
 
 
 class MemoryMonitor:

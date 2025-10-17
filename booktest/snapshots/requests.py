@@ -14,9 +14,9 @@ import six
 import copy
 import base64
 
-from booktest.coroutines import maybe_async_call
-from booktest.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
-from booktest.utils import file_or_resource_exists, open_file_or_resource, accept_all
+from booktest.utils.coroutines import maybe_async_call
+from booktest.snapshots.snapshots import frozen_snapshot_path, out_snapshot_path, have_snapshots_dir
+from booktest.utils.utils import file_or_resource_exists, open_file_or_resource, accept_all
 
 
 def json_to_sha1(json_object):
@@ -414,7 +414,7 @@ class SnapshotRequests:
 
     def t_snapshots(self):
         """Report snapshot usage to the system instead of printing to test results."""
-        from booktest.reports import SnapshotState
+        from booktest.reporting.reports import SnapshotState
 
         # Determine snapshot state by comparing hashes
         if self.old_hash is None or self.old_hash != self.stored_hash:

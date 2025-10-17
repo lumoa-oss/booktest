@@ -1,6 +1,6 @@
 from pydoc import resolve
 
-from booktest.review import BOOK_TEST_PREFIX
+from booktest.reporting.review import BOOK_TEST_PREFIX
 
 import os
 from os import path

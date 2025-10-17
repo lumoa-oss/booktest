@@ -9,12 +9,12 @@ import shutil
 import sys
 import json
 
-from booktest.review import report_case_begin, case_review, report_case_result, maybe_print_logs
-from booktest.tokenizer import TestTokenizer, BufferIterator
-from booktest.reports import TestResult, TwoDimensionalTestResult, SuccessState, SnapshotState
-from booktest.utils import file_or_resource_exists, open_file_or_resource
-from booktest.naming import to_filesystem_path, from_filesystem_path
-from booktest.output import OutputWriter
+from booktest.reporting.review import report_case_begin, case_review, report_case_result, maybe_print_logs
+from booktest.llm.tokenizer import TestTokenizer, BufferIterator
+from booktest.reporting.reports import TestResult, TwoDimensionalTestResult, SuccessState, SnapshotState
+from booktest.utils.utils import file_or_resource_exists, open_file_or_resource
+from booktest.config.naming import to_filesystem_path, from_filesystem_path
+from booktest.reporting.output import OutputWriter
 
 
 class TestCaseRun(OutputWriter):
@@ -199,7 +199,7 @@ class TestCaseRun(OutputWriter):
             - openai package
             - Environment variables: OPENAI_API_KEY, OPENAI_API_BASE, etc.
         """
-        from booktest.llm_review import LlmReview
+        from booktest.llm.llm_review import LlmReview
         return LlmReview(self, llm=llm)
 
     def rename_file_to_hash(self, file, postfix=""):
@@ -397,7 +397,7 @@ class TestCaseRun(OutputWriter):
         Returns:
             SnapshotStorage: Configured storage instance (GitStorage or DVCStorage)
         """
-        from booktest.storage import GitStorage, DVCStorage
+        from booktest.snapshots.storage import GitStorage, DVCStorage
 
         mode = self.config.get("storage.mode", "auto")
 
@@ -618,7 +618,7 @@ class TestCaseRun(OutputWriter):
         """
 
         if self.line_error is not None or self.line_diff is not None:
-            from booktest.colors import yellow, red, gray
+            from booktest.reporting.colors import yellow, red, gray
 
             symbol = "?"
             color_fn = yellow

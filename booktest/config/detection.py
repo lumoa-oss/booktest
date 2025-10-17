@@ -8,10 +8,10 @@ from inspect import signature, Parameter
 import types
 
 import booktest as bt
-from booktest.naming import clean_method_name, clean_test_postfix, function_to_pytest_name
-from booktest.selection import is_selected_test_suite
+from booktest.config.naming import clean_method_name, clean_test_postfix, function_to_pytest_name
+from booktest.config.selection import is_selected_test_suite
 
-from booktest.utils import SetupTeardown
+from booktest.utils.utils import SetupTeardown
 
 BOOKTEST_SETUP_MODULE = "__booktest__"
 

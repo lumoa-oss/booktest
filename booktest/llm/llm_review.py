@@ -8,11 +8,11 @@ review test outputs and validate results against expectations.
 import os
 from typing import TYPE_CHECKING, Optional
 
-from booktest.output import OutputWriter
-from booktest.llm import Llm, get_llm
+from booktest.reporting.output import OutputWriter
+from booktest.llm.llm import Llm, get_llm
 
 if TYPE_CHECKING:
-    from booktest.testcaserun import TestCaseRun
+    from booktest.core.testcaserun import TestCaseRun
 
 
 class LlmReview(OutputWriter):

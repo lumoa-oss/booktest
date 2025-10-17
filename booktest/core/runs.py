@@ -6,13 +6,13 @@ import time
 from collections import defaultdict
 from copy import copy
 
-from booktest.cache import LruCache
-from booktest.config import DEFAULT_TIMEOUT
-from booktest.detection import BookTestSetup
-from booktest.review import create_index, report_case, start_report, \
+from booktest.dependencies.cache import LruCache
+from booktest.config.config import DEFAULT_TIMEOUT
+from booktest.config.detection import BookTestSetup
+from booktest.reporting.review import create_index, report_case, start_report, \
     end_report, report_case_begin, report_case_result
-from booktest.testrun import TestRun
-from booktest.reports import CaseReports, Metrics, test_result_to_exit_code, read_lines, write_lines, UserRequest, \
+from booktest.core.testrun import TestRun
+from booktest.reporting.reports import CaseReports, Metrics, test_result_to_exit_code, read_lines, write_lines, UserRequest, \
     TestResult
 
 #
@@ -507,7 +507,7 @@ def parallel_run_tests(exp_dir,
 
                 # Merge DVC manifest updates from batch runs
                 try:
-                    from booktest.storage import DVCStorage
+                    from booktest.snapshots.storage import DVCStorage
                     manifest_path = config.get("storage.dvc.manifest_path", "booktest.manifest.yaml")
                     DVCStorage.merge_batch_manifests(manifest_path, runner.batch_dirs())
                 except Exception as e:

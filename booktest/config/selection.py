@@ -6,7 +6,7 @@ def is_selected(test_name, selection):
     Supports both pytest format (test/foo_test.py::test_bar)
     and legacy format (test/foo/bar).
     """
-    from booktest.naming import normalize_test_name
+    from booktest.config.naming import normalize_test_name
 
     if selection is None:
         return True
@@ -53,7 +53,7 @@ def is_selected_test_suite(test_suite_name, selection):
     Supports both pytest format (test/foo_test.py::TestClass)
     and legacy format (test/foo).
     """
-    from booktest.naming import normalize_test_name
+    from booktest.config.naming import normalize_test_name
 
     if selection is None:
         return True

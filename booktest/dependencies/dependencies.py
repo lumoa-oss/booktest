@@ -4,7 +4,7 @@ import functools
 import inspect
 from typing import Optional
 
-from booktest.coroutines import maybe_async_call
+from booktest.utils.coroutines import maybe_async_call
 
 #
 # The way how resources should work, is that we have a resources like

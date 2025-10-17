@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Tuple, Dict, Optional
 import warnings
 
-from booktest.config import get_fs_version, set_fs_version, PROJECT_CONFIG_FILE
+from booktest.config.config import get_fs_version, set_fs_version, PROJECT_CONFIG_FILE
 
 
 def pytest_name_to_legacy_path(pytest_name: str) -> str:

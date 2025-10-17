@@ -1,12 +1,12 @@
 import inspect
 
-from booktest.naming import (
+from booktest.config.naming import (
     class_to_test_path,
     clean_method_name,
     class_to_pytest_name,
     method_to_pytest_name
 )
-from booktest.testsuite import TestSuite
+from booktest.core.testsuite import TestSuite
 
 
 #

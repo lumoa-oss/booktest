@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 import booktest as bt
-from booktest.config import extract_env_vars
+from booktest.config.config import extract_env_vars
 
 
 class TestEnvConfig(bt.TestBook):

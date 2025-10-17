@@ -37,7 +37,7 @@ def test_removed_tests_filtered(r: bt.TestCaseRun):
                 r.tln(f"  {line}")
 
         # Simulate review with only test1 and test3 (test2 was removed)
-        from booktest.review import review
+        from booktest.reporting.review import review
 
         active_cases = ["test1", "test3"]
         config = {

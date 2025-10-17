@@ -10,8 +10,8 @@ import json
 import time
 import httpx
 
-from booktest.functions import SnapshotFunctions, MockFunctions
-from booktest.requests import json_to_sha1, default_encode_body
+from booktest.snapshots.functions import SnapshotFunctions, MockFunctions
+from booktest.snapshots.requests import json_to_sha1, default_encode_body
 
 
 @bt.snapshot_requests()

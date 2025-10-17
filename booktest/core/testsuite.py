@@ -1,4 +1,4 @@
-from booktest.tests import Tests
+from booktest.core.tests import Tests
 from os import path
 
 

@@ -4,18 +4,18 @@ import argparse
 
 from coverage import Coverage
 
-from booktest.cache import LruCache
-from booktest.dependencies import bind_dependent_method_if_unbound
-from booktest.detection import BookTestSetup
-from booktest.reports import CaseReports
-from booktest.review import run_tool, review
-from booktest.runs import parallel_run_tests, run_tests
-from booktest.config import get_default_config
-import booktest.setup
-from booktest.testrun import method_identity, match_method
+from booktest.dependencies.cache import LruCache
+from booktest.dependencies.dependencies import bind_dependent_method_if_unbound
+from booktest.config.detection import BookTestSetup
+from booktest.reporting.reports import CaseReports
+from booktest.reporting.review import run_tool, review
+from booktest.core.runs import parallel_run_tests, run_tests
+from booktest.config.config import get_default_config
+import booktest.utils.setup
+from booktest.core.testrun import method_identity, match_method
 
-from booktest.selection import is_selected
-from booktest.naming import to_filesystem_path
+from booktest.config.selection import is_selected
+from booktest.config.naming import to_filesystem_path
 
 
 class Tests:
@@ -369,7 +369,7 @@ class Tests:
             help="Removes reviews from test cases. This stages them for rerun even with -c flag.")
 
         test_choices = ["*"]
-        from booktest.naming import normalize_test_name
+        from booktest.config.naming import normalize_test_name
 
         for name in self.all_names():
             # Add the full pytest-style name

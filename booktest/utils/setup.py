@@ -1,4 +1,4 @@
-from booktest.config import get_default_config, DEFAULT_TIMEOUT
+from booktest.config.config import get_default_config, DEFAULT_TIMEOUT
 import os
 
 

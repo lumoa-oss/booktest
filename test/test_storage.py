@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 import json
 import booktest as bt
-from booktest.storage import (
+from booktest.snapshots.storage import (
     GitStorage,
     DVCStorage,
     StorageMode,

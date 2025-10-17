@@ -3,7 +3,7 @@ Test for color output functionality.
 """
 import os
 import booktest as bt
-from booktest import colors
+from booktest.reporting import colors
 
 
 class TestColors(bt.TestBook):
