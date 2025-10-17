@@ -77,22 +77,22 @@ class AIReviewResult:
 
 ```bash
 # Enable AI review for all DIFF tests
-booktest -g
+booktest -R
 
 # Enable AI review and run interactively
-booktest -g -i
+booktest -R -i
 
 # Only run AI review on failed tests
-booktest -c -g
+booktest -c -R
 
 # Verbose mode shows full AI analysis
-booktest -g -v
+booktest -R -v
 ```
 
 ### 5. Interactive Mode Integration
 
 During interactive review (`-i` mode), users can:
-- Press `g` to request AI review for current test
+- Press `R` to request AI review for current test
 - See AI recommendation with rationale
 - Choose to accept/reject AI suggestion
 - View full analysis in verbose mode
@@ -114,7 +114,7 @@ AI recommends FAIL (confidence: 0.92):
   Suggestion: Add ground truth labels and accuracy metrics to test output
   to make review more objective
 
-Accept changes? [y/n/g for AI review/v for verbose]:
+Accept changes? [y/n/R for AI review/v for verbose]:
 ```
 
 ### 6. Report Integration
@@ -198,8 +198,8 @@ require_human_review = **/security_*.py, **/payment_*.py
 
 ### 9. Implementation Strategy
 
-1. **Phase 1**: Basic AI review with manual invocation (`-g` flag)
-2. **Phase 2**: Interactive mode integration (press `g` during review)
+1. **Phase 1**: Basic AI review with manual invocation (`-R` flag)
+2. **Phase 2**: Interactive mode integration (press `R` during review)
 3. **Phase 3**: Automatic review with confidence thresholds
 4. **Phase 4**: Learning from human corrections
 
@@ -251,7 +251,7 @@ Format your response as JSON:
 
 ### 11. Privacy and Security
 
-- AI review is opt-in (requires `-g` flag or config)
+- AI review is opt-in (requires `-R` flag or config)
 - Test outputs may contain sensitive data - warn users
 - Support local LLM providers for sensitive environments
 - Add option to redact patterns before sending to AI
@@ -324,7 +324,7 @@ Require AI review for all DIFF tests automatically.
 Key files to modify:
 - `booktest/reporting/review.py` - Add AI review integration
 - `booktest/llm/llm_review.py` - Implement AI review logic
-- `booktest/core/tests.py` - Add `-g` flag handling
+- `booktest/core/tests.py` - Add `-R` flag handling
 - `booktest/reporting/reports.py` - Store AI review results
 - `booktest/config/config.py` - Add AI review configuration
 
@@ -339,7 +339,7 @@ Example usage in code:
 ```python
 from booktest import LlmReview
 
-# During test execution with -g flag
+# During test execution with -R flag
 if config.get('ai_review_enabled'):
     review = LlmReview()
     result = review.review_test_diff(
@@ -380,18 +380,18 @@ if config.get('ai_review_enabled'):
    - Graceful error handling (returns UNSURE on failures)
 
 3. **CLI Integration** (`booktest/core/tests.py:189-192`)
-   - `-g` flag enables AI review mode
+   - `-R` flag enables AI review mode
    - Works with all existing flags (`-i`, `-v`, `-c`, etc.)
    - Configuration via `config["ai_review"]`
 
 4. **Interactive Mode** (`booktest/reporting/review.py:160-250`)
-   - Press `g` during review to invoke AI analysis
+   - Press `R` during review to invoke AI analysis
    - Shows AI recommendations with confidence
    - Prompts for acceptance when AI is highly confident
    - Integrates seamlessly with existing review flow
 
 5. **Automatic Review** (`booktest/reporting/review.py:271-364`)
-   - Automatically reviews DIFF tests when `-g` is enabled
+   - Automatically reviews DIFF tests when `-R` is enabled
    - Auto-accepts (category 5, confidence >= threshold)
    - Auto-rejects (category 1, confidence >= threshold)
    - Stores results in `.ai.json` files
@@ -417,19 +417,19 @@ if config.get('ai_review_enabled'):
 
 ```bash
 # Basic AI review
-booktest -g
+booktest -R
 
 # Interactive with AI assistance
-booktest -g -i
+booktest -R -i
 
 # Verbose AI review (shows full rationale)
-booktest -g -v
+booktest -R -v
 
 # Review only failed tests with AI
-booktest -g -c
+booktest -R -c
 
 # Auto-accept AI recommendations
-booktest -g -u
+booktest -R -u
 ```
 
 ### Configuration Example

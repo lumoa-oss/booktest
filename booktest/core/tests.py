@@ -186,7 +186,7 @@ class Tests:
             help="automatically accept differing tests"
         )
         parser.add_argument(
-            "-g",
+            "-R",
             action='store_true',
             help="use AI to review test differences (requires LLM configuration)"
         )
@@ -472,7 +472,7 @@ class Tests:
             config["update"] = True
         if parsed.a:
             config["accept"] = True
-        if parsed.g:
+        if parsed.R:
             config["ai_review"] = True
         if parsed.p:
             config["parallel"] = parsed.p

@@ -2,7 +2,7 @@
   "test_id": "test/examples/snapshots_book.py::test_requests",
   "snapshots": {
     "http": {
-      "hash": "sha256:f0c0aac60ea83bdad042e6de9c859fcf1297d127ef773d151b570e1d4c282847",
+      "hash": "sha256:9952849d3d973b3381ec327c4d7efc5f3232916c5fe62062e14cf356ccfd0d7c",
       "state": "updated",
       "details": {
         "count": 1,
@@ -13,12 +13,12 @@
           "085bbb060375440e09281c5b08f704d4a53a6d4a"
         ]
       },
-      "timestamp": 1760538009.7083752
+      "timestamp": 1760944897.3294454
     }
   },
   "result": {
     "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1760538009.708704
+  "timestamp": 1760944897.329966
 }

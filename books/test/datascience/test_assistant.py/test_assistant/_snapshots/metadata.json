@@ -1,0 +1,101 @@
+{
+  "test_id": "test/datascience/test_assistant.py::test_assistant",
+  "snapshots": {
+    "httpx": {
+      "hash": "sha256:395cb6823f265394be4532f173a486fa1d690e7edf0d7d76de159c15a6891cf1",
+      "state": "updated",
+      "details": {
+        "count": 32,
+        "urls": [
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview",
+          "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
+        ],
+        "hashes": [
+          "11653fdc8a85d2f8a83580f2debee9caad8c8234",
+          "1acc856e440453aea844ecfb21db32b5e920d5aa",
+          "1d4da6a29aea96e24f5a889d4c07572f5b757774",
+          "30d7dbac4611b3e97552f17adad792259e66a763",
+          "31e439cb174938ca6d5597125a38db47d54b2fd8",
+          "321ab2ecda1bec60ac9acb13325af49d04011548",
+          "34eb56173881863fdad376ed0ffed6adee399d96",
+          "41fc8176d6f01fa43fce60233112e329e70e41b7",
+          "5830cc893c9ae7d8541c517f3934aadd592ccc34",
+          "5b52753a3f83eb4ef99c30662776b6016c67f60f",
+          "5f22bae78b313894f1ffd7f89652cdb4e3e76877",
+          "6a6d478f72a4320702cecea387c212cb39c23f88",
+          "6b56bd6b629eca3b4c14febffbf147c3e3674e70",
+          "6c1a9e2a6c129319c1ae46810f83967dc8c65abd",
+          "8492c8380b4d877cc927cc945109b0acd9195130",
+          "88fa897d2eb32ca3188a6e2d7e82eaf78357e252",
+          "892f0164f4c0a2a1b55aa4e60a1d721a23dc0c36",
+          "93044a6392eecd65c61888dc9e700732aaf82b82",
+          "93a1ebcf84e3bece9305a486cf8de27be13b503d",
+          "a55e1c75adb3fa85fbc5657c932a0821e5854517",
+          "aa1e05905f532df90a50ee0798915fc22d0c4984",
+          "aa84d36ea26a1a6d0cb3d7792536ffafe06d343f",
+          "adc14a2bc63963f7f7bda4631fdf4808ce23da30",
+          "bdf82010b9d0140c52a83eb7efa9e2f4f297fb47",
+          "c4297b8b40c5f9dece59be39797d9325178a88ec",
+          "c59a2bcd4bd15ecb2d23c13ea2831935c50331fe",
+          "d55567fd0693641eb62d06d220671d42b9b79957",
+          "eee5167d1d143ff5aab6d2216f01c5f6925fa42f",
+          "ef6ae1197d09fa7fb12c94539dd0754eb0502827",
+          "efaeccad7837bca6ff66bd09ff2bddf51a1a18e7",
+          "f682ab01902445d12155a4567eb8b1dc62a180b1",
+          "fe4bab93e752e30626ae1f836eacc6ec57843cd4"
+        ]
+      },
+      "timestamp": 1760944984.6317785
+    },
+    "env": {
+      "hash": "sha256:5215585d8a51753b7f3bba3410628834c09b4dd452b0a1f4dc21f548aa476be6",
+      "state": "intact",
+      "details": {
+        "count": 5,
+        "variables": [
+          "OPENAI_API_BASE",
+          "OPENAI_MODEL",
+          "OPENAI_DEPLOYMENT",
+          "OPENAI_API_VERSION",
+          "OPENAI_COMPLETION_MAX_TOKENS"
+        ]
+      },
+      "timestamp": 1760944984.632355
+    }
+  },
+  "result": {
+    "success": "diff",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1760944984.6326337
+}

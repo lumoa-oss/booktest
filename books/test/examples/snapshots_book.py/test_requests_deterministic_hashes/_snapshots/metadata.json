@@ -2,23 +2,23 @@
   "test_id": "test/examples/snapshots_book.py::test_requests_deterministic_hashes",
   "snapshots": {
     "httpx": {
-      "hash": "sha256:6fa33b229a5078dfdacd87e146e2fe9e70095379108dbe964a0bf9f44c7d2493",
+      "hash": "sha256:36f875c79f57e3245e6164133e16f978264a718433fc30b5b4529560dc56b68a",
       "state": "updated",
       "details": {
         "count": 1,
         "urls": [
-          "https://httpbin.org/anything/6184868"
+          "https://httpbin.org/anything/7493204"
         ],
         "hashes": [
           "5d79d741579ef5e914e9cb6bfa4e01a280eca6a6"
         ]
       },
-      "timestamp": 1760538012.8959038
+      "timestamp": 1760944897.1301558
     }
   },
   "result": {
     "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1760538012.8960812
+  "timestamp": 1760944897.1303978
 }

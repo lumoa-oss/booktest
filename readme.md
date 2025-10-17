@@ -249,14 +249,14 @@ r.reviewln("Does it solve the problem?", "Yes", "No")
 r.reviewln("Code quality?", "Excellent", "Good", "Poor")
 ```
 
-**New in 1.0**: AI-assisted diff review with `-g` flag:
+**New in 1.0**: AI-assisted diff review with `-R` flag:
 
 ```bash
 # AI automatically reviews test differences
-booktest -g
+booktest -R
 
-# Interactive mode: press 'g' to get AI recommendations
-booktest -g -i
+# Interactive mode: press 'R' to get AI recommendations
+booktest -R -i
 ```
 
 AI analyzes output differences and provides 5-category recommendations:
@@ -437,7 +437,7 @@ More examples: [test/examples/](test/examples/) and [test/datascience/](test/dat
 
 **For the Good vs Bad Problem:**
 - 📝 **Human review via markdown** - Git-tracked outputs, review changes like code diffs
-- 🤖 **AI-assisted review** - LLM evaluates LLM outputs automatically (use `-g` flag for AI diff review)
+- 🤖 **AI-assisted review** - LLM evaluates LLM outputs automatically (use `-R` flag for AI diff review)
 - 📊 **Tolerance metrics & asserts** - Track trends with `tmetric()`, set thresholds with `assertln()`
 
 **For Regression Whack-a-Mole:**

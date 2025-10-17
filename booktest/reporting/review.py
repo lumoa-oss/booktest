@@ -197,7 +197,7 @@ def interact(exp_dir, out_dir, case_name, test_result, config,
         ])
 
         if ai_review_available:
-            options.append("(g) AI review")
+            options.append("AI (R)eview")
 
         prompt = \
             ", ".join(options[:len(options) - 1]) + \
@@ -231,7 +231,7 @@ def interact(exp_dir, out_dir, case_name, test_result, config,
             run_tool(config,
                      "fast_diff_tool",
                      f"{exp_file_name} {out_file_name}")
-        elif answer == "g" and ai_review_available:
+        elif (answer == "r" or answer == "R") and ai_review_available:
             # Perform AI review
             ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
             if ai_result:

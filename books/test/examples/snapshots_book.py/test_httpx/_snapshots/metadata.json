@@ -1,8 +1,8 @@
 {
-  "test_id": "test/examples/async_book.py::test_httpx",
+  "test_id": "test/examples/snapshots_book.py::test_httpx",
   "snapshots": {
     "httpx": {
-      "hash": "sha256:9eb8add27ce6140cf0cd2a8638a7bd1e9d72b0a745759e22fffdbade6faa3a15",
+      "hash": "sha256:2da913292bfe35b371d9cbc8ddca65643a9ce9c097bacaa1ba6c1493c2aa7184",
       "state": "updated",
       "details": {
         "count": 1,
@@ -13,12 +13,12 @@
           "0e88eb6e0a8953a80d7d4af2b621e3bd65098073"
         ]
       },
-      "timestamp": 1760944894.7484946
+      "timestamp": 1760944895.0005088
     }
   },
   "result": {
     "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1760944894.7487438
+  "timestamp": 1760944895.0008347
 }

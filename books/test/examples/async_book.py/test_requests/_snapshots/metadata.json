@@ -2,7 +2,7 @@
   "test_id": "test/examples/async_book.py::test_requests",
   "snapshots": {
     "http": {
-      "hash": "sha256:ec04cbfd93ab94b48046d061e4eeeb4254098955dc6e1cac5ecc83cf35521ec9",
+      "hash": "sha256:31de45b945a3b41e3cb41f64e15c8f5299936afbb92bc8ffcf6720aa16cfcb6a",
       "state": "updated",
       "details": {
         "count": 1,
@@ -13,12 +13,12 @@
           "085bbb060375440e09281c5b08f704d4a53a6d4a"
         ]
       },
-      "timestamp": 1760538073.5380483
+      "timestamp": 1760944896.4241843
     }
   },
   "result": {
     "success": "diff",
     "snapshotting": "updated"
   },
-  "timestamp": 1760538073.5384836
+  "timestamp": 1760944896.4246898
 }

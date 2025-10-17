@@ -7,18 +7,18 @@
         },
         "response": {
             "headers": {
-                "Date": "Wed, 15 Oct 2025 14:21:13 GMT",
+                "Date": "Mon, 20 Oct 2025 07:21:37 GMT",
                 "Content-Type": "application/json; charset=utf-8",
                 "Transfer-Encoding": "chunked",
                 "Connection": "keep-alive",
                 "Content-Encoding": "gzip",
                 "etag": "W/\"c4-z0BDlawkEsquhTvygQ0vIiY6Zo0\"",
                 "vary": "Accept-Encoding",
-                "Set-Cookie": "sails.sid=s%3AecLixds8e0xtLhqDzK1ubzo_lV7JgNEC.y9%2B5QnMJHxBRZ%2FGT9zY6jjHoXV8ekOmscqB638mZ45M; Path=/; HttpOnly, __cf_bm=9nEEwEAFtXE.NNuHPPmkjmoo5ScW2PU7W5RXVsicrTU-1760538073-1.0.1.1-f1y6EXji0_zNTTurOlN.irqgZO82dkD64e1XwLyJ3GlhfsLFoU3hJcAQPBwFOUIKGyBEwjfqE_XlqMlD8It58wMpvLrZI_TP0q20JG56Meo; path=/; expires=Wed, 15-Oct-25 14:51:13 GMT; domain=.postman-echo.com; HttpOnly; Secure; SameSite=None, _cfuvid=OqaWcqUSDN6Cie8NOmxgwcG.SnijXQT2KZwrsAENsYQ-1760538073529-0.0.1.1-604800000; path=/; domain=.postman-echo.com; HttpOnly; Secure; SameSite=None",
-                "x-envoy-upstream-service-time": "6",
+                "Set-Cookie": "sails.sid=s%3A_nkGWfo7Ot7ciSwiBePPZ1LHt0WG-TQS.xusRu9qgQC3ZC5JETyKrnnLgzhI2caXoC%2B%2F%2FmfFTJCE; Path=/; HttpOnly, __cf_bm=zajm.x6E.rRlyb8KGttyHHaOXyCFiofbQcDeA6wS5CQ-1760944897-1.0.1.1-6pIvxJIqSIs4pxEJYE98hqld3TeW3b3iIVz4yxt3m4n0UEoTaw9xRdelAVjo69mQnIijMO4QpHEo4ElD47Wfych0YwK3JeqNtntWvdeHdMI; path=/; expires=Mon, 20-Oct-25 07:51:37 GMT; domain=.postman-echo.com; HttpOnly; Secure; SameSite=None, _cfuvid=XsZeIgIlAZossCJ47XzUr2RkTakwiAoTTt_tSnGxswA-1760944897164-0.0.1.1-604800000; path=/; domain=.postman-echo.com; HttpOnly; Secure; SameSite=None",
+                "x-envoy-upstream-service-time": "4",
                 "cf-cache-status": "DYNAMIC",
                 "Server": "cloudflare",
-                "CF-RAY": "98eff62e9ccf70dd-HEL"
+                "CF-RAY": "9916c2665dd98d5a-HEL"
             },
             "statusCode": 200,
             "encoding": "utf-8",

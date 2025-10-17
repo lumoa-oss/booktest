@@ -8,7 +8,7 @@ booktest -h
 
 # output:
 
-usage: booktest [-h] [-i] [-I] [-v] [-L] [-f] [-c] [-r] [-u] [-a] [-g] [-p]
+usage: booktest [-h] [-i] [-I] [-v] [-L] [-f] [-c] [-r] [-u] [-a] [-R] [-p]
                 [-p1] [-p2] [-p3] [-p4] [-p6] [-p8] [-p16]
                 [--parallel-count P] [-s] [-S] [--cov] [--md-viewer MD_VIEWER]
                 [--diff-tool DIFF_TOOL] [--context CONTEXT]
@@ -34,7 +34,7 @@ options:
   -r                    refresh test dependencies
   -u                    update test on success
   -a                    automatically accept differing tests
-  -g                    use AI to review test differences (requires LLM
+  -R                    use AI to review test differences (requires LLM
                         configuration)
   -p                    run test on N parallel processes, where is N relative
                         to CPU count
