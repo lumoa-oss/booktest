@@ -44,7 +44,7 @@ class TestStorage(bt.TestBook):
             # Test manifest generation
             t.h2("Manifest Generation")
             manifest = storage.get_manifest()
-            t.tln(f"Manifest: {json.dumps(manifest, indent=2)}")
+            t.tln(f"Manifest: {json.dumps(manifest, indent=2, sort_keys=True)}")
 
     def test_git_storage_path_construction(self, t: bt.TestCaseRun):
         """Test GitStorage path construction for different test IDs."""
@@ -118,7 +118,7 @@ class TestStorage(bt.TestBook):
             git_storage.store("test2", "func", b'{"func": "result"}')
 
             manifest = git_storage.get_manifest()
-            t.tln(f"Manifest: {json.dumps(manifest, indent=2)}")
+            t.tln(f"Manifest: {json.dumps(manifest, indent=2, sort_keys=True)}")
 
             # Test manifest update (no-op for Git)
             updates = {"test3": {"env": "sha256:abc123"}}
@@ -189,4 +189,4 @@ class TestStorage(bt.TestBook):
             t.h2("Generated Manifest")
             manifest = storage.get_manifest()
             if test_id.replace("::", "/") in manifest:
-                t.tln(f"Manifest entry: {json.dumps(manifest[test_id.replace('::', '/')], indent=2)}")
+                t.tln(f"Manifest entry: {json.dumps(manifest[test_id.replace('::', '/')], indent=2, sort_keys=True)}")
