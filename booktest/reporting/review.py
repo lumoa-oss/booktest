@@ -296,6 +296,10 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
         out_file_name = os.path.join(out_dir, case_name_fs + ".md")
         ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
 
+        # Read AI review configuration
+        ai_auto_accept_threshold = float(config.get("ai_auto_accept_threshold", 0.95))
+        ai_auto_reject_threshold = float(config.get("ai_auto_reject_threshold", 0.95))
+
         ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
 
         if ai_result and not interactive:
@@ -320,10 +324,10 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
 
         # In non-interactive AI review mode, check if we should auto-freeze based on AI recommendation
         if ai_result and ai_review_enabled:
-            if ai_result.should_auto_accept():
+            if ai_result.should_auto_accept(ai_auto_accept_threshold):
                 print(f"    AI auto-accepting (confidence: {ai_result.confidence:.2f})")
                 interaction = UserRequest.FREEZE
-            elif ai_result.should_auto_reject():
+            elif ai_result.should_auto_reject(ai_auto_reject_threshold):
                 print(f"    AI auto-rejecting (confidence: {ai_result.confidence:.2f})")
                 # Keep as DIFF/FAIL, don't change rv
 

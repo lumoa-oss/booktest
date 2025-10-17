@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Implemented
 
 ## Context
 
@@ -360,6 +360,98 @@ if config.get('ai_review_enabled'):
         prompt_human_review(test_name, result)
 ```
 
+## Actual Implementation (2025)
+
+### What Was Implemented
+
+**Phase 1-3 Complete**: All core features from phases 1-3 have been implemented:
+
+1. **AIReviewResult dataclass** (`booktest/llm/llm_review.py:20-64`)
+   - 5-category classification system (1=FAIL to 5=ACCEPT)
+   - Confidence scores (0.0-1.0)
+   - Summary, rationale, issues, suggestions, flags_for_human
+   - JSON serialization for storage
+   - `should_auto_accept()` and `should_auto_reject()` methods with configurable thresholds
+
+2. **AI Review Logic** (`booktest/llm/llm_review.py:271-378`)
+   - `review_test_diff()` method analyzes expected vs actual outputs
+   - Comprehensive prompt engineering for data science/ML tests
+   - Structured JSON response parsing
+   - Graceful error handling (returns UNSURE on failures)
+
+3. **CLI Integration** (`booktest/core/tests.py:189-192`)
+   - `-g` flag enables AI review mode
+   - Works with all existing flags (`-i`, `-v`, `-c`, etc.)
+   - Configuration via `config["ai_review"]`
+
+4. **Interactive Mode** (`booktest/reporting/review.py:160-250`)
+   - Press `g` during review to invoke AI analysis
+   - Shows AI recommendations with confidence
+   - Prompts for acceptance when AI is highly confident
+   - Integrates seamlessly with existing review flow
+
+5. **Automatic Review** (`booktest/reporting/review.py:271-364`)
+   - Automatically reviews DIFF tests when `-g` is enabled
+   - Auto-accepts (category 5, confidence >= threshold)
+   - Auto-rejects (category 1, confidence >= threshold)
+   - Stores results in `.ai.json` files
+
+6. **Report Integration** (`booktest/reporting/review.py:386-454`)
+   - Parenthetical AI summaries in test results: `(AI: summary text)`
+   - Loads stored AI reviews from `.ai.json` files
+   - Shows in both verbose and compact formats
+   - Gray color for AI notes to distinguish from test status
+
+7. **Configuration Support** (`booktest/reporting/review.py:299-301`)
+   - `ai_auto_accept_threshold` (default: 0.95)
+   - `ai_auto_reject_threshold` (default: 0.95)
+   - Read from `.booktest` or `booktest.ini` files
+   - Can also be set via environment variables
+
+8. **Storage** (`.ai.json` files)
+   - Stored alongside test outputs in `.out/` directory
+   - Full AI analysis preserved for later review
+   - JSON format for easy parsing and debugging
+
+### Example Usage
+
+```bash
+# Basic AI review
+booktest -g
+
+# Interactive with AI assistance
+booktest -g -i
+
+# Verbose AI review (shows full rationale)
+booktest -g -v
+
+# Review only failed tests with AI
+booktest -g -c
+
+# Auto-accept AI recommendations
+booktest -g -u
+```
+
+### Configuration Example
+
+In `.booktest` or `booktest.ini`:
+```ini
+ai_auto_accept_threshold=0.95
+ai_auto_reject_threshold=0.95
+```
+
+See `docs/ai-review-config-example.ini` for full configuration options.
+
+### What Was Not Implemented Yet
+
+**Phase 4** (Learning from corrections): Planned for future release
+- Track human overrides of AI decisions
+- Improve prompts based on accuracy
+- Confidence calibration
+- Test-specific prompts
+
+These features were deferred to gather real-world usage data first.
+
 ## Future Enhancements
 
 1. **Learn from corrections**: Track when humans override AI decisions, improve prompts
@@ -368,3 +460,5 @@ if config.get('ai_review_enabled'):
 4. **Multi-LLM voting**: Use multiple LLMs, combine their recommendations
 5. **Incremental review**: Review only changed sections of large outputs
 6. **Natural language queries**: "Show me tests where AI was unsure about performance"
+7. **Pattern-based human review requirements**: Force human review for sensitive tests
+8. **AI review analytics**: Dashboard showing AI accuracy over time
