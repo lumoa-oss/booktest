@@ -3,7 +3,7 @@
 
 ## No Configuration
 
-Detected mode: dvc
+Detected mode: git
 
 ## Explicit Configuration
 
@@ -11,4 +11,4 @@ Configured mode: git
 
 ## Auto Configuration
 
-Auto-detected mode: dvc
+Auto-detected mode: git

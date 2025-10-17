@@ -86,22 +86,32 @@ class TestStorage(bt.TestBook):
         """Test automatic storage mode detection."""
         t.h1("Storage Mode Detection")
 
-        # Test with no configuration
-        t.h2("No Configuration")
-        mode = detect_storage_mode()
-        t.tln(f"Detected mode: {mode.value}")
+        # Save current directory and change to temp dir for isolation
+        import os
+        original_cwd = os.getcwd()
 
-        # Test with explicit configuration
-        t.h2("Explicit Configuration")
-        config = {"storage": {"mode": "git"}}
-        mode = detect_storage_mode(config)
-        t.tln(f"Configured mode: {mode.value}")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            try:
+                os.chdir(tmpdir)
 
-        # Test with auto configuration
-        t.h2("Auto Configuration")
-        config = {"storage": {"mode": "auto"}}
-        mode = detect_storage_mode(config)
-        t.tln(f"Auto-detected mode: {mode.value}")
+                # Test with no configuration (should default to git in empty dir)
+                t.h2("No Configuration")
+                mode = detect_storage_mode()
+                t.tln(f"Detected mode: {mode.value}")
+
+                # Test with explicit configuration
+                t.h2("Explicit Configuration")
+                config = {"storage": {"mode": "git"}}
+                mode = detect_storage_mode(config)
+                t.tln(f"Configured mode: {mode.value}")
+
+                # Test with auto configuration (should default to git in empty dir)
+                t.h2("Auto Configuration")
+                config = {"storage": {"mode": "auto"}}
+                mode = detect_storage_mode(config)
+                t.tln(f"Auto-detected mode: {mode.value}")
+            finally:
+                os.chdir(original_cwd)
 
     def test_manifest_operations(self, t: bt.TestCaseRun):
         """Test manifest operations for both storage backends."""
