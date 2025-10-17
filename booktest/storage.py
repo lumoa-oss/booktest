@@ -301,6 +301,10 @@ class DVCStorage(SnapshotStorage):
             if not batch_manifest_file.exists():
                 continue
 
+            # Skip empty files to avoid JSON parse errors
+            if batch_manifest_file.stat().st_size == 0:
+                continue
+
             try:
                 import yaml
                 with open(batch_manifest_file, 'r') as f:
