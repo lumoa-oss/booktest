@@ -316,17 +316,27 @@ class DVCStorage(SnapshotStorage):
                     main_manifest[test_id] = {}
                 main_manifest[test_id].update(snapshots)
 
-        # Save merged manifest
+        # Save merged manifest with sorted keys for deterministic output
         try:
             import yaml
+            # Sort manifest entries for deterministic output
+            sorted_manifest = dict(sorted(main_manifest.items()))
+            for test_id in sorted_manifest:
+                sorted_manifest[test_id] = dict(sorted(sorted_manifest[test_id].items()))
+
             data = {"storage_mode": "dvc"}
-            data.update(main_manifest)
+            data.update(sorted_manifest)
             with open(main_manifest_path, 'w') as f:
                 yaml.safe_dump(data, f, default_flow_style=False, sort_keys=True)
         except ImportError:
             import json
+            # Sort manifest entries for deterministic output
+            sorted_manifest = dict(sorted(main_manifest.items()))
+            for test_id in sorted_manifest:
+                sorted_manifest[test_id] = dict(sorted(sorted_manifest[test_id].items()))
+
             data = {"storage_mode": "dvc"}
-            data.update(main_manifest)
+            data.update(sorted_manifest)
             with open(main_manifest_path, 'w') as f:
                 json.dump(data, f, indent=2, sort_keys=True)
 
@@ -373,6 +383,11 @@ class DVCStorage(SnapshotStorage):
         """Save manifest to YAML file atomically."""
         import tempfile
 
+        # Sort manifest entries for deterministic output
+        sorted_manifest = dict(sorted(manifest.items()))
+        for test_id in sorted_manifest:
+            sorted_manifest[test_id] = dict(sorted(sorted_manifest[test_id].items()))
+
         # Write to temporary file first
         temp_fd, temp_path = tempfile.mkstemp(
             dir=self.manifest_path.parent,
@@ -384,14 +399,14 @@ class DVCStorage(SnapshotStorage):
             try:
                 import yaml
                 data = {"storage_mode": "dvc"}
-                data.update(manifest)
+                data.update(sorted_manifest)
                 with os.fdopen(temp_fd, 'w') as f:
                     yaml.safe_dump(data, f, default_flow_style=False, sort_keys=True)
             except ImportError:
                 # Fall back to JSON if PyYAML not available
                 import json
                 data = {"storage_mode": "dvc"}
-                data.update(manifest)
+                data.update(sorted_manifest)
                 with os.fdopen(temp_fd, 'w') as f:
                     json.dump(data, f, indent=2, sort_keys=True)
 
@@ -412,6 +427,11 @@ class DVCStorage(SnapshotStorage):
 
         import tempfile
 
+        # Sort pending updates for deterministic output
+        sorted_updates = dict(sorted(self.pending_updates.items()))
+        for test_id in sorted_updates:
+            sorted_updates[test_id] = dict(sorted(sorted_updates[test_id].items()))
+
         # Write to temporary file first
         temp_fd, temp_path = tempfile.mkstemp(
             dir=self.batch_manifest_path.parent,
@@ -423,11 +443,11 @@ class DVCStorage(SnapshotStorage):
             try:
                 import yaml
                 with os.fdopen(temp_fd, 'w') as f:
-                    yaml.safe_dump(self.pending_updates, f, default_flow_style=False, sort_keys=True)
+                    yaml.safe_dump(sorted_updates, f, default_flow_style=False, sort_keys=True)
             except ImportError:
                 import json
                 with os.fdopen(temp_fd, 'w') as f:
-                    json.dump(self.pending_updates, f, indent=2, sort_keys=True)
+                    json.dump(sorted_updates, f, indent=2, sort_keys=True)
 
             # Atomic rename
             os.replace(temp_path, self.batch_manifest_path)
