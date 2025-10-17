@@ -387,14 +387,31 @@ def report_case_result(printer,
                        case_name,
                        result,
                        took_ms,
-                       verbose):
-    from booktest.reporting.colors import yellow, red, green
+                       verbose,
+                       out_dir=None):
+    from booktest.reporting.colors import yellow, red, green, gray
 
     if verbose:
         printer()
         printer(f"{case_name} ", end="")
 
     int_took_ms = int(took_ms)
+
+    # Check for AI review result if available
+    ai_summary = ""
+    if out_dir is not None:
+        case_name_fs = to_filesystem_path(case_name)
+        ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
+        if os.path.exists(ai_review_file):
+            try:
+                from booktest.llm.llm_review import AIReviewResult
+                with open(ai_review_file, 'r') as f:
+                    ai_result = AIReviewResult.from_json(f.read())
+                    # Add parenthetical summary with AI recommendation
+                    ai_summary = f" ({gray('AI: ' + ai_result.summary)})"
+            except Exception:
+                # If we can't load the AI review, just skip it
+                pass
 
     # Handle two-dimensional results if available
     if isinstance(result, TwoDimensionalTestResult):
@@ -417,24 +434,24 @@ def report_case_result(printer,
 
         if result.success.name == "OK":
             if verbose:
-                printer(f"{green('OK')} {int_took_ms} ms.{snapshot_msg}")
+                printer(f"{green('OK')} {int_took_ms} ms.{snapshot_msg}{ai_summary}")
             else:
-                printer(f"{green(str(int_took_ms) + ' ms')}{snapshot_msg}")
+                printer(f"{green(str(int_took_ms) + ' ms')}{snapshot_msg}{ai_summary}")
         elif result.success.name == "DIFF":
-            printer(f"{yellow('DIFF')} {int_took_ms} ms{snapshot_msg}")
+            printer(f"{yellow('DIFF')} {int_took_ms} ms{snapshot_msg}{ai_summary}")
         elif result.success.name == "FAIL":
-            printer(f"{red('FAIL')} {int_took_ms} ms{snapshot_msg}")
+            printer(f"{red('FAIL')} {int_took_ms} ms{snapshot_msg}{ai_summary}")
     else:
         # Legacy single-dimensional result
         if result == TestResult.OK:
             if verbose:
-                printer(f"{green('ok')} in {int_took_ms} ms.")
+                printer(f"{green('ok')} in {int_took_ms} ms.{ai_summary}")
             else:
-                printer(f"{green(str(int_took_ms) + ' ms')}")
+                printer(f"{green(str(int_took_ms) + ' ms')}{ai_summary}")
         elif result == TestResult.DIFF:
-            printer(f"{yellow('DIFFERED')} in {int_took_ms} ms")
+            printer(f"{yellow('DIFFERED')} in {int_took_ms} ms{ai_summary}")
         elif result == TestResult.FAIL:
-            printer(f"{red('FAILED')} in {int_took_ms} ms")
+            printer(f"{red('FAILED')} in {int_took_ms} ms{ai_summary}")
 
 def maybe_print_logs(printer, config, out_dir, case_name):
     # Convert pytest-style name to filesystem path (:: → /)
@@ -489,7 +506,8 @@ def report_case(printer,
                        case_name,
                        result,
                        took_ms,
-                       verbose)
+                       verbose,
+                       out_dir)
 
     rv, request = case_review(exp_dir,
                               out_dir,
