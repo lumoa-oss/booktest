@@ -122,11 +122,13 @@ class Tests:
         print("━" * 70)
         print()
 
-        # Call the review function with non-interactive flag
+        # Call the review function with non-interactive flag and continue mode
+        # This ensures only failed/diffed tests are shown, not all tests
         review_config = config.copy()
         review_config["verbose"] = True
         review_config["print_logs"] = True
         review_config["interactive"] = False
+        review_config["continue"] = True  # Only show failed/diffed tests
 
         review(exp_dir, out_dir, review_config, None, cases)
 
