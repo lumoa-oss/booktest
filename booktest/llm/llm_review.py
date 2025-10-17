@@ -6,13 +6,61 @@ review test outputs and validate results against expectations.
 """
 
 import os
-from typing import TYPE_CHECKING, Optional
+import json
+from dataclasses import dataclass, asdict
+from typing import TYPE_CHECKING, Optional, List
 
 from booktest.reporting.output import OutputWriter
 from booktest.llm.llm import Llm, get_llm
 
 if TYPE_CHECKING:
     from booktest.core.testcaserun import TestCaseRun
+
+
+@dataclass
+class AIReviewResult:
+    """
+    Result of an AI-assisted test review.
+
+    The AI analyzes test output differences and provides a recommendation
+    on whether to accept or reject the changes.
+    """
+    category: int  # 1=FAIL, 2=RECOMMEND_FAIL, 3=UNSURE, 4=RECOMMEND_ACCEPT, 5=ACCEPT
+    confidence: float  # 0.0 to 1.0
+    summary: str  # One-line summary for reports
+    rationale: str  # Detailed explanation of the decision
+    issues: List[str]  # Specific problems identified (e.g., "line 43: regression")
+    suggestions: List[str]  # How to improve the test
+    flags_for_human: bool  # Should a human definitely review this
+
+    def category_name(self) -> str:
+        """Get human-readable category name."""
+        names = {
+            1: "FAIL",
+            2: "RECOMMEND FAIL",
+            3: "UNSURE",
+            4: "RECOMMEND ACCEPT",
+            5: "ACCEPT"
+        }
+        return names.get(self.category, "UNKNOWN")
+
+    def should_auto_accept(self, threshold: float = 0.95) -> bool:
+        """Should this be automatically accepted?"""
+        return self.category == 5 and self.confidence >= threshold and not self.flags_for_human
+
+    def should_auto_reject(self, threshold: float = 0.95) -> bool:
+        """Should this be automatically rejected?"""
+        return self.category == 1 and self.confidence >= threshold
+
+    def to_json(self) -> str:
+        """Serialize to JSON for storage."""
+        return json.dumps(asdict(self), indent=2)
+
+    @classmethod
+    def from_json(cls, json_str: str) -> 'AIReviewResult':
+        """Deserialize from JSON."""
+        data = json.loads(json_str)
+        return cls(**data)
 
 
 class LlmReview(OutputWriter):
@@ -219,6 +267,114 @@ other text or explanation! Only respond with one of the options given in the par
         """
         self.t.anchor(f" * {title} ").assertln(condition)
         return self
+
+    def review_test_diff(
+        self,
+        test_name: str,
+        expected: str,
+        actual: str,
+        diff: str,
+        test_description: Optional[str] = None
+    ) -> AIReviewResult:
+        """
+        Use AI to review test output differences and provide a recommendation.
+
+        Args:
+            test_name: Name of the test being reviewed
+            expected: Previous/expected test output
+            actual: Current/actual test output
+            diff: Unified diff between expected and actual
+            test_description: Optional description of what the test does
+
+        Returns:
+            AIReviewResult with AI's analysis and recommendation
+
+        Example:
+            result = review.review_test_diff(
+                test_name="test_sentiment_analysis",
+                expected=previous_output,
+                actual=current_output,
+                diff=unified_diff
+            )
+            if result.should_auto_reject():
+                print(f"Auto-rejecting: {result.summary}")
+        """
+        system_prompt = """You are an expert test reviewer for data science and ML applications.
+You will analyze test output differences and provide a recommendation.
+
+Your task is to classify the changes into one of 5 categories:
+1. FAIL - Clear regressions, critical errors, completely wrong results (auto-reject)
+2. RECOMMEND FAIL - Likely regressions, suspicious changes, quality degradation
+3. UNSURE - Complex changes requiring human judgment, missing context
+4. RECOMMEND ACCEPT - Minor changes, expected improvements, non-functional differences
+5. ACCEPT - No significant changes, clear improvements, intentional refactoring (auto-accept)
+
+Consider:
+- Are numerical changes within reasonable tolerance?
+- Do error messages make sense?
+- Are formatting changes cosmetic or meaningful?
+- Does the test provide clear success criteria?
+- Would a human be able to make a confident decision?
+
+Respond ONLY with valid JSON in this exact format:
+{
+  "category": 1-5,
+  "confidence": 0.0-1.0,
+  "summary": "one-line summary (max 80 chars)",
+  "rationale": "detailed explanation",
+  "issues": ["line X: specific issue", ...],
+  "suggestions": ["how to improve test", ...],
+  "flags_for_human": true/false
+}"""
+
+        desc_section = f"\nTest Purpose: {test_description}\n" if test_description else ""
+
+        request = f"""{system_prompt}
+
+Test: {test_name}{desc_section}
+
+=== PREVIOUS OUTPUT (EXPECTED) ===
+{expected}
+
+=== CURRENT OUTPUT (ACTUAL) ===
+{actual}
+
+=== DIFF ===
+{diff}
+
+Provide your review as JSON:"""
+
+        try:
+            result_str = self.llm.prompt(request)
+
+            # Try to extract JSON from the response (LLM might add extra text)
+            json_start = result_str.find('{')
+            json_end = result_str.rfind('}') + 1
+            if json_start >= 0 and json_end > json_start:
+                result_str = result_str[json_start:json_end]
+
+            result_data = json.loads(result_str)
+
+            return AIReviewResult(
+                category=result_data['category'],
+                confidence=result_data['confidence'],
+                summary=result_data['summary'],
+                rationale=result_data['rationale'],
+                issues=result_data['issues'],
+                suggestions=result_data['suggestions'],
+                flags_for_human=result_data['flags_for_human']
+            )
+        except (json.JSONDecodeError, KeyError) as e:
+            # If AI response is malformed, return unsure result
+            return AIReviewResult(
+                category=3,  # UNSURE
+                confidence=0.0,
+                summary="AI review failed - malformed response",
+                rationale=f"Failed to parse AI response: {str(e)}\nResponse: {result_str[:200]}",
+                issues=[],
+                suggestions=["Fix AI prompt or LLM configuration"],
+                flags_for_human=True
+            )
 
 
 # Backwards compatibility alias

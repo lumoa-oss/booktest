@@ -42,7 +42,7 @@ from booktest.dependencies.memory import monitor_memory, MemoryMonitor
 
 # LLM integration
 from booktest.llm.llm import Llm, GptLlm, get_llm, set_llm, LlmSentry, use_llm
-from booktest.llm.llm_review import LlmReview, GptReview
+from booktest.llm.llm_review import LlmReview, GptReview, AIReviewResult
 from booktest.llm.tokenizer import TestTokenizer, BufferIterator
 
 # Utilities
@@ -103,6 +103,7 @@ __all__ = {
     "use_llm",
     "LlmReview",
     "GptReview",
+    "AIReviewResult",
     "OutputWriter"
 }
 
