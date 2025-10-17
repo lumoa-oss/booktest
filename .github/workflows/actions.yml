@@ -27,8 +27,7 @@ jobs:
       - name: Run all tests
         run: |
           # Run full test suite in Git storage mode (snapshots now in Git)
-          # Auto-accept diffs from migration and test scenarios (-u flag)
-          poetry run booktest -p -u
+          poetry run booktest -p
       - name: Build a binary wheel and a source tarball
         run: >-
           python -m

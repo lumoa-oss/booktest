@@ -37,8 +37,8 @@ booktests/test_hello.py::test_hello DIFFERED in <number> ms
   booktests/test_hello.py::test_hello - DIFF
 
 
-💡 To review interactively, run: booktest -w
-💡 To rerun and review failed test results, run: booktest -v -i -c
-💡 To update missing snapshots, run: 'booktest -c -s' or 'booktest -c -S' to refresh all
+💡 To review (-w) failed (-c) tests verbosely (-v) and interactively (-i), run: booktest -w -c -v -i
+💡 To rerun failed (-c) tests verbosely (-v) and interactively (-i), run: booktest -c -v -i
+💡 To update failed tests's (-c) missing snapshots (-s), run: booktest -c -s
 
 
