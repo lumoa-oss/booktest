@@ -102,7 +102,7 @@ def get_module_tests(test_suite_name, module_name):
 
 
 def get_file_tests(root, f, selection):
-    test_suite_name = os.path.join(root, clean_test_postfix(f[:len(f) - 3]))
+    test_suite_name = os.path.join(root, f)  # clean_test_postfix(f[:len(f) - 3]))
     if is_selected_test_suite(test_suite_name, selection):
         module_name = os.path.join(root, f[:len(f) - 3]).replace("/", ".")
         return get_module_tests(test_suite_name, module_name)

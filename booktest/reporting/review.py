@@ -157,7 +157,8 @@ def run_tool(config, tool, args):
         return 1
 
 
-def interact(exp_dir, out_dir, case_name, test_result, config):
+def interact(exp_dir, out_dir, case_name, test_result, config,
+             existing_ai_result=None, ai_auto_accept_threshold=0.95, ai_auto_reject_threshold=0.95):
     # Convert pytest-style name to filesystem path (:: → /)
     case_name_fs = to_filesystem_path(case_name)
     exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
@@ -178,8 +179,8 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
         is_failed = (test_result == TestResult.FAIL)
         is_diff = (test_result == TestResult.DIFF)
 
-    # Check if AI review is available for DIFF tests
-    ai_review_available = is_diff and not is_failed
+    # Check if AI review is available for DIFF tests (only if not already done)
+    ai_review_available = is_diff and not is_failed and existing_ai_result is None
 
     while not done:
         options = []
@@ -236,17 +237,29 @@ def interact(exp_dir, out_dir, case_name, test_result, config):
             if ai_result:
                 print_ai_review_result(ai_result, config.get("verbose", False))
 
-                # If AI recommends auto-accept/reject with high confidence, ask user
-                if ai_result.should_auto_accept():
+                # For definitive FAIL (1) or ACCEPT (5), auto-continue
+                if ai_result.category == 1:  # FAIL
+                    print(f"    AI definitively rejects (category: FAIL, confidence: {ai_result.confidence:.2f})")
+                    print("    Continuing without accepting...")
+                    done = True
+                elif ai_result.category == 5 and ai_result.should_auto_accept(ai_auto_accept_threshold):  # ACCEPT
+                    print(f"    AI definitively accepts (category: ACCEPT, confidence: {ai_result.confidence:.2f})")
+                    print("    Auto-accepting...")
+                    user_request = UserRequest.FREEZE
+                    done = True
+                elif ai_result.should_auto_accept(ai_auto_accept_threshold):
+                    # Recommend accept (but not definitive category 5)
                     confirm = input("    AI recommends accepting. Accept? (y/n): ")
                     if confirm.lower() == 'y':
                         user_request = UserRequest.FREEZE
                         done = True
-                elif ai_result.should_auto_reject():
+                elif ai_result.should_auto_reject(ai_auto_reject_threshold):
+                    # Recommend reject (but not definitive category 1)
                     print("    AI recommends rejecting (failing) this test.")
                     confirm = input("    Continue without accepting? (y/n): ")
                     if confirm.lower() == 'y':
                         done = True
+                # For UNSURE, RECOMMEND categories, just return to prompt
     return rv, user_request
 
 
@@ -291,19 +304,18 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
 
     # Perform automatic AI review if enabled and test has differences
     ai_result = None
+    ai_auto_accept_threshold = float(config.get("ai_auto_accept_threshold", 0.95))
+    ai_auto_reject_threshold = float(config.get("ai_auto_reject_threshold", 0.95))
+
     if ai_review_enabled and is_diff and not is_ok:
         exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
         out_file_name = os.path.join(out_dir, case_name_fs + ".md")
         ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
 
-        # Read AI review configuration
-        ai_auto_accept_threshold = float(config.get("ai_auto_accept_threshold", 0.95))
-        ai_auto_reject_threshold = float(config.get("ai_auto_reject_threshold", 0.95))
-
         ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
 
-        if ai_result and not interactive:
-            # Show AI review result in non-interactive mode
+        # ALWAYS print AI review result when in interactive mode or verbose
+        if ai_result:
             print_ai_review_result(ai_result, config.get("verbose", False))
 
     # Skip interactive mode if test is OK and we're auto-freezing with -s
@@ -311,25 +323,36 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
                         snapshot_status is not None and
                         snapshot_status == SnapshotState.UPDATED)
 
+    # Skip interactive mode if AI gives definitive FAIL (1) or ACCEPT (5), unless forced with -I
+    skip_interactive_due_to_ai = False
+    if ai_result and ai_review_enabled and not always_interactive:
+        if ai_result.category == 1:  # FAIL
+            skip_interactive_due_to_ai = True
+            print(f"    AI definitively rejects (category: FAIL, confidence: {ai_result.confidence:.2f})")
+        elif ai_result.category == 5 and ai_result.should_auto_accept(ai_auto_accept_threshold):  # ACCEPT
+            skip_interactive_due_to_ai = True
+            print(f"    AI definitively accepts (category: ACCEPT, confidence: {ai_result.confidence:.2f})")
+
     do_interact = always_interactive
-    if not is_ok and not will_auto_freeze:
+    if not is_ok and not will_auto_freeze and not skip_interactive_due_to_ai:
         do_interact = do_interact or interactive
 
     if do_interact:
+        # Pass AI result and thresholds to interact function
         rv, interaction = \
-            interact(exp_dir, out_dir, case_name, test_result, config)
+            interact(exp_dir, out_dir, case_name, test_result, config, ai_result,
+                    ai_auto_accept_threshold, ai_auto_reject_threshold)
     else:
         rv = test_result
         interaction = UserRequest.NONE
 
-        # In non-interactive AI review mode, check if we should auto-freeze based on AI recommendation
+        # In non-interactive mode or AI-skipped mode, check AI recommendation
         if ai_result and ai_review_enabled:
             if ai_result.should_auto_accept(ai_auto_accept_threshold):
-                print(f"    AI auto-accepting (confidence: {ai_result.confidence:.2f})")
                 interaction = UserRequest.FREEZE
             elif ai_result.should_auto_reject(ai_auto_reject_threshold):
-                print(f"    AI auto-rejecting (confidence: {ai_result.confidence:.2f})")
                 # Keep as DIFF/FAIL, don't change rv
+                pass
 
     auto_update = config.get("update", False)
     auto_freeze = config.get("accept", False)

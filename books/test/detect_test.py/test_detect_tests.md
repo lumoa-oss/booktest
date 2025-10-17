@@ -110,6 +110,7 @@
  * test/test_selection.py::TestSelection/test_directory_selection..ok
  * test/test_selection.py::TestSelection/test_exact_match..ok
  * test/test_selection.py::TestSelection/test_file_selection..ok
+ * test/test_selection.py::TestSelection/test_match_selection_with_test_suite_name..ok
  * test/test_storage.py::TestStorage/test_content_hashing..ok
  * test/test_storage.py::TestStorage/test_dvc_storage_fallback..ok
  * test/test_storage.py::TestStorage/test_git_storage_basic..ok
@@ -124,4 +125,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 123
+count: 124
