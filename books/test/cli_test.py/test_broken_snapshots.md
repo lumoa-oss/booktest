@@ -78,25 +78,25 @@ test book/broken_snapshots_book.py::test_httpx
     File "<workdir>/examples/broken_snapshots/book/broken_snapshots_book.py", line 21, in test_httpx
       response = httpx.get("https://postman-echo.com/get")
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_api.py", line 210, in get
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_api.py", line 210, in get
       return request(
              ^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_api.py", line 118, in request
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_api.py", line 118, in request
       return client.request(
              ^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 837, in request
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 837, in request
       return self.send(request, auth=auth, follow_redirects=follow_redirects)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 926, in send
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 926, in send
       response = self._send_handling_auth(
                  ^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 954, in _send_handling_auth
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 954, in _send_handling_auth
       response = self._send_handling_redirects(
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 991, in _send_handling_redirects
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 991, in _send_handling_redirects
       response = self._send_single_request(request)
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 1027, in _send_single_request
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/httpx/_client.py", line 1027, in _send_single_request
       response = transport.handle_request(request)
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     File "<workdir>/booktest/httpx.py", line 299, in mocked_handle_request
@@ -135,19 +135,19 @@ test book/broken_snapshots_book.py::test_requests
     File "<workdir>/examples/broken_snapshots/book/broken_snapshots_book.py", line 13, in test_requests
       response = requests.get("https://postman-echo.com/get")
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/requests/api.py", line 73, in get
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/requests/api.py", line 73, in get
       return request("get", url, params=params, **kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/requests/api.py", line 59, in request
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/requests/api.py", line 59, in request
       return session.request(method=method, url=url, **kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
       resp = self.send(prep, **send_kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     File "<workdir>/booktest/requests.py", line 374, in _fake_send
       return _original_send(session, request, **kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "/home/arau/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
+    File "<homedir>/.cache/pypoetry/virtualenvs/booktest-OySOPCsb-py3.11/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
       r = adapter.send(request, **kwargs)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     File "<workdir>/booktest/requests.py", line 239, in send

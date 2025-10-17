@@ -86,15 +86,19 @@ def t_cli(t: bt.TestCaseRun, args, context):
     number = re.compile(r"\d+ ms")
 
     workdir = os.getcwd()
+    homedir = os.path.expanduser("~")
 
     def replace_wd(text: str):
         return text.replace(workdir, "<workdir>")
+
+    def replace_hd(text: str):
+        return text.replace(homedir, "<homedir>")
 
     def replace_ms(text):
         return re.sub(number, "<number> ms", text)
 
     def mask(text):
-        return replace_ms(replace_wd(text))
+        return replace_ms(replace_hd(replace_wd(text)))
 
     with open(out_file) as f:
         t.tln(mask(f.read()))
