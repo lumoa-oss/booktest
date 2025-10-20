@@ -201,7 +201,7 @@ def interact(exp_dir, out_dir, case_name, test_result, config,
 
         prompt = \
             ", ".join(options[:len(options) - 1]) + \
-            " or " + options[len(options) - 1]
+            " or " + options[len(options) - 1] + "? "
 
         if not config.get("verbose", False):
             print("    ", end="")

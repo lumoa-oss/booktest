@@ -285,22 +285,44 @@ booktest -R -i
 **Example workflow:**
 
 ```bash
-# You update your model
-$ booktest -R -i
+# you update the hello world test
+$ booktest -v -I test/examples/hello_book.py::test_hello
 
-test/test_accuracy.py::test_model - DIFF
+# test results:
 
-  Expected: Accuracy: 87.5%
-  Actual:   Accuracy: 85.2%
+test test/examples/hello_book.py::test_hello
 
-AI Review (confidence: 0.92):
-  Category: RECOMMEND FAIL
-  Rationale: Accuracy dropped 2.3% - meaningful regression
+? # Review criteria:                                           | # This test prints hello world
+  
+?  - prints 'hello world', freely formatted                    | hello world
+  
+  # This test prints hello world
+  
+? Hello world!                                                 | hello world
 
-  Suggestion: Use tolerance metrics (tmetric) to allow
-  natural variation while catching real regressions.
+test/examples/hello_book.py::test_hello DIFF 0 ms
+(a)ccept, (c)ontinue, (q)uit, (v)iew, (l)ogs, (d)iff, fast (D)iff or AI (R)eview? R
+    Analyzing differences with AI...
 
-Continue without accepting? [y/n]
+    AI Review (confidence: 0.72):
+      Category: RECOMMEND ACCEPT
+      Summary: Cosmetic formatting changes; semantics preserved, recommend accept
+
+      Rationale:
+        The actual output differs only in formatting and added explanatory comments: 'hello world' became 'Hello world!' (capitalization and punctuation) and a short review-criteria header was added. There are no numerical changes or error messages. Semantically the program still prints the expected phrase. If the test is intended to allow free formatting (as the added header even states), these differences are non-functional. If the test harness requires exact-match output, it would fail, but that would be a brittle test rather than a real regression.
+
+      Issues:
+        - line 1-3: New header/comments were added (# Review criteria ...), which change output but are non-functional
+        - last line: 'hello world' -> 'Hello world!' (capital H and added exclamation) — formatting/punctuation change
+
+      Suggestions:
+        - Relax the test to be format-tolerant: compare lowercased/alphanumeric-only forms or use a regex like /hello\s*world/i allowing trailing punctuation
+        - Ignore comment/header lines in output comparison (strip lines starting with '#') if they are non-essential
+        - If exact match is required, update the expected output to match the intended canonical form or add alternative accepted forms
+
+      ⚠ Flagged for human review
+
+(a)ccept, (c)ontinue, (q)uit, (v)iew, (l)ogs, (d)iff, fast (D)iff or AI (R)eview? a
 ```
 
 **Smart behavior:**
