@@ -315,9 +315,13 @@ class DVCStorage(SnapshotStorage):
                 with open(batch_manifest_file, 'r') as f:
                     batch_updates = yaml.safe_load(f) or {}
             except ImportError:
-                import json
-                with open(batch_manifest_file, 'r') as f:
-                    batch_updates = json.load(f) or {}
+                try:
+                    import json
+                    with open(batch_manifest_file, 'r') as f:
+                        batch_updates = json.load(f) or {}
+                except json.JSONDecodeError:
+                    # Empty or invalid JSON file, skip it
+                    continue
 
             # Merge updates
             for test_id, snapshots in batch_updates.items():
