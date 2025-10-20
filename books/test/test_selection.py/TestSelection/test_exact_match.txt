@@ -1,0 +1,8 @@
+  # Exact Match Selection
+  
+  Testing exact match selection:
+   ✓ test/foo_test.py::test_bar with selection ['test/foo_test.py::test_bar']: True
+   ✓ test/foo_test.py::FooBook/test_bar with selection ['test/foo_test.py::FooBook/test_bar']: True
+   ✓ test/foo_test.py::test_bar with selection ['test/foo_test.py::test_baz']: False
+  
+  ✓ All exact match tests passed!

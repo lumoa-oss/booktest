@@ -1,0 +1,24 @@
+{
+  "test_id": "test/examples/snapshots_book.py::test_httpx_filter",
+  "snapshots": {
+    "httpx": {
+      "hash": "sha256:7eb5497dfb4b97e4f0a70a6d4704c2639ebe0930fd9d86f796d598b78f0e5a49",
+      "state": "updated",
+      "details": {
+        "count": 1,
+        "urls": [
+          "https://postman-echo.com/get"
+        ],
+        "hashes": [
+          "0e88eb6e0a8953a80d7d4af2b621e3bd65098073"
+        ]
+      },
+      "timestamp": 1760944894.5208821
+    }
+  },
+  "result": {
+    "success": "diff",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1760944894.521195
+}

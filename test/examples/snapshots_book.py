@@ -10,8 +10,8 @@ import json
 import time
 import httpx
 
-from booktest.functions import SnapshotFunctions, MockFunctions
-from booktest.requests import json_to_sha1, default_encode_body
+from booktest.snapshots.functions import SnapshotFunctions, MockFunctions
+from booktest.snapshots.requests import json_to_sha1, default_encode_body
 
 
 @bt.snapshot_requests()
@@ -286,6 +286,7 @@ def test_function_snapshots(t: bt.TestCaseRun):
 
         t.h1("algorithm snapshot:")
 
+        # NOTE: These results vary randomly
         result = (
             t.t(" * calculating result..").imsln(
                 lambda: s.snapshot(non_deterministic_and_slow_algorithm, 124)))

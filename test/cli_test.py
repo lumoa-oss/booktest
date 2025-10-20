@@ -52,9 +52,15 @@ class BooktestProcess:
         else:
             self.err = open(self.err_file, "w")
 
+        # Use minimal environment - preserve PATH for finding Python/executables
+        clean_env = {
+            'PATH': os.environ.get('PATH', ''),
+            'PYTHONPATH': os.environ.get('PYTHONPATH', ''),
+            'HOME': os.environ.get('HOME', ''),
+        }
         self.process = subprocess.Popen([booktest_exec_path()] + self.args,
                                         cwd=self.context,
-                                        env={},
+                                        env=clean_env,
                                         stdout=self.out,
                                         stderr=self.err)
 
@@ -86,18 +92,29 @@ def t_cli(t: bt.TestCaseRun, args, context):
     number = re.compile(r"\d+ ms")
 
     workdir = os.getcwd()
+    homedir = os.path.expanduser("~")
 
     def replace_wd(text: str):
         return text.replace(workdir, "<workdir>")
 
+    def replace_hd(text: str):
+        return text.replace(homedir, "<homedir>")
+
     def replace_ms(text):
         return re.sub(number, "<number> ms", text)
 
+    def do_diff(text):
+        return "<homedir>" not in text
+
     def mask(text):
-        return replace_ms(replace_wd(text))
+        return replace_ms(replace_hd(replace_wd(text)))
 
     with open(out_file) as f:
-        t.tln(mask(f.read()))
+        content = mask(f.read())
+        if do_diff(content):
+            t.tln(content)
+        else:
+            t.iln(content)
 
     with open(err_file) as f:
         err = mask(f.read())
@@ -134,7 +151,7 @@ def test_narrow_detection(t: bt.TestCaseRun, context: str):
     t.tln("narrow detection only run detection in related modules/test suites. ")
     t.tln("this test merely verifies that nothing breaks, when invoking the code")
 
-    t_cli(t, ["--narrow-detection", "predictor"], context)
+    t_cli(t, ["--narrow-detection", "book/predictor_book.py"], context)
 
 
 @bt.depends_on(TIMEOUT_CONTEXT)

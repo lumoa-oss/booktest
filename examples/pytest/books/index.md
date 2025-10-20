@@ -2,9 +2,7 @@
 
  * book
      * teardown
-         * setup_teardown
-             * [setup_teardown](book/teardown/setup_teardown/setup_teardown.md)
+         * [setup_teardown_test.py::test_setup_teardown](book/teardown/setup_teardown_test.py::test_setup_teardown.md)
 
-     * test_hello
-         * [hello](book/test_hello/hello.md)
+     * [test_hello.py::test_hello](book/test_hello.py::test_hello.md)
 

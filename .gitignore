@@ -31,3 +31,12 @@ __pycache__
 build
 dist
 *egg-info/
+
+.env
+.env.*
+
+!.env.example
+
+# Booktest local cache (not needed in Git mode, but kept for safety)
+.booktest_cache/
+.ai/

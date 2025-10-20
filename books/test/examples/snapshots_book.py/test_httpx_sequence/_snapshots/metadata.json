@@ -1,0 +1,26 @@
+{
+  "test_id": "test/examples/snapshots_book.py::test_httpx_sequence",
+  "snapshots": {
+    "httpx": {
+      "hash": "sha256:9b1a27de31e849ffb891ce2ad4ef663e1189abc02901834faad720c5aaa09e7f",
+      "state": "updated",
+      "details": {
+        "count": 2,
+        "urls": [
+          "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam",
+          "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam"
+        ],
+        "hashes": [
+          "3a6b8838042eb5a710065a1c8ee8cac0b6e0099f",
+          "58cb3f3a03b057645d8aa5d98f3d21578933e363"
+        ]
+      },
+      "timestamp": 1760944895.0228207
+    }
+  },
+  "result": {
+    "success": "diff",
+    "snapshotting": "updated"
+  },
+  "timestamp": 1760944895.023063
+}

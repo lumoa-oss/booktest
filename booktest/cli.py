@@ -11,8 +11,10 @@ import argcomplete
 import sys
 
 import booktest as bt
-from booktest.config import get_default_config, DEFAULT_PYTHON_PATH
-from booktest.detection import detect_tests, detect_setup, include_sys_path
+from booktest.config.config import get_default_config, DEFAULT_PYTHON_PATH, extract_env_vars
+from booktest.config.detection import detect_tests, detect_setup, include_sys_path
+from booktest.migration.migrate import check_and_migrate
+from booktest.snapshots.env import MockEnv
 import os
 
 
@@ -82,16 +84,35 @@ def main(arguments=None):
     if context is not None:
         os.chdir(context)
 
-    setup_test_suite(parser, python_path, detect_selection)
-    argcomplete.autocomplete(parser)
+    # Load config and extract environment variables
+    config = get_default_config()
+    env_vars = extract_env_vars(config)
 
-    args = parser.parse_args(args=arguments)
+    # Apply environment variables before test discovery
+    # This allows tests to read env vars during module import
+    mock_env = None
+    if env_vars:
+        mock_env = MockEnv(env_vars)
+        mock_env.start()
 
-    if "exec" in args:
-        return exec_parsed(args)
-    else:
-        parser.print_help()
-        return 1
+    try:
+        # Check and perform automatic migration if needed
+        check_and_migrate()
+
+        setup_test_suite(parser, python_path, detect_selection)
+        argcomplete.autocomplete(parser)
+
+        args = parser.parse_args(args=arguments)
+
+        if "exec" in args:
+            return exec_parsed(args)
+        else:
+            parser.print_help()
+            return 1
+    finally:
+        # Clean up environment variables after execution
+        if mock_env is not None:
+            mock_env.stop()
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ Quite nice test
 
 log line 0
 log line 1
+log line 2
 
 ## Tested results
 
@@ -15,13 +16,13 @@ tested line2
 ## Next section has headers and content in random order
 
 
-### header 1
-
-content 1
-
 ### header 2
 
 content 2
+
+### header 1
+
+content 1
 
 ### header 3
 

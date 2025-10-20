@@ -1,0 +1,15 @@
+  # Environment Variable Cleanup
+  
+  Original TEST_CLEANUP_VAR: None
+  Original ANOTHER_CLEANUP_VAR: None
+  
+  Running booktest with env vars set in config...
+  Test run completed with exit code: 255
+  
+  Captured TEST_CLEANUP_VAR: temporary_value
+  Captured ANOTHER_CLEANUP_VAR: another_temporary
+  
+  After execution TEST_CLEANUP_VAR in parent: None
+  After execution ANOTHER_CLEANUP_VAR in parent: None
+  
+  ✓ Environment variables were properly isolated to subprocess!

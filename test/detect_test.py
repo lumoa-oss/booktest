@@ -1,5 +1,5 @@
 import booktest as bt
-from booktest.testsuite import cases_of
+from booktest.core.testsuite import cases_of
 
 
 def test_detect_tests(t: bt.TestCaseRun):

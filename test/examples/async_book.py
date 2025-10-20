@@ -41,7 +41,7 @@ async def test_cache_use(t: bt.TestCaseRun, value):
 
 @bt.snapshot_requests()
 async def test_requests(t: bt.TestCaseRun):
-    response = requests.get("https://api.weather.gov/")
+    response = requests.get("https://postman-echo.com/get")
 
     t.h1("response:")
     t.tln(json.dumps(response.json(), indent=4))
@@ -50,7 +50,7 @@ async def test_requests(t: bt.TestCaseRun):
 @bt.snapshot_httpx()
 async def test_httpx(t: bt.TestCaseRun):
     async with httpx.AsyncClient() as client:
-        response = await client.get("https://api.weather.gov/")
+        response = await client.get("https://postman-echo.com/get")
 
         t.h1("response:")
         t.tln(json.dumps(response.json(), indent=4))

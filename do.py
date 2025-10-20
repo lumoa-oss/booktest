@@ -7,15 +7,19 @@ from coverage import Coverage
 import argcomplete
 
 import booktest as bt
+from booktest.migration.migrate import check_and_migrate
 
 TEST_ROOT_DIR = "books"
 
 
 MIN_COVERAGE_PERCENT = 25
 
-
+# Detect tests first
 tests = bt.detect_test_suite("test")
 bt_setup = bt.detect_setup("test")
+
+# Check and perform automatic migration with test discovery
+check_and_migrate(tests=tests)
 
 
 def coverage(parsed) -> int:

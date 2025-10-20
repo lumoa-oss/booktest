@@ -1,72 +1,124 @@
 # Books overview:
 
  * test
-     * stderr
-         * [stderr](test/stderr/stderr.md)
+     * stderr_test.py::StdErrBook
+         * [test_stderr](test/stderr_test.py::StdErrBook/test_stderr.md)
 
-     * detect
-         * [detect_setup](test/detect/detect_setup.md)
-         * [detect_tests](test/detect/detect_tests.md)
+     * [detect_test.py::test_detect_setup](test/detect_test.py::test_detect_setup.md)
+     * [detect_test.py::test_detect_tests](test/detect_test.py::test_detect_tests.md)
+     * [test_case_filtering.py::test_removed_tests_filtered](test/test_case_filtering.py::test_removed_tests_filtered.md)
+
+     * test_env_config.py::TestEnvConfig
+         * [test_extract_env_vars_legacy](test/test_env_config.py::TestEnvConfig/test_extract_env_vars_legacy.md)
+         * [test_extract_env_vars_pytest_style](test/test_env_config.py::TestEnvConfig/test_extract_env_vars_pytest_style.md)
+         * [test_env_vars_at_module_load](test/test_env_config.py::TestEnvConfig/test_env_vars_at_module_load.md)
+         * [test_env_cleanup](test/test_env_config.py::TestEnvConfig/test_env_cleanup.md)
+
+     * [test_metrics.py::test_absolute_tolerance](test/test_metrics.py::test_absolute_tolerance.md)
+     * [test_metrics.py::test_direction_constraints](test/test_metrics.py::test_direction_constraints.md)
+     * [test_metrics.py::test_ml_pipeline_example](test/test_metrics.py::test_ml_pipeline_example.md)
+     * [test_metrics.py::test_percentage_tolerance](test/test_metrics.py::test_percentage_tolerance.md)
+     * [test_metrics.py::test_with_units](test/test_metrics.py::test_with_units.md)
 
      * dependencies
          * parametrized1
-             * [create_data](test/dependencies/parametrized1/create_data.md)
-             * [process_data](test/dependencies/parametrized1/process_data.md)
-             * [use_processed_data](test/dependencies/parametrized1/use_processed_data.md)
+             * [test_create_data](test/dependencies/parametrized1/test_create_data.md)
+             * [test_process_data](test/dependencies/parametrized1/test_process_data.md)
+             * [test_use_processed_data](test/dependencies/parametrized1/test_use_processed_data.md)
 
          * parametrized2
-             * [create_data](test/dependencies/parametrized2/create_data.md)
-             * [process_data](test/dependencies/parametrized2/process_data.md)
-             * [use_processed_data](test/dependencies/parametrized2/use_processed_data.md)
+             * [test_create_data](test/dependencies/parametrized2/test_create_data.md)
+             * [test_process_data](test/dependencies/parametrized2/test_process_data.md)
+             * [test_use_processed_data](test/dependencies/parametrized2/test_use_processed_data.md)
 
-         * cross_dependency
-             * [cross_use_data](test/dependencies/cross_dependency/cross_use_data.md)
+     * dependencies_test.py::CrossDependencyTest
+         * [test_cross_use_data](test/dependencies_test.py::CrossDependencyTest/test_cross_use_data.md)
 
-         * data_source
-             * [create_data](test/dependencies/data_source/create_data.md)
-             * [use_data](test/dependencies/data_source/use_data.md)
+     * dependencies_test.py::DataSourceBook
+         * [test_create_data](test/dependencies_test.py::DataSourceBook/test_create_data.md)
+         * [test_use_data](test/dependencies_test.py::DataSourceBook/test_use_data.md)
 
-         * data_user1
-             * [use_data](test/dependencies/data_user1/use_data.md)
+     * dependencies_test.py::DataUser1Book
+         * [test_use_data](test/dependencies_test.py::DataUser1Book/test_use_data.md)
 
-         * data_user2
-             * [use_data](test/dependencies/data_user2/use_data.md)
+     * dependencies_test.py::DataUser2Book
+         * [test_use_data](test/dependencies_test.py::DataUser2Book/test_use_data.md)
 
-         * [dependencies](test/dependencies/dependencies.md)
+     * [dependencies_test.py::test_dependencies](test/dependencies_test.py::test_dependencies.md)
+     * [cli_test.py::test_broken_snapshots](test/cli_test.py::test_broken_snapshots.md)
+     * [cli_test.py::test_configurations](test/cli_test.py::test_configurations.md)
+     * [cli_test.py::test_context](test/cli_test.py::test_context.md)
+     * [cli_test.py::test_failures](test/cli_test.py::test_failures.md)
+     * [cli_test.py::test_help](test/cli_test.py::test_help.md)
+     * [cli_test.py::test_list](test/cli_test.py::test_list.md)
+     * [cli_test.py::test_narrow_detection](test/cli_test.py::test_narrow_detection.md)
+     * [cli_test.py::test_parallel](test/cli_test.py::test_parallel.md)
+     * [cli_test.py::test_pytest](test/cli_test.py::test_pytest.md)
+     * [cli_test.py::test_refreshing_broken_snapshots](test/cli_test.py::test_refreshing_broken_snapshots.md)
+     * [cli_test.py::test_run](test/cli_test.py::test_run.md)
+     * [cli_test.py::test_timeout](test/cli_test.py::test_timeout.md)
 
-     * cli
-         * [broken_snapshots](test/cli/broken_snapshots.md)
-         * [configurations](test/cli/configurations.md)
-         * [context](test/cli/context.md)
-         * [failures](test/cli/failures.md)
-         * [help](test/cli/help.md)
-         * [list](test/cli/list.md)
-         * [narrow_detection](test/cli/narrow_detection.md)
-         * [parallel](test/cli/parallel.md)
-         * [pytest](test/cli/pytest.md)
-         * [refreshing_broken_snapshots](test/cli/refreshing_broken_snapshots.md)
-         * [run](test/cli/run.md)
-         * [timeout](test/cli/timeout.md)
+     * test_colors.py::TestColors
+         * [test_color_functions](test/test_colors.py::TestColors/test_color_functions.md)
+         * [test_no_color_env_var](test/test_colors.py::TestColors/test_no_color_env_var.md)
+         * [test_colorize_utility](test/test_colors.py::TestColors/test_colorize_utility.md)
+
+     * test_two_dimensional_results.py::TestTwoDimensionalResults
+         * [test_two_dimensional_result_creation](test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation.md)
+         * [test_legacy_compatibility](test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_legacy_compatibility.md)
+         * [test_review_logic](test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_review_logic.md)
+         * [test_current_implementation_stores_two_dimensional_result](test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_current_implementation_stores_two_dimensional_result.md)
 
      * utils
          * all_caps
-             * [names](test/utils/all_caps/names.md)
+             * [test_names](test/utils/all_caps/test_names.md)
 
-     * test_names
-         * api_v1
-             * [names](test/test_names/api_v1/names.md)
+     * test_names_test.py::ApiV1TestBook
+         * [test_names](test/test_names_test.py::ApiV1TestBook/test_names.md)
 
-         * camel_case_names
-             * [names](test/test_names/camel_case_names/names.md)
+     * test_names_test.py::CamelCaseNamesTestBook
+         * [test_names](test/test_names_test.py::CamelCaseNamesTestBook/test_names.md)
 
-         * get_url
-             * [names](test/test_names/get_url/names.md)
+     * test_names_test.py::GetURLTestBook
+         * [test_names](test/test_names_test.py::GetURLTestBook/test_names.md)
 
-         * url_ops
-             * [names](test/test_names/url_ops/names.md)
+     * test_names_test.py::url_ops
+         * [test_names](test/test_names_test.py::url_ops/test_names.md)
 
-     * setup_teardown
-         * [setup_teardown](test/setup_teardown/setup_teardown.md)
+     * [setup_teardown_test.py::test_setup_teardown](test/setup_teardown_test.py::test_setup_teardown.md)
+
+     * test_selection.py::TestSelection
+         * [test_file_selection](test/test_selection.py::TestSelection/test_file_selection.md)
+         * [test_class_selection](test/test_selection.py::TestSelection/test_class_selection.md)
+         * [test_directory_selection](test/test_selection.py::TestSelection/test_directory_selection.md)
+         * [test_exact_match](test/test_selection.py::TestSelection/test_exact_match.md)
+         * [test_match_selection_with_test_suite_name](test/test_selection.py::TestSelection/test_match_selection_with_test_suite_name.md)
+
+     * test_storage.py::TestStorage
+         * [test_git_storage_basic](test/test_storage.py::TestStorage/test_git_storage_basic.md)
+         * [test_git_storage_path_construction](test/test_storage.py::TestStorage/test_git_storage_path_construction.md)
+         * [test_dvc_storage_fallback](test/test_storage.py::TestStorage/test_dvc_storage_fallback.md)
+         * [test_storage_mode_detection](test/test_storage.py::TestStorage/test_storage_mode_detection.md)
+         * [test_manifest_operations](test/test_storage.py::TestStorage/test_manifest_operations.md)
+         * [test_content_hashing](test/test_storage.py::TestStorage/test_content_hashing.md)
+         * [test_promote_operation](test/test_storage.py::TestStorage/test_promote_operation.md)
+         * [test_snapshot_types](test/test_storage.py::TestStorage/test_snapshot_types.md)
+
+     * test_migration.py::TestMigration
+         * [test_legacy_to_pytest_migration](test/test_migration.py::TestMigration/test_legacy_to_pytest_migration.md)
+         * [test_pytest_name_conversion](test/test_migration.py::TestMigration/test_pytest_name_conversion.md)
+
+     * datascience
+         * [test_gpt.py::test_evaluation](test/datascience/test_gpt.py::test_evaluation.md)
+         * [test_gpt.py::test_request](test/datascience/test_gpt.py::test_request.md)
+         * [test_gpt.py::test_review](test/datascience/test_gpt.py::test_review.md)
+         * [test_assistant.py::test_assistant](test/datascience/test_assistant.py::test_assistant.md)
+         * [test_evaluate.py::test_multiclass_evaluation](test/datascience/test_evaluate.py::test_multiclass_evaluation.md)
+         * [test_evaluate.py::test_regression_evaluation](test/datascience/test_evaluate.py::test_regression_evaluation.md)
+         * [test_evaluate.py::test_sentiment_evaluation](test/datascience/test_evaluate.py::test_sentiment_evaluation.md)
+         * [test_agent.py::test_agent_step1_plan](test/datascience/test_agent.py::test_agent_step1_plan.md)
+         * [test_agent.py::test_agent_step2_answer](test/datascience/test_agent.py::test_agent_step2_answer.md)
+         * [test_agent.py::test_agent_step3_validate](test/datascience/test_agent.py::test_agent_step3_validate.md)
 
      * examples
          * example_suite
@@ -75,64 +127,52 @@
              * [multiline](test/examples/example_suite/multiline.md)
              * [tokenizer](test/examples/example_suite/tokenizer.md)
 
-         * snapshots
-             * [auto_function_snapshots](test/examples/snapshots/auto_function_snapshots.md)
-             * [complex_function_snapshots](test/examples/snapshots/complex_function_snapshots.md)
-             * [env](test/examples/snapshots/env.md)
-             * [function_snapshots](test/examples/snapshots/function_snapshots.md)
-             * [httpx](test/examples/snapshots/httpx.md)
-             * [httpx_filter](test/examples/snapshots/httpx_filter.md)
-             * [httpx_sequence](test/examples/snapshots/httpx_sequence.md)
-             * [mock_env](test/examples/snapshots/mock_env.md)
-             * [mock_env_deletions](test/examples/snapshots/mock_env_deletions.md)
-             * [mock_functions](test/examples/snapshots/mock_functions.md)
-             * [requests](test/examples/snapshots/requests.md)
-             * [requests_and_env](test/examples/snapshots/requests_and_env.md)
-             * [requests_deterministic_hashes](test/examples/snapshots/requests_deterministic_hashes.md)
-             * [requests_filter](test/examples/snapshots/requests_filter.md)
-             * [requests_sequence](test/examples/snapshots/requests_sequence.md)
-             * [requests_with_headers](test/examples/snapshots/requests_with_headers.md)
-             * [saved_request](test/examples/snapshots/saved_request.md)
+         * [snapshots_book.py::test_auto_function_snapshots](test/examples/snapshots_book.py::test_auto_function_snapshots.md)
+         * [snapshots_book.py::test_complex_function_snapshots](test/examples/snapshots_book.py::test_complex_function_snapshots.md)
+         * [snapshots_book.py::test_env](test/examples/snapshots_book.py::test_env.md)
+         * [snapshots_book.py::test_function_snapshots](test/examples/snapshots_book.py::test_function_snapshots.md)
+         * [snapshots_book.py::test_httpx](test/examples/snapshots_book.py::test_httpx.md)
+         * [snapshots_book.py::test_httpx_filter](test/examples/snapshots_book.py::test_httpx_filter.md)
+         * [snapshots_book.py::test_httpx_sequence](test/examples/snapshots_book.py::test_httpx_sequence.md)
+         * [snapshots_book.py::test_mock_env](test/examples/snapshots_book.py::test_mock_env.md)
+         * [snapshots_book.py::test_mock_env_deletions](test/examples/snapshots_book.py::test_mock_env_deletions.md)
+         * [snapshots_book.py::test_mock_functions](test/examples/snapshots_book.py::test_mock_functions.md)
+         * [snapshots_book.py::test_requests](test/examples/snapshots_book.py::test_requests.md)
+         * [snapshots_book.py::test_requests_and_env](test/examples/snapshots_book.py::test_requests_and_env.md)
+         * [snapshots_book.py::test_requests_deterministic_hashes](test/examples/snapshots_book.py::test_requests_deterministic_hashes.md)
+         * [snapshots_book.py::test_requests_filter](test/examples/snapshots_book.py::test_requests_filter.md)
+         * [snapshots_book.py::test_requests_sequence](test/examples/snapshots_book.py::test_requests_sequence.md)
+         * [snapshots_book.py::test_requests_with_headers](test/examples/snapshots_book.py::test_requests_with_headers.md)
+         * [snapshots_book.py::test_saved_request](test/examples/snapshots_book.py::test_saved_request.md)
+         * [async_book.py::test_cache](test/examples/async_book.py::test_cache.md)
+         * [async_book.py::test_cache_use](test/examples/async_book.py::test_cache_use.md)
+         * [async_book.py::test_httpx](test/examples/async_book.py::test_httpx.md)
+         * [async_book.py::test_requests](test/examples/async_book.py::test_requests.md)
+         * [async_book.py::test_wait](test/examples/async_book.py::test_wait.md)
+         * [pool_book.py::test_port_pool_1](test/examples/pool_book.py::test_port_pool_1.md)
+         * [pool_book.py::test_port_pool_2](test/examples/pool_book.py::test_port_pool_2.md)
+         * [pool_book.py::test_port_pool_3](test/examples/pool_book.py::test_port_pool_3.md)
+         * [pool_book.py::test_port_pool_with_2_ports](test/examples/pool_book.py::test_port_pool_with_2_ports.md)
+         * [pool_book.py::test_port_pool_with_2_ports_2](test/examples/pool_book.py::test_port_pool_with_2_ports_2.md)
+         * [memory_book.py::test_memory](test/examples/memory_book.py::test_memory.md)
+         * [resource_book.py::test_resource_use_1](test/examples/resource_book.py::test_resource_use_1.md)
+         * [resource_book.py::test_resource_use_2](test/examples/resource_book.py::test_resource_use_2.md)
+         * [resource_book.py::test_resource_use_3](test/examples/resource_book.py::test_resource_use_3.md)
 
-         * async
-             * [cache](test/examples/async/cache.md)
-             * [cache_use](test/examples/async/cache_use.md)
-             * [httpx](test/examples/async/httpx.md)
-             * [requests](test/examples/async/requests.md)
-             * [wait](test/examples/async/wait.md)
+         * example_book.py::ExampleTestBook
+             * [test_engine](test/examples/example_book.py::ExampleTestBook/test_engine.md)
+             * [test_df](test/examples/example_book.py::ExampleTestBook/test_df.md)
+             * [test_image](test/examples/example_book.py::ExampleTestBook/test_image.md)
+             * [test_md](test/examples/example_book.py::ExampleTestBook/test_md.md)
+             * [test_tmp_file](test/examples/example_book.py::ExampleTestBook/test_tmp_file.md)
+             * [test_cache](test/examples/example_book.py::ExampleTestBook/test_cache.md)
+             * [test_cache_use](test/examples/example_book.py::ExampleTestBook/test_cache_use.md)
+             * [test_two_cached](test/examples/example_book.py::ExampleTestBook/test_two_cached.md)
+             * [test_ms](test/examples/example_book.py::ExampleTestBook/test_ms.md)
+             * [test_float](test/examples/example_book.py::ExampleTestBook/test_float.md)
 
-         * pool
-             * [port_pool_1](test/examples/pool/port_pool_1.md)
-             * [port_pool_2](test/examples/pool/port_pool_2.md)
-             * [port_pool_3](test/examples/pool/port_pool_3.md)
-             * [port_pool_with_2_ports](test/examples/pool/port_pool_with_2_ports.md)
-             * [port_pool_with_2_ports_2](test/examples/pool/port_pool_with_2_ports_2.md)
-
-         * memory
-             * [memory](test/examples/memory/memory.md)
-
-         * resource
-             * [resource_use_1](test/examples/resource/resource_use_1.md)
-             * [resource_use_2](test/examples/resource/resource_use_2.md)
-             * [resource_use_3](test/examples/resource/resource_use_3.md)
-
-         * example
-             * [engine](test/examples/example/engine.md)
-             * [df](test/examples/example/df.md)
-             * [image](test/examples/example/image.md)
-             * [md](test/examples/example/md.md)
-             * [tmp_file](test/examples/example/tmp_file.md)
-             * [cache](test/examples/example/cache.md)
-             * [cache_use](test/examples/example/cache_use.md)
-             * [two_cached](test/examples/example/two_cached.md)
-             * [ms](test/examples/example/ms.md)
-             * [float](test/examples/example/float.md)
-
-         * simple
-             * [cache](test/examples/simple/cache.md)
-             * [cache_use](test/examples/simple/cache_use.md)
-             * [simple](test/examples/simple/simple.md)
-
-         * hello
-             * [hello](test/examples/hello/hello.md)
+         * [simple_book.py::test_cache](test/examples/simple_book.py::test_cache.md)
+         * [simple_book.py::test_cache_use](test/examples/simple_book.py::test_cache_use.md)
+         * [simple_book.py::test_simple](test/examples/simple_book.py::test_simple.md)
+         * [hello_book.py::test_hello](test/examples/hello_book.py::test_hello.md)
 
