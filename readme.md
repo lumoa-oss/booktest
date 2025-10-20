@@ -239,17 +239,33 @@ t.assertln("Accuracy ≥ 80%", accuracy >= 0.80)  # Hard requirement
 
 ### 🤖 AI as North Star
 
+Booktest provides **two AI-powered capabilities** for scaling test review:
+
+#### 1. AI Evaluation of Test Outputs
+
 **Before**: Human reviews 500 LLM outputs → 3 days
 **After**: GPT reviews 500 LLM outputs → 5 minutes
 
 ```python
 # Automated, consistent evaluation that scales
+r = t.start_review()
+r.iln(response)
 r.reviewln("Is code syntactically correct?", "Yes", "No")
 r.reviewln("Does it solve the problem?", "Yes", "No")
 r.reviewln("Code quality?", "Excellent", "Good", "Poor")
 ```
 
-**New in 1.0**: AI-assisted diff review with `-R` flag:
+**How it works:**
+- First run: AI evaluates outputs, records decisions
+- Subsequent runs: Reuses evaluations (instant, deterministic, free)
+- Only re-evaluates when outputs change
+
+#### 2. AI-Assisted Diff Review
+
+**Before**: 47 tests change output → must manually review each one
+**After**: AI reviews diffs → only 3 need human judgment
+
+**Enable with `-R` flag:**
 
 ```bash
 # AI automatically reviews test differences
@@ -259,14 +275,49 @@ booktest -R
 booktest -R -i
 ```
 
-AI analyzes output differences and provides 5-category recommendations:
-- **ACCEPT** (5): No significant changes, clear improvements → auto-accept
-- **RECOMMEND ACCEPT** (4): Minor changes, likely acceptable
-- **UNSURE** (3): Complex changes requiring human judgment
-- **RECOMMEND FAIL** (2): Suspicious changes, likely issues
-- **FAIL** (1): Clear regressions, critical errors → auto-reject
+**5-category classification:**
+- **ACCEPT** (5): No significant changes, clear improvements → **auto-accept**
+- **RECOMMEND ACCEPT** (4): Minor changes, likely acceptable → prompt user
+- **UNSURE** (3): Complex changes requiring human judgment → prompt user
+- **RECOMMEND FAIL** (2): Suspicious changes, likely issues → prompt user
+- **FAIL** (1): Clear regressions, critical errors → **auto-reject**
 
-**Result**: Scalable evaluation without human bottleneck. AI triages test failures, humans focus on truly ambiguous cases.
+**Example workflow:**
+
+```bash
+# You update your model
+$ booktest -R -i
+
+test/test_accuracy.py::test_model - DIFF
+
+  Expected: Accuracy: 87.5%
+  Actual:   Accuracy: 85.2%
+
+AI Review (confidence: 0.92):
+  Category: RECOMMEND FAIL
+  Rationale: Accuracy dropped 2.3% - meaningful regression
+
+  Suggestion: Use tolerance metrics (tmetric) to allow
+  natural variation while catching real regressions.
+
+Continue without accepting? [y/n]
+```
+
+**Smart behavior:**
+- Definitive decisions (FAIL/ACCEPT at 95%+ confidence) → auto-decided, no prompt
+- Ambiguous cases (RECOMMEND/UNSURE) → prompts for human review
+- In non-interactive mode: adds AI notes to test reports
+
+**Configuration:**
+
+```ini
+# .booktest or booktest.ini
+# Adjust confidence thresholds (default: 0.95)
+ai_auto_accept_threshold=0.98  # More conservative
+ai_auto_reject_threshold=0.98
+```
+
+**Result**: Scalable evaluation without human bottleneck. AI triages obvious cases, humans focus on truly ambiguous changes. Turn 3-day review sessions into 30-minute sessions.
 
 ### 💾 DVC Integration
 
