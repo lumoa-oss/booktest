@@ -9,6 +9,8 @@ Complete reference for all Booktest features with examples.
 1. [Output Formatting](#output-formatting)
 2. [Tolerance Metrics (New in 1.0)](#tolerance-metrics-new-in-10)
 3. [AI-Assisted Review (New in 1.0)](#ai-assisted-review-new-in-10)
+   - [Basic Review](#basic-review)
+   - [AI-Assisted Diff Review](#ai-assisted-diff-review)
 4. [Snapshots & Mocking](#snapshots--mocking)
 5. [Dependencies & Resources](#dependencies--resources)
 6. [Data Visualization](#data-visualization)
@@ -356,6 +358,174 @@ booktest test
 ```
 
 **Result**: After first run with real credentials, all AI evaluations replay from snapshots (instant, free, offline).
+
+### AI-Assisted Diff Review
+
+Let AI analyze test output differences and recommend whether to accept or reject changes.
+
+#### Basic Usage
+
+When tests produce different output (DIFF status), enable AI review to automatically analyze changes:
+
+```bash
+# Run tests with AI diff review
+booktest -R
+
+# AI review in interactive mode
+booktest -R -i
+```
+
+**What it does:**
+- Analyzes differences between expected and actual test outputs
+- Provides 5-category classification with confidence scores
+- Auto-accepts clear improvements, auto-rejects clear regressions
+- Only prompts for human review on ambiguous cases
+
+#### Classification Categories
+
+AI classifies changes into 5 categories:
+
+1. **FAIL (1)** - Definitive rejection
+   - Clear regressions detected
+   - Critical errors introduced
+   - Auto-rejects without prompting (confidence ≥ 95%)
+
+2. **RECOMMEND FAIL (2)** - Suggest rejection
+   - Likely regressions
+   - Suspicious changes
+   - Prompts user for confirmation
+
+3. **UNSURE (3)** - Requires human judgment
+   - Complex changes
+   - Ambiguous differences
+   - Always prompts user
+
+4. **RECOMMEND ACCEPT (4)** - Suggest acceptance
+   - Minor formatting changes
+   - Expected improvements
+   - Prompts user for confirmation
+
+5. **ACCEPT (5)** - Definitive acceptance
+   - No significant changes
+   - Clear improvements
+   - Auto-accepts without prompting (confidence ≥ 95%)
+
+#### Interactive Mode
+
+In interactive mode (`-i`), press `R` to get AI analysis of test differences:
+
+```bash
+booktest -R -i
+```
+
+**Example interaction:**
+```
+test/test_model.py::test_accuracy - DIFF
+
+Expected:
+  Accuracy: 87.5%
+
+Actual:
+  Accuracy: 85.2%
+
+(a)ccept, (c)ontinue, AI (R)eview, (v)iew, (d)iff? R
+
+AI Review (confidence: 0.92):
+  Category: RECOMMEND FAIL
+
+  Rationale: Accuracy dropped from 87.5% to 85.2% (-2.3%).
+  This is a meaningful regression that should be investigated.
+
+  Suggestion: Use tolerance metrics (tmetric) to allow natural
+  variation while catching real regressions.
+
+Continue without accepting? [y/n]
+```
+
+**Smart behavior:**
+- Definitive FAIL (1) or ACCEPT (5) → auto-continues, no prompt
+- RECOMMEND (2,4) or UNSURE (3) → prompts for user decision
+
+#### Configuration
+
+Adjust AI confidence thresholds in `.booktest` or `booktest.ini`:
+
+```ini
+# Require 98% confidence for auto-accept/reject (more conservative)
+ai_auto_accept_threshold=0.98
+ai_auto_reject_threshold=0.98
+
+# Default is 0.95 (95% confidence)
+```
+
+**Higher threshold** = More conservative, prompts user more often
+**Lower threshold** = More aggressive, auto-decides more often
+
+#### Workflow Examples
+
+**Non-interactive AI review:**
+```bash
+# AI reviews all diffs automatically
+booktest -R
+
+# Only definitive cases auto-decided
+# Ambiguous cases marked for review with AI notes
+```
+
+**Interactive with AI assist:**
+```bash
+# Stop at each diff, press R for AI analysis
+booktest -R -i
+
+# Best for: reviewing complex changes with AI guidance
+```
+
+**Review only failed tests:**
+```bash
+# Skip successful tests, AI review failures
+booktest -R -c
+
+# Best for: fixing failures after code changes
+```
+
+**Verbose AI analysis:**
+```bash
+# Show full AI rationale and suggestions
+booktest -R -v
+
+# Best for: understanding AI reasoning, improving tests
+```
+
+#### AI Review Results
+
+AI reviews are stored alongside test outputs:
+
+```
+books/
+  .out/
+    test/
+      test_model.md           # Test output
+      test_model.ai.json      # AI review result
+```
+
+**Why stored?**
+- Review AI decisions later
+- Track AI accuracy over time
+- Debug incorrect classifications
+- Include in test reports
+
+#### Force Interactive Mode
+
+Use `-I` (capital I) to force interactive mode even for definitive AI decisions:
+
+```bash
+# Always prompt, even for clear ACCEPT/FAIL
+booktest -R -I
+
+# Useful for: auditing AI decisions, learning from AI
+```
+
+**Example**: [docs/adr/009-ai-assisted-test-review.md](adr/009-ai-assisted-test-review.md)
 
 ---
 
