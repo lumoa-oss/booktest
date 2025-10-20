@@ -56,13 +56,14 @@ class TestColors(bt.TestBook):
         original_no_color = os.environ.get('NO_COLOR')
 
         try:
-            # Test without NO_COLOR
+            # Test without NO_COLOR - enable colors explicitly for testing
             if 'NO_COLOR' in os.environ:
                 del os.environ['NO_COLOR']
 
-            # Force re-check
+            # Force re-check and explicitly enable colors (CI might not have TTY)
             import importlib
             importlib.reload(colors)
+            colors.set_color_enabled(True)  # Force enable for testing
 
             t.tln(f"Without NO_COLOR: is_color_enabled = {colors.is_color_enabled()}")
 
