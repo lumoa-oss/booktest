@@ -438,6 +438,10 @@ class DVCStorage(SnapshotStorage):
         if not self.batch_manifest_path:
             return
 
+        # Don't create empty manifest files - nothing to merge
+        if not self.pending_updates:
+            return
+
         import tempfile
 
         # Sort pending updates for deterministic output
