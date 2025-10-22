@@ -1,6 +1,15 @@
 # description:
 
-this test verifies that broken snapshots will gracefully fail
+this test verifies that:
+
+ 1) malformed snasphots (e.g. because git merge) break the test
+ 2) and informs user about need to recapture them with -s
+
+# breaking snapshots
+
+ * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/function_snapshot/_snapshots/functions.json
+ * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/httpx/_snapshots/httpx.json
+ * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/requests/_snapshots/requests.json
 
 # command:
 
@@ -15,7 +24,7 @@ booktest
 
 # test results:
 
-  book/broken_snapshots_book.py::test_function_snapshot - FAIL <number> ms (snapshots updated)
+  book/broken_snapshots_book.py::test_function_snapshot - FAIL <number> ms
   book/broken_snapshots_book.py::test_httpx - FAIL <number> ms
   book/broken_snapshots_book.py::test_requests - FAIL <number> ms
 
@@ -176,3 +185,9 @@ book/broken_snapshots_book.py::test_requests FAILED in <number> ms
 💡 To update failed tests's (-c) missing snapshots (-s), run: booktest -c -s
 
 
+
+# rebreak snapshots to keep git status clean:
+
+ * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/function_snapshot/_snapshots/functions.json
+ * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/httpx/_snapshots/httpx.json
+ * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/requests/_snapshots/requests.json

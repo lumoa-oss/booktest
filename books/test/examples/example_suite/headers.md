@@ -5,8 +5,6 @@ Quite nice test
 ## Ignored log
 
 log line 0
-log line 1
-log line 2
 
 ## Tested results
 

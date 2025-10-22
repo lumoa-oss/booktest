@@ -399,7 +399,7 @@ class TestCaseRun(OutputWriter):
         """
         from booktest.snapshots.storage import GitStorage, DVCStorage
 
-        mode = self.config.get("storage.mode", "auto")
+        mode = self.config.get("storage.mode", "git")
 
         # Use out_dir for writing (staging), exp_dir for reading (frozen)
         # GitStorage will handle both locations

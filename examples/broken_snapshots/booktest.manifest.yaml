@@ -1,7 +1,7 @@
 book/broken_snapshots_book.py/test_function_snapshot:
-  func: sha256:8fb58102a5c59aff8f057c6ae740313058de70c19612d9af75f653777c417fe3
+  func: sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
 book/broken_snapshots_book.py/test_httpx:
-  httpx: sha256:51d896a19d376b450b3797f8f721d7c2a04ed4d204dbc8ccb5c5739d07d04130
+  httpx: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 book/broken_snapshots_book.py/test_requests:
-  http: sha256:a61f7d22fdcbae8603b55c4e04dcc30a9a70214b006489435b3817c0f992c665
+  http: sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
 storage_mode: dvc

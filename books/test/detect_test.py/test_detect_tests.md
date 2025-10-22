@@ -102,6 +102,7 @@
  * test/test_metrics.py::test_with_units..ok
  * test/test_migration.py::TestMigration/test_legacy_to_pytest_migration..ok
  * test/test_migration.py::TestMigration/test_pytest_name_conversion..ok
+ * test/test_migration.py::TestMigration/test_snapshot_files_migration..ok
  * test/test_names_test.py::ApiV1TestBook/test_names..ok
  * test/test_names_test.py::CamelCaseNamesTestBook/test_names..ok
  * test/test_names_test.py::GetURLTestBook/test_names..ok
@@ -125,4 +126,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 124
+count: 125
