@@ -1,0 +1,5 @@
+# Info Image Test
+
+Model accuracy over epochs:
+![Accuracy Curve](None)
+Test completed

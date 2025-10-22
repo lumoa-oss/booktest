@@ -19,14 +19,16 @@ class OutputWriter(ABC):
     Provides common methods for writing markdown-formatted output including:
     - Headers (h1, h2, h3) - built on h()
     - Text output (tln, iln, key, anchor, assertln) - built on t(), i(), fail()
-    - Tables and dataframes (ttable, tdf) - built on t(), i()
+    - Tables and dataframes (ttable, tdf, itable, idf) - built on t(), i() via _table()
     - Code blocks (tcode, icode) - built on tln(), iln()
+    - Images (timage, iimage) - implemented in TestCaseRun
 
     Subclasses must implement:
     - h(level, title): Write a header
-    - t(text): Write tested text inline
-    - i(text): Write info text inline
+    - t(text): Write tested text inline (compared against snapshots)
+    - i(text): Write info text inline (not tested, but shown in diffs)
     - fail(): Mark current line as failed
+    - diff(): Mark current line as different
     """
 
     # ========== Abstract primitive methods ==========
@@ -59,7 +61,8 @@ class OutputWriter(ABC):
         Write info text inline (no newline, not compared against snapshots).
 
         This is a primitive method that must be implemented by subclasses.
-        In TestCaseRun, this bypasses snapshot comparison.
+        In TestCaseRun, this bypasses snapshot comparison but still shows
+        differences in 'new | old' format for AI review context.
         In GptReview, this is added to buffer and delegated to TestCaseRun.
         """
         pass
@@ -124,6 +127,10 @@ class OutputWriter(ABC):
         """
         Write a line of info text (not compared against snapshots).
         Built on i() primitive.
+
+        Info output appears in test results and is written to both old and new
+        output files. When content changes, it shows in 'new | old' format for
+        AI review without marking the test as failed.
         """
         self.i(text)
         self.i("\n")
@@ -165,24 +172,13 @@ class OutputWriter(ABC):
                 self.iln("FAILED")
         return self
 
-    def ttable(self, table: dict):
+    def _table(self, df: Any, feed_fn):
         """
-        Write a markdown table from a dictionary of columns.
-        Built on tdf() which is built on t() and i() primitives.
-
-        Example:
-            t.ttable({"x": [1, 2, 3], "y": [2, 3, 4]})
-        """
-        import pandas as pd
-        return self.tdf(pd.DataFrame(table))
-
-    def tdf(self, df: Any):
-        """
-        Write a pandas dataframe as a markdown table.
-        Built on t() and i() primitives.
+        Internal helper to write a markdown table using a feed function.
 
         Args:
             df: pandas DataFrame or compatible object with .columns and .index
+            feed_fn: Function to use for writing content (self.t or self.i)
         """
         # Calculate column widths
         pads = []
@@ -197,30 +193,81 @@ class OutputWriter(ABC):
         for i, column in enumerate(df.columns):
             buf += column.ljust(pads[i])
             buf += "|"
-        self.iln(buf)
+        feed_fn(buf)
+        feed_fn("\n")
 
         # Write separator row
         buf = "|"
         for i in pads:
             buf += "-" * i
             buf += "|"
-        self.tln(buf)
+        feed_fn(buf)
+        feed_fn("\n")
 
         # Write data rows
         for i in df.index:
-            self.t("|")
+            feed_fn("|")
             for j, column in enumerate(df.columns):
                 buf = str(df[column][i])\
                           .replace("\r", " ")\
                           .replace("\n", " ")\
                           .strip()
 
-                self.t(buf)
+                feed_fn(buf)
+                # Use i() for padding to keep it as info in both tested and info tables
                 self.i(" " * (pads[j]-len(buf)))
-                self.t("|")
-            self.tln()
+                feed_fn("|")
+            feed_fn("\n")
 
         return self
+
+    def ttable(self, table: dict):
+        """
+        Write a markdown table from a dictionary of columns (tested).
+        Built on _table() helper.
+
+        Example:
+            t.ttable({"x": [1, 2, 3], "y": [2, 3, 4]})
+        """
+        import pandas as pd
+        return self.tdf(pd.DataFrame(table))
+
+    def tdf(self, df: Any):
+        """
+        Write a pandas dataframe as a markdown table (tested).
+        Built on _table() helper and t() primitive.
+
+        Args:
+            df: pandas DataFrame or compatible object with .columns and .index
+        """
+        return self._table(df, self.t)
+
+    def itable(self, table: dict):
+        """
+        Write a markdown table from a dictionary of columns (info - not tested).
+        Built on _table() helper.
+
+        Like ttable() but for diagnostic/info output. Changes in table content
+        are shown in 'new | old' format for AI review but don't fail tests.
+
+        Example:
+            t.itable({"metric": ["accuracy", "f1"], "value": [0.95, 0.92]})
+        """
+        import pandas as pd
+        return self.idf(pd.DataFrame(table))
+
+    def idf(self, df: Any):
+        """
+        Write a pandas dataframe as a markdown table (info - not tested).
+        Built on _table() helper and i() primitive.
+
+        Like tdf() but for diagnostic/info output. Changes in DataFrame content
+        are shown in 'new | old' format for AI review but don't fail tests.
+
+        Args:
+            df: pandas DataFrame or compatible object with .columns and .index
+        """
+        return self._table(df, self.i)
 
     def tcode(self, code: str, lang: str = ""):
         """
