@@ -42,8 +42,13 @@ def setup_test_suite(parser, python_path=None, detect_selection=None):
             setup = path_setup
 
     test_suite = bt.merge_tests(tests)
-    test_suite.setup_parser(parser)
+
+    # Check and perform automatic migration AFTER test discovery
+    # This ensures we have the test structure needed to migrate legacy paths
     books_dir = config.get("books_path", "books")
+    check_and_migrate(base_dir=books_dir, tests=test_suite)
+
+    test_suite.setup_parser(parser)
 
     parser.set_defaults(
         exec=lambda args: test_suite.exec_parsed(books_dir,
@@ -96,9 +101,6 @@ def main(arguments=None):
         mock_env.start()
 
     try:
-        # Check and perform automatic migration if needed
-        check_and_migrate()
-
         setup_test_suite(parser, python_path, detect_selection)
         argcomplete.autocomplete(parser)
 

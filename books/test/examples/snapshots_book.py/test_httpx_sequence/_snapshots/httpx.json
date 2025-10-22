@@ -12,7 +12,8 @@
                 "content-type": "application/json; charset=utf-8",
                 "transfer-encoding": "chunked",
                 "connection": "keep-alive",
-                "vary": "Accept-Encoding"
+                "vary": "Accept-Encoding",
+                "content-length": "230"
             },
             "statusCode": 200,
             "content": "eyJ5ZWFyIjoyMDI1LCJtb250aCI6MTAsImRheSI6MjAsImhvdXIiOjksIm1pbnV0ZSI6MjEsInNlY29uZHMiOjM1LCJtaWxsaVNlY29uZHMiOjM4OCwiZGF0ZVRpbWUiOiIyMDI1LTEwLTIwVDA5OjIxOjM1LjM4ODQwMTciLCJkYXRlIjoiMTAvMjAvMjAyNSIsInRpbWUiOiIwOToyMSIsInRpbWVab25lIjoiRXVyb3BlL0Ftc3RlcmRhbSIsImRheU9mV2VlayI6Ik1vbmRheSIsImRzdEFjdGl2ZSI6dHJ1ZX0="
@@ -32,7 +33,8 @@
                 "content-type": "application/json; charset=utf-8",
                 "transfer-encoding": "chunked",
                 "connection": "keep-alive",
-                "vary": "Accept-Encoding"
+                "vary": "Accept-Encoding",
+                "content-length": "230"
             },
             "statusCode": 200,
             "content": "eyJ5ZWFyIjoyMDI1LCJtb250aCI6MTAsImRheSI6MjAsImhvdXIiOjksIm1pbnV0ZSI6MjEsInNlY29uZHMiOjM1LCJtaWxsaVNlY29uZHMiOjcyNCwiZGF0ZVRpbWUiOiIyMDI1LTEwLTIwVDA5OjIxOjM1LjcyNDc5NzYiLCJkYXRlIjoiMTAvMjAvMjAyNSIsInRpbWUiOiIwOToyMSIsInRpbWVab25lIjoiRXVyb3BlL0Ftc3RlcmRhbSIsImRheU9mV2VlayI6Ik1vbmRheSIsImRzdEFjdGl2ZSI6dHJ1ZX0="

@@ -37,8 +37,8 @@ False negatives: 0, True negatives: 7
 
 Tracking with ±5% tolerance
 
- * Accuracy: 11/12 = 91.667% (baseline)
- * Precision (positive): 80.000% (baseline)
- * Recall (positive): 100.000% (baseline)
- * F1 Score (positive): 0.889 (baseline)
+ * Accuracy: 11/12 = 91.667% (was 91.667%, Δ-0.000%)
+ * Precision (positive): 80.000% (was 80.000%, Δ+0.000%)
+ * Recall (positive): 100.000% (was 100.000%, Δ+0.000%)
+ * F1 Score (positive): 0.889 (was 0.889, Δ-0.000)
 

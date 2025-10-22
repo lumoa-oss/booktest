@@ -44,13 +44,32 @@ class AIReviewResult:
         }
         return names.get(self.category, "UNKNOWN")
 
-    def should_auto_accept(self, threshold: float = 0.95) -> bool:
-        """Should this be automatically accepted?"""
-        return self.category == 5 and self.confidence >= threshold and not self.flags_for_human
+    def should_auto_accept(self) -> bool:
+        """
+        Should this be automatically accepted without user interaction?
 
-    def should_auto_reject(self, threshold: float = 0.95) -> bool:
-        """Should this be automatically rejected?"""
-        return self.category == 1 and self.confidence >= threshold
+        Returns True only for category 5 (ACCEPT) - the AI is confident enough
+        to assign this category, so we trust the decision.
+        """
+        return self.category == 5
+
+    def should_auto_reject(self) -> bool:
+        """
+        Should this be automatically rejected without user interaction?
+
+        Returns True only for category 1 (FAIL) - the AI is confident enough
+        to assign this category, so we trust the decision.
+        """
+        return self.category == 1
+
+    def should_skip_interactive(self) -> bool:
+        """
+        Should interactive mode be skipped for this result?
+
+        Returns True for definitive categories (FAIL or ACCEPT) where the AI
+        has made a clear decision.
+        """
+        return self.category == 1 or self.category == 5
 
     def to_json(self) -> str:
         """Serialize to JSON for storage."""
@@ -302,12 +321,31 @@ other text or explanation! Only respond with one of the options given in the par
         system_prompt = """You are an expert test reviewer for data science and ML applications.
 You will analyze test output differences and provide a recommendation.
 
-Your task is to classify the changes into one of 5 categories:
-1. FAIL - Clear regressions, critical errors, completely wrong results (auto-reject)
+Your task is to classify the changes into one of 5 categories. The category you choose determines
+how the system behaves:
+
+1. FAIL - Clear regressions, critical errors, completely wrong results
+   → System will AUTO-REJECT and skip interactive review (unless forced with -I)
+   → Use only when you are CONFIDENT this is a regression/failure
+
 2. RECOMMEND FAIL - Likely regressions, suspicious changes, quality degradation
+   → System will show interactive prompt with suggestion to reject
+   → Use when you suspect problems but want human confirmation
+
 3. UNSURE - Complex changes requiring human judgment, missing context
+   → System will show interactive prompt without recommendation
+   → Use when you cannot make a confident assessment
+
 4. RECOMMEND ACCEPT - Minor changes, expected improvements, non-functional differences
-5. ACCEPT - No significant changes, clear improvements, intentional refactoring (auto-accept)
+   → System will show interactive prompt with suggestion to accept
+   → Use when changes look reasonable but you want human confirmation
+
+5. ACCEPT - No significant changes, clear improvements, intentional refactoring
+   → System will AUTO-ACCEPT and skip interactive review (unless forced with -I)
+   → Use only when you are CONFIDENT this is safe to accept
+
+IMPORTANT: Choose categories based on your confidence level. If you're not confident enough
+to auto-accept or auto-reject, use RECOMMEND categories or UNSURE.
 
 Consider:
 - Are numerical changes within reasonable tolerance?

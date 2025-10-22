@@ -180,11 +180,32 @@ def test_failures(t: bt.TestCaseRun, context: str):
     t_cli(t, [], context)
 
 
+def break_snapshots(t: bt.TestCaseRun, context:dir, title="breaking snapshots"):
+    path = "books/book/broken_snapshots"
+    files = [
+        "function_snapshot/_snapshots/functions.json",
+        "httpx/_snapshots/httpx.json",
+        "requests/_snapshots/requests.json"
+    ]
+
+    t.h1(title)
+    for file in files:
+        snapshot_file = os.path.join(context, path, file)
+
+        with open(snapshot_file, "w") as f:
+            f.write("\n# broken snapshot line\n")
+        t.tln(f" * broke snapshot file: {snapshot_file}")
+
 @bt.depends_on(BROKEN_SNAPSHOT_CONTEXT)
 def test_broken_snapshots(t: bt.TestCaseRun, context: str):
     t.h1("description:")
-    t.tln("this test verifies that broken snapshots will gracefully fail")
+    t.tln("this test verifies that:")
+    t.tln()
+    t.tln(" 1) malformed snasphots (e.g. because git merge) break the test")
+    t.tln(" 2) and informs user about need to recapture them with -s")
+    break_snapshots(t, context)
     t_cli(t, [], context)
+    break_snapshots(t, context, "rebreak snapshots to keep git status clean:")
 
 
 @bt.depends_on(BROKEN_SNAPSHOT_CONTEXT)
@@ -194,7 +215,9 @@ def test_refreshing_broken_snapshots(t: bt.TestCaseRun, context: str):
     t.tln()
     t.tln(" 1) snapshots can be recreated")
     t.tln(" 2) and tool requires user to accept & store recreated snapshot even if their hashes are the same")
+    break_snapshots(t, context)
     t_cli(t, ["-S", "-v"], context)
+    break_snapshots(t, context, "rebreak snapshots to keep git status clean:")
 
 
 @bt.depends_on(PYTEST_CONTEXT)

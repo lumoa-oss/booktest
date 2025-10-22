@@ -29,8 +29,8 @@ Overall assessment: Good — useful and practical guidance, but needs concrete c
 
 ### Metrics
 
- * Quality Score: 75.000% (baseline)
- * Completeness Score: 75.000% (baseline)
+ * Quality Score: 75.000% (was 75.000%, Δ+0.000%)
+ * Completeness Score: 75.000% (was 75.000%, Δ+0.000%)
 
 
 ### Minimum Requirements

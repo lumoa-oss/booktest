@@ -21,9 +21,9 @@ Generated 20 samples with true = 2*x + 3 + noise
 
 Tracking with ±10% tolerance for error metrics
 
- * MAE: 2.788 (baseline)
- * RMSE: 3.659 (baseline)
- * R² Score: 0.878 (baseline)
+ * MAE: 2.788 (was 2.788, Δ+0.000)
+ * RMSE: 3.659 (was 3.659, Δ-0.000)
+ * R² Score: 0.878 (was 0.878, Δ+0.000)
 
 
 ## Minimum Requirements

@@ -107,6 +107,7 @@
      * test_migration.py::TestMigration
          * [test_legacy_to_pytest_migration](test/test_migration.py::TestMigration/test_legacy_to_pytest_migration.md)
          * [test_pytest_name_conversion](test/test_migration.py::TestMigration/test_pytest_name_conversion.md)
+         * [test_snapshot_files_migration](test/test_migration.py::TestMigration/test_snapshot_files_migration.md)
 
      * datascience
          * [test_gpt.py::test_evaluation](test/datascience/test_gpt.py::test_evaluation.md)
