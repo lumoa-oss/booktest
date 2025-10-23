@@ -425,25 +425,13 @@ def report_case_result(printer,
     ai_summary = ""
     ai_result = None
 
-    # Try to get AI review from case_reports first (new approach)
+    # Get AI review from case_reports (stored in cases.ndjson)
     if case_reports is not None:
         ai_result = case_reports.get_ai_review(case_name)
         if ai_result is not None:
             ai_summary = f" ({gray('AI: ' + ai_result.summary)})"
-    # Fall back to loading from .ai.json file (backward compatibility)
-    elif out_dir is not None:
-        case_name_fs = to_filesystem_path(case_name)
-        ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
-        if os.path.exists(ai_review_file):
-            try:
-                from booktest.llm.llm_review import AIReviewResult
-                with open(ai_review_file, 'r') as f:
-                    ai_result = AIReviewResult.from_json(f.read())
-                    # Add parenthetical summary with AI recommendation
-                    ai_summary = f" ({gray('AI: ' + ai_result.summary)})"
-            except Exception:
-                # If we can't load the AI review, just skip it
-                pass
+    # Note: We no longer fall back to .ai.json files since AI reviews are now
+    # stored in cases.ndjson and properly invalidated on test reruns
 
     # Handle two-dimensional results if available
     if isinstance(result, TwoDimensionalTestResult):
