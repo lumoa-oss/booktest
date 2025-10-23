@@ -16,15 +16,14 @@ from booktest.config.naming import to_filesystem_path
 BOOK_TEST_PREFIX = "BOOKTEST_"
 
 
-def perform_ai_review(exp_file_name: str, out_file_name: str, case_name: str, ai_review_file: str) -> Optional['AIReviewResult']:
+def perform_ai_review(exp_file_name: str, out_file_name: str, case_name: str) -> Optional['AIReviewResult']:
     """
-    Perform AI review of test differences and store result.
+    Perform AI review of test differences.
 
     Args:
         exp_file_name: Path to expected output file
         out_file_name: Path to actual output file
         case_name: Test case name
-        ai_review_file: Path where AI review result should be stored
 
     Returns:
         AIReviewResult or None if review fails
@@ -78,11 +77,6 @@ def perform_ai_review(exp_file_name: str, out_file_name: str, case_name: str, ai
             actual=actual,
             diff=diff
         )
-
-        # Store the result
-        os.makedirs(os.path.dirname(ai_review_file), exist_ok=True)
-        with open(ai_review_file, 'w') as f:
-            f.write(result.to_json())
 
         return result
 
@@ -164,7 +158,6 @@ def interact(exp_dir, out_dir, case_name, test_result, config,
     exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
     out_file_name = os.path.join(out_dir, case_name_fs + ".md")
     log_file_name = os.path.join(out_dir, case_name_fs + ".log")
-    ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
 
     rv = test_result
     user_request = UserRequest.NONE
@@ -233,7 +226,7 @@ def interact(exp_dir, out_dir, case_name, test_result, config,
                      f"{exp_file_name} {out_file_name}")
         elif (answer == "r" or answer == "R") and ai_review_available:
             # Perform AI review
-            ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
+            ai_result = perform_ai_review(exp_file_name, out_file_name, case_name)
             if ai_result:
                 print_ai_review_result(ai_result, config.get("verbose", False))
 
@@ -305,9 +298,8 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
     if ai_review_enabled and is_diff and not is_ok:
         exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
         out_file_name = os.path.join(out_dir, case_name_fs + ".md")
-        ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
 
-        ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
+        ai_result = perform_ai_review(exp_file_name, out_file_name, case_name)
 
         # ALWAYS print AI review result when in interactive mode or verbose
         if ai_result:
