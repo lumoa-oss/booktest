@@ -309,10 +309,10 @@ class ParallelRunner:
             for name, preallocations in done_tasks:
                 begin = scheduled[name][1]
                 del scheduled[name]
-                report_file = case_batch_dir_and_report_file(self.batches_dir, name)[1]
+                batch_dir = case_batch_dir_and_report_file(self.batches_dir, name)[0]
                 i_case_report = None
-                if os.path.exists(report_file):
-                    i_report = CaseReports.of_file(report_file)
+                if os.path.exists(batch_dir):
+                    i_report = CaseReports.of_dir(batch_dir)
                     if len(i_report.cases) > 0:
                         i_case_report = i_report.cases[0]
                 if i_case_report is None:
