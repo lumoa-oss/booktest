@@ -143,11 +143,22 @@ class Metrics:
 
 class CaseReports:
     """
-    This class manages the saved case specific metrics/results
+    This class manages the saved case specific metrics/results.
+
+    Supports both legacy text format (cases.txt) and new JSON format (cases.json).
+    The JSON format includes AI review results which are invalidated when tests rerun.
     """
 
-    def __init__(self, cases):
+    def __init__(self, cases, ai_reviews=None):
+        """
+        Initialize CaseReports.
+
+        Args:
+            cases: List of (case_name, result, duration) tuples
+            ai_reviews: Optional dict mapping case_name to AIReviewResult
+        """
         self.cases = cases
+        self.ai_reviews = ai_reviews if ai_reviews is not None else {}
 
     def passed(self):
         return [i[0] for i in self.cases if i[1] == TestResult.OK]
@@ -161,6 +172,23 @@ class CaseReports:
 
     def by_name(self, name):
         return list([i for i in self.cases if i[0] == name])
+
+    def get_ai_review(self, case_name):
+        """Get AI review for a specific test case, if available."""
+        return self.ai_reviews.get(case_name)
+
+    def set_ai_review(self, case_name, ai_review):
+        """
+        Set AI review for a specific test case.
+
+        Args:
+            case_name: Test case name
+            ai_review: AIReviewResult object or None to remove
+        """
+        if ai_review is None:
+            self.ai_reviews.pop(case_name, None)
+        else:
+            self.ai_reviews[case_name] = ai_review
 
     def cases_to_done_and_todo(self, cases, config):
         cont = config.get("continue", False)
@@ -179,8 +207,20 @@ class CaseReports:
 
     @staticmethod
     def of_dir(out_dir):
-        report_file = os.path.join(out_dir, "cases.txt")
-        return CaseReports.of_file(report_file)
+        """
+        Load case reports from directory.
+
+        Prefers cases.ndjson (NDJSON) if it exists, falls back to cases.txt for backward compatibility.
+        """
+        jsonl_file = os.path.join(out_dir, "cases.ndjson")
+        txt_file = os.path.join(out_dir, "cases.txt")
+
+        if os.path.exists(jsonl_file):
+            return CaseReports.of_jsonl_file(jsonl_file)
+        elif os.path.exists(txt_file):
+            return CaseReports.of_file(txt_file)
+        else:
+            return CaseReports([])
 
     @staticmethod
     def of_file(file_name):
@@ -225,15 +265,121 @@ class CaseReports:
         return (case_name, res, duration)
 
     def to_dir(self, out_dir):
-        report_file = os.path.join(out_dir, "cases.txt")
-        return self.to_file(report_file)
+        """Save case reports to directory (uses NDJSON format)."""
+        jsonl_file = os.path.join(out_dir, "cases.ndjson")
+        return self.to_jsonl_file(jsonl_file)
 
     def to_file(self, file):
+        """Save to legacy text format (for backward compatibility)."""
         with open(file, "w") as f:
             for i in self.cases:
                 CaseReports.write_case(f,
                                        i[0],
                                        i[1],
                                        i[2])
+
+    @staticmethod
+    def of_jsonl_file(file_name):
+        """Load case reports from NDJSON file (newline-delimited JSON)."""
+        if not os.path.exists(file_name):
+            return CaseReports([])
+
+        cases = []
+        ai_reviews = {}
+
+        try:
+            with open(file_name, 'r') as f:
+                for line_num, line in enumerate(f, 1):
+                    line = line.strip()
+                    if not line:
+                        continue
+
+                    try:
+                        case_data = json.loads(line)
+                        case_name = case_data['name']
+                        result_str = case_data['result']
+
+                        # Convert result string to TestResult enum
+                        if result_str == "OK":
+                            result = TestResult.OK
+                        elif result_str == "DIFF":
+                            result = TestResult.DIFF
+                        elif result_str == "FAIL":
+                            result = TestResult.FAIL
+                        else:
+                            logging.warning(f"Unknown result type: {result_str}, treating as FAIL")
+                            result = TestResult.FAIL
+
+                        duration = case_data.get('duration_ms', 0.0)
+                        cases.append((case_name, result, duration))
+
+                        # Load AI review if present
+                        if 'ai_review' in case_data and case_data['ai_review'] is not None:
+                            try:
+                                from booktest.llm.llm_review import AIReviewResult
+                                ai_review = AIReviewResult(**case_data['ai_review'])
+                                ai_reviews[case_name] = ai_review
+                            except Exception as e:
+                                logging.warning(f"Failed to load AI review for {case_name}: {e}")
+
+                    except json.JSONDecodeError as e:
+                        logging.warning(f"Invalid JSON on line {line_num} of {file_name}: {e}")
+                    except KeyError as e:
+                        logging.warning(f"Missing required field {e} on line {line_num} of {file_name}")
+
+            return CaseReports(cases, ai_reviews)
+
+        except Exception as e:
+            logging.exception(f"Error loading cases from {file_name}: {e}")
+            return CaseReports([])
+
+    def to_jsonl_file(self, file_name):
+        """Save case reports to NDJSON file (newline-delimited JSON)."""
+        import time
+
+        os.makedirs(os.path.dirname(file_name), exist_ok=True)
+        with open(file_name, 'w') as f:
+            for case_name, result, duration in self.cases:
+                case_entry = {
+                    'name': case_name,
+                    'result': result.name,
+                    'duration_ms': duration,
+                    'timestamp': time.time()
+                }
+
+                # Include AI review if available
+                ai_review = self.ai_reviews.get(case_name)
+                if ai_review is not None:
+                    # Convert AIReviewResult to dict
+                    from dataclasses import asdict
+                    case_entry['ai_review'] = asdict(ai_review)
+                else:
+                    case_entry['ai_review'] = None
+
+                # Write as single line JSON
+                f.write(json.dumps(case_entry) + '\n')
+
+        return self
+
+    @staticmethod
+    def write_case_jsonl(file_handle, case_name, res: TestResult, duration, ai_review=None):
+        """Write a single case to NDJSON file."""
+        import time
+        from dataclasses import asdict
+
+        case_entry = {
+            'name': case_name,
+            'result': res.name,
+            'duration_ms': duration,
+            'timestamp': time.time()
+        }
+
+        if ai_review is not None:
+            case_entry['ai_review'] = asdict(ai_review)
+        else:
+            case_entry['ai_review'] = None
+
+        file_handle.write(json.dumps(case_entry) + '\n')
+        file_handle.flush()
 
 

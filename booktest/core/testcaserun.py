@@ -15,6 +15,7 @@ from booktest.reporting.reports import TestResult, TwoDimensionalTestResult, Suc
 from booktest.utils.utils import file_or_resource_exists, open_file_or_resource
 from booktest.config.naming import to_filesystem_path, from_filesystem_path
 from booktest.reporting.output import OutputWriter
+from booktest.reporting.colors import yellow, red, gray, cyan
 
 
 class TestCaseRun(OutputWriter):
@@ -322,7 +323,7 @@ class TestCaseRun(OutputWriter):
             self.verbose)
 
         # Pass two-dimensional result to review for proper snapshot handling
-        rv, interaction = self.review(two_dim_result)
+        rv, interaction, ai_result = self.review(two_dim_result)
 
         if self.verbose:
             self.print("")
@@ -349,7 +350,7 @@ class TestCaseRun(OutputWriter):
                     'timestamp': time.time()
                 }, f, indent=2)
 
-        return rv, interaction
+        return rv, interaction, ai_result
 
     def report_snapshot_usage(self,
                               snapshot_type: str,
@@ -627,27 +628,78 @@ class TestCaseRun(OutputWriter):
         tokens/cells that changed, failed, or have info-level differences.
         """
 
-        # Use old logic for now - new token-level logic needs more debugging
-        if self.line_error is not None or self.line_diff is not None:
-            from booktest.reporting.colors import yellow, red, gray
+        # Check if there are any markers on this line
+        has_token_markers = len(self.line_markers) > 0
+        has_line_markers = self.line_error is not None or self.line_diff is not None
+
+        if has_line_markers or has_token_markers:
+            # Determine line-level symbol and update stats
+            has_error = self.line_error is not None or any(m[1] == 'fail' for m in self.line_markers)
+            has_diff = self.line_diff is not None or any(m[1] == 'diff' for m in self.line_markers)
+            has_info = any(m[1] == 'info' for m in self.line_markers)
 
             symbol = "?"
-            color_fn = yellow
             pos = None
-            if self.line_diff is not None:
-                self.diffs += 1
-                pos = self.line_diff
-            if self.line_error is not None:
-                symbol = "!"
-                color_fn = red
-                self.errors += 1
-                pos = self.line_error
 
-            # Colorize the sections:
-            # - Left side (symbol + new line) in yellow/red
-            # - Separator (|) in default terminal color
-            # - Right side (old line) in gray
-            left_side = color_fn(f"{symbol} {self.out_line:60s}")
+            if has_error:
+                symbol = "!"
+                self.errors += 1
+                pos = self.line_error if self.line_error is not None else 0
+            elif has_diff:
+                symbol = "?"
+                self.diffs += 1
+                pos = self.line_diff if self.line_diff is not None else 0
+            elif has_info:
+                symbol = "."
+                self.info_diffs += 1
+                pos = 0
+
+            # Choose coloring approach based on markers
+            if has_token_markers and len(self.line_markers) > 0:
+                # Use token-level coloring
+                try:
+                    colored_line = self._colorize_line_with_markers(
+                        self.out_line, self.line_markers,
+                        has_error, has_diff, has_info
+                    )
+                    # Color the symbol itself
+                    if has_error:
+                        colored_symbol = red(symbol)
+                    elif has_diff:
+                        colored_symbol = yellow(symbol)
+                    else:
+                        colored_symbol = cyan(symbol)
+                    # Pad the uncolored line to 60 chars, then apply coloring
+                    # We need to pad before coloring to get correct alignment
+                    padded_line = f"{self.out_line:60s}"
+                    # Now colorize the padded content
+                    colored_padded = self._colorize_line_with_markers(
+                        padded_line, self.line_markers,
+                        has_error, has_diff, has_info
+                    )
+                    left_side = f"{colored_symbol} {colored_padded}"
+                except Exception as e:
+                    # Fallback to line-level coloring on error
+                    import traceback
+                    import sys
+                    print(f"Warning: token coloring failed: {e}", file=sys.stderr)
+                    traceback.print_exc(file=sys.stderr)
+                    if has_error:
+                        color_fn = red
+                    elif has_diff:
+                        color_fn = yellow
+                    else:
+                        color_fn = cyan
+                    left_side = color_fn(f"{symbol} {self.out_line:60s}")
+            else:
+                # Use line-level coloring
+                if has_error:
+                    color_fn = red
+                elif has_diff:
+                    color_fn = yellow
+                else:
+                    color_fn = cyan
+                left_side = color_fn(f"{symbol} {self.out_line:60s}")
 
             if self.exp_line is not None:
                 right_side = gray(self.exp_line)
@@ -783,7 +835,6 @@ class TestCaseRun(OutputWriter):
         NOTE: if token is a line end character, the line will be committed
         to the test stream.
         """
-
         exp_token = self.next_exp_token()
         self.last_checked = check or info_check
 
@@ -864,10 +915,11 @@ class TestCaseRun(OutputWriter):
         Use this for fine-grained diff marking, e.g., to highlight a specific
         changed cell in a table without marking the entire row as different.
         """
-        self.line_markers.append((len(self.out_line), 'diff'))
+        pos = len(self.out_line)
+        self.line_markers.append((pos, 'diff'))
         # Update line-level marker if not set
         if self.line_diff is None:
-            self.line_diff = len(self.out_line)
+            self.line_diff = pos
         return self
 
     def fail(self):
@@ -914,7 +966,8 @@ class TestCaseRun(OutputWriter):
         Use this for fine-grained info marking, e.g., to highlight which specific
         cell in a diagnostic table changed without affecting the test result.
         """
-        self.line_markers.append((len(self.out_line), 'info'))
+        pos = len(self.out_line)
+        self.line_markers.append((pos, 'info'))
         return self
 
     def _get_expected_token(self):

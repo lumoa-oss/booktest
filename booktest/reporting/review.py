@@ -384,7 +384,7 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
         else:
             rv = TestResult.OK
 
-    return rv, interaction
+    return rv, interaction, ai_result
 
 
 def start_report(printer):
@@ -411,7 +411,8 @@ def report_case_result(printer,
                        result,
                        took_ms,
                        verbose,
-                       out_dir=None):
+                       out_dir=None,
+                       case_reports=None):
     from booktest.reporting.colors import yellow, red, green, gray
 
     if verbose:
@@ -422,7 +423,15 @@ def report_case_result(printer,
 
     # Check for AI review result if available
     ai_summary = ""
-    if out_dir is not None:
+    ai_result = None
+
+    # Try to get AI review from case_reports first (new approach)
+    if case_reports is not None:
+        ai_result = case_reports.get_ai_review(case_name)
+        if ai_result is not None:
+            ai_summary = f" ({gray('AI: ' + ai_result.summary)})"
+    # Fall back to loading from .ai.json file (backward compatibility)
+    elif out_dir is not None:
         case_name_fs = to_filesystem_path(case_name)
         ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
         if os.path.exists(ai_review_file):
@@ -532,15 +541,15 @@ def report_case(printer,
                        verbose,
                        out_dir)
 
-    rv, request = case_review(exp_dir,
-                              out_dir,
-                              case_name,
-                              result,
-                              config)
+    rv, request, ai_result = case_review(exp_dir,
+                                          out_dir,
+                                          case_name,
+                                          result,
+                                          config)
     if verbose:
         printer()
 
-    return rv, request
+    return rv, request, ai_result
 
 
 def end_report(printer, failed, tests, took_ms):
@@ -645,8 +654,7 @@ def review(exp_dir,
            passed,
            cases=None):
     metrics = Metrics.of_dir(out_dir)
-    report_txt = os.path.join(out_dir, "cases.txt")
-    case_reports = CaseReports.of_file(report_txt)
+    case_reports = CaseReports.of_dir(out_dir)
 
     # Filter out test cases that no longer exist in the test suite
     if cases is not None:
@@ -676,7 +684,7 @@ def review(exp_dir,
                (not cont or case_name not in passed):
                 tests += 1
 
-                reviewed_result, request = \
+                reviewed_result, request, ai_result = \
                     report_case(print,
                                 exp_dir,
                                 out_dir,
@@ -697,7 +705,13 @@ def review(exp_dir,
                         duration))
 
     updated_case_reports = CaseReports(reviews)
-    updated_case_reports.to_file(report_txt)
+    # Write updated reports back to cases.ndjson
+    report_jsonl = os.path.join(out_dir, "cases.ndjson")
+    with open(report_jsonl, 'w') as f:
+        for case_name, result, duration in updated_case_reports.cases:
+            # Preserve AI reviews if they exist
+            ai_review = case_reports.get_ai_review(case_name)
+            CaseReports.write_case_jsonl(f, case_name, result, duration, ai_review)
 
     end_report(print,
                updated_case_reports.failed_with_details(),

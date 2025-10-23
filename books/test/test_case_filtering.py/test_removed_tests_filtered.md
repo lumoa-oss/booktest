@@ -1,16 +1,16 @@
 # Removed Test Filtering
 
 
-## Initial cases.txt content:
+## Initial cases.ndjson content:
 
-  test1	OK	100
-  test2	FAIL	200
-  test3	OK	150
+  {"name": "test1", "result": "OK", "duration_ms": 100, "ai_review": null}
+  {"name": "test2", "result": "FAIL", "duration_ms": 200, "ai_review": null}
+  {"name": "test3", "result": "OK", "duration_ms": 150, "ai_review": null}
 
-## Updated cases.txt content (test2 should be removed):
+## Updated cases.ndjson content (test2 should be removed):
 
-  test1	OK	100.0
-  test3	OK	150.0
+  {"name": "test1", "result": "OK", "duration_ms": 100, "ai_review": null}
+  {"name": "test3", "result": "OK", "duration_ms": 150, "ai_review": null}
 Number of cases after filtering: 2
 Remaining test names: ['test1', 'test3']
 
