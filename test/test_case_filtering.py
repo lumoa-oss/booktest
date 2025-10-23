@@ -6,7 +6,7 @@ import shutil
 
 def test_removed_tests_filtered(r: bt.TestCaseRun):
     """
-    Test that removed tests are filtered out from cases.txt during review.
+    Test that removed tests are filtered out from cases.ndjson during review.
     """
     r.h1("Removed Test Filtering")
 
@@ -23,18 +23,22 @@ def test_removed_tests_filtered(r: bt.TestCaseRun):
         with open(metrics_file, "w") as f:
             f.write('{"tookMs": 1000}')
 
-        # Create cases.txt with 3 test cases
-        cases_file = os.path.join(books_out_dir, "cases.txt")
+        # Create cases.ndjson with 3 test cases
+        cases_file = os.path.join(books_out_dir, "cases.ndjson")
+        import json
         with open(cases_file, "w") as f:
-            f.write("test1\tOK\t100\n")
-            f.write("test2\tFAIL\t200\n")
-            f.write("test3\tOK\t150\n")
+            f.write(json.dumps({"name": "test1", "result": "OK", "duration_ms": 100, "timestamp": 1234567890.0, "ai_review": None}) + "\n")
+            f.write(json.dumps({"name": "test2", "result": "FAIL", "duration_ms": 200, "timestamp": 1234567890.0, "ai_review": None}) + "\n")
+            f.write(json.dumps({"name": "test3", "result": "OK", "duration_ms": 150, "timestamp": 1234567890.0, "ai_review": None}) + "\n")
 
-        r.h2("Initial cases.txt content:")
+        r.h2("Initial cases.ndjson content:")
         with open(cases_file, "r") as f:
             initial_content = f.read()
             for line in initial_content.strip().split("\n"):
-                r.tln(f"  {line}")
+                # Parse and display without timestamp for stable output
+                data = json.loads(line)
+                data.pop("timestamp", None)  # Remove timestamp
+                r.tln(f"  {json.dumps(data)}")
 
         # Simulate review with only test1 and test3 (test2 was removed)
         from booktest.reporting.review import review
@@ -63,17 +67,20 @@ def test_removed_tests_filtered(r: bt.TestCaseRun):
         finally:
             sys.stdout = old_stdout
 
-        r.h2("Updated cases.txt content (test2 should be removed):")
+        r.h2("Updated cases.ndjson content (test2 should be removed):")
         with open(cases_file, "r") as f:
             updated_content = f.read()
             for line in updated_content.strip().split("\n"):
-                r.tln(f"  {line}")
+                # Parse and display without timestamp for stable output
+                data = json.loads(line)
+                data.pop("timestamp", None)  # Remove timestamp
+                r.tln(f"  {json.dumps(data)}")
 
         # Verify test2 was removed
         lines = updated_content.strip().split("\n")
         r.tln(f"Number of cases after filtering: {len(lines)}")
 
-        test_names = [line.split("\t")[0] for line in lines if line.strip()]
+        test_names = [json.loads(line)["name"] for line in lines if line.strip()]
         r.tln(f"Remaining test names: {test_names}")
 
         r.tln()

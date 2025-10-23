@@ -13,6 +13,7 @@ class Colors:
     YELLOW = '\033[93m'   # Bright yellow for diffs
     GREEN = '\033[92m'    # Bright green
     BLUE = '\033[94m'     # Bright blue
+    CYAN = '\033[96m'     # Bright cyan for info
     GRAY = '\033[90m'     # Gray (bright black)
 
 
@@ -93,6 +94,11 @@ def blue(text: str) -> str:
 def gray(text: str) -> str:
     """Colorize text in gray."""
     return colorize(text, Colors.GRAY)
+
+
+def cyan(text: str) -> str:
+    """Colorize text in cyan."""
+    return colorize(text, Colors.CYAN)
 
 
 def is_color_enabled() -> bool:

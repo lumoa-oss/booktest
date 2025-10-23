@@ -309,10 +309,10 @@ class ParallelRunner:
             for name, preallocations in done_tasks:
                 begin = scheduled[name][1]
                 del scheduled[name]
-                report_file = case_batch_dir_and_report_file(self.batches_dir, name)[1]
+                batch_dir = case_batch_dir_and_report_file(self.batches_dir, name)[0]
                 i_case_report = None
-                if os.path.exists(report_file):
-                    i_report = CaseReports.of_file(report_file)
+                if os.path.exists(batch_dir):
+                    i_report = CaseReports.of_dir(batch_dir)
                     if len(i_report.cases) > 0:
                         i_case_report = i_report.cases[0]
                 if i_case_report is None:
@@ -418,31 +418,36 @@ def parallel_run_tests(exp_dir,
     exit_code = 0
 
     os.system(f"mkdir -p {out_dir}")
-    report_file = os.path.join(out_dir, "cases.txt")
+    report_file = os.path.join(out_dir, "cases.ndjson")
 
     with open(report_file, "w") as report_f:
-        # add previously passed items to test
+        # add previously passed items to test (preserving their AI reviews)
         for i in reports.cases:
             if i[0] not in todo:
-                CaseReports.write_case(
-                    report_f, i[0], i[1], i[2])
+                ai_review = reports.get_ai_review(i[0])
+                CaseReports.write_case_jsonl(
+                    report_f, i[0], i[1], i[2], ai_review)
 
         reviewed = []
+        ai_reviews_collected = {}
 
-        def record_case(case_name, result, duration):
-            CaseReports.write_case(
+        def record_case(case_name, result, duration, ai_review=None):
+            CaseReports.write_case_jsonl(
                 report_f,
                 case_name,
                 result,
-                duration)
+                duration,
+                ai_review)
             reviewed.append((case_name, result, duration))
+            if ai_review is not None:
+                ai_reviews_collected[case_name] = ai_review
 
         with runner:
             try:
                 while runner.has_next():
                     case_name, result, duration = runner.next_report()
 
-                    reviewed_result, request = \
+                    reviewed_result, request, ai_result = \
                         report_case(print,
                                     exp_dir,
                                     out_dir,
@@ -461,7 +466,8 @@ def parallel_run_tests(exp_dir,
                     record_case(
                         case_name,
                         reviewed_result,
-                        duration)
+                        duration,
+                        ai_result)
 
             except KeyboardInterrupt as e:
                 runner.abort()
@@ -526,7 +532,9 @@ def parallel_run_tests(exp_dir,
                 took_ms = int((end-begin)*1000)
                 Metrics(took_ms).to_dir(out_dir)
 
-                updated_case_reports = CaseReports(reviewed)
+                # AI reviews have already been written to cases.ndjson inline,
+                # so no need to do anything else here.
+                updated_case_reports = CaseReports(reviewed, ai_reviews_collected)
 
                 # Only print end_report here if auto-report won't handle it
                 # Auto-report will show the summary if:

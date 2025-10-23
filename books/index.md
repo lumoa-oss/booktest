@@ -1,6 +1,10 @@
 # Books overview:
 
  * test
+     * [test_token_markers.py::test_info_diff_tracking](test/test_token_markers.py::test_info_diff_tracking.md)
+     * [test_token_markers.py::test_info_table_changes](test/test_token_markers.py::test_info_table_changes.md)
+     * [test_token_markers.py::test_token_level_markers](test/test_token_markers.py::test_token_level_markers.md)
+
      * stderr_test.py::StdErrBook
          * [test_stderr](test/stderr_test.py::StdErrBook/test_stderr.md)
 
@@ -19,6 +23,10 @@
      * [test_metrics.py::test_ml_pipeline_example](test/test_metrics.py::test_ml_pipeline_example.md)
      * [test_metrics.py::test_percentage_tolerance](test/test_metrics.py::test_percentage_tolerance.md)
      * [test_metrics.py::test_with_units](test/test_metrics.py::test_with_units.md)
+     * [test_info_methods.py::test_idf_method](test/test_info_methods.py::test_idf_method.md)
+     * [test_info_methods.py::test_iimage_method](test/test_info_methods.py::test_iimage_method.md)
+     * [test_info_methods.py::test_itable_method](test/test_info_methods.py::test_itable_method.md)
+     * [test_info_methods.py::test_mixed_info_and_tested](test/test_info_methods.py::test_mixed_info_and_tested.md)
 
      * dependencies
          * parametrized1
