@@ -1104,38 +1104,6 @@ class TestCaseRun(OutputWriter):
         self.iln("")
         return self
 
-    def ifloatln(self, value, unit = None):
-        old = self.head_exp_token()
-        try:
-            if old is not None:
-                old = float(old)
-        except ValueError:
-            old = None
-
-        if unit is not None:
-            postfix = f" {unit}"
-        else:
-            postfix = ""
-
-        self.i(f"{value:.3f}{postfix}")
-        if old is not None:
-            self.iln(f" (was {old:.3f}{postfix})")
-        else:
-            self.iln()
-
-    def ivalueln(self, value, unit = None):
-        old = self.head_exp_token()
-
-        if unit is not None:
-            postfix = f" {unit}"
-        else:
-            postfix = ""
-
-        self.i(f"{value}{postfix}")
-        if old is not None:
-            self.iln(f" (was {old}{postfix})")
-        else:
-            self.iln()
 
     def tmsln(self, f, max_ms):
         """
@@ -1347,12 +1315,6 @@ class TestCaseRun(OutputWriter):
         """Override key() to add anchor() functionality specific to TestCaseRun."""
         return self.anchor(key).i(" ")
 
-    def keyvalueln(self, key, value):
-        """
-        Prints a value of format "{key} {value}", and uses key as prefix anchor for
-        adjusting the snapshot file cursor.
-        """
-        return self.key(key).tln(value)
 
     def t(self, text):
         """

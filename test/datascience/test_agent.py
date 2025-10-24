@@ -147,8 +147,8 @@ def test_agent_step3_validate(t: bt.TestCaseRun, state: AgentState):
     quality_score = {"Excellent": 100, "Good": 75, "Poor": 50}.get(overall, 0)
     complete_score = {"Complete": 100, "Mostly Complete": 75, "Incomplete": 50}.get(complete, 0)
 
-    t.key(" * Quality Score:").tmetric(quality_score, tolerance=15, unit="%")
-    t.key(" * Completeness Score:").tmetric(complete_score, tolerance=15, unit="%")
+    t.key(" * Quality Score:").tmetricln(quality_score, tolerance=15, unit="%")
+    t.key(" * Completeness Score:").tmetricln(complete_score, tolerance=15, unit="%")
     t.iln()
 
     # Minimum requirements (relaxed for agent testing)
