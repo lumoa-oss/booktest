@@ -68,6 +68,16 @@ class OutputWriter(ABC):
         pass
 
     @abstractmethod
+    def info_token(self):
+        """
+        Flags the previous token as different in non-breaking way for review purposes.
+
+        This is a primitive method that must be implemented by subclasses.
+        Returns self for method chaining.
+        """
+        pass
+
+    @abstractmethod
     def diff(self):
         """
         Flags the current line as different for review purposes.
@@ -78,9 +88,30 @@ class OutputWriter(ABC):
         pass
 
     @abstractmethod
+    def diff_token(self):
+        """
+        Flags the previous token as different for review purposes.
+
+        This is a primitive method that must be implemented by subclasses.
+        Returns self for method chaining.
+        """
+        pass
+
+    @abstractmethod
     def fail(self):
         """
         Mark the current line as failed.
+
+        This is a primitive method that must be implemented by subclasses.
+        Returns self for method chaining.
+        """
+        pass
+
+
+    @abstractmethod
+    def fail_token(self):
+        """
+        Mark the previous token as failed.
 
         This is a primitive method that must be implemented by subclasses.
         Returns self for method chaining.
@@ -311,9 +342,9 @@ class OutputWriter(ABC):
         """Alias for tcode."""
         return self.tcode(code, lang)
 
-    def tmetric(self, value: float, tolerance: float, unit: str = None, direction: str = None):
+    def tmetricln(self, value: float, tolerance: float, unit: str = None, direction: str = None):
         """
-        Test a metric value with tolerance for acceptable variation.
+        Test a metric value with tolerance for acceptable variation, ending with newline.
 
         Compares current metric against snapshot value and accepts changes within
         tolerance. Useful for ML metrics that naturally fluctuate (accuracy, F1, etc).
@@ -333,10 +364,10 @@ class OutputWriter(ABC):
             - If exceeds tolerance: Mark as FAIL (using fail() primitive)
 
         Example:
-            t.tmetric(0.973, tolerance=0.02)  # Accuracy ±2%
-            t.tmetric(97.3, tolerance=2, unit="%")  # Same, with units
-            t.tmetric(0.973, tolerance=0.02, direction=">=")  # Only fail on drops
-            t.tmetric(latency_ms, tolerance=5, unit="ms", direction="<=")  # No increases
+            t.tmetricln(0.973, tolerance=0.02)  # Accuracy ±2%
+            t.tmetricln(97.3, tolerance=2, unit="%")  # Same, with units
+            t.tmetricln(0.973, tolerance=0.02, direction=">=")  # Only fail on drops
+            t.tmetricln(latency_ms, tolerance=5, unit="ms", direction="<=")  # No increases
 
         Output examples:
             0.973 (baseline)                           # First run
@@ -378,21 +409,18 @@ class OutputWriter(ABC):
             else:
                 delta_str = f"{delta:.3f}"
 
+            diff = exceeds_tolerance or violates_direction
+
+            self.i(f"{value:.3f}{unit_str}")
             # Mark as failed if tolerance or direction violated
-            if exceeds_tolerance or violates_direction:
+            if diff:
                 if delta > 0:
                     delta_str += f">{tolerance:.3f}!"
                 else:
                     delta_str += f"<{tolerance:.3f}!"
-                self.diff()
+                self.diff_token()
 
-            # Write output with delta
-            # Use feed() directly to avoid duplicate token comparison
-            # (tmetric already handles comparison and marks diffs manually)
-            if unit_str:
-                self.feed(f"{value:.3f}{unit_str} (was {old_value:.3f}{unit_str}, Δ{delta_str}{unit_str})\n")
-            else:
-                self.feed(f"{value:.3f} (was {old_value:.3f}, Δ{delta_str})\n")
+            self.iln(f" (was {old_value:.3f}{unit_str}, Δ{delta_str}{unit_str})\n")
 
         return self
 
@@ -457,13 +485,11 @@ class OutputWriter(ABC):
             # Mark as failed if tolerance or direction violated
             if exceeds_tolerance or violates_direction:
                 delta_str += f"<{tolerance:.3f}!"
-                self.diff()
-
-            # Write output with delta and percentage
-            if unit_str:
-                self.iln(f"{value:.3f}{unit_str} (was {old_value:.3f}{unit_str}, Δ{delta_str}{unit_str} [{delta_pct_str}])")
+                self.t(f"{value:.3f}{unit_str}")
             else:
-                self.iln(f"{value:.3f} (was {old_value:.3f}, Δ{delta_str} [{delta_pct_str}])")
+                self.i(f"{value:.3f}{unit_str}")
+
+            self.iln(f" (was {old_value:.3f}{unit_str}, Δ{delta_str}{unit_str} [{delta_pct_str}])")
 
         return self
 

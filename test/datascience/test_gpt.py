@@ -123,10 +123,10 @@ def test_evaluation(t: bt.TestCaseRun):
     t.iln()
 
     # Track metrics with tolerance - allows minor fluctuations but catches regressions
-    t.key(" * accuracy:").i(f"{accurate}/{len(data)} = ").tmetric(accuracy_pct, tolerance=5, unit="%")
-    t.key(" * precision:").tmetric(100*precision, tolerance=5, unit="%")
-    t.key(" * recall:").tmetric(100*recall, tolerance=5, unit="%")
-    t.key(" * F1 score:").tmetric(f1, tolerance=0.05)
+    t.key(" * accuracy:").i(f"{accurate}/{len(data)} = ").tmetricln(accuracy_pct, tolerance=5, unit="%")
+    t.key(" * precision:").tmetricln(100*precision, tolerance=5, unit="%")
+    t.key(" * recall:").tmetricln(100*recall, tolerance=5, unit="%")
+    t.key(" * F1 score:").tmetricln(f1, tolerance=0.05)
     t.iln()
 
     t.h1("minimum requirements:")
