@@ -1,6 +1,8 @@
 """
 Test the new info methods: idf(), itable(), iimage()
 """
+import random
+
 import booktest as bt
 import pandas as pd
 
@@ -8,33 +10,33 @@ import pandas as pd
 def test_idf_method(t: bt.TestCaseRun):
     """Test that idf() works for dataframes"""
     t.h1("Info DataFrame Test")
+    r = random.Random()
 
     # Create a simple dataframe
     df = pd.DataFrame({
         "metric": ["accuracy", "precision", "recall"],
-        "value": [0.95, 0.93, 0.97]
+        "value": [r.randint(80, 92)/100, 0.93, r.randint(94, 100)/100]
     })
 
-    t.iln("Model performance metrics:")
+    t.h2("Model performance metrics:")
     t.idf(df)
-
-    t.tln("Test completed")
 
 
 def test_itable_method(t: bt.TestCaseRun):
     """Test that itable() works for dicts"""
     t.h1("Info Table Test")
+    r = random.Random()
+
+    delta = r.randint(0, 100)
 
     # Create a simple table
     table = {
         "dataset": ["train", "val", "test"],
-        "samples": [1000, 200, 300]
+        "samples": [1000+ delta, 200, 300 - delta]
     }
 
     t.iln("Dataset sizes:")
     t.itable(table)
-
-    t.tln("Test completed")
 
 
 def test_iimage_method(t: bt.TestCaseRun):
@@ -43,10 +45,20 @@ def test_iimage_method(t: bt.TestCaseRun):
 
     # Create a dummy image reference
     # (we don't actually need the file to exist for this test)
-    t.iln("Model accuracy over epochs:")
-    t.iimage("plots/accuracy.png", "Accuracy Curve")
+    t.h2("Summary:")
 
-    t.tln("Test completed")
+    accuracy = random.randint(85, 95) / 100
+    t.key(" * accuracy:").ifloatln(accuracy)
+
+    t.h3("Accuracy over epochs:")
+
+    file = t.file(f"accuracy.png")
+    import matplotlib.pyplot as plt
+    plt.plot([1, 2, 3, 4, 5], [accuracy-0.10, accuracy-0.04, accuracy-0.02, accuracy-0.01, accuracy])
+    plt.savefig(file)
+    plt.close()  # Clean up to avoid interference with future plots
+
+    t.iimage(t.rename_file_to_hash(file), "Accuracy over epochs")
 
 
 def test_mixed_info_and_tested(t: bt.TestCaseRun):
@@ -54,18 +66,14 @@ def test_mixed_info_and_tested(t: bt.TestCaseRun):
     t.h1("Mixed Output Test")
 
     # Info output (diagnostic)
-    t.iln("Training started with 1000 samples")
+    t.iln(" * Training started with 1000 samples")
 
     # Tested output (verified)
-    t.tln("Final accuracy: 0.95")
-
+    t.tln(" * Final accuracy: 0.95")
     # Info dataframe (diagnostic)
     metrics_df = pd.DataFrame({
         "epoch": [1, 2, 3],
-        "loss": [0.5, 0.3, 0.2]
+        "loss": [0.5 + random.randint(-50, 50)*0.0001, 0.3, 0.2 + random.randint(-50, 50)*0.0001]
     })
-    t.iln("Training history:")
+    t.h2("Training history:")
     t.idf(metrics_df)
-
-    # Tested conclusion
-    t.tln("Model converged successfully")

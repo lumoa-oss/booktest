@@ -693,9 +693,12 @@ def review(exp_dir,
             ai_review = case_reports.get_ai_review(case_name)
             CaseReports.write_case_jsonl(f, case_name, result, duration, ai_review)
 
-    end_report(print,
-               updated_case_reports.failed_with_details(),
-               len(updated_case_reports.cases),
-               metrics.took_ms)
+    # Don't show end_report summary in interactive mode
+    # (user already reviewed failures interactively)
+    if not config.get("interactive", False):
+        end_report(print,
+                   updated_case_reports.failed_with_details(),
+                   len(updated_case_reports.cases),
+                   metrics.took_ms)
 
     return rv

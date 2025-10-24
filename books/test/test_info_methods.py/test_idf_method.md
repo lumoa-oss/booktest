@@ -1,9 +1,10 @@
 # Info DataFrame Test
 
-Model performance metrics:
+
+## Model performance metrics:
+
 |metric   |value|
 |---------|-----|
-|accuracy |0.95 |
+|accuracy |0.86 |
 |precision|0.93 |
-|recall   |0.97 |
-Test completed
+|recall   |1.0  |

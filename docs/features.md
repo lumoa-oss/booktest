@@ -777,6 +777,8 @@ Embed matplotlib plots in test output:
 
 ```python
 import booktest as bt
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend for determinism
 import matplotlib.pyplot as plt
 
 def test_plot(t: bt.TestCaseRun):
@@ -789,13 +791,19 @@ def test_plot(t: bt.TestCaseRun):
     plt.ylabel("Accuracy (%)")
     plt.title("Training Progress")
 
-    # Save to test directory
+    # Save to test directory with deterministic metadata
     plot_file = t.file("accuracy.png")
-    plt.savefig(plot_file)
+    plt.savefig(plot_file, metadata={'Software': None, 'CreationDate': None})
+    plt.close()  # Clean up
 
     # Embed in markdown
     t.timage(plot_file)
 ```
+
+**Important**: For deterministic images that work with `rename_file_to_hash()`:
+- Use `matplotlib.use('Agg')` before importing pyplot
+- Strip metadata with `metadata={'Software': None, 'CreationDate': None}`
+- Call `plt.close()` after saving to avoid interference
 
 **Output**: Image displayed in markdown viewer
 

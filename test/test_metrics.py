@@ -1,7 +1,7 @@
 """
-Test the tmetric() method for tracking metrics with tolerance.
+Test the tmetricln() method for tracking metrics with tolerance.
 
-This demonstrates how to use tmetric() for ML evaluation metrics
+This demonstrates how to use tmetricln() for ML evaluation metrics
 that naturally fluctuate (accuracy, F1 score, precision, etc).
 """
 import booktest as bt
@@ -24,9 +24,9 @@ def test_absolute_tolerance(t: bt.TestCaseRun):
     # Track metrics with tolerance
     # First run: establishes baseline
     # Subsequent runs: compares against baseline
-    t.key("Accuracy:").tmetric(accuracy, tolerance=0.02)
-    t.key("Precision:").tmetric(precision, tolerance=0.02)
-    t.key("Recall:").tmetric(recall, tolerance=0.02)
+    t.key("Accuracy:").tmetricln(accuracy, tolerance=0.02)
+    t.key("Precision:").tmetricln(precision, tolerance=0.02)
+    t.key("Recall:").tmetricln(recall, tolerance=0.02)
 
 
 def test_with_units(t: bt.TestCaseRun):
@@ -42,13 +42,13 @@ def test_with_units(t: bt.TestCaseRun):
     t.h2("Performance Metrics")
 
     # Track with percentage units
-    t.key("Accuracy:").tmetric(accuracy_pct, tolerance=2, unit="%")
+    t.key("Accuracy:").tmetricln(accuracy_pct, tolerance=2, unit="%")
 
     # Track latency in milliseconds
-    t.key("Latency:").tmetric(latency_ms, tolerance=5, unit="ms")
+    t.key("Latency:").tmetricln(latency_ms, tolerance=5, unit="ms")
 
     # Track throughput with custom unit
-    t.key("Throughput:").tmetric(throughput, tolerance=50, unit="req/s")
+    t.key("Throughput:").tmetricln(throughput, tolerance=50, unit="req/s")
 
 
 def test_direction_constraints(t: bt.TestCaseRun):
@@ -68,13 +68,13 @@ def test_direction_constraints(t: bt.TestCaseRun):
     t.iln()
 
     # Only fail if accuracy drops below (baseline - tolerance)
-    t.key("Accuracy:").tmetric(accuracy, tolerance=0.02, direction=">=")
+    t.key("Accuracy:").tmetricln(accuracy, tolerance=0.02, direction=">=")
 
     # Only fail if error rate exceeds (baseline + tolerance)
-    t.key("Error Rate:").tmetric(error_rate, tolerance=0.01, direction="<=")
+    t.key("Error Rate:").tmetricln(error_rate, tolerance=0.01, direction="<=")
 
     # Only fail if latency increases above (baseline + tolerance)
-    t.key("Latency:").tmetric(latency_ms, tolerance=5, unit="ms", direction="<=")
+    t.key("Latency:").tmetricln(latency_ms, tolerance=5, unit="ms", direction="<=")
 
 
 def test_percentage_tolerance(t: bt.TestCaseRun):
@@ -124,7 +124,7 @@ def test_ml_pipeline_example(t: bt.TestCaseRun):
     # Track all metrics with consistent tolerance and direction
     for metric_name, value in training_metrics.items():
         display_name = metric_name.replace("_", " ").title()
-        t.key(f"{display_name}:").tmetric(
+        t.key(f"{display_name}:").tmetricln(
             value,
             tolerance=0.02,
             direction=">="  # Don't allow drops
@@ -135,7 +135,7 @@ def test_ml_pipeline_example(t: bt.TestCaseRun):
     t.iln()
 
     # Performance metrics with different constraints
-    t.key("Inference Time:").tmetric(
+    t.key("Inference Time:").tmetricln(
         42.5,
         tolerance=5,
         unit="ms",

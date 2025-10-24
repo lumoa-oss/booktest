@@ -152,14 +152,30 @@ class LlmReview(OutputWriter):
         self.t.i(text)
         return self
 
+
+    def info_token(self):
+        """Mark the token as different (primitive method)."""
+        self.t.info_token()
+        return self
+
     def diff(self):
         """Mark the test as different (primitive method)."""
         self.t.diff()
         return self
 
+    def diff_token(self):
+        """Mark the token as different (primitive method)."""
+        self.t.diff_token()
+        return self
+
     def fail(self):
         """Mark the test as failed (primitive method)."""
         self.t.fail()
+        return self
+
+    def fail_token(self):
+        """Mark the token as failed (primitive method)."""
+        self.t.fail_token()
         return self
 
     def start_review(self):

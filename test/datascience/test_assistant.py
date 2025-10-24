@@ -174,10 +174,10 @@ def test_assistant(t: bt.TestCaseRun):
     # Track metrics with tolerance - allows minor fluctuations but catches regressions
     t.key(" * Criteria Score:")\
      .i(f"{total_criteria_score}/{max_criteria_score} = ")\
-     .tmetric(criteria_rate, tolerance=5, unit="%")
+     .tmetricln(criteria_rate, tolerance=5, unit="%")
     t.key(" * Rating Score:")\
      .i(f"{total_rating_score}/{max_rating_score} = ")\
-     .tmetric(rating_rate, tolerance=10, unit="%")
+     .tmetricln(rating_rate, tolerance=10, unit="%")
     t.iln()
 
     t.h2("Minimum Requirements")
