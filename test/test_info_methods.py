@@ -53,9 +53,13 @@ def test_iimage_method(t: bt.TestCaseRun):
     t.h3("Accuracy over epochs:")
 
     file = t.file(f"accuracy.png")
+    import matplotlib
+    matplotlib.use('Agg')  # Use non-interactive backend for determinism
     import matplotlib.pyplot as plt
     plt.plot([1, 2, 3, 4, 5], [accuracy-0.10, accuracy-0.04, accuracy-0.02, accuracy-0.01, accuracy])
-    plt.savefig(file)
+    # Save with minimal metadata for deterministic output
+    plt.savefig(file, metadata={'Software': None, 'CreationDate': None})
+    plt.close()  # Clean up to avoid interference with future plots
 
 
     t.iimage(t.rename_file_to_hash(file), "Accuracy over epochs")
