@@ -634,9 +634,10 @@ class TestCaseRun(OutputWriter):
 
         if has_line_markers or has_token_markers:
             # Determine line-level symbol and update stats
-            has_error = self.line_error is not None or any(m[1] == 'fail' for m in self.line_markers)
-            has_diff = self.line_diff is not None or any(m[1] == 'diff' for m in self.line_markers)
-            has_info = any(m[1] == 'info' for m in self.line_markers)
+            # Markers are (start_pos, end_pos, marker_type) tuples
+            has_error = self.line_error is not None or any(m[2] == 'fail' for m in self.line_markers)
+            has_diff = self.line_diff is not None or any(m[2] == 'diff' for m in self.line_markers)
+            has_info = any(m[2] == 'info' for m in self.line_markers)
 
             symbol = "?"
             pos = None
@@ -702,7 +703,8 @@ class TestCaseRun(OutputWriter):
                 left_side = color_fn(f"{symbol} {self.out_line:60s}")
 
             if self.exp_line is not None:
-                right_side = gray(self.exp_line)
+                # Colorize expected line with differing tokens highlighted
+                right_side = self._colorize_expected_line(self.exp_line, self.line_markers)
                 self.report(f"{left_side} | {right_side}")
             else:
                 right_side = gray("EOF")
@@ -727,7 +729,7 @@ class TestCaseRun(OutputWriter):
 
         Args:
             line: The line text to colorize
-            markers: List of (position, marker_type) tuples
+            markers: List of (start_pos, end_pos, marker_type) tuples
             has_error: True if line has any error markers
             has_diff: True if line has any diff markers
             has_info: True if line has any info markers
@@ -747,9 +749,10 @@ class TestCaseRun(OutputWriter):
                 return cyan(line)
             return line
 
-        # Sort markers by position and deduplicate
+        # Sort markers by start position and deduplicate
         # Filter out invalid positions
-        valid_markers = [(pos, mtype) for pos, mtype in markers if 0 <= pos <= len(line)]
+        valid_markers = [(start, end, mtype) for start, end, mtype in markers
+                        if 0 <= start <= len(line) and 0 <= end <= len(line)]
         if not valid_markers:
             # Fallback to line-level coloring
             if has_error:
@@ -766,20 +769,13 @@ class TestCaseRun(OutputWriter):
         result = ""
         last_pos = 0
 
-        for i, (pos, marker_type) in enumerate(sorted_markers):
+        for start_pos, end_pos, marker_type in sorted_markers:
             # Add uncolored text before this marker
-            if pos > last_pos:
-                result += line[last_pos:pos]
-
-            # Find the end of the current token
-            # Use next marker position, or end of line if this is the last marker
-            if i + 1 < len(sorted_markers):
-                next_pos = sorted_markers[i + 1][0]
-            else:
-                next_pos = len(line)
+            if start_pos > last_pos:
+                result += line[last_pos:start_pos]
 
             # Colorize the token based on marker type
-            token = line[pos:next_pos]
+            token = line[start_pos:end_pos]
             if marker_type == 'fail':
                 result += red(token)
             elif marker_type == 'diff':
@@ -789,11 +785,77 @@ class TestCaseRun(OutputWriter):
             else:
                 result += token
 
-            last_pos = next_pos
+            last_pos = end_pos
 
         # Add any remaining uncolored text
         if last_pos < len(line):
             result += line[last_pos:]
+
+        return result
+
+    def _colorize_expected_line(self, exp_line, markers):
+        """
+        Colorize the expected line by highlighting differing tokens.
+
+        The base text is shown in gray, while tokens that differ from the new output
+        are shown in the terminal's default color (which adapts to light/dark themes).
+
+        Args:
+            exp_line: The expected line text
+            markers: List of (start_pos, end_pos, marker_type) tuples from the output line
+
+        Returns:
+            Colored string with differing tokens highlighted
+        """
+        from booktest.reporting.colors import gray, default_color
+        from booktest.llm.tokenizer import TestTokenizer
+
+        if not markers or not exp_line:
+            return gray(exp_line)
+
+        # Tokenize both lines to find corresponding positions
+        out_tokens = list(TestTokenizer(self.out_line))
+        exp_tokens = list(TestTokenizer(exp_line))
+
+        # Build list of token positions in expected line that differ
+        differing_positions = set()
+        out_pos = 0
+        exp_pos = 0
+
+        for i, out_token in enumerate(out_tokens):
+            # Check if this output token has a marker
+            has_marker = any(start <= out_pos < end for start, end, _ in markers)
+
+            if i < len(exp_tokens):
+                exp_token = exp_tokens[i]
+                if has_marker and out_token != exp_token:
+                    # Mark this position in expected line as differing
+                    differing_positions.add((exp_pos, exp_pos + len(exp_token)))
+                exp_pos += len(exp_token)
+
+            out_pos += len(out_token)
+
+        # Build the colored expected line
+        if not differing_positions:
+            return gray(exp_line)
+
+        result = ""
+        last_pos = 0
+        sorted_positions = sorted(differing_positions)
+
+        for start, end in sorted_positions:
+            # Add gray text before this differing token
+            if start > last_pos:
+                result += gray(exp_line[last_pos:start])
+
+            # Highlight the differing token in terminal's default color
+            # This adapts to light/dark themes automatically
+            result += default_color(exp_line[start:end])
+            last_pos = end
+
+        # Add remaining gray text
+        if last_pos < len(exp_line):
+            result += gray(exp_line[last_pos:])
 
         return result
 
@@ -838,18 +900,23 @@ class TestCaseRun(OutputWriter):
         exp_token = self.next_exp_token()
         self.last_checked = check or info_check
 
-        if self.exp_file_exists and token != exp_token:
-            if check:
-                # Tested content: mark as diff (fails test)
-                self.diff_token()
-            elif info_check:
-                # Info content: mark as info (shows in diff, doesn't fail)
-                self.info_token()
-
         if token == '\n':
             self.commit_line()
         else:
+            # Add markers after appending token so position is correct
+            start_pos = len(self.out_line)
             self.out_line = self.out_line + token
+
+            if self.exp_file_exists and token != exp_token:
+                if check:
+                    # Tested content: mark as diff (fails test)
+                    # Mark with token length info: (start_pos, end_pos, marker_type)
+                    self.line_markers.append((start_pos, len(self.out_line), 'diff'))
+                    if self.line_diff is None:
+                        self.line_diff = start_pos
+                elif info_check:
+                    # Info content: mark as info (shows in diff, doesn't fail)
+                    self.line_markers.append((start_pos, len(self.out_line), 'info'))
         return self
 
     def test_feed_token(self, token):
@@ -895,6 +962,19 @@ class TestCaseRun(OutputWriter):
             self.feed_token(t)
         return self
 
+    def info_feed(self, text):
+        """
+        Feeds a piece text into the info stream with comparison. The text is tokenized
+        and compared to snapshot content. Differences are marked as 'info' (shown in
+        diff without causing test failure).
+
+        Use this for diagnostic output that should be tracked but not cause failures.
+        """
+        tokens = TestTokenizer(str(text))
+        for t in tokens:
+            self.info_feed_token(t)
+        return self
+
     def diff(self):
         """
         Mark the entire current line as different.
@@ -904,8 +984,8 @@ class TestCaseRun(OutputWriter):
         """
         if self.line_diff is None:
             self.line_diff = len(self.out_line)
-        # Also add to token-level markers
-        self.line_markers.append((len(self.out_line), 'diff'))
+        # Also add to token-level markers (mark from current pos to end of line)
+        self.line_markers.append((len(self.out_line), len(self.out_line), 'diff'))
         return self
 
     def diff_token(self):
@@ -914,9 +994,12 @@ class TestCaseRun(OutputWriter):
 
         Use this for fine-grained diff marking, e.g., to highlight a specific
         changed cell in a table without marking the entire row as different.
+
+        Note: This should be called AFTER adding the token to out_line to properly
+        capture the token length. Prefer using feed_token with check=True.
         """
         pos = len(self.out_line)
-        self.line_markers.append((pos, 'diff'))
+        self.line_markers.append((pos, pos, 'diff'))
         # Update line-level marker if not set
         if self.line_diff is None:
             self.line_diff = pos
@@ -931,8 +1014,8 @@ class TestCaseRun(OutputWriter):
         """
         if self.line_error is None:
             self.line_error = len(self.out_line)
-        # Also add to token-level markers
-        self.line_markers.append((len(self.out_line), 'fail'))
+        # Also add to token-level markers (mark from current pos to end of line)
+        self.line_markers.append((len(self.out_line), len(self.out_line), 'fail'))
         return self
 
     def fail_token(self):
@@ -941,11 +1024,15 @@ class TestCaseRun(OutputWriter):
 
         Use this for fine-grained failure marking, e.g., to highlight a specific
         failed assertion in a table cell without marking the entire row as failed.
+
+        Note: This should be called AFTER adding the token to out_line to properly
+        capture the token length. Prefer using feed_token with check=True.
         """
-        self.line_markers.append((len(self.out_line), 'fail'))
+        pos = len(self.out_line)
+        self.line_markers.append((pos, pos, 'fail'))
         # Update line-level marker if not set
         if self.line_error is None:
-            self.line_error = len(self.out_line)
+            self.line_error = pos
         return self
 
     def info(self):
@@ -956,7 +1043,7 @@ class TestCaseRun(OutputWriter):
         don't cause test failure. These appear in 'new | old' format for AI
         review context without marking the test as failed.
         """
-        self.line_markers.append((len(self.out_line), 'info'))
+        self.line_markers.append((len(self.out_line), len(self.out_line), 'info'))
         return self
 
     def info_token(self):
@@ -965,9 +1052,12 @@ class TestCaseRun(OutputWriter):
 
         Use this for fine-grained info marking, e.g., to highlight which specific
         cell in a diagnostic table changed without affecting the test result.
+
+        Note: This should be called AFTER adding the token to out_line to properly
+        capture the token length. Prefer using feed_token with info_check=True.
         """
         pos = len(self.out_line)
-        self.line_markers.append((pos, 'info'))
+        self.line_markers.append((pos, pos, 'info'))
         return self
 
     def _get_expected_token(self):
@@ -1278,10 +1368,11 @@ class TestCaseRun(OutputWriter):
         """
         Writes info text inline (primitive method for OutputWriter).
 
-        In TestCaseRun, this text bypasses snapshot comparison.
+        In TestCaseRun, differences in info content are marked with info markers
+        (shown in diff without causing test failure).
         'i' comes from 'info'/'ignore'.
         """
-        self.feed(text)
+        self.info_feed(text)
         return self
 
 

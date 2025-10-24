@@ -18,8 +18,6 @@ def test_idf_method(t: bt.TestCaseRun):
     t.iln("Model performance metrics:")
     t.idf(df)
 
-    t.tln("Test completed")
-
 
 def test_itable_method(t: bt.TestCaseRun):
     """Test that itable() works for dicts"""
@@ -34,8 +32,6 @@ def test_itable_method(t: bt.TestCaseRun):
     t.iln("Dataset sizes:")
     t.itable(table)
 
-    t.tln("Test completed")
-
 
 def test_iimage_method(t: bt.TestCaseRun):
     """Test that iimage() works"""
@@ -46,18 +42,16 @@ def test_iimage_method(t: bt.TestCaseRun):
     t.iln("Model accuracy over epochs:")
     t.iimage("plots/accuracy.png", "Accuracy Curve")
 
-    t.tln("Test completed")
-
 
 def test_mixed_info_and_tested(t: bt.TestCaseRun):
     """Test mixing info and tested output"""
     t.h1("Mixed Output Test")
 
     # Info output (diagnostic)
-    t.iln("Training started with 1000 samples")
+    t.iln(" * Training started with 1000 samples")
 
     # Tested output (verified)
-    t.tln("Final accuracy: 0.95")
+    t.tln(" * Final accuracy: 0.95")
 
     # Info dataframe (diagnostic)
     metrics_df = pd.DataFrame({
@@ -66,6 +60,3 @@ def test_mixed_info_and_tested(t: bt.TestCaseRun):
     })
     t.iln("Training history:")
     t.idf(metrics_df)
-
-    # Tested conclusion
-    t.tln("Model converged successfully")

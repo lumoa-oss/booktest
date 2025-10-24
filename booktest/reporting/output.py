@@ -380,7 +380,10 @@ class OutputWriter(ABC):
 
             # Mark as failed if tolerance or direction violated
             if exceeds_tolerance or violates_direction:
-                delta_str += f"<{tolerance:.3f}!"
+                if delta > 0:
+                    delta_str += f">{tolerance:.3f}!"
+                else:
+                    delta_str += f"<{tolerance:.3f}!"
                 self.diff()
 
             # Write output with delta
