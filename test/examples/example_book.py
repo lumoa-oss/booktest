@@ -30,15 +30,13 @@ class ExampleTestBook(bt.TestBook):
     def test_image(self, t: bt.TestCaseRun):
         # these imports are slow, let's do them lazily
         import matplotlib
-        matplotlib.use('Agg')  # Use non-interactive backend for determinism
         import matplotlib.pyplot as plt
 
         t.h1("This test demonstrates images")
 
         file = t.file("figure1.png")
         plt.plot([1, 2, 3], [1, 2, 3])
-        # Save with minimal metadata for deterministic output
-        plt.savefig(file, metadata={'Software': None, 'CreationDate': None})
+        plt.savefig(file)
         plt.close()  # Clean up to avoid interference with future plots
 
         # file is renamed with hash name to avoid name conflicts with functions
