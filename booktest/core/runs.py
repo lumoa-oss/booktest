@@ -537,7 +537,8 @@ def parallel_run_tests(exp_dir,
                 updated_case_reports = CaseReports(reviewed, ai_reviews_collected)
 
                 # Only print end_report here if auto-report won't handle it
-                # Auto-report will show the summary if:
+                # Determine if auto-report will be shown
+                # Auto-report is shown when:
                 # - Tests failed (exit_code != 0)
                 # - Not in interactive mode
                 # - Auto-report is enabled (default)
@@ -547,7 +548,15 @@ def parallel_run_tests(exp_dir,
                     config.get("auto_report", True)
                 )
 
-                if not will_auto_report:
+                # Show end_report summary unless:
+                # - Auto-report will be shown (detailed report replaces summary)
+                # - In interactive mode (user already reviewed failures interactively)
+                should_show_summary = (
+                    not will_auto_report and
+                    not config.get("interactive", False)
+                )
+
+                if should_show_summary:
                     end_report(print,
                                updated_case_reports.failed_with_details(),
                                len(updated_case_reports.cases),

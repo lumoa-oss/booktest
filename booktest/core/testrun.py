@@ -212,6 +212,8 @@ class TestRun:
 
         # Only print end_report here if auto-report won't handle it
         # Auto-report will show the summary if:
+        # Determine if auto-report will be shown
+        # Auto-report is shown when:
         # - Tests failed (rv != OK)
         # - Not in interactive mode
         # - Auto-report is enabled (default)
@@ -221,7 +223,15 @@ class TestRun:
             self.config.get("auto_report", True)
         )
 
-        if not will_auto_report:
+        # Show end_report summary unless:
+        # - Auto-report will be shown (detailed report replaces summary)
+        # - In interactive mode (user already reviewed failures interactively)
+        should_show_summary = (
+            not will_auto_report and
+            not self.config.get("interactive", False)
+        )
+
+        if should_show_summary:
             end_report(self.print, failed, tests, took)
 
         create_index(self.exp_dir, self.tests.all_names())
