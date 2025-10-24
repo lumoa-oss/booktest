@@ -797,8 +797,8 @@ class TestCaseRun(OutputWriter):
         """
         Colorize the expected line by highlighting differing tokens.
 
-        The base text is shown in gray, while tokens that differ from the new output
-        are shown in the terminal's default color (which adapts to light/dark themes).
+        The base text is shown in dim gray (more subtle than regular gray), while tokens
+        that differ from the new output are shown in regular gray for contrast.
 
         Args:
             exp_line: The expected line text
@@ -807,11 +807,11 @@ class TestCaseRun(OutputWriter):
         Returns:
             Colored string with differing tokens highlighted
         """
-        from booktest.reporting.colors import gray, default_color
+        from booktest.reporting.colors import dim_gray, gray
         from booktest.llm.tokenizer import TestTokenizer
 
         if not markers or not exp_line:
-            return gray(exp_line)
+            return dim_gray(exp_line)
 
         # Tokenize both lines to find corresponding positions
         out_tokens = list(TestTokenizer(self.out_line))
@@ -837,25 +837,24 @@ class TestCaseRun(OutputWriter):
 
         # Build the colored expected line
         if not differing_positions:
-            return gray(exp_line)
+            return dim_gray(exp_line)
 
         result = ""
         last_pos = 0
         sorted_positions = sorted(differing_positions)
 
         for start, end in sorted_positions:
-            # Add gray text before this differing token
+            # Add dim gray text before this differing token
             if start > last_pos:
-                result += gray(exp_line[last_pos:start])
+                result += dim_gray(exp_line[last_pos:start])
 
-            # Highlight the differing token in terminal's default color
-            # This adapts to light/dark themes automatically
-            result += default_color(exp_line[start:end])
+            # Highlight the differing token in regular gray for contrast
+            result += gray(exp_line[start:end])
             last_pos = end
 
-        # Add remaining gray text
+        # Add remaining dim gray text
         if last_pos < len(exp_line):
-            result += gray(exp_line[last_pos:])
+            result += dim_gray(exp_line[last_pos:])
 
         return result
 

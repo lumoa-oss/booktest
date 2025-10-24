@@ -387,10 +387,12 @@ class OutputWriter(ABC):
                 self.diff()
 
             # Write output with delta
+            # Use feed() directly to avoid duplicate token comparison
+            # (tmetric already handles comparison and marks diffs manually)
             if unit_str:
-                self.iln(f"{value:.3f}{unit_str} (was {old_value:.3f}{unit_str}, Δ{delta_str}{unit_str})")
+                self.feed(f"{value:.3f}{unit_str} (was {old_value:.3f}{unit_str}, Δ{delta_str}{unit_str})\n")
             else:
-                self.iln(f"{value:.3f} (was {old_value:.3f}, Δ{delta_str})")
+                self.feed(f"{value:.3f} (was {old_value:.3f}, Δ{delta_str})\n")
 
         return self
 
