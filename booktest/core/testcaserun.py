@@ -974,6 +974,31 @@ class TestCaseRun(OutputWriter):
             self.info_feed_token(t)
         return self
 
+    def fail_feed_token(self, token):
+        """
+        Feeds a token into the stream and marks it as failed.
+        The token will be colored red in the output.
+        """
+        start_pos = len(self.out_line)
+        self.feed_token(token, check=False)  # Don't check, we're marking as failed anyway
+        end_pos = len(self.out_line)
+        # Mark this specific token as failed
+        self.line_markers.append((start_pos, end_pos, 'fail'))
+        # Update line-level error marker if not set
+        if self.line_error is None:
+            self.line_error = start_pos
+        return self
+
+    def fail_feed(self, text):
+        """
+        Feeds text into the stream and marks all tokens as failed (red).
+        Use this to write error messages or failed output.
+        """
+        tokens = TestTokenizer(str(text))
+        for t in tokens:
+            self.fail_feed_token(t)
+        return self
+
     def diff(self):
         """
         Mark the entire current line as different.
@@ -1334,6 +1359,16 @@ class TestCaseRun(OutputWriter):
         'i' comes from 'info'/'ignore'.
         """
         self.info_feed(text)
+        return self
+
+    def f(self, text):
+        """
+        Writes failed text inline (primitive method for OutputWriter).
+
+        In TestCaseRun, all tokens are marked as failed and colored red.
+        'f' comes from 'fail'.
+        """
+        self.fail_feed(text)
         return self
 
 

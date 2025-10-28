@@ -68,6 +68,17 @@ class OutputWriter(ABC):
         pass
 
     @abstractmethod
+    def f(self, text: str):
+        """
+        Write failed text inline (no newline), marking it as failed.
+
+        This is a primitive method that must be implemented by subclasses.
+        In TestCaseRun, this feeds text and marks each token as failed (red).
+        In GptReview, this is added to buffer and delegated to TestCaseRun.
+        """
+        pass
+
+    @abstractmethod
     def info_token(self):
         """
         Flags the previous token as different in non-breaking way for review purposes.
@@ -165,6 +176,19 @@ class OutputWriter(ABC):
         """
         self.i(text)
         self.i("\n")
+        return self
+
+    def failln(self, text: str = ""):
+        """
+        Write a line of failed text, marking the entire line as failed (red).
+        Built on f() and fail() primitives.
+
+        All text in the line will be colored red in the output. The line will
+        be marked as failed, causing the test to fail.
+        """
+        self.f(text)
+        self.fail()
+        self.f("\n")
         return self
 
     def key(self, key: str):
@@ -266,7 +290,7 @@ class OutputWriter(ABC):
             if error_message:
                 self.iln(error_message)
             else:
-                self.iln("FAILED")
+                self.tln("FAILED")
         return self
 
     def _table(self, df: Any, feed_fn):
