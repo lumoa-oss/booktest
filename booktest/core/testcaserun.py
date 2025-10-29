@@ -656,13 +656,9 @@ class TestCaseRun(OutputWriter):
                 pos = 0
 
             # Choose coloring approach based on markers
-            if has_token_markers and len(self.line_markers) > 0:
+            if has_token_markers and len(self.line_markers) == 0:
                 # Use token-level coloring
                 try:
-                    colored_line = self._colorize_line_with_markers(
-                        self.out_line, self.line_markers,
-                        has_error, has_diff, has_info
-                    )
                     # Color the symbol itself
                     if has_error:
                         colored_symbol = red(symbol)
@@ -763,7 +759,7 @@ class TestCaseRun(OutputWriter):
                 return cyan(line)
             return line
 
-        sorted_markers = sorted(set(valid_markers), key=lambda m: m[0])
+        sorted_markers = sorted(set(valid_markers), key=lambda m: (m[0], m[2]))
 
         # Build colored line token by token
         result = ""
@@ -775,7 +771,7 @@ class TestCaseRun(OutputWriter):
                 result += line[last_pos:start_pos]
 
             # Colorize the token based on marker type
-            token = line[start_pos:end_pos]
+            token = line[max(last_pos,start_pos):end_pos]
             if marker_type == 'fail':
                 result += red(token)
             elif marker_type == 'diff':
@@ -787,7 +783,7 @@ class TestCaseRun(OutputWriter):
 
             last_pos = end_pos
 
-        # Add any remaining uncolored text
+        # Add any remaining uncolored textbo
         if last_pos < len(line):
             result += line[last_pos:]
 
@@ -974,6 +970,31 @@ class TestCaseRun(OutputWriter):
             self.info_feed_token(t)
         return self
 
+    def fail_feed_token(self, token):
+        """
+        Feeds a token into the stream and marks it as failed.
+        The token will be colored red in the output.
+        """
+        start_pos = len(self.out_line)
+        self.feed_token(token, check=False)  # Don't check, we're marking as failed anyway
+        end_pos = len(self.out_line)
+        # Mark this specific token as failed
+        self.line_markers.append((start_pos, end_pos, 'fail'))
+        # Update line-level error marker if not set
+        if self.line_error is None:
+            self.line_error = start_pos
+        return self
+
+    def fail_feed(self, text):
+        """
+        Feeds text into the stream and marks all tokens as failed (red).
+        Use this to write error messages or failed output.
+        """
+        tokens = TestTokenizer(str(text))
+        for t in tokens:
+            self.fail_feed_token(t)
+        return self
+
     def diff(self):
         """
         Mark the entire current line as different.
@@ -1090,56 +1111,6 @@ class TestCaseRun(OutputWriter):
         self.tln(anchor)
         return self
 
-    def header(self, header):
-        """
-        creates a header line that also operates as an anchor.
-
-        the only difference between this method and anchorln() method is that the
-        header is preceded and followed by an empty line.
-        """
-        if self.line_number > 0:
-            check = self.last_checked and self.exp_line is not None
-            self.feed_token("\n", check=check)
-        self.anchorln(header)
-        self.iln("")
-        return self
-
-
-    def tmsln(self, f, max_ms):
-        """
-        runs the function f and measures the time milliseconds it took.
-        the measurement is printed in the test stream and compared into previous
-        result in the snaphost file.
-
-        This method also prints a new line after the measurements.
-
-        NOTE: if max_ms is defined, this line will fail, if the test took more than
-        max_ms milliseconds.
-        """
-        before = time.time()
-        rv = f()
-        after = time.time()
-        ms = (after-before)*1000
-        if ms > max_ms:
-            self.fail().tln(f"{(after - before) * 1000:.2f} ms > "
-                            f"max {max_ms:.2f} ms! (failed)")
-        else:
-            self.ifloatln(ms, "ms")
-
-        return rv
-
-    def imsln(self, f):
-        """
-        runs the function f and measures the time milliseconds it took.
-        the measurement is printed in the test stream and compared into previous
-        result in the snaphost file.
-
-        This method also prints a new line after the measurements.
-
-        NOTE: unline tmsln(), this method never fails or marks a difference.
-        """
-        return self.tmsln(f, sys.maxsize)
-
     def h(self, level: int, title: str):
         """
         Markdown style header (primitive method for OutputWriter).
@@ -1153,168 +1124,6 @@ class TestCaseRun(OutputWriter):
         """
         self.header("#" * level + " " + title)
         return self
-
-    def timage(self, file, alt_text=None):
-        """
-        Adds a markdown image in the test stream (tested).
-
-        Args:
-            file: Path to the image file
-            alt_text: Optional alt text for the image (defaults to filename)
-        """
-        if alt_text is None:
-            alt_text = os.path.splitext(os.path.basename(file))[0]
-        self.tln(f"![{alt_text}]({self.rel_path(file)})")
-        return self
-
-    def iimage(self, file, alt_text=None):
-        """
-        Adds a markdown image in the info stream (not tested).
-
-        Like timage() but for diagnostic/info output. Changes in image paths
-        are shown in 'new | old' format for AI review but don't fail tests.
-
-        Useful for plots, charts, and visualizations that help understand test
-        behavior but shouldn't cause test failure if they change.
-
-        Args:
-            file: Path to the image file
-            alt_text: Optional alt text for the image (defaults to filename)
-
-        Example:
-            t.iimage("plots/accuracy_curve.png", "Training Accuracy")
-        """
-        if alt_text is None:
-            alt_text = os.path.splitext(os.path.basename(file))[0]
-        self.iln(f"![{alt_text}]({self.rel_path(file)})")
-        return self
-
-
-    def tlist(self, list, prefix=" * "):
-        """
-        Writes the list into test stream. By default, the list
-        is prefixed by markdown ' * ' list expression.
-
-        For example following call:
-
-        ```python
-        t.tlist(["a", "b", "c"])
-        ```
-
-        will produce:
-
-         * a
-         * b
-         * c
-        """
-        for i in list:
-            self.tln(f"{prefix}{i}")
-
-    def tset(self, items, prefix=" * "):
-        """
-        This method used to print and compare a set of items to expected set
-        in out of order fashion. It will first scan the next elements
-        based on prefix. After this step, it will check whether the items
-        were in the list.
-
-        NOTE: this method may be slow, if the set order is unstable.
-        """
-        compare = None
-
-        if self.exp_line is not None:
-            begin = self.exp_line_number
-            compare = set()
-            while (self.exp_line is not None
-                   and self.exp_line.startswith(prefix)):
-                compare.add(self.exp_line[len(prefix):])
-                self.next_exp_line()
-            end = self.exp_line_number
-
-        for i in items:
-            i_str = str(i)
-            line = f"{prefix}{i_str}"
-            if compare is not None:
-                if i_str in compare:
-                    self.seek_line(line, begin, end)
-                    compare.remove(i_str)
-                else:
-                    self.diff()
-            self.iln(line)
-
-        if compare is not None:
-            if len(compare) > 0:
-                self.diff()
-            self.jump(end)
-
-
-    def must_apply(self, it, title, cond, error_message=None):
-        """
-        Assertions with decoration for testing, whether `it`
-        fulfills a condition.
-
-        Maily used by TestIt class
-        """
-        prefix = f" * MUST {title}..."
-        self.i(prefix).assertln(cond(it), error_message)
-
-    def must_contain(self, it, member):
-        """
-        Assertions with decoration for testing, whether `it`
-        contains a member.
-
-        Maily used by TestIt class
-        """
-        self.must_apply(it, f"have {member}", lambda x: member in x)
-
-    def must_equal(self, it, value):
-        """
-        Assertions with decoration for testing, whether `it`
-        equals something.
-
-        Maily used by TestIt class
-        """
-        self.must_apply(it, f"equal {value}", lambda x: x == value)
-
-    def must_be_a(self, it, typ):
-        """
-        Assertions with decoration for testing, whether `it`
-        is of specific type.
-
-        Maily used by TestIt class
-        """
-        self.must_apply(it,
-                        f"be a {typ}",
-                        lambda x: type(x) == typ,
-                        f"was {type(it)}")
-
-    def it(self, name, it):
-        """
-        Creates TestIt class around the `it` object named with `name`
-
-        This can be used for assertions as in:
-
-        ```python
-        result = [1, 2]
-        t.it("result", result).must_be_a(list).must_contain(1).must_contain(2)
-        ```
-        """
-        return TestIt(self, name, it)
-
-    def tformat(self, value):
-        """
-        Converts the value into json like structure containing only the value types.
-
-        Prints a json containing the value types.
-
-        Mainly used for getting snapshot of a e.g. Json response format.
-        """
-        self.tln(json.dumps(value_format(value), indent=2))
-        return self
-
-    def key(self, key):
-        """Override key() to add anchor() functionality specific to TestCaseRun."""
-        return self.anchor(key).i(" ")
-
 
     def t(self, text):
         """
@@ -1336,48 +1145,12 @@ class TestCaseRun(OutputWriter):
         self.info_feed(text)
         return self
 
+    def f(self, text):
+        """
+        Writes failed text inline (primitive method for OutputWriter).
 
-def value_format(value):
-    value_type = type(value)
-    if value_type is list:
-        rv = []
-        for item in value:
-            rv.append(value_format(item))
-    elif value_type is dict:
-        rv = {}
-        for key in value:
-            rv[key] = value_format(value[key])
-    else:
-        rv = value_type.__name__
-    return rv
-
-
-class TestIt:
-    """ utility for making assertions related to a specific object """
-
-    def __init__(self, run: TestCaseRun, title: str, it):
-        self.run = run
-        self.title = title
-        self.it = it
-        run.h2(title + "..")
-
-    def must_contain(self, member):
-        self.run.must_contain(self.it, member)
+        In TestCaseRun, all tokens are marked as failed and colored red.
+        'f' comes from 'fail'.
+        """
+        self.fail_feed(text)
         return self
-
-    def must_equal(self, member):
-        self.run.must_equal(self.it, member)
-        return self
-
-    def must_be_a(self, typ):
-        self.run.must_be_a(self.it, typ)
-        return self
-
-    def must_apply(self, title, cond):
-        self.run.must_apply(self.it, title, cond)
-        return self
-
-    def member(self, title, select):
-        """ Creates a TestIt class for the member of 'it' """
-        return TestIt(self.run, self.title + "." + title, select(self.it))
-

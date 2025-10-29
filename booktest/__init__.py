@@ -2,7 +2,7 @@
 from booktest.core.testbook import TestBook
 from booktest.core.testsuite import TestSuite, merge_tests, drop_prefix, cases_of
 from booktest.core.testrun import TestRun
-from booktest.core.testcaserun import TestCaseRun, TestIt, value_format
+from booktest.core.testcaserun import TestCaseRun
 from booktest.core.tests import Tests
 
 # Snapshots and replay
@@ -35,6 +35,7 @@ from booktest.config.detection import (
 from booktest.reporting.reports import TestResult, TwoDimensionalTestResult, SuccessState, SnapshotState, test_result_to_exit_code
 from booktest.reporting.books import Books
 from booktest.reporting.output import OutputWriter
+from booktest.reporting.testing import TestIt, value_format
 
 # Dependencies and resources
 from booktest.dependencies.dependencies import depends_on, Resource, Pool, port, port_range

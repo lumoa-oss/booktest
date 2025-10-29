@@ -152,6 +152,11 @@ class LlmReview(OutputWriter):
         self.t.i(text)
         return self
 
+    def f(self, text: str):
+        """Write failed text inline (primitive method)."""
+        self.buffer += text
+        self.t.f(text)
+        return self
 
     def info_token(self):
         """Mark the token as different (primitive method)."""

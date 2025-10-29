@@ -7,9 +7,12 @@ regular test cases (TestCaseRun) and GPT-assisted reviews (GptReview).
 The architecture uses a small set of primitive abstract methods (t, i, fail, h)
 and builds all other methods on top of these primitives.
 """
-
+import json
+import sys
+import time
 from abc import ABC, abstractmethod
 from typing import Any, Optional
+import os
 
 
 class OutputWriter(ABC):
@@ -63,6 +66,17 @@ class OutputWriter(ABC):
         This is a primitive method that must be implemented by subclasses.
         In TestCaseRun, this bypasses snapshot comparison but still shows
         differences in 'new | old' format for AI review context.
+        In GptReview, this is added to buffer and delegated to TestCaseRun.
+        """
+        pass
+
+    @abstractmethod
+    def f(self, text: str):
+        """
+        Write failed text inline (no newline), marking it as failed.
+
+        This is a primitive method that must be implemented by subclasses.
+        In TestCaseRun, this feeds text and marks each token as failed (red).
         In GptReview, this is added to buffer and delegated to TestCaseRun.
         """
         pass
@@ -167,6 +181,27 @@ class OutputWriter(ABC):
         self.i("\n")
         return self
 
+    def failln(self, text: str = ""):
+        """
+        Write a line of failed text, marking the entire line as failed (red).
+        Built on f() and fail() primitives.
+
+        All text in the line will be colored red in the output. The line will
+        be marked as failed, causing the test to fail.
+        """
+        self.f(text)
+        self.fail()
+        self.f("\n")
+        return self
+
+    def fln(self, text: str = ""):
+        """
+        Write failed tokens based on f() primitive
+        """
+        self.f(text)
+        self.f("\n")
+        return self
+
     def key(self, key: str):
         """
         Write a key prefix for key-value output.
@@ -187,6 +222,237 @@ class OutputWriter(ABC):
             t.keyvalueln("Name:", "Alice")  # Output: "Name: Alice"
         """
         return self.key(key).tln(value)
+
+    def header(self, header):
+        """
+        creates a header line that also operates as an anchor.
+
+        the only difference between this method and anchorln() method is that the
+        header is preceded and followed by an empty line.
+        """
+        if self.line_number > 0:
+            check = self.last_checked and self.exp_line is not None
+            self.feed_token("\n", check=check)
+        self.anchorln(header)
+        self.iln("")
+        return self
+
+
+    def tmsln(self, f, max_ms):
+        """
+        runs the function f and measures the time milliseconds it took.
+        the measurement is printed in the test stream and compared into previous
+        result in the snaphost file.
+
+        This method also prints a new line after the measurements.
+
+        NOTE: if max_ms is defined, this line will fail, if the test took more than
+        max_ms milliseconds.
+        """
+        before = time.time()
+        rv = f()
+        after = time.time()
+        ms = (after-before)*1000
+        if ms > max_ms:
+            self.fail().tln(f"{(after - before) * 1000:.2f} ms > "
+                            f"max {max_ms:.2f} ms! (failed)")
+        else:
+            self.ifloatln(ms, "ms")
+
+        return rv
+
+    def imsln(self, f):
+        """
+        runs the function f and measures the time milliseconds it took.
+        the measurement is printed in the test stream and compared into previous
+        result in the snaphost file.
+
+        This method also prints a new line after the measurements.
+
+        NOTE: unline tmsln(), this method never fails or marks a difference.
+        """
+        return self.tmsln(f, sys.maxsize)
+
+    def timage(self, file, alt_text=None):
+        """
+        Adds a markdown image in the test stream (tested).
+
+        Args:
+            file: Path to the image file
+            alt_text: Optional alt text for the image (defaults to filename)
+        """
+        if alt_text is None:
+            alt_text = os.path.splitext(os.path.basename(file))[0]
+        self.tln(f"![{alt_text}]({self.rel_path(file)})")
+        return self
+
+    def iimage(self, file, alt_text=None):
+        """
+        Adds a markdown image in the info stream (not tested).
+
+        Like timage() but for diagnostic/info output. Changes in image paths
+        are shown in 'new | old' format for AI review but don't fail tests.
+
+        Useful for plots, charts, and visualizations that help understand test
+        behavior but shouldn't cause test failure if they change.
+
+        Args:
+            file: Path to the image file
+            alt_text: Optional alt text for the image (defaults to filename)
+
+        Example:
+            t.iimage("plots/accuracy_curve.png", "Training Accuracy")
+        """
+        if alt_text is None:
+            alt_text = os.path.splitext(os.path.basename(file))[0]
+        self.iln(f"![{alt_text}]({self.rel_path(file)})")
+        return self
+
+    def tlist(self, list, prefix=" * "):
+        """
+        Writes the list into test stream. By default, the list
+        is prefixed by markdown ' * ' list expression.
+
+        For example following call:
+
+        ```python
+        t.tlist(["a", "b", "c"])
+        ```
+
+        will produce:
+
+         * a
+         * b
+         * c
+        """
+        for i in list:
+            self.tln(f"{prefix}{i}")
+
+    def ilist(self, list, prefix=" * "):
+        """
+        Writes the list into test stream. By default, the list
+        is prefixed by markdown ' * ' list expression.
+
+        For example following call:
+
+        ```python
+        t.tlist(["a", "b", "c"])
+        ```
+
+        will produce:
+
+         * a
+         * b
+         * c
+        """
+        for i in list:
+            self.iln(f"{prefix}{i}")
+
+    def tset(self, items, prefix=" * "):
+        """
+        This method used to print and compare a set of items to expected set
+        in out of order fashion. It will first scan the next elements
+        based on prefix. After this step, it will check whether the items
+        were in the list.
+
+        NOTE: this method may be slow, if the set order is unstable.
+        """
+        compare = None
+
+        if self.exp_line is not None:
+            begin = self.exp_line_number
+            compare = set()
+            while (self.exp_line is not None
+                   and self.exp_line.startswith(prefix)):
+                compare.add(self.exp_line[len(prefix):])
+                self.next_exp_line()
+            end = self.exp_line_number
+
+        for i in items:
+            i_str = str(i)
+            line = f"{prefix}{i_str}"
+            if compare is not None:
+                if i_str in compare:
+                    self.seek_line(line, begin, end)
+                    compare.remove(i_str)
+                else:
+                    self.diff()
+            self.iln(line)
+
+        if compare is not None:
+            if len(compare) > 0:
+                self.diff()
+            self.jump(end)
+
+    def must_apply(self, it, title, cond, error_message=None):
+        """
+        Assertions with decoration for testing, whether `it`
+        fulfills a condition.
+
+        Maily used by TestIt class
+        """
+        prefix = f" * MUST {title}..."
+        self.i(prefix).assertln(cond(it), error_message)
+
+    def must_contain(self, it, member):
+        """
+        Assertions with decoration for testing, whether `it`
+        contains a member.
+
+        Maily used by TestIt class
+        """
+        self.must_apply(it, f"have {member}", lambda x: member in x)
+
+    def must_equal(self, it, value):
+        """
+        Assertions with decoration for testing, whether `it`
+        equals something.
+
+        Maily used by TestIt class
+        """
+        self.must_apply(it, f"equal {value}", lambda x: x == value)
+
+    def must_be_a(self, it, typ):
+        """
+        Assertions with decoration for testing, whether `it`
+        is of specific type.
+
+        Maily used by TestIt class
+        """
+        self.must_apply(it,
+                        f"be a {typ}",
+                        lambda x: type(x) == typ,
+                        f"was {type(it)}")
+
+    def it(self, name, it):
+        """
+        Creates TestIt class around the `it` object named with `name`
+
+        This can be used for assertions as in:
+
+        ```python
+        result = [1, 2]
+        t.it("result", result).must_be_a(list).must_contain(1).must_contain(2)
+        ```
+        """
+        from booktest.reporting.testing import TestIt
+        return TestIt(self, name, it)
+
+    def tformat(self, value):
+        """
+        Converts the value into json like structure containing only the value types.
+
+        Prints a json containing the value types.
+
+        Mainly used for getting snapshot of a e.g. Json response format.
+        """
+        from booktest.reporting.testing import value_format
+        self.tln(json.dumps(value_format(value), indent=2))
+        return self
+
+    def key(self, key):
+        """Override key() to add anchor() functionality specific to TestCaseRun."""
+        return self.anchor(key).i(" ")
 
     def ifloatln(self, value: float, unit: str = None):
         """
@@ -262,11 +528,10 @@ class OutputWriter(ABC):
         if cond:
             self.iln("ok")
         else:
-            self.fail()
             if error_message:
-                self.iln(error_message)
+                self.failln(error_message)
             else:
-                self.iln("FAILED")
+                self.failln("FAILED")
         return self
 
     def _table(self, df: Any, feed_fn):
