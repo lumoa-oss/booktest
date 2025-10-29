@@ -501,7 +501,11 @@ class Tests:
             for ng in not_garbage:
                 if ng == file:
                     return False
+                # Protect subdirectories
                 if ng.endswith("/") and file.startswith(ng):
+                    return False
+                # Protect files with same basename (test_name.txt, test_name.log, etc.)
+                if ng.endswith(".") and file.startswith(ng):
                     return False
             return True
 
@@ -509,10 +513,20 @@ class Tests:
             rv = []
             names = set()
             for name in self.all_names():
-                names.add(path.join(exp_dir, name + ".md"))
-                names.add(path.join(exp_dir, name + "/"))
+                # Convert pytest-style name (::) to filesystem path (/)
+                filesystem_name = name.replace("::", "/")
+                # Only check files in books/ directory (exp_dir)
+                # .out/ directory is excluded from garbage collection entirely
+                names.add(path.join(exp_dir, filesystem_name + ".md"))
+                names.add(path.join(exp_dir, filesystem_name + "/"))
+                # Also protect files with same basename (e.g., .txt, .log files)
+                names.add(path.join(exp_dir, filesystem_name + "."))
             names.add(path.join(exp_dir, "index.md"))
-            for root, dirs, files in os.walk(root_dir):
+            # Walk only exp_dir (books/), exclude .out/ directory
+            for root, dirs, files in os.walk(exp_dir):
+                # Skip .out directory if it exists under exp_dir
+                if '.out' in dirs:
+                    dirs.remove('.out')
                 for f in files:
                     p = path.join(root, f)
                     if is_garbage(names, p):
