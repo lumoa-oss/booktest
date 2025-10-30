@@ -95,6 +95,10 @@
  * test/test_env_config.py::TestEnvConfig/test_env_vars_at_module_load..ok
  * test/test_env_config.py::TestEnvConfig/test_extract_env_vars_legacy..ok
  * test/test_env_config.py::TestEnvConfig/test_extract_env_vars_pytest_style..ok
+ * test/test_info_methods.py::test_idf_method..ok
+ * test/test_info_methods.py::test_iimage_method..ok
+ * test/test_info_methods.py::test_itable_method..ok
+ * test/test_info_methods.py::test_mixed_info_and_tested..ok
  * test/test_metrics.py::test_absolute_tolerance..ok
  * test/test_metrics.py::test_direction_constraints..ok
  * test/test_metrics.py::test_ml_pipeline_example..ok
@@ -120,10 +124,13 @@
  * test/test_storage.py::TestStorage/test_promote_operation..ok
  * test/test_storage.py::TestStorage/test_snapshot_types..ok
  * test/test_storage.py::TestStorage/test_storage_mode_detection..ok
+ * test/test_token_markers.py::test_info_diff_tracking..ok
+ * test/test_token_markers.py::test_info_table_changes..ok
+ * test/test_token_markers.py::test_token_level_markers..ok
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_current_implementation_stores_two_dimensional_result..ok
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_legacy_compatibility..ok
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_review_logic..ok
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 125
+count: 132

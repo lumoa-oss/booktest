@@ -16,15 +16,14 @@ from booktest.config.naming import to_filesystem_path
 BOOK_TEST_PREFIX = "BOOKTEST_"
 
 
-def perform_ai_review(exp_file_name: str, out_file_name: str, case_name: str, ai_review_file: str) -> Optional['AIReviewResult']:
+def perform_ai_review(exp_file_name: str, out_file_name: str, case_name: str) -> Optional['AIReviewResult']:
     """
-    Perform AI review of test differences and store result.
+    Perform AI review of test differences.
 
     Args:
         exp_file_name: Path to expected output file
         out_file_name: Path to actual output file
         case_name: Test case name
-        ai_review_file: Path where AI review result should be stored
 
     Returns:
         AIReviewResult or None if review fails
@@ -78,11 +77,6 @@ def perform_ai_review(exp_file_name: str, out_file_name: str, case_name: str, ai
             actual=actual,
             diff=diff
         )
-
-        # Store the result
-        os.makedirs(os.path.dirname(ai_review_file), exist_ok=True)
-        with open(ai_review_file, 'w') as f:
-            f.write(result.to_json())
 
         return result
 
@@ -164,7 +158,6 @@ def interact(exp_dir, out_dir, case_name, test_result, config,
     exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
     out_file_name = os.path.join(out_dir, case_name_fs + ".md")
     log_file_name = os.path.join(out_dir, case_name_fs + ".log")
-    ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
 
     rv = test_result
     user_request = UserRequest.NONE
@@ -233,7 +226,7 @@ def interact(exp_dir, out_dir, case_name, test_result, config,
                      f"{exp_file_name} {out_file_name}")
         elif (answer == "r" or answer == "R") and ai_review_available:
             # Perform AI review
-            ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
+            ai_result = perform_ai_review(exp_file_name, out_file_name, case_name)
             if ai_result:
                 print_ai_review_result(ai_result, config.get("verbose", False))
 
@@ -305,9 +298,8 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
     if ai_review_enabled and is_diff and not is_ok:
         exp_file_name = os.path.join(exp_dir, case_name_fs + ".md")
         out_file_name = os.path.join(out_dir, case_name_fs + ".md")
-        ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
 
-        ai_result = perform_ai_review(exp_file_name, out_file_name, case_name, ai_review_file)
+        ai_result = perform_ai_review(exp_file_name, out_file_name, case_name)
 
         # ALWAYS print AI review result when in interactive mode or verbose
         if ai_result:
@@ -384,7 +376,7 @@ def case_review(exp_dir, out_dir, case_name, test_result, config):
         else:
             rv = TestResult.OK
 
-    return rv, interaction
+    return rv, interaction, ai_result
 
 
 def start_report(printer):
@@ -411,7 +403,8 @@ def report_case_result(printer,
                        result,
                        took_ms,
                        verbose,
-                       out_dir=None):
+                       out_dir=None,
+                       case_reports=None):
     from booktest.reporting.colors import yellow, red, green, gray
 
     if verbose:
@@ -422,19 +415,15 @@ def report_case_result(printer,
 
     # Check for AI review result if available
     ai_summary = ""
-    if out_dir is not None:
-        case_name_fs = to_filesystem_path(case_name)
-        ai_review_file = os.path.join(out_dir, case_name_fs + ".ai.json")
-        if os.path.exists(ai_review_file):
-            try:
-                from booktest.llm.llm_review import AIReviewResult
-                with open(ai_review_file, 'r') as f:
-                    ai_result = AIReviewResult.from_json(f.read())
-                    # Add parenthetical summary with AI recommendation
-                    ai_summary = f" ({gray('AI: ' + ai_result.summary)})"
-            except Exception:
-                # If we can't load the AI review, just skip it
-                pass
+    ai_result = None
+
+    # Get AI review from case_reports (stored in cases.ndjson)
+    if case_reports is not None:
+        ai_result = case_reports.get_ai_review(case_name)
+        if ai_result is not None:
+            ai_summary = f" ({gray('AI: ' + ai_result.summary)})"
+    # Note: We no longer fall back to .ai.json files since AI reviews are now
+    # stored in cases.ndjson and properly invalidated on test reruns
 
     # Handle two-dimensional results if available
     if isinstance(result, TwoDimensionalTestResult):
@@ -532,15 +521,15 @@ def report_case(printer,
                        verbose,
                        out_dir)
 
-    rv, request = case_review(exp_dir,
-                              out_dir,
-                              case_name,
-                              result,
-                              config)
+    rv, request, ai_result = case_review(exp_dir,
+                                          out_dir,
+                                          case_name,
+                                          result,
+                                          config)
     if verbose:
         printer()
 
-    return rv, request
+    return rv, request, ai_result
 
 
 def end_report(printer, failed, tests, took_ms):
@@ -645,8 +634,7 @@ def review(exp_dir,
            passed,
            cases=None):
     metrics = Metrics.of_dir(out_dir)
-    report_txt = os.path.join(out_dir, "cases.txt")
-    case_reports = CaseReports.of_file(report_txt)
+    case_reports = CaseReports.of_dir(out_dir)
 
     # Filter out test cases that no longer exist in the test suite
     if cases is not None:
@@ -676,7 +664,7 @@ def review(exp_dir,
                (not cont or case_name not in passed):
                 tests += 1
 
-                reviewed_result, request = \
+                reviewed_result, request, ai_result = \
                     report_case(print,
                                 exp_dir,
                                 out_dir,
@@ -697,11 +685,20 @@ def review(exp_dir,
                         duration))
 
     updated_case_reports = CaseReports(reviews)
-    updated_case_reports.to_file(report_txt)
+    # Write updated reports back to cases.ndjson
+    report_jsonl = os.path.join(out_dir, "cases.ndjson")
+    with open(report_jsonl, 'w') as f:
+        for case_name, result, duration in updated_case_reports.cases:
+            # Preserve AI reviews if they exist
+            ai_review = case_reports.get_ai_review(case_name)
+            CaseReports.write_case_jsonl(f, case_name, result, duration, ai_review)
 
-    end_report(print,
-               updated_case_reports.failed_with_details(),
-               len(updated_case_reports.cases),
-               metrics.took_ms)
+    # Don't show end_report summary in interactive mode
+    # (user already reviewed failures interactively)
+    if not config.get("interactive", False):
+        end_report(print,
+                   updated_case_reports.failed_with_details(),
+                   len(updated_case_reports.cases),
+                   metrics.took_ms)
 
     return rv

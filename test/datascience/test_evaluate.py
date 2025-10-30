@@ -134,12 +134,12 @@ def test_sentiment_evaluation(t: bt.TestCaseRun):
     t.iln()
 
     # Track metrics - allows minor fluctuations due to randomness
-    t.key(" * Accuracy:").i(f"{correct}/{len(test_data)} = ").tmetric(
+    t.key(" * Accuracy:").i(f"{correct}/{len(test_data)} = ").tmetricln(
         100 * accuracy, tolerance=5, unit="%"
     )
-    t.key(" * Precision (positive):").tmetric(100 * precision, tolerance=5, unit="%")
-    t.key(" * Recall (positive):").tmetric(100 * recall, tolerance=5, unit="%")
-    t.key(" * F1 Score (positive):").tmetric(f1, tolerance=0.05)
+    t.key(" * Precision (positive):").tmetricln(100 * precision, tolerance=5, unit="%")
+    t.key(" * Recall (positive):").tmetricln(100 * recall, tolerance=5, unit="%")
+    t.key(" * F1 Score (positive):").tmetricln(f1, tolerance=0.05)
     t.iln()
 
 
@@ -183,9 +183,9 @@ def test_regression_evaluation(t: bt.TestCaseRun):
     t.iln("Tracking with ±10% tolerance for error metrics")
     t.iln()
     
-    t.key(" * MAE:").tmetric(mae, tolerance=0.5)
-    t.key(" * RMSE:").tmetric(rmse, tolerance=0.5)
-    t.key(" * R² Score:").tmetric(r2, tolerance=0.05)
+    t.key(" * MAE:").tmetricln(mae, tolerance=0.5)
+    t.key(" * RMSE:").tmetricln(rmse, tolerance=0.5)
+    t.key(" * R² Score:").tmetricln(r2, tolerance=0.05)
     t.iln()
 
     # Minimum requirements
@@ -249,9 +249,9 @@ def test_multiclass_evaluation(t: bt.TestCaseRun):
         class_metrics.append((cls, precision, recall, f1))
 
         t.h3(f"Class {cls}")
-        t.key(" * Precision:").tmetric(100 * precision, tolerance=5, unit="%", direction=">=")
-        t.key(" * Recall:").tmetric(100 * recall, tolerance=5, unit="%", direction=">=")
-        t.key(" * F1 Score:").tmetric(f1, tolerance=0.05, direction=">=")
+        t.key(" * Precision:").tmetricln(100 * precision, tolerance=5, unit="%", direction=">=")
+        t.key(" * Recall:").tmetricln(100 * recall, tolerance=5, unit="%", direction=">=")
+        t.key(" * F1 Score:").tmetricln(f1, tolerance=0.05, direction=">=")
         t.iln()
 
     # Macro-averaged metrics
@@ -263,15 +263,15 @@ def test_multiclass_evaluation(t: bt.TestCaseRun):
     macro_recall = np.mean([m[2] for m in class_metrics])
     macro_f1 = np.mean([m[3] for m in class_metrics])
 
-    t.key(" * Macro Precision:").tmetric(100 * macro_precision, tolerance=5, unit="%", direction=">=")
-    t.key(" * Macro Recall:").tmetric(100 * macro_recall, tolerance=5, unit="%", direction=">=")
-    t.key(" * Macro F1:").tmetric(macro_f1, tolerance=0.05, direction=">=")
+    t.key(" * Macro Precision:").tmetricln(100 * macro_precision, tolerance=5, unit="%", direction=">=")
+    t.key(" * Macro Recall:").tmetricln(100 * macro_recall, tolerance=5, unit="%", direction=">=")
+    t.key(" * Macro F1:").tmetricln(macro_f1, tolerance=0.05, direction=">=")
     t.iln()
 
     # Overall accuracy
     t.h2("Overall Performance")
     accuracy = np.sum(y_true == y_pred) / len(y_true)
-    t.key(" * Accuracy:").i(f"{np.sum(y_true == y_pred)}/{len(y_true)} = ").tmetric(
+    t.key(" * Accuracy:").i(f"{np.sum(y_true == y_pred)}/{len(y_true)} = ").tmetricln(
         100 * accuracy, tolerance=5, unit="%", direction=">="
     )
     t.iln()

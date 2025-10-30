@@ -15,6 +15,7 @@ from booktest.reporting.reports import TestResult, TwoDimensionalTestResult, Suc
 from booktest.utils.utils import file_or_resource_exists, open_file_or_resource
 from booktest.config.naming import to_filesystem_path, from_filesystem_path
 from booktest.reporting.output import OutputWriter
+from booktest.reporting.colors import yellow, red, gray, cyan
 
 
 class TestCaseRun(OutputWriter):
@@ -101,11 +102,18 @@ class TestCaseRun(OutputWriter):
         #
         # let's separate diff from proper failure
         #
+        # Token-level tracking: list of (position, marker_type) tuples
+        # marker_type can be: 'diff', 'fail', 'info'
+        self.line_markers = []  # [(pos, 'diff'), (pos, 'fail'), (pos, 'info')]
+
+        # Legacy single-position tracking (for backward compatibility)
         self.line_diff = None
         self.line_error = None
+
         self.line_number = 0
         self.diffs = 0
         self.errors = 0
+        self.info_diffs = 0  # Track info-level differences
         # this is needed for sensible default behavior, when sections end
         self.last_checked = False
 
@@ -315,7 +323,7 @@ class TestCaseRun(OutputWriter):
             self.verbose)
 
         # Pass two-dimensional result to review for proper snapshot handling
-        rv, interaction = self.review(two_dim_result)
+        rv, interaction, ai_result = self.review(two_dim_result)
 
         if self.verbose:
             self.print("")
@@ -342,7 +350,7 @@ class TestCaseRun(OutputWriter):
                     'timestamp': time.time()
                 }, f, indent=2)
 
-        return rv, interaction
+        return rv, interaction, ai_result
 
     def report_snapshot_usage(self,
                               snapshot_type: str,
@@ -615,44 +623,256 @@ class TestCaseRun(OutputWriter):
 
         Statistics line number of differing or erroneous lines get
         updated.
+
+        Uses token-level markers for fine-grained coloring of specific
+        tokens/cells that changed, failed, or have info-level differences.
         """
 
-        if self.line_error is not None or self.line_diff is not None:
-            from booktest.reporting.colors import yellow, red, gray
+        # Check if there are any markers on this line
+        has_token_markers = len(self.line_markers) > 0
+        has_line_markers = self.line_error is not None or self.line_diff is not None
+
+        if has_line_markers or has_token_markers:
+            # Determine line-level symbol and update stats
+            # Markers are (start_pos, end_pos, marker_type) tuples
+            has_error = self.line_error is not None or any(m[2] == 'fail' for m in self.line_markers)
+            has_diff = self.line_diff is not None or any(m[2] == 'diff' for m in self.line_markers)
+            has_info = any(m[2] == 'info' for m in self.line_markers)
 
             symbol = "?"
-            color_fn = yellow
             pos = None
-            if self.line_diff is not None:
-                self.diffs += 1
-                pos = self.line_diff
-            if self.line_error is not None:
-                symbol = "!"
-                color_fn = red
-                self.errors += 1
-                pos = self.line_error
 
-            # Colorize the sections:
-            # - Left side (symbol + new line) in yellow/red
-            # - Separator (|) in default terminal color
-            # - Right side (old line) in gray
-            left_side = color_fn(f"{symbol} {self.out_line:60s}")
+            if has_error:
+                symbol = "!"
+                self.errors += 1
+                pos = self.line_error if self.line_error is not None else 0
+            elif has_diff:
+                symbol = "?"
+                self.diffs += 1
+                pos = self.line_diff if self.line_diff is not None else 0
+            elif has_info:
+                symbol = "."
+                self.info_diffs += 1
+                pos = 0
+
+            # Choose coloring approach based on markers
+            if has_token_markers and len(self.line_markers) > 0:
+                # Use token-level coloring
+                try:
+                    # Color the symbol itself
+                    if has_error:
+                        colored_symbol = red(symbol)
+                    elif has_diff:
+                        colored_symbol = yellow(symbol)
+                    else:
+                        colored_symbol = cyan(symbol)
+                    # Pad the uncolored line to 60 chars, then apply coloring
+                    # We need to pad before coloring to get correct alignment
+                    padded_line = f"{self.out_line:60s}"
+                    # Now colorize the padded content
+                    colored_padded = self._colorize_line_with_markers(
+                        padded_line, self.line_markers,
+                        has_error, has_diff, has_info
+                    )
+                    left_side = f"{colored_symbol} {colored_padded}"
+                except Exception as e:
+                    # Fallback to line-level coloring on error
+                    import traceback
+                    import sys
+                    print(f"Warning: token coloring failed: {e}", file=sys.stderr)
+                    traceback.print_exc(file=sys.stderr)
+                    if has_error:
+                        color_fn = red
+                    elif has_diff:
+                        color_fn = yellow
+                    else:
+                        color_fn = cyan
+                    left_side = color_fn(f"{symbol} {self.out_line:60s}")
+            else:
+                # Use line-level coloring
+                if has_error:
+                    color_fn = red
+                elif has_diff:
+                    color_fn = yellow
+                else:
+                    color_fn = cyan
+                left_side = color_fn(f"{symbol} {self.out_line:60s}")
 
             if self.exp_line is not None:
-                right_side = gray(self.exp_line)
+                # Colorize expected line with differing tokens highlighted
+                right_side = self._colorize_expected_line(self.exp_line, self.line_markers)
                 self.report(f"{left_side} | {right_side}")
             else:
                 right_side = gray("EOF")
                 self.report(f"{left_side} | {right_side}")
+
             if self.point_error_pos:
                 self.report("  " + (" " * pos) + "^")
 
             self.write_line()
+
+            # Clear markers for next line
+            self.line_markers = []
             self.line_error = None
             self.line_diff = None
         else:
             self.report(f"  {self.out_line}")
             self.write_line()
+
+    def _colorize_line_with_markers(self, line, markers, has_error, has_diff, has_info):
+        """
+        Colorize a line using markers with priority handling.
+
+        There is no separate line-level vs token-level concept. All coloring is done
+        through markers. The methods info(), diff(), and fail() create markers from
+        (0, MAX_SIZE, type) that cover the entire line. Token-specific markers override
+        these when they have higher priority.
+
+        Priority order: fail > diff > info > none
+
+        Args:
+            line: The line text to colorize
+            markers: List of (start_pos, end_pos, marker_type) tuples
+            has_error: True if line has any error markers (legacy, for stats)
+            has_diff: True if line has any diff markers (legacy, for stats)
+            has_info: True if line has any info markers (legacy, for stats)
+
+        Returns:
+            Colored string with ANSI color codes
+        """
+        from booktest.reporting.colors import yellow, red, cyan
+
+        if not markers:
+            # No markers at all - line is uncolored
+            return line
+
+        # Priority values for marker types
+        marker_priorities = {'info': 1, 'diff': 2, 'fail': 3}
+
+        # Filter and normalize markers
+        valid_markers = []
+        for start, end, mtype in markers:
+            if 0 <= start:
+                # Clamp end to line length (handles MAX_SIZE markers)
+                end = min(end, len(line))
+                if start < end:  # Only keep markers with non-zero width
+                    valid_markers.append((start, end, mtype))
+
+        if not valid_markers:
+            return line
+
+        # Build position-to-marker map, resolving conflicts by priority
+        position_marker = {}  # Map each position to its highest-priority marker
+        for start_pos, end_pos, marker_type in valid_markers:
+            priority = marker_priorities.get(marker_type, 0)
+            for pos in range(start_pos, end_pos):
+                existing_priority = marker_priorities.get(position_marker.get(pos), 0)
+                if priority > existing_priority:
+                    position_marker[pos] = marker_type
+
+        # Build colored line by scanning positions
+        result = ""
+        current_marker = None
+        current_start = 0
+
+        for pos in range(len(line)):
+            marker_at_pos = position_marker.get(pos)
+
+            if marker_at_pos != current_marker:
+                # Flush previous segment
+                if current_start < pos:
+                    segment = line[current_start:pos]
+                    # Apply color based on marker type
+                    if current_marker == 'fail':
+                        result += red(segment)
+                    elif current_marker == 'diff':
+                        result += yellow(segment)
+                    elif current_marker == 'info':
+                        result += cyan(segment)
+                    else:
+                        result += segment
+
+                current_marker = marker_at_pos
+                current_start = pos
+
+        # Flush final segment
+        if current_start < len(line):
+            segment = line[current_start:len(line)]
+            if current_marker == 'fail':
+                result += red(segment)
+            elif current_marker == 'diff':
+                result += yellow(segment)
+            elif current_marker == 'info':
+                result += cyan(segment)
+            else:
+                result += segment
+
+        return result
+
+    def _colorize_expected_line(self, exp_line, markers):
+        """
+        Colorize the expected line by highlighting differing tokens.
+
+        The base text is shown in dim gray (more subtle than regular gray), while tokens
+        that differ from the new output are shown in regular gray for contrast.
+
+        Args:
+            exp_line: The expected line text
+            markers: List of (start_pos, end_pos, marker_type) tuples from the output line
+
+        Returns:
+            Colored string with differing tokens highlighted
+        """
+        from booktest.reporting.colors import dim_gray, gray
+        from booktest.llm.tokenizer import TestTokenizer
+
+        if not markers or not exp_line:
+            return dim_gray(exp_line)
+
+        # Tokenize both lines to find corresponding positions
+        out_tokens = list(TestTokenizer(self.out_line))
+        exp_tokens = list(TestTokenizer(exp_line))
+
+        # Build list of token positions in expected line that differ
+        differing_positions = set()
+        out_pos = 0
+        exp_pos = 0
+
+        for i, out_token in enumerate(out_tokens):
+            # Check if this output token has a marker
+            has_marker = any(start <= out_pos < end for start, end, _ in markers)
+
+            if i < len(exp_tokens):
+                exp_token = exp_tokens[i]
+                if has_marker and out_token != exp_token:
+                    # Mark this position in expected line as differing
+                    differing_positions.add((exp_pos, exp_pos + len(exp_token)))
+                exp_pos += len(exp_token)
+
+            out_pos += len(out_token)
+
+        # Build the colored expected line
+        if not differing_positions:
+            return dim_gray(exp_line)
+
+        result = ""
+        last_pos = 0
+        sorted_positions = sorted(differing_positions)
+
+        for start, end in sorted_positions:
+            # Add dim gray text before this differing token
+            if start > last_pos:
+                result += dim_gray(exp_line[last_pos:start])
+
+            # Highlight the differing token in regular gray for contrast
+            result += gray(exp_line[start:end])
+            last_pos = end
+
+        # Add remaining dim gray text
+        if last_pos < len(exp_line):
+            result += dim_gray(exp_line[last_pos:])
+
+        return result
 
     def head_exp_token(self):
         """
@@ -679,29 +899,39 @@ class TestCaseRun(OutputWriter):
         else:
             return None
 
-    def feed_token(self, token, check=False):
+    def feed_token(self, token, check=False, info_check=False):
         """
-        Feeds a token into test stream. If `check` is True, the token
-        will be compared to the next awaiting token in the snapshot file,
-        and on difference a 'diff' is reported.
+        Feeds a token into test stream with optional comparison.
 
-        If `check`is True, snapshot file cursor is also moved, but no
-        comparison is made.
+        Args:
+            token: The token to feed
+            check: If True, compare against snapshot and mark diff() on mismatch
+            info_check: If True, compare against snapshot and mark info() on mismatch
+                       (shows in diff without failing test)
 
         NOTE: if token is a line end character, the line will be committed
         to the test stream.
         """
-
         exp_token = self.next_exp_token()
-        self.last_checked = check
-        if self.exp_file_exists \
-           and token != exp_token \
-           and check:
-            self.diff()
+        self.last_checked = check or info_check
+
         if token == '\n':
             self.commit_line()
         else:
+            # Add markers after appending token so position is correct
+            start_pos = len(self.out_line)
             self.out_line = self.out_line + token
+
+            if self.exp_file_exists and token != exp_token:
+                if check:
+                    # Tested content: mark as diff (fails test)
+                    # Mark with token length info: (start_pos, end_pos, marker_type)
+                    self.line_markers.append((start_pos, len(self.out_line), 'diff'))
+                    if self.line_diff is None:
+                        self.line_diff = start_pos
+                elif info_check:
+                    # Info content: mark as info (shows in diff, doesn't fail)
+                    self.line_markers.append((start_pos, len(self.out_line), 'info'))
         return self
 
     def test_feed_token(self, token):
@@ -710,6 +940,15 @@ class TestCaseRun(OutputWriter):
         awaiting token in the snapshot file, and on difference a 'diff' is reported.
         """
         self.feed_token(token, check=True)
+        return self
+
+    def info_feed_token(self, token):
+        """
+        Feeds a token into info stream. The token will be compared to the next
+        awaiting token in the snapshot file, but differences are marked as 'info'
+        (shown in diff without causing test failure).
+        """
+        self.feed_token(token, info_check=True)
         return self
 
     def test_feed(self, text):
@@ -727,7 +966,7 @@ class TestCaseRun(OutputWriter):
 
     def feed(self, text):
         """
-        Feeds a piece text into the test stream. The text tokenized and feed
+        Feeds a piece text into the info stream. The text tokenized and feed
         into text stream as individual tokens.
 
         NOTE: The token content IS NOT COMPARED to snapshot content, and differences
@@ -738,16 +977,130 @@ class TestCaseRun(OutputWriter):
             self.feed_token(t)
         return self
 
+    def info_feed(self, text):
+        """
+        Feeds a piece text into the info stream with comparison. The text is tokenized
+        and compared to snapshot content. Differences are marked as 'info' (shown in
+        diff without causing test failure).
+
+        Use this for diagnostic output that should be tracked but not cause failures.
+        """
+        tokens = TestTokenizer(str(text))
+        for t in tokens:
+            self.info_feed_token(t)
+        return self
+
+    def fail_feed_token(self, token):
+        """
+        Feeds a token into the stream and marks it as failed.
+        The token will be colored red in the output.
+        """
+        start_pos = len(self.out_line)
+        self.feed_token(token, check=False)  # Don't check, we're marking as failed anyway
+        end_pos = len(self.out_line)
+        # Mark this specific token as failed
+        self.line_markers.append((start_pos, end_pos, 'fail'))
+        # Update line-level error marker if not set
+        if self.line_error is None:
+            self.line_error = start_pos
+        return self
+
+    def fail_feed(self, text):
+        """
+        Feeds text into the stream and marks all tokens as failed (red).
+        Use this to write error messages or failed output.
+        """
+        tokens = TestTokenizer(str(text))
+        for t in tokens:
+            self.fail_feed_token(t)
+        return self
+
     def diff(self):
-        """ an unexpected difference encountered. this method marks a difference on the line manually """
+        """
+        Mark the entire line as different from position 0 to end.
+
+        Adds a marker (0, MAX_SIZE, 'diff') that colors the entire line yellow.
+        Individual token markers with higher priority will override this.
+        """
         if self.line_diff is None:
             self.line_diff = len(self.out_line)
+        # Mark entire line from 0 to maximum position
+        self.line_markers.append((0, 999999, 'diff'))
+        return self
+
+    def diff_token(self):
+        """
+        Mark only the current token/position as different.
+
+        Use this for fine-grained diff marking, e.g., to highlight a specific
+        changed cell in a table without marking the entire row as different.
+
+        Note: This should be called AFTER adding the token to out_line to properly
+        capture the token length. Prefer using feed_token with check=True.
+        """
+        pos = len(self.out_line)
+        self.line_markers.append((pos, pos, 'diff'))
+        # Update line-level marker if not set
+        if self.line_diff is None:
+            self.line_diff = pos
         return self
 
     def fail(self):
-        """ a proper failure encountered. this method marks an error on the line manually """
+        """
+        Mark the entire line as failed from position 0 to end.
+
+        Adds a marker (0, MAX_SIZE, 'fail') that colors the entire line red.
+        Individual token markers with higher priority will override this.
+        """
         if self.line_error is None:
             self.line_error = len(self.out_line)
+        # Mark entire line from 0 to maximum position
+        self.line_markers.append((0, 999999, 'fail'))
+        return self
+
+    def fail_token(self):
+        """
+        Mark only the current token/position as failed.
+
+        Use this for fine-grained failure marking, e.g., to highlight a specific
+        failed assertion in a table cell without marking the entire row as failed.
+
+        Note: This should be called AFTER adding the token to out_line to properly
+        capture the token length. Prefer using feed_token with check=True.
+        """
+        pos = len(self.out_line)
+        self.line_markers.append((pos, pos, 'fail'))
+        # Update line-level marker if not set
+        if self.line_error is None:
+            self.line_error = pos
+        return self
+
+    def info(self):
+        """
+        Mark the entire line as having info-level differences from position 0 to end.
+
+        Adds a marker (0, MAX_SIZE, 'info') that colors the entire line cyan.
+        Individual token markers with higher priority will override this.
+
+        Info markers show differences in diagnostic output (i() content) that
+        don't cause test failure.
+        """
+        # Mark entire line from 0 to maximum position
+        self.line_markers.append((0, 999999, 'info'))
+        return self
+
+    def info_token(self):
+        """
+        Mark only the current token/position as having info-level differences.
+
+        Use this for fine-grained info marking, e.g., to highlight which specific
+        cell in a diagnostic table changed without affecting the test result.
+
+        Note: This should be called AFTER adding the token to out_line to properly
+        capture the token length. Prefer using feed_token with info_check=True.
+        """
+        pos = len(self.out_line)
+        self.line_markers.append((pos, pos, 'info'))
         return self
 
     def _get_expected_token(self):
@@ -781,88 +1134,6 @@ class TestCaseRun(OutputWriter):
         self.tln(anchor)
         return self
 
-    def header(self, header):
-        """
-        creates a header line that also operates as an anchor.
-
-        the only difference between this method and anchorln() method is that the
-        header is preceded and followed by an empty line.
-        """
-        if self.line_number > 0:
-            check = self.last_checked and self.exp_line is not None
-            self.feed_token("\n", check=check)
-        self.anchorln(header)
-        self.iln("")
-        return self
-
-    def ifloatln(self, value, unit = None):
-        old = self.head_exp_token()
-        try:
-            if old is not None:
-                old = float(old)
-        except ValueError:
-            old = None
-
-        if unit is not None:
-            postfix = f" {unit}"
-        else:
-            postfix = ""
-
-        self.i(f"{value:.3f}{postfix}")
-        if old is not None:
-            self.iln(f" (was {old:.3f}{postfix})")
-        else:
-            self.iln()
-
-    def ivalueln(self, value, unit = None):
-        old = self.head_exp_token()
-
-        if unit is not None:
-            postfix = f" {unit}"
-        else:
-            postfix = ""
-
-        self.i(f"{value}{postfix}")
-        if old is not None:
-            self.iln(f" (was {old}{postfix})")
-        else:
-            self.iln()
-
-    def tmsln(self, f, max_ms):
-        """
-        runs the function f and measures the time milliseconds it took.
-        the measurement is printed in the test stream and compared into previous
-        result in the snaphost file.
-
-        This method also prints a new line after the measurements.
-
-        NOTE: if max_ms is defined, this line will fail, if the test took more than
-        max_ms milliseconds.
-        """
-        before = time.time()
-        rv = f()
-        after = time.time()
-        ms = (after-before)*1000
-        if ms > max_ms:
-            self.fail().tln(f"{(after - before) * 1000:.2f} ms > "
-                            f"max {max_ms:.2f} ms! (failed)")
-        else:
-            self.ifloatln(ms, "ms")
-
-        return rv
-
-    def imsln(self, f):
-        """
-        runs the function f and measures the time milliseconds it took.
-        the measurement is printed in the test stream and compared into previous
-        result in the snaphost file.
-
-        This method also prints a new line after the measurements.
-
-        NOTE: unline tmsln(), this method never fails or marks a difference.
-        """
-        return self.tmsln(f, sys.maxsize)
-
     def h(self, level: int, title: str):
         """
         Markdown style header (primitive method for OutputWriter).
@@ -877,146 +1148,6 @@ class TestCaseRun(OutputWriter):
         self.header("#" * level + " " + title)
         return self
 
-    def timage(self, file, alt_text=None):
-        """ Adds a markdown image in the test stream with specified alt text """
-        if alt_text is None:
-            alt_text = os.path.splitext(os.path.basename(file))[0]
-        self.tln(f"![{alt_text}]({self.rel_path(file)})")
-        return self
-
-
-    def tlist(self, list, prefix=" * "):
-        """
-        Writes the list into test stream. By default, the list
-        is prefixed by markdown ' * ' list expression.
-
-        For example following call:
-
-        ```python
-        t.tlist(["a", "b", "c"])
-        ```
-
-        will produce:
-
-         * a
-         * b
-         * c
-        """
-        for i in list:
-            self.tln(f"{prefix}{i}")
-
-    def tset(self, items, prefix=" * "):
-        """
-        This method used to print and compare a set of items to expected set
-        in out of order fashion. It will first scan the next elements
-        based on prefix. After this step, it will check whether the items
-        were in the list.
-
-        NOTE: this method may be slow, if the set order is unstable.
-        """
-        compare = None
-
-        if self.exp_line is not None:
-            begin = self.exp_line_number
-            compare = set()
-            while (self.exp_line is not None
-                   and self.exp_line.startswith(prefix)):
-                compare.add(self.exp_line[len(prefix):])
-                self.next_exp_line()
-            end = self.exp_line_number
-
-        for i in items:
-            i_str = str(i)
-            line = f"{prefix}{i_str}"
-            if compare is not None:
-                if i_str in compare:
-                    self.seek_line(line, begin, end)
-                    compare.remove(i_str)
-                else:
-                    self.diff()
-            self.iln(line)
-
-        if compare is not None:
-            if len(compare) > 0:
-                self.diff()
-            self.jump(end)
-
-
-    def must_apply(self, it, title, cond, error_message=None):
-        """
-        Assertions with decoration for testing, whether `it`
-        fulfills a condition.
-
-        Maily used by TestIt class
-        """
-        prefix = f" * MUST {title}..."
-        self.i(prefix).assertln(cond(it), error_message)
-
-    def must_contain(self, it, member):
-        """
-        Assertions with decoration for testing, whether `it`
-        contains a member.
-
-        Maily used by TestIt class
-        """
-        self.must_apply(it, f"have {member}", lambda x: member in x)
-
-    def must_equal(self, it, value):
-        """
-        Assertions with decoration for testing, whether `it`
-        equals something.
-
-        Maily used by TestIt class
-        """
-        self.must_apply(it, f"equal {value}", lambda x: x == value)
-
-    def must_be_a(self, it, typ):
-        """
-        Assertions with decoration for testing, whether `it`
-        is of specific type.
-
-        Maily used by TestIt class
-        """
-        self.must_apply(it,
-                        f"be a {typ}",
-                        lambda x: type(x) == typ,
-                        f"was {type(it)}")
-
-    def it(self, name, it):
-        """
-        Creates TestIt class around the `it` object named with `name`
-
-        This can be used for assertions as in:
-
-        ```python
-        result = [1, 2]
-        t.it("result", result).must_be_a(list).must_contain(1).must_contain(2)
-        ```
-        """
-        return TestIt(self, name, it)
-
-    def tformat(self, value):
-        """
-        Converts the value into json like structure containing only the value types.
-
-        Prints a json containing the value types.
-
-        Mainly used for getting snapshot of a e.g. Json response format.
-        """
-        self.tln(json.dumps(value_format(value), indent=2))
-        return self
-
-    def key(self, key):
-        """Override key() to add anchor() functionality specific to TestCaseRun."""
-        return self.anchor(key).i(" ")
-
-    def keyvalueln(self, key, value):
-        """
-        Prints a value of format "{key} {value}", and uses key as prefix anchor for
-        adjusting the snapshot file cursor.
-        """
-        return self.key(key).tln(value)
-
     def t(self, text):
         """
         Writes tested text inline (primitive method for OutputWriter).
@@ -1030,54 +1161,19 @@ class TestCaseRun(OutputWriter):
         """
         Writes info text inline (primitive method for OutputWriter).
 
-        In TestCaseRun, this text bypasses snapshot comparison.
+        In TestCaseRun, differences in info content are marked with info markers
+        (shown in diff without causing test failure).
         'i' comes from 'info'/'ignore'.
         """
-        self.feed(text)
+        self.info_feed(text)
         return self
 
+    def f(self, text):
+        """
+        Writes failed text inline (primitive method for OutputWriter).
 
-def value_format(value):
-    value_type = type(value)
-    if value_type is list:
-        rv = []
-        for item in value:
-            rv.append(value_format(item))
-    elif value_type is dict:
-        rv = {}
-        for key in value:
-            rv[key] = value_format(value[key])
-    else:
-        rv = value_type.__name__
-    return rv
-
-
-class TestIt:
-    """ utility for making assertions related to a specific object """
-
-    def __init__(self, run: TestCaseRun, title: str, it):
-        self.run = run
-        self.title = title
-        self.it = it
-        run.h2(title + "..")
-
-    def must_contain(self, member):
-        self.run.must_contain(self.it, member)
+        In TestCaseRun, all tokens are marked as failed and colored red.
+        'f' comes from 'fail'.
+        """
+        self.fail_feed(text)
         return self
-
-    def must_equal(self, member):
-        self.run.must_equal(self.it, member)
-        return self
-
-    def must_be_a(self, typ):
-        self.run.must_be_a(self.it, typ)
-        return self
-
-    def must_apply(self, title, cond):
-        self.run.must_apply(self.it, title, cond)
-        return self
-
-    def member(self, title, select):
-        """ Creates a TestIt class for the member of 'it' """
-        return TestIt(self.run, self.title + "." + title, select(self.it))
-

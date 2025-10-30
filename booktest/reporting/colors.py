@@ -13,7 +13,11 @@ class Colors:
     YELLOW = '\033[93m'   # Bright yellow for diffs
     GREEN = '\033[92m'    # Bright green
     BLUE = '\033[94m'     # Bright blue
+    CYAN = '\033[96m'     # Bright cyan for info
     GRAY = '\033[90m'     # Gray (bright black)
+    BRIGHT_WHITE = '\033[97m'    # Bright white
+    DIM = '\033[2m'       # Dim/faint
+    BOLD = '\033[1m'      # Bold
 
 
 def _supports_color():
@@ -93,6 +97,30 @@ def blue(text: str) -> str:
 def gray(text: str) -> str:
     """Colorize text in gray."""
     return colorize(text, Colors.GRAY)
+
+
+def cyan(text: str) -> str:
+    """Colorize text in cyan."""
+    return colorize(text, Colors.CYAN)
+
+
+def white(text: str) -> str:
+    """Colorize text in bright white."""
+    return colorize(text, Colors.BRIGHT_WHITE)
+
+
+def dim_gray(text: str) -> str:
+    """Colorize text in dim gray (more subtle than regular gray)."""
+    if not _COLOR_ENABLED:
+        return text
+    return f"{Colors.DIM}{Colors.GRAY}{text}{Colors.RESET}"
+
+
+def default_color(text: str) -> str:
+    """Return text in terminal's default color (adapts to light/dark themes)."""
+    if not _COLOR_ENABLED:
+        return text
+    return f"{Colors.RESET}{text}{Colors.RESET}"
 
 
 def is_color_enabled() -> bool:

@@ -1,0 +1,9 @@
+  # Info Table Changes Test
+  
+  Model metrics:
+  |metric   |value|
+  |---------|-----|
+  |accuracy |0.96 |
+  |precision|0.94 |
+  |recall   |0.98 |
+  Model training complete

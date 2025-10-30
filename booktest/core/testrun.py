@@ -108,7 +108,7 @@ class TestRun:
             t.iln(traceback.format_exc())
             rv = None
 
-        result, interaction = t.end()
+        result, interaction, ai_result = t.end()
 
         # Handle both legacy and two-dimensional results
         from booktest.reporting.reports import TwoDimensionalTestResult
@@ -129,7 +129,7 @@ class TestRun:
         else:
             legacy_result = result
 
-        return legacy_result, interaction, t.took_ms
+        return legacy_result, interaction, t.took_ms, ai_result
 
     def print(self, *args, sep=' ', end='\n'):
         print(*args, sep=sep, end=end, file=self.output)
@@ -148,11 +148,11 @@ class TestRun:
         fails = 0
         tests = 0
         os.system(f"mkdir -p {self.report_dir}")
-        report_file = path.join(self.report_dir, "cases.txt")
+        report_file = path.join(self.report_dir, "cases.ndjson")
 
         # 1.2. To continue testing, we need to read
         #      the old case report so that we continue from there
-        old_report = CaseReports.of_file(report_file)
+        old_report = CaseReports.of_dir(self.report_dir)
 
         done, todo = old_report.cases_to_done_and_todo(self.selected_cases, self.config)
 
@@ -168,17 +168,18 @@ class TestRun:
         #      CTRL-C and continuing from the last succesful test
         with open(report_file, "w") as report_f:
 
-            # 2.2.1 add previously passed items to test
+            # 2.2.1 add previously passed items to test (preserving their AI reviews)
             if old_report is not None:
                 for i in old_report.cases:
                     if i[0] not in todo:
-                        CaseReports.write_case(
-                            report_f, i[0], i[1], i[2])
+                        ai_review = old_report.get_ai_review(i[0])
+                        CaseReports.write_case_jsonl(
+                            report_f, i[0], i[1], i[2], ai_review)
 
             # 2.2.2 run cases
             for case_name in todo:
                 case = self.tests.get_case(case_name)
-                res, request, duration = \
+                res, request, duration, ai_result = \
                     await self.run_case(case_name, case)
 
                 if res == TestResult.DIFF \
@@ -194,8 +195,8 @@ class TestRun:
                     oks += 1
                     tests += 1
 
-                CaseReports.write_case(
-                    report_f, case_name, res, duration)
+                CaseReports.write_case_jsonl(
+                    report_f, case_name, res, duration, ai_result)
 
                 # manage situations, where testing should
                 # be aborted
@@ -211,6 +212,8 @@ class TestRun:
 
         # Only print end_report here if auto-report won't handle it
         # Auto-report will show the summary if:
+        # Determine if auto-report will be shown
+        # Auto-report is shown when:
         # - Tests failed (rv != OK)
         # - Not in interactive mode
         # - Auto-report is enabled (default)
@@ -220,7 +223,15 @@ class TestRun:
             self.config.get("auto_report", True)
         )
 
-        if not will_auto_report:
+        # Show end_report summary unless:
+        # - Auto-report will be shown (detailed report replaces summary)
+        # - In interactive mode (user already reviewed failures interactively)
+        should_show_summary = (
+            not will_auto_report and
+            not self.config.get("interactive", False)
+        )
+
+        if should_show_summary:
             end_report(self.print, failed, tests, took)
 
         create_index(self.exp_dir, self.tests.all_names())
