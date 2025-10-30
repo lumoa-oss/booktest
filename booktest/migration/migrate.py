@@ -17,9 +17,12 @@ def pytest_name_to_legacy_path(pytest_name: str) -> str:
 
     Examples:
         test/foo_test.py::test_bar → test/foo/bar
-        test/foo_test.py::FooBook/test_bar → test/foo/bar
+        test/foo_test.py::FooBook/test_bar → test/foo/class_name/bar
         test/examples/simple_book.py::test_hello → test/examples/simple/hello
     """
+    # Import here to avoid circular dependency
+    from booktest.config.naming import clean_test_postfix, clean_class_name, clean_method_name
+
     # Remove .py extension and split on ::
     if "::" not in pytest_name:
         # Not pytest format, return as-is
@@ -32,14 +35,9 @@ def pytest_name_to_legacy_path(pytest_name: str) -> str:
     # Clean file name: remove _test, _book, _suite suffixes
     file_part_segments = file_part.split("/")
     last_segment = file_part_segments[-1]
+    cleaned_file_name = clean_test_postfix(last_segment)
 
-    # Remove common suffixes
-    for suffix in ["_test", "_book", "_suite"]:
-        if last_segment.endswith(suffix):
-            last_segment = last_segment[:-len(suffix)]
-            break
-
-    file_part_segments[-1] = last_segment
+    file_part_segments[-1] = cleaned_file_name
     cleaned_file_path = "/".join(file_part_segments)
 
     if len(parts) == 2:
@@ -51,16 +49,39 @@ def pytest_name_to_legacy_path(pytest_name: str) -> str:
             # Class method: test/foo_test.py::FooBook/test_bar
             # Split on / to separate class from method
             class_method_parts = test_part.split("/")
+            class_name = class_method_parts[0]  # First part before /
             method_name = class_method_parts[-1]  # Last part after /
+
+            # Clean class name (convert CamelCase to snake_case and remove suffixes)
+            cleaned_class_name = clean_class_name(class_name)
+
+            # Check if class name is different from file name (excluding underscores)
+            # This matches the logic in class_to_test_path
+            if cleaned_file_name.replace("_", "") != cleaned_class_name.replace("_", ""):
+                # Include class name in path
+                path_parts = [cleaned_file_path, cleaned_class_name]
+            else:
+                # Class name same as file name, don't duplicate
+                path_parts = [cleaned_file_path]
+
+            # Clean method name (remove test_ prefix)
+            cleaned_method = clean_method_name(method_name)
+            if cleaned_method:
+                path_parts.append(cleaned_method)
+            else:
+                path_parts.append(method_name)
+
+            return "/".join(path_parts)
         else:
             # Standalone function: test/foo_test.py::test_bar
             method_name = test_part
 
-        # Remove test_ prefix
-        if method_name.startswith("test_"):
-            method_name = method_name[5:]  # Remove "test_"
-
-        return f"{cleaned_file_path}/{method_name}"
+            # Clean method name (remove test_ prefix)
+            cleaned_method = clean_method_name(method_name)
+            if cleaned_method:
+                return f"{cleaned_file_path}/{cleaned_method}"
+            else:
+                return f"{cleaned_file_path}/{method_name}"
 
     else:
         # Fallback

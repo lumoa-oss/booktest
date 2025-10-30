@@ -656,7 +656,7 @@ class TestCaseRun(OutputWriter):
                 pos = 0
 
             # Choose coloring approach based on markers
-            if has_token_markers and len(self.line_markers) == 0:
+            if has_token_markers and len(self.line_markers) > 0:
                 # Use token-level coloring
                 try:
                     # Color the symbol itself
@@ -721,14 +721,21 @@ class TestCaseRun(OutputWriter):
 
     def _colorize_line_with_markers(self, line, markers, has_error, has_diff, has_info):
         """
-        Colorize a line using token-level markers.
+        Colorize a line using markers with priority handling.
+
+        There is no separate line-level vs token-level concept. All coloring is done
+        through markers. The methods info(), diff(), and fail() create markers from
+        (0, MAX_SIZE, type) that cover the entire line. Token-specific markers override
+        these when they have higher priority.
+
+        Priority order: fail > diff > info > none
 
         Args:
             line: The line text to colorize
             markers: List of (start_pos, end_pos, marker_type) tuples
-            has_error: True if line has any error markers
-            has_diff: True if line has any diff markers
-            has_info: True if line has any info markers
+            has_error: True if line has any error markers (legacy, for stats)
+            has_diff: True if line has any diff markers (legacy, for stats)
+            has_info: True if line has any info markers (legacy, for stats)
 
         Returns:
             Colored string with ANSI color codes
@@ -736,56 +743,69 @@ class TestCaseRun(OutputWriter):
         from booktest.reporting.colors import yellow, red, cyan
 
         if not markers:
-            # No markers - use line-level coloring (fallback)
-            if has_error:
-                return red(line)
-            elif has_diff:
-                return yellow(line)
-            elif has_info:
-                return cyan(line)
+            # No markers at all - line is uncolored
             return line
 
-        # Sort markers by start position and deduplicate
-        # Filter out invalid positions
-        valid_markers = [(start, end, mtype) for start, end, mtype in markers
-                        if 0 <= start <= len(line) and 0 <= end <= len(line)]
+        # Priority values for marker types
+        marker_priorities = {'info': 1, 'diff': 2, 'fail': 3}
+
+        # Filter and normalize markers
+        valid_markers = []
+        for start, end, mtype in markers:
+            if 0 <= start:
+                # Clamp end to line length (handles MAX_SIZE markers)
+                end = min(end, len(line))
+                if start < end:  # Only keep markers with non-zero width
+                    valid_markers.append((start, end, mtype))
+
         if not valid_markers:
-            # Fallback to line-level coloring
-            if has_error:
-                return red(line)
-            elif has_diff:
-                return yellow(line)
-            elif has_info:
-                return cyan(line)
             return line
 
-        sorted_markers = sorted(set(valid_markers), key=lambda m: (m[0], m[2]))
+        # Build position-to-marker map, resolving conflicts by priority
+        position_marker = {}  # Map each position to its highest-priority marker
+        for start_pos, end_pos, marker_type in valid_markers:
+            priority = marker_priorities.get(marker_type, 0)
+            for pos in range(start_pos, end_pos):
+                existing_priority = marker_priorities.get(position_marker.get(pos), 0)
+                if priority > existing_priority:
+                    position_marker[pos] = marker_type
 
-        # Build colored line token by token
+        # Build colored line by scanning positions
         result = ""
-        last_pos = 0
+        current_marker = None
+        current_start = 0
 
-        for start_pos, end_pos, marker_type in sorted_markers:
-            # Add uncolored text before this marker
-            if start_pos > last_pos:
-                result += line[last_pos:start_pos]
+        for pos in range(len(line)):
+            marker_at_pos = position_marker.get(pos)
 
-            # Colorize the token based on marker type
-            token = line[max(last_pos,start_pos):end_pos]
-            if marker_type == 'fail':
-                result += red(token)
-            elif marker_type == 'diff':
-                result += yellow(token)
-            elif marker_type == 'info':
-                result += cyan(token)
+            if marker_at_pos != current_marker:
+                # Flush previous segment
+                if current_start < pos:
+                    segment = line[current_start:pos]
+                    # Apply color based on marker type
+                    if current_marker == 'fail':
+                        result += red(segment)
+                    elif current_marker == 'diff':
+                        result += yellow(segment)
+                    elif current_marker == 'info':
+                        result += cyan(segment)
+                    else:
+                        result += segment
+
+                current_marker = marker_at_pos
+                current_start = pos
+
+        # Flush final segment
+        if current_start < len(line):
+            segment = line[current_start:len(line)]
+            if current_marker == 'fail':
+                result += red(segment)
+            elif current_marker == 'diff':
+                result += yellow(segment)
+            elif current_marker == 'info':
+                result += cyan(segment)
             else:
-                result += token
-
-            last_pos = end_pos
-
-        # Add any remaining uncolored textbo
-        if last_pos < len(line):
-            result += line[last_pos:]
+                result += segment
 
         return result
 
@@ -997,15 +1017,15 @@ class TestCaseRun(OutputWriter):
 
     def diff(self):
         """
-        Mark the entire current line as different.
+        Mark the entire line as different from position 0 to end.
 
-        This marks a difference at the current position and sets the legacy
-        line_diff marker for the whole line.
+        Adds a marker (0, MAX_SIZE, 'diff') that colors the entire line yellow.
+        Individual token markers with higher priority will override this.
         """
         if self.line_diff is None:
             self.line_diff = len(self.out_line)
-        # Also add to token-level markers (mark from current pos to end of line)
-        self.line_markers.append((len(self.out_line), len(self.out_line), 'diff'))
+        # Mark entire line from 0 to maximum position
+        self.line_markers.append((0, 999999, 'diff'))
         return self
 
     def diff_token(self):
@@ -1027,15 +1047,15 @@ class TestCaseRun(OutputWriter):
 
     def fail(self):
         """
-        Mark the entire current line as failed.
+        Mark the entire line as failed from position 0 to end.
 
-        This marks a failure at the current position and sets the legacy
-        line_error marker for the whole line.
+        Adds a marker (0, MAX_SIZE, 'fail') that colors the entire line red.
+        Individual token markers with higher priority will override this.
         """
         if self.line_error is None:
             self.line_error = len(self.out_line)
-        # Also add to token-level markers (mark from current pos to end of line)
-        self.line_markers.append((len(self.out_line), len(self.out_line), 'fail'))
+        # Mark entire line from 0 to maximum position
+        self.line_markers.append((0, 999999, 'fail'))
         return self
 
     def fail_token(self):
@@ -1057,13 +1077,16 @@ class TestCaseRun(OutputWriter):
 
     def info(self):
         """
-        Mark the entire current line as having info-level differences.
+        Mark the entire line as having info-level differences from position 0 to end.
+
+        Adds a marker (0, MAX_SIZE, 'info') that colors the entire line cyan.
+        Individual token markers with higher priority will override this.
 
         Info markers show differences in diagnostic output (i() content) that
-        don't cause test failure. These appear in 'new | old' format for AI
-        review context without marking the test as failed.
+        don't cause test failure.
         """
-        self.line_markers.append((len(self.out_line), len(self.out_line), 'info'))
+        # Mark entire line from 0 to maximum position
+        self.line_markers.append((0, 999999, 'info'))
         return self
 
     def info_token(self):
