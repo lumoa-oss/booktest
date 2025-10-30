@@ -656,7 +656,7 @@ class TestCaseRun(OutputWriter):
                 pos = 0
 
             # Choose coloring approach based on markers
-            if has_token_markers and len(self.line_markers) == 0:
+            if has_token_markers and len(self.line_markers) > 0:
                 # Use token-level coloring
                 try:
                     # Color the symbol itself
@@ -721,7 +721,9 @@ class TestCaseRun(OutputWriter):
 
     def _colorize_line_with_markers(self, line, markers, has_error, has_diff, has_info):
         """
-        Colorize a line using token-level markers.
+        Colorize a line using token-level markers with priority handling.
+
+        Priority order: fail > diff > info > line-level > none
 
         Args:
             line: The line text to colorize
@@ -745,47 +747,106 @@ class TestCaseRun(OutputWriter):
                 return cyan(line)
             return line
 
-        # Sort markers by start position and deduplicate
-        # Filter out invalid positions
-        valid_markers = [(start, end, mtype) for start, end, mtype in markers
-                        if 0 <= start <= len(line) and 0 <= end <= len(line)]
+        # Determine line-level priority (for gaps between markers)
+        line_priority = 0  # none
+        line_color = None
+        if has_info:
+            line_priority = 1
+            line_color = cyan
+        if has_diff:
+            line_priority = 2
+            line_color = yellow
+        if has_error:
+            line_priority = 3
+            line_color = red
+
+        # Priority values for marker types
+        marker_priorities = {'info': 1, 'diff': 2, 'fail': 3}
+
+        # Filter out invalid positions and normalize zero-width markers
+        valid_markers = []
+        for start, end, mtype in markers:
+            if 0 <= start <= len(line):
+                # Extend zero-width markers (start == end) to end of line
+                if start == end:
+                    end = len(line)
+                # Clamp end to line length
+                end = min(end, len(line))
+                if start < end:  # Only keep markers with non-zero width
+                    valid_markers.append((start, end, mtype))
+
         if not valid_markers:
             # Fallback to line-level coloring
-            if has_error:
-                return red(line)
-            elif has_diff:
-                return yellow(line)
-            elif has_info:
-                return cyan(line)
+            if line_color:
+                return line_color(line)
             return line
 
-        sorted_markers = sorted(set(valid_markers), key=lambda m: (m[0], m[2]))
+        # Sort markers by start position, then by priority (highest first)
+        sorted_markers = sorted(valid_markers, key=lambda m: (m[0], -marker_priorities.get(m[2], 0)))
 
-        # Build colored line token by token
-        result = ""
-        last_pos = 0
-
+        # Build position-to-marker map, resolving conflicts by priority
+        position_marker = {}  # Map each position to its highest-priority marker
         for start_pos, end_pos, marker_type in sorted_markers:
-            # Add uncolored text before this marker
-            if start_pos > last_pos:
-                result += line[last_pos:start_pos]
+            priority = marker_priorities.get(marker_type, 0)
+            for pos in range(start_pos, end_pos):
+                existing_priority = marker_priorities.get(position_marker.get(pos), 0)
+                if priority > existing_priority:
+                    position_marker[pos] = marker_type
 
-            # Colorize the token based on marker type
-            token = line[max(last_pos,start_pos):end_pos]
-            if marker_type == 'fail':
-                result += red(token)
-            elif marker_type == 'diff':
-                result += yellow(token)
-            elif marker_type == 'info':
-                result += cyan(token)
+        # Build colored line by scanning positions
+        result = ""
+        current_marker = None
+        current_start = 0
+
+        for pos in range(len(line)):
+            marker_at_pos = position_marker.get(pos)
+
+            if marker_at_pos != current_marker:
+                # Flush previous segment
+                if current_start < pos:
+                    segment = line[current_start:pos]
+                    marker_priority = marker_priorities.get(current_marker, 0)
+
+                    # Choose color based on priority (token vs line-level)
+                    if marker_priority >= line_priority:
+                        # Token marker wins
+                        if current_marker == 'fail':
+                            result += red(segment)
+                        elif current_marker == 'diff':
+                            result += yellow(segment)
+                        elif current_marker == 'info':
+                            result += cyan(segment)
+                        else:
+                            result += segment
+                    else:
+                        # Line-level marker wins (or no marker)
+                        if line_color:
+                            result += line_color(segment)
+                        else:
+                            result += segment
+
+                current_marker = marker_at_pos
+                current_start = pos
+
+        # Flush final segment
+        if current_start < len(line):
+            segment = line[current_start:len(line)]
+            marker_priority = marker_priorities.get(current_marker, 0)
+
+            if marker_priority >= line_priority:
+                if current_marker == 'fail':
+                    result += red(segment)
+                elif current_marker == 'diff':
+                    result += yellow(segment)
+                elif current_marker == 'info':
+                    result += cyan(segment)
+                else:
+                    result += segment
             else:
-                result += token
-
-            last_pos = end_pos
-
-        # Add any remaining uncolored textbo
-        if last_pos < len(line):
-            result += line[last_pos:]
+                if line_color:
+                    result += line_color(segment)
+                else:
+                    result += segment
 
         return result
 

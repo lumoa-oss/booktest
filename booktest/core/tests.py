@@ -551,7 +551,8 @@ class Tests:
         cmd = parsed.cmd
 
         if cmd == '--setup':
-            return booktest.setup.setup_booktest()
+            from booktest.utils.setup import setup_booktest
+            return setup_booktest()
         elif cmd == '--config':
             for key, value in config.items():
                 print(f"{key}={value}")
