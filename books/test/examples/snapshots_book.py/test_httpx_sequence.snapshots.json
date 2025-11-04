@@ -1,0 +1,45 @@
+{
+  "httpx": {
+    "3a6b8838042eb5a710065a1c8ee8cac0b6e0099f": {
+      "request": {
+        "hash": "3a6b8838042eb5a710065a1c8ee8cac0b6e0099f",
+        "method": "GET",
+        "order": 1,
+        "url": "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam"
+      },
+      "response": {
+        "content": "eyJ5ZWFyIjoyMDI1LCJtb250aCI6MTAsImRheSI6MjAsImhvdXIiOjksIm1pbnV0ZSI6MjEsInNlY29uZHMiOjM1LCJtaWxsaVNlY29uZHMiOjcyNCwiZGF0ZVRpbWUiOiIyMDI1LTEwLTIwVDA5OjIxOjM1LjcyNDc5NzYiLCJkYXRlIjoiMTAvMjAvMjAyNSIsInRpbWUiOiIwOToyMSIsInRpbWVab25lIjoiRXVyb3BlL0Ftc3RlcmRhbSIsImRheU9mV2VlayI6Ik1vbmRheSIsImRzdEFjdGl2ZSI6dHJ1ZX0=",
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "230",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Mon, 20 Oct 2025 07:21:35 GMT",
+          "server": "nginx/1.27.0",
+          "transfer-encoding": "chunked",
+          "vary": "Accept-Encoding"
+        },
+        "statusCode": 200
+      }
+    },
+    "58cb3f3a03b057645d8aa5d98f3d21578933e363": {
+      "request": {
+        "hash": "58cb3f3a03b057645d8aa5d98f3d21578933e363",
+        "method": "GET",
+        "url": "https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam"
+      },
+      "response": {
+        "content": "eyJ5ZWFyIjoyMDI1LCJtb250aCI6MTAsImRheSI6MjAsImhvdXIiOjksIm1pbnV0ZSI6MjEsInNlY29uZHMiOjM1LCJtaWxsaVNlY29uZHMiOjM4OCwiZGF0ZVRpbWUiOiIyMDI1LTEwLTIwVDA5OjIxOjM1LjM4ODQwMTciLCJkYXRlIjoiMTAvMjAvMjAyNSIsInRpbWUiOiIwOToyMSIsInRpbWVab25lIjoiRXVyb3BlL0Ftc3RlcmRhbSIsImRheU9mV2VlayI6Ik1vbmRheSIsImRzdEFjdGl2ZSI6dHJ1ZX0=",
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "230",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Mon, 20 Oct 2025 07:21:35 GMT",
+          "server": "nginx/1.27.0",
+          "transfer-encoding": "chunked",
+          "vary": "Accept-Encoding"
+        },
+        "statusCode": 200
+      }
+    }
+  }
+}

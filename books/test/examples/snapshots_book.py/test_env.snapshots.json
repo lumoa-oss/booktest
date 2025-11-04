@@ -1,3 +1,5 @@
 {
+  "env": {
     "TEST_ENV_VARIABLE": "hello"
+  }
 }
