@@ -330,6 +330,9 @@ class GitStorage(SnapshotStorage):
         snapshots are copied from the working directory to the permanent location.
 
         Note: We copy rather than move to keep snapshots in .out/ for review mode.
+
+        Also performs automatic cleanup: when promoting .snapshots.json for the first
+        time, removes legacy _snapshots/ directory if it exists.
         """
         # Only promote if base_path and frozen_path are different
         if self.base_path == self.frozen_path:
@@ -342,11 +345,27 @@ class GitStorage(SnapshotStorage):
             # No snapshot file to promote (might be using legacy format or no snapshots)
             return
 
+        # Check if this is the first promotion (destination doesn't exist yet)
+        is_first_promotion = not dest_file.exists()
+
         # Create destination directory
         dest_file.parent.mkdir(parents=True, exist_ok=True)
 
         # Copy the snapshot file (use copy2 to preserve metadata)
         shutil.copy2(source_file, dest_file)
+
+        # Cleanup: Remove legacy _snapshots/ directory on first promotion
+        if is_first_promotion:
+            parts = test_id.replace("::", "/").split("/")
+            legacy_snapshot_dir = self.frozen_path / "/".join(parts) / "_snapshots"
+
+            if legacy_snapshot_dir.exists() and legacy_snapshot_dir.is_dir():
+                try:
+                    shutil.rmtree(legacy_snapshot_dir)
+                except Exception as e:
+                    # Log warning but don't fail promotion
+                    import warnings
+                    warnings.warn(f"Failed to remove legacy _snapshots directory at {legacy_snapshot_dir}: {e}")
 
 
 class DVCStorage(SnapshotStorage):
