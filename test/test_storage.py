@@ -64,10 +64,13 @@ class TestStorage(bt.TestBook):
                 content = f'{{"test": "{test_id}"}}'.encode()
                 storage.store(test_id, snapshot_type, content)
 
-                # Check the actual file path
-                path = storage._get_snapshot_path(test_id, snapshot_type)
+                # Check the actual .snapshots.json file path (new format)
+                path = storage._get_snapshot_file_path(test_id)
                 t.tln(f"Path: {path.relative_to(tmpdir)}")
                 t.tln(f"File exists: {path.exists()}")
+
+                # Verify snapshot exists via storage API
+                t.tln(f"Snapshot exists: {storage.exists(test_id, snapshot_type)}")
 
     def test_dvc_storage_fallback(self, t: bt.TestCaseRun):
         """Test DVCStorage fallback when DVC is not available."""

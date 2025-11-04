@@ -104,8 +104,10 @@ class SnapshotStorage(ABC):
 
 class GitStorage(SnapshotStorage):
     """
-    Traditional Git-based storage implementation.
-    Stores snapshots directly in the repository under _snapshots directories.
+    Git-based storage implementation with unified snapshot files.
+
+    New format: Stores all snapshots for a test in a single .snapshots.json file
+    Legacy format: Supports reading from _snapshots/ subdirectories for backward compatibility
     """
 
     def __init__(self, base_path: str = "books", frozen_path: str = None):
@@ -118,7 +120,7 @@ class GitStorage(SnapshotStorage):
         """
         self.base_path = Path(base_path)
         self.frozen_path = Path(frozen_path) if frozen_path else self.base_path
-        # Legacy filename mapping for backward compatibility
+        # Legacy filename mapping for backward compatibility with _snapshots/ directories
         self.legacy_filenames = {
             "http": "requests.json",  # HTTP requests used "requests.json"
             "httpx": "httpx.json",    # HTTPX used "httpx.json"
@@ -126,16 +128,47 @@ class GitStorage(SnapshotStorage):
             "func": "functions.json"   # Functions used "functions.json"
         }
 
+    def _get_snapshot_file_path(self, test_id: str, base: Path = None) -> Path:
+        """
+        Get path to consolidated .snapshots.json file for a test.
+
+        Args:
+            test_id: Test identifier (e.g., "test/examples/snapshots_book.py::test_requests")
+            base: Base directory (defaults to self.base_path)
+
+        Returns:
+            Path to test_name.snapshots.json file
+        """
+        if base is None:
+            base = self.base_path
+        parts = test_id.replace("::", "/").split("/")
+        return base / f"{'/'.join(parts)}.snapshots.json"
+
     def _get_snapshot_path(self, test_id: str, snapshot_type: str) -> Path:
-        """Construct the file path for a snapshot."""
+        """Construct the legacy file path for a snapshot (in _snapshots/ directory)."""
         # Convert test_id like "test/examples/snapshots::httpx" to path
         parts = test_id.replace("::", "/").split("/")
         snapshot_dir = self.base_path / "/".join(parts) / "_snapshots"
         return snapshot_dir / f"{snapshot_type}.json"
 
     def fetch(self, test_id: str, snapshot_type: str) -> Optional[bytes]:
-        """Fetch snapshot content from Git repository."""
-        # Check frozen location first (approved snapshots in books/)
+        """
+        Fetch snapshot content from Git repository.
+
+        Tries new .snapshots.json format first, then falls back to legacy _snapshots/ directory.
+        """
+        # 1. Try new format: test_name.snapshots.json file in frozen location
+        snapshot_file = self._get_snapshot_file_path(test_id, self.frozen_path)
+        if snapshot_file.exists():
+            try:
+                all_snapshots = json.loads(snapshot_file.read_bytes())
+                if snapshot_type in all_snapshots:
+                    # Return the specific snapshot as JSON bytes
+                    return json.dumps(all_snapshots[snapshot_type]).encode('utf-8')
+            except (json.JSONDecodeError, KeyError):
+                pass  # Fall through to legacy format
+
+        # 2. Try legacy format: _snapshots/ subdirectory in frozen location
         parts = test_id.replace("::", "/").split("/")
         snapshot_dir = self.frozen_path / "/".join(parts) / "_snapshots"
 
@@ -145,7 +178,7 @@ class GitStorage(SnapshotStorage):
             if legacy_path.exists():
                 return legacy_path.read_bytes()
 
-        # Try new filename
+        # Try new filename in legacy directory
         new_path = snapshot_dir / f"{snapshot_type}.json"
         if new_path.exists():
             return new_path.read_bytes()
@@ -153,36 +186,117 @@ class GitStorage(SnapshotStorage):
         return None
 
     def store(self, test_id: str, snapshot_type: str, content: bytes) -> str:
-        """Store snapshot content in Git repository."""
-        # Use legacy filename for backward compatibility
-        if snapshot_type in self.legacy_filenames:
-            parts = test_id.replace("::", "/").split("/")
-            snapshot_dir = self.base_path / "/".join(parts) / "_snapshots"
-            path = snapshot_dir / self.legacy_filenames[snapshot_type]
+        """
+        Store snapshot content in unified .snapshots.json file.
+
+        Uses atomic write with temporary file to prevent corruption.
+        """
+        snapshot_file = self._get_snapshot_file_path(test_id)
+
+        # Load existing snapshots or create new dict
+        if snapshot_file.exists():
+            try:
+                all_snapshots = json.loads(snapshot_file.read_bytes())
+            except json.JSONDecodeError:
+                all_snapshots = {}
         else:
-            path = self._get_snapshot_path(test_id, snapshot_type)
+            all_snapshots = {}
 
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(content)
+        # Parse and store the new snapshot
+        try:
+            snapshot_data = json.loads(content)
+        except json.JSONDecodeError:
+            # If content is not JSON, store as string
+            snapshot_data = content.decode('utf-8')
 
-        # Calculate and return SHA256 hash
+        all_snapshots[snapshot_type] = snapshot_data
+
+        # Write atomically using temporary file
+        snapshot_file.parent.mkdir(parents=True, exist_ok=True)
+        temp_file = snapshot_file.with_suffix('.tmp')
+
+        try:
+            # Write to temp file with sorted keys for deterministic output
+            temp_file.write_text(json.dumps(all_snapshots, indent=2, sort_keys=True))
+            # Atomic rename
+            temp_file.replace(snapshot_file)
+        except Exception:
+            # Clean up temp file on error
+            if temp_file.exists():
+                temp_file.unlink()
+            raise
+
+        # Calculate and return SHA256 hash of the content
         hash_obj = hashlib.sha256(content)
         return f"sha256:{hash_obj.hexdigest()}"
 
     def exists(self, test_id: str, snapshot_type: str) -> bool:
-        """Check if snapshot exists in Git repository."""
-        path = self._get_snapshot_path(test_id, snapshot_type)
-        return path.exists()
+        """
+        Check if snapshot exists in Git repository.
+
+        Checks both base_path and frozen_path, and both new and legacy formats.
+        """
+        # Check new format in both locations
+        for base in [self.base_path, self.frozen_path]:
+            snapshot_file = self._get_snapshot_file_path(test_id, base)
+            if snapshot_file.exists():
+                try:
+                    all_snapshots = json.loads(snapshot_file.read_bytes())
+                    if snapshot_type in all_snapshots:
+                        return True
+                except (json.JSONDecodeError, KeyError):
+                    pass
+
+        # Check legacy format in frozen_path
+        parts = test_id.replace("::", "/").split("/")
+        snapshot_dir = self.frozen_path / "/".join(parts) / "_snapshots"
+
+        # Try legacy filename
+        if snapshot_type in self.legacy_filenames:
+            legacy_path = snapshot_dir / self.legacy_filenames[snapshot_type]
+            if legacy_path.exists():
+                return True
+
+        # Try new filename in legacy directory
+        new_path = snapshot_dir / f"{snapshot_type}.json"
+        if new_path.exists():
+            return True
+
+        return False
 
     def get_manifest(self) -> Dict[str, Dict[str, str]]:
         """
         For Git storage, generate manifest by scanning snapshot files.
-        This is mainly for compatibility with the abstract interface.
+
+        Scans both new .snapshots.json files and legacy _snapshots/ directories.
         """
         manifest = {}
         if not self.base_path.exists():
             return manifest
 
+        # Scan for new format: .snapshots.json files
+        for snapshot_file in self.base_path.glob("**/*.snapshots.json"):
+            # Extract test_id from filename
+            # E.g., "test/examples/snapshots_book.py/test_requests.snapshots.json"
+            # -> "test/examples/snapshots_book.py/test_requests"
+            relative_path = snapshot_file.relative_to(self.base_path)
+            test_id = str(relative_path)[:-len(".snapshots.json")]
+
+            try:
+                all_snapshots = json.loads(snapshot_file.read_bytes())
+                if test_id not in manifest:
+                    manifest[test_id] = {}
+
+                for snapshot_type, snapshot_data in all_snapshots.items():
+                    # Calculate hash of the snapshot content
+                    content = json.dumps(snapshot_data).encode('utf-8')
+                    hash_obj = hashlib.sha256(content)
+                    hash_str = f"sha256:{hash_obj.hexdigest()}"
+                    manifest[test_id][snapshot_type] = hash_str
+            except (json.JSONDecodeError, KeyError):
+                pass  # Skip malformed files
+
+        # Also scan legacy format: _snapshots/ directories
         for snapshot_file in self.base_path.glob("**/_snapshots/*.json"):
             # Extract test_id and snapshot_type from path
             relative_path = snapshot_file.relative_to(self.base_path)
@@ -210,9 +324,48 @@ class GitStorage(SnapshotStorage):
 
     def promote(self, test_id: str, snapshot_type: str) -> None:
         """
-        For Git storage, promotion is a no-op since everything is committed.
+        Promote snapshot file from base_path (.out/) to frozen_path (books/).
+
+        This implements the same semantics as DVC storage: on test success,
+        snapshots are copied from the working directory to the permanent location.
+
+        Note: We copy rather than move to keep snapshots in .out/ for review mode.
+
+        Also performs automatic cleanup: when promoting .snapshots.json for the first
+        time, removes legacy _snapshots/ directory if it exists.
         """
-        pass
+        # Only promote if base_path and frozen_path are different
+        if self.base_path == self.frozen_path:
+            return
+
+        source_file = self._get_snapshot_file_path(test_id, self.base_path)
+        dest_file = self._get_snapshot_file_path(test_id, self.frozen_path)
+
+        if not source_file.exists():
+            # No snapshot file to promote (might be using legacy format or no snapshots)
+            return
+
+        # Check if this is the first promotion (destination doesn't exist yet)
+        is_first_promotion = not dest_file.exists()
+
+        # Create destination directory
+        dest_file.parent.mkdir(parents=True, exist_ok=True)
+
+        # Copy the snapshot file (use copy2 to preserve metadata)
+        shutil.copy2(source_file, dest_file)
+
+        # Cleanup: Remove legacy _snapshots/ directory on first promotion
+        if is_first_promotion:
+            parts = test_id.replace("::", "/").split("/")
+            legacy_snapshot_dir = self.frozen_path / "/".join(parts) / "_snapshots"
+
+            if legacy_snapshot_dir.exists() and legacy_snapshot_dir.is_dir():
+                try:
+                    shutil.rmtree(legacy_snapshot_dir)
+                except Exception as e:
+                    # Log warning but don't fail promotion
+                    import warnings
+                    warnings.warn(f"Failed to remove legacy _snapshots directory at {legacy_snapshot_dir}: {e}")
 
 
 class DVCStorage(SnapshotStorage):

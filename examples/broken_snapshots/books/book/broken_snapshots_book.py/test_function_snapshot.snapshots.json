@@ -1,0 +1,13 @@
+{
+  "func": [
+    {
+      "call": {
+        "args": [],
+        "func": "hello_world",
+        "hash": "10b1d5dde04cb7165fda604e9c02a88365ede15c",
+        "kwargs": {}
+      },
+      "result": "hello world"
+    }
+  ]
+}

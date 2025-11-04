@@ -183,6 +183,7 @@ def test_failures(t: bt.TestCaseRun, context: str):
 def break_snapshots(t: bt.TestCaseRun, context:dir, title="breaking snapshots"):
     path = "books/book/broken_snapshots"
     files = [
+        "function_snapshot.snapshots.json",
         "function_snapshot/_snapshots/functions.json",
         "httpx/_snapshots/httpx.json",
         "requests/_snapshots/requests.json"

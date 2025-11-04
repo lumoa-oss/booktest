@@ -7,6 +7,7 @@ this test verifies that:
 
 # breaking snapshots
 
+ * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/function_snapshot.snapshots.json
  * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/function_snapshot/_snapshots/functions.json
  * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/httpx/_snapshots/httpx.json
  * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/requests/_snapshots/requests.json
@@ -96,6 +97,7 @@ book/broken_snapshots_book.py::test_requests DIFFERED in <number> ms
 
 # rebreak snapshots to keep git status clean:
 
+ * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/function_snapshot.snapshots.json
  * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/function_snapshot/_snapshots/functions.json
  * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/httpx/_snapshots/httpx.json
  * broke snapshot file: examples/broken_snapshots/books/book/broken_snapshots/requests/_snapshots/requests.json

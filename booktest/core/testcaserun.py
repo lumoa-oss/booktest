@@ -297,6 +297,18 @@ class TestCaseRun(OutputWriter):
             success_state = SuccessState.OK
             legacy_result = TestResult.OK
 
+        # Promote snapshots for successful tests (OK or DIFF)
+        # This moves snapshots from .out/ to books/ directory
+        if success_state in (SuccessState.OK, SuccessState.DIFF):
+            for snapshot_type in self.snapshot_usage.keys():
+                try:
+                    self.storage.promote(self.test_id, snapshot_type)
+                except Exception as e:
+                    # Log promotion errors but don't fail the test
+                    # Promotion is a file management concern, not a test failure
+                    import sys
+                    print(f"Warning: Failed to promote {snapshot_type} snapshot: {e}", file=sys.stderr)
+
         # Determine snapshot state from actual usage tracking
         snapshot_state = self.get_snapshot_state()
 
