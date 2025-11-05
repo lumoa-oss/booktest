@@ -435,7 +435,11 @@ class TestCaseRun(OutputWriter):
                     manifest_path=self.config.get("storage.dvc.manifest_path", "booktest.manifest.yaml"),
                     batch_dir=batch_dir
                 )
-            return GitStorage(base_path=self.run.out_dir, frozen_path=self.run.exp_dir)
+            return GitStorage(
+                base_path=self.run.out_dir,
+                frozen_path=self.run.exp_dir,
+                is_resource=self.resource_snapshots
+            )
         elif mode == "dvc":
             return DVCStorage(
                 base_path=self.run.out_dir,  # Write to .out
@@ -444,7 +448,11 @@ class TestCaseRun(OutputWriter):
                 batch_dir=batch_dir
             )
         else:  # mode == "git" or fallback
-            return GitStorage(base_path=self.run.out_dir, frozen_path=self.run.exp_dir)
+            return GitStorage(
+                base_path=self.run.out_dir,
+                frozen_path=self.run.exp_dir,
+                is_resource=self.resource_snapshots
+            )
 
     def get_storage(self):
         """

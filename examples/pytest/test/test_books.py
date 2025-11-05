@@ -74,6 +74,14 @@ def test_module_detect(test_case):
     assert tests.exec(BOOKS_ROOT_DIR, ["-v", "-L", test_case], setup=setup) == 0
 
 
+@pytest.mark.parametrize("test_case", list_tests_in_module(BOOK_MODULE))
+def test_module_detect_with_resource_snapshots(test_case):
+    tests = get_module_test_suite()
+    setup = get_module_book_setup()
+
+    assert tests.exec(BOOKS_ROOT_DIR, ["-v", "-L", "--resource-snapshots", test_case], setup=setup) == 0
+
+
 @pytest.mark.parametrize("test_case", BOOKS.list_tests())
 def test_books(test_case):
     BOOKS.assert_test(test_case)

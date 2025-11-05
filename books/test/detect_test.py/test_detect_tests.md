@@ -10,6 +10,7 @@
  * test/cli_test.py::test_parallel..ok
  * test/cli_test.py::test_pytest..ok
  * test/cli_test.py::test_refreshing_broken_snapshots..ok
+ * test/cli_test.py::test_resource_snapshots..ok
  * test/cli_test.py::test_run..ok
  * test/cli_test.py::test_timeout..ok
  * test/datascience/test_agent.py::test_agent_step1_plan..ok
@@ -133,4 +134,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 132
+count: 133

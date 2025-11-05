@@ -326,8 +326,8 @@ class SnapshotRequests:
 
         # legacy support - single file format (.requests.json)
         legacy_file_path = os.path.join(t.exp_dir_name, ".requests.json")
-        if os.path.exists(legacy_file_path) and not self.refresh_snapshots:
-            with open(legacy_file_path, "r") as f:
+        if file_or_resource_exists(legacy_file_path, t.resource_snapshots) and not self.refresh_snapshots:
+            with open_file_or_resource(legacy_file_path, t.resource_snapshots) as f:
                 for key, value in json.load(f).items():
                     snapshots.append(RequestSnapshot.from_json_object(value,
                                                                       ignore_headers=ignore_headers,

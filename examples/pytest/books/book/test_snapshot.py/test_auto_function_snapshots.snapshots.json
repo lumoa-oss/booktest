@@ -1,0 +1,22 @@
+{
+  "func": [
+    {
+      "call": {
+        "args": [],
+        "func": "Random.random",
+        "hash": "c55c1fc1edcaa1de562846c288daaad1ae261c5d",
+        "kwargs": {}
+      },
+      "result": 0.3846126080188771
+    },
+    {
+      "call": {
+        "args": [],
+        "func": "time_ns",
+        "hash": "bc2e0043f8879f6f886da0f550eb552d0a839f8f",
+        "kwargs": {}
+      },
+      "result": 1762340181632560455
+    }
+  ]
+}
