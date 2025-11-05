@@ -20,6 +20,15 @@ test book/test_hello.py::test_hello
 
 book/test_hello.py::test_hello OK <number> ms.
 
+test book/test_snapshot.py::test_auto_function_snapshots
+
+  # snapshots:
+  
+   * timestamp: 1762340181632560455
+   * random: 0.3846126080188771
+
+book/test_snapshot.py::test_auto_function_snapshots OK <number> ms. (snapshots updated)
+
 test book/teardown/setup_teardown_test.py::test_setup_teardown
 
   # description:
@@ -39,17 +48,20 @@ test book/teardown/setup_teardown_test.py::test_setup_teardown
 book/teardown/setup_teardown_test.py::test_setup_teardown OK <number> ms.
 
 
-2/2 test succeeded in <number> ms
+3/3 test succeeded in <number> ms
 
 
 
 # testing pytest project with pytest
 
-test/test_books.py::test_fs_detect[book/test_hello.py::test_hello] PASSED [ 16%]
+test/test_books.py::test_fs_detect[book/test_hello.py::test_hello] PASSED [ 11%]
+test/test_books.py::test_fs_detect[book/test_snapshot.py::test_auto_function_snapshots] PASSED [ 22%]
 test/test_books.py::test_fs_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 33%]
-test/test_books.py::test_module_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 50%]
-test/test_books.py::test_module_detect[book/test_hello.py::test_hello] PASSED [ 66%]
-test/test_books.py::test_books[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 83%]
-test/test_books.py::test_books[book/test_hello.py::test_hello] PASSED    [100%]
+test/test_books.py::test_module_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 44%]
+test/test_books.py::test_module_detect[book/test_hello.py::test_hello] PASSED [ 55%]
+test/test_books.py::test_module_detect[book/test_snapshot.py::test_auto_function_snapshots] PASSED [ 66%]
+test/test_books.py::test_books[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 77%]
+test/test_books.py::test_books[book/test_hello.py::test_hello] PASSED    [ 88%]
+test/test_books.py::test_books[book/test_snapshot.py::test_auto_function_snapshots] PASSED [100%]
 
 return code is 0..ok
