@@ -32,7 +32,7 @@ def open_file_or_resource(path: str, is_resource: bool):
     Returns:
         File-like object opened for text reading
     """
-    if is_resource:
+    if not path.startswith("/") and is_resource:
         # Split path into root module and relative path
         parts = path.split('/')
         if len(parts) < 2:
@@ -65,7 +65,9 @@ def file_or_resource_exists(path: str, is_resource: bool):
     Returns:
         True if the file/resource exists
     """
-    if is_resource:
+    # there seems to be a special case, where absolutely paths are provided
+    # in is_resource mode, so we need to handle that as well
+    if not path.startswith("/") and is_resource:
         # Split path into root module and relative path
         parts = path.split('/')
         if len(parts) < 2:
@@ -74,6 +76,8 @@ def file_or_resource_exists(path: str, is_resource: bool):
         root_module = parts[0]  # e.g., 'books'
         relative_parts = parts[1:]  # e.g., ['test', 'test_hello.py', 'test_hello.md']
 
+        if not root_module:
+            return False
         try:
             # Use files() API to navigate to the resource
             traversable = rs.files(root_module)

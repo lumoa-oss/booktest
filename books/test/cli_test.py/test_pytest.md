@@ -54,14 +54,17 @@ book/teardown/setup_teardown_test.py::test_setup_teardown OK <number> ms.
 
 # testing pytest project with pytest
 
-test/test_books.py::test_fs_detect[book/test_hello.py::test_hello] PASSED [ 11%]
-test/test_books.py::test_fs_detect[book/test_snapshot.py::test_auto_function_snapshots] PASSED [ 22%]
-test/test_books.py::test_fs_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 33%]
-test/test_books.py::test_module_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 44%]
-test/test_books.py::test_module_detect[book/test_hello.py::test_hello] PASSED [ 55%]
-test/test_books.py::test_module_detect[book/test_snapshot.py::test_auto_function_snapshots] PASSED [ 66%]
-test/test_books.py::test_books[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 77%]
-test/test_books.py::test_books[book/test_hello.py::test_hello] PASSED    [ 88%]
+test/test_books.py::test_fs_detect[book/test_hello.py::test_hello] PASSED [  8%]
+test/test_books.py::test_fs_detect[book/test_snapshot.py::test_auto_function_snapshots] PASSED [ 16%]
+test/test_books.py::test_fs_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 25%]
+test/test_books.py::test_module_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 33%]
+test/test_books.py::test_module_detect[book/test_hello.py::test_hello] PASSED [ 41%]
+test/test_books.py::test_module_detect[book/test_snapshot.py::test_auto_function_snapshots] PASSED [ 50%]
+test/test_books.py::test_module_detect_with_resource_snapshots[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 58%]
+test/test_books.py::test_module_detect_with_resource_snapshots[book/test_hello.py::test_hello] PASSED [ 66%]
+test/test_books.py::test_module_detect_with_resource_snapshots[book/test_snapshot.py::test_auto_function_snapshots] PASSED [ 75%]
+test/test_books.py::test_books[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 83%]
+test/test_books.py::test_books[book/test_hello.py::test_hello] PASSED    [ 91%]
 test/test_books.py::test_books[book/test_snapshot.py::test_auto_function_snapshots] PASSED [100%]
 
 return code is 0..ok
