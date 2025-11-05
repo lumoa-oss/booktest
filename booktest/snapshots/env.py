@@ -39,7 +39,7 @@ class SnapshotEnv:
 
     def start(self):
         if self._old_env is None:
-            raise ValueError("already started")
+            raise AssertionError("already started")
 
         self._old_env = {}
         for name in self.names:
@@ -148,7 +148,7 @@ class MockMissingEnv:
 
     def start(self):
         if self._old_env is None:
-            raise ValueError("already started")
+            raise AssertionError("already started")
 
         self._old_env = {}
         for name, value in self.env.items():
@@ -202,7 +202,7 @@ class MockEnv:
 
     def start(self):
         if self._old_env is not None:
-            raise ValueError("already started")
+            raise AssertionError("already started")
 
         self._old_env = {}
         for name, value in self.env.items():

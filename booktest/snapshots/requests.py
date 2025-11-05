@@ -220,7 +220,7 @@ class SnapshotAdapter(adapters.BaseAdapter):
             return key, snapshot.response
 
         if not self.capture_snapshots:
-            raise ValueError(f"missing snapshot for request {request.url} - {key.hash}. "
+            raise AssertionError(f"missing snapshot for request {request.url} - {key.hash}. "
                              f"try running booktest with '-s' flag to capture the missing snapshot")
 
         return key, None
@@ -343,7 +343,7 @@ class SnapshotRequests:
                                                                           ignore_headers=ignore_headers,
                                                                           json_to_hash=json_to_hash))
             except Exception as e:
-                raise ValueError(f"test {self.t.name} snapshot file corrupted with {e}. "
+                raise AssertionError(f"test {self.t.name} snapshot file corrupted with {e}. "
                                  f"Use -S to refresh snapshots")
 
         self._adapter = SnapshotAdapter(snapshots,
