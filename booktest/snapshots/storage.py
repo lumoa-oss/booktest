@@ -818,7 +818,7 @@ def detect_storage_mode(config: Optional[Dict[str, Any]] = None) -> StorageMode:
         if mode != "auto":
             try:
                 return StorageMode(mode)
-            except ValueError:
+            except AssertionError:
                 warnings.warn(f"Invalid storage mode: {mode}, falling back to auto")
 
     # Auto-detect based on environment

@@ -303,11 +303,9 @@ class TestCaseRun(OutputWriter):
             for snapshot_type in self.snapshot_usage.keys():
                 try:
                     self.storage.promote(self.test_id, snapshot_type)
-                except Exception as e:
-                    # Log promotion errors but don't fail the test
+                except Exception | PermissionError as e:
                     # Promotion is a file management concern, not a test failure
-                    import sys
-                    print(f"Warning: Failed to promote {snapshot_type} snapshot: {e}", file=sys.stderr)
+                    pass
 
         # Determine snapshot state from actual usage tracking
         snapshot_state = self.get_snapshot_state()
