@@ -303,7 +303,7 @@ class TestCaseRun(OutputWriter):
             for snapshot_type in self.snapshot_usage.keys():
                 try:
                     self.storage.promote(self.test_id, snapshot_type)
-                except Exception | PermissionError as e:
+                except Exception as e:
                     # Promotion is a file management concern, not a test failure
                     pass
 
