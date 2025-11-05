@@ -27,8 +27,8 @@ class SnapshotEnv:
 
         # Legacy support - single file format (.env.json)
         legacy_file_path = os.path.join(t.exp_dir_name, ".env.json")
-        if os.path.exists(legacy_file_path) and not self.refresh_snapshots:
-            with open(legacy_file_path, "r") as f:
+        if file_or_resource_exists(legacy_file_path, t.resource_snapshots) and not self.refresh_snapshots:
+            with open_file_or_resource(legacy_file_path, t.resource_snapshots) as f:
                 self.snaphots = json.load(f)
 
         # Load snapshots from storage if not refreshing
