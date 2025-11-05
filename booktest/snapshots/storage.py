@@ -110,16 +110,18 @@ class GitStorage(SnapshotStorage):
     Legacy format: Supports reading from _snapshots/ subdirectories for backward compatibility
     """
 
-    def __init__(self, base_path: str = "books", frozen_path: str = None):
+    def __init__(self, base_path: str = "books", frozen_path: str = None, is_resource: bool = False):
         """
         Initialize Git storage backend.
 
         Args:
             base_path: Base directory for storing snapshots (usually books/.out)
             frozen_path: Directory for reading frozen snapshots (usually books, defaults to base_path)
+            is_resource: Whether to use Pants resource system for reading (default: False)
         """
         self.base_path = Path(base_path)
         self.frozen_path = Path(frozen_path) if frozen_path else self.base_path
+        self.is_resource = is_resource
         # Legacy filename mapping for backward compatibility with _snapshots/ directories
         self.legacy_filenames = {
             "http": "requests.json",  # HTTP requests used "requests.json"
@@ -156,12 +158,24 @@ class GitStorage(SnapshotStorage):
         Fetch snapshot content from Git repository.
 
         Tries new .snapshots.json format first, then falls back to legacy _snapshots/ directory.
+        Uses Pants-compatible file operations when is_resource=True.
         """
+        from booktest.utils.utils import file_or_resource_exists, open_file_or_resource
+
         # 1. Try new format: test_name.snapshots.json file in frozen location
         snapshot_file = self._get_snapshot_file_path(test_id, self.frozen_path)
-        if snapshot_file.exists():
+        snapshot_file_str = str(snapshot_file)
+
+        if file_or_resource_exists(snapshot_file_str, self.is_resource):
             try:
-                all_snapshots = json.loads(snapshot_file.read_bytes())
+                if self.is_resource:
+                    # For Pants resources, use open_file_or_resource
+                    with open_file_or_resource(snapshot_file_str, self.is_resource) as f:
+                        all_snapshots = json.load(f)
+                else:
+                    # For regular files, use pathlib
+                    all_snapshots = json.loads(snapshot_file.read_bytes())
+
                 if snapshot_type in all_snapshots:
                     # Return the specific snapshot as JSON bytes
                     return json.dumps(all_snapshots[snapshot_type]).encode('utf-8')
@@ -175,13 +189,25 @@ class GitStorage(SnapshotStorage):
         # Try legacy filename first for backward compatibility
         if snapshot_type in self.legacy_filenames:
             legacy_path = snapshot_dir / self.legacy_filenames[snapshot_type]
-            if legacy_path.exists():
-                return legacy_path.read_bytes()
+            legacy_path_str = str(legacy_path)
+
+            if file_or_resource_exists(legacy_path_str, self.is_resource):
+                if self.is_resource:
+                    with open_file_or_resource(legacy_path_str, self.is_resource) as f:
+                        return f.read().encode('utf-8')
+                else:
+                    return legacy_path.read_bytes()
 
         # Try new filename in legacy directory
         new_path = snapshot_dir / f"{snapshot_type}.json"
-        if new_path.exists():
-            return new_path.read_bytes()
+        new_path_str = str(new_path)
+
+        if file_or_resource_exists(new_path_str, self.is_resource):
+            if self.is_resource:
+                with open_file_or_resource(new_path_str, self.is_resource) as f:
+                    return f.read().encode('utf-8')
+            else:
+                return new_path.read_bytes()
 
         return None
 
@@ -235,13 +261,23 @@ class GitStorage(SnapshotStorage):
         Check if snapshot exists in Git repository.
 
         Checks both base_path and frozen_path, and both new and legacy formats.
+        Uses Pants-compatible file operations when is_resource=True.
         """
+        from booktest.utils.utils import file_or_resource_exists, open_file_or_resource
+
         # Check new format in both locations
         for base in [self.base_path, self.frozen_path]:
             snapshot_file = self._get_snapshot_file_path(test_id, base)
-            if snapshot_file.exists():
+            snapshot_file_str = str(snapshot_file)
+
+            if file_or_resource_exists(snapshot_file_str, self.is_resource):
                 try:
-                    all_snapshots = json.loads(snapshot_file.read_bytes())
+                    if self.is_resource:
+                        with open_file_or_resource(snapshot_file_str, self.is_resource) as f:
+                            all_snapshots = json.load(f)
+                    else:
+                        all_snapshots = json.loads(snapshot_file.read_bytes())
+
                     if snapshot_type in all_snapshots:
                         return True
                 except (json.JSONDecodeError, KeyError):
@@ -254,12 +290,12 @@ class GitStorage(SnapshotStorage):
         # Try legacy filename
         if snapshot_type in self.legacy_filenames:
             legacy_path = snapshot_dir / self.legacy_filenames[snapshot_type]
-            if legacy_path.exists():
+            if file_or_resource_exists(str(legacy_path), self.is_resource):
                 return True
 
         # Try new filename in legacy directory
         new_path = snapshot_dir / f"{snapshot_type}.json"
-        if new_path.exists():
+        if file_or_resource_exists(str(new_path), self.is_resource):
             return True
 
         return False
