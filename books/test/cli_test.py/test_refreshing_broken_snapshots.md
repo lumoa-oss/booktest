@@ -39,7 +39,7 @@ test book/broken_snapshots_book.py::test_httpx
   
   "https://postman-echo.com/get"
 
-book/broken_snapshots_book.py::test_httpx DIFF <number> ms
+book/broken_snapshots_book.py::test_httpx DIFF <number> ms (snapshots updated)
 
 test book/broken_snapshots_book.py::test_requests
 
@@ -47,7 +47,7 @@ test book/broken_snapshots_book.py::test_requests
   
   "https://postman-echo.com/get"
 
-book/broken_snapshots_book.py::test_requests DIFF <number> ms
+book/broken_snapshots_book.py::test_requests DIFF <number> ms (snapshots updated)
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
