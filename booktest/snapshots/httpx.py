@@ -341,6 +341,13 @@ class SnapshotHttpx:
         content = json.dumps(stored, indent=4).encode('utf-8')
         self.stored_hash = self.storage.store(self.t.test_id, "httpx", content)
 
+        # Fetch back the normalized content to compare hashes
+        # (storage may normalize JSON formatting)
+        new_content = self.storage.fetch(self.t.test_id, "httpx")
+        if new_content:
+            import hashlib
+            self.stored_hash = f"sha256:{hashlib.sha256(new_content).hexdigest()}"
+
         # Store old hash for comparison in t_snapshots
         self.old_hash = old_hash
 

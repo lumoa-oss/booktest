@@ -25,9 +25,9 @@ booktest
 
 # test results:
 
-  book/broken_snapshots_book.py::test_function_snapshot - DIFF <number> ms (snapshots updated)
-  book/broken_snapshots_book.py::test_httpx - DIFF <number> ms (snapshots updated)
-  book/broken_snapshots_book.py::test_requests - DIFF <number> ms (snapshots updated)
+  book/broken_snapshots_book.py::test_function_snapshot - DIFF <number> ms
+  book/broken_snapshots_book.py::test_httpx - DIFF <number> ms
+  book/broken_snapshots_book.py::test_requests - DIFF <number> ms
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FAILURE REPORT

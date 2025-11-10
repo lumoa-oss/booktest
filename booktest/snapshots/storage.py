@@ -91,13 +91,16 @@ class SnapshotStorage(ABC):
         pass
 
     @abstractmethod
-    def promote(self, test_id: str, snapshot_type: str) -> None:
+    def promote(self, test_id: str, snapshot_type: str = None) -> bool:
         """
         Promote a snapshot from staging to permanent storage.
 
         Args:
             test_id: Unique identifier for the test
-            snapshot_type: Type of snapshot (env, http, httpx, func)
+            snapshot_type: Type of snapshot (unused for unified format, kept for compatibility)
+
+        Returns:
+            True if snapshots were updated (content changed), False otherwise
         """
         pass
 
@@ -358,7 +361,7 @@ class GitStorage(SnapshotStorage):
         """
         pass
 
-    def promote(self, test_id: str, snapshot_type: str) -> None:
+    def promote(self, test_id: str, snapshot_type: str = None) -> bool:
         """
         Promote snapshot file from base_path (.out/) to frozen_path (books/).
 
@@ -369,26 +372,59 @@ class GitStorage(SnapshotStorage):
 
         Also performs automatic cleanup: when promoting .snapshots.json for the first
         time, removes legacy _snapshots/ directory if it exists.
+
+        Args:
+            test_id: Test identifier
+            snapshot_type: Unused, kept for API compatibility
+
+        Returns:
+            True if snapshots were updated (file changed), False otherwise
         """
         # Only promote if base_path and frozen_path are different
         if self.base_path == self.frozen_path:
-            return
+            return False
 
         source_file = self._get_snapshot_file_path(test_id, self.base_path)
         dest_file = self._get_snapshot_file_path(test_id, self.frozen_path)
 
         if not source_file.exists():
             # No snapshot file to promote (might be using legacy format or no snapshots)
-            return
+            return False
 
         # Check if this is the first promotion (destination doesn't exist yet)
         is_first_promotion = not dest_file.exists()
 
+        # Compare file hashes to see if content changed
+        import hashlib
+
+        def compute_file_hash(path):
+            """Compute SHA256 hash of file content."""
+            hash_obj = hashlib.sha256()
+            with open(path, 'rb') as f:
+                hash_obj.update(f.read())
+            return hash_obj.hexdigest()
+
+        source_hash = compute_file_hash(source_file)
+
+        # If destination exists and hashes match, no update needed
+        if not is_first_promotion:
+            dest_hash = compute_file_hash(dest_file)
+            if source_hash == dest_hash:
+                return False  # Files are identical, no update
+
+        # Files differ or destination doesn't exist - promote
         # Create destination directory
         dest_file.parent.mkdir(parents=True, exist_ok=True)
 
-        # Copy the snapshot file (use copy2 to preserve metadata)
-        shutil.copy2(source_file, dest_file)
+        # Atomic promotion using temporary file
+        temp_file = dest_file.with_suffix('.tmp')
+        try:
+            shutil.copy2(source_file, temp_file)
+            temp_file.replace(dest_file)  # Atomic move
+        except Exception:
+            if temp_file.exists():
+                temp_file.unlink()
+            raise
 
         # Cleanup: Remove legacy _snapshots/ directory on first promotion
         if is_first_promotion:
@@ -402,6 +438,8 @@ class GitStorage(SnapshotStorage):
                     # Log warning but don't fail promotion
                     import warnings
                     warnings.warn(f"Failed to remove legacy _snapshots directory at {legacy_snapshot_dir}: {e}")
+
+        return True  # File was updated
 
 
 class DVCStorage(SnapshotStorage):
@@ -770,36 +808,66 @@ class DVCStorage(SnapshotStorage):
 
             self._save_manifest(manifest)
 
-    def promote(self, test_id: str, snapshot_type: str) -> None:
-        """Promote snapshot from staging to permanent storage."""
+    def promote(self, test_id: str, snapshot_type: str = None) -> bool:
+        """
+        Promote snapshots from staging to permanent storage.
+
+        Args:
+            test_id: Test identifier
+            snapshot_type: Type of snapshot. If None, promotes all types for this test.
+
+        Returns:
+            True if any snapshots were promoted (moved to cache), False otherwise
+        """
         manifest = self._load_manifest()
 
-        if test_id not in manifest or snapshot_type not in manifest[test_id]:
-            return
+        if test_id not in manifest:
+            return False
 
-        hash_str = manifest[test_id][snapshot_type]
-        cas_path = self._get_cas_path(hash_str, snapshot_type)
+        # If no specific type specified, promote all types for this test
+        if snapshot_type is None:
+            types_to_promote = list(manifest[test_id].keys())
+        else:
+            types_to_promote = [snapshot_type] if snapshot_type in manifest[test_id] else []
 
-        staging_path = self.staging_dir / cas_path
-        if not staging_path.exists():
-            return
+        if not types_to_promote:
+            return False
 
-        # Move from staging to cache
-        cache_path = self.cache_dir / cas_path
-        cache_path.parent.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(staging_path), str(cache_path))
+        any_promoted = False
 
-        # Push to DVC remote
-        try:
-            subprocess.run(
-                ["dvc", "push", str(cas_path)],
-                cwd=self.cache_dir,
-                capture_output=True,
-                check=True,
-                timeout=30
-            )
-        except subprocess.SubprocessError:
-            warnings.warn(f"Failed to push {test_id}:{snapshot_type} to DVC")
+        for stype in types_to_promote:
+            hash_str = manifest[test_id][stype]
+            cas_path = self._get_cas_path(hash_str, stype)
+
+            staging_path = self.staging_dir / cas_path
+            if not staging_path.exists():
+                continue
+
+            # Check if already in cache (content unchanged)
+            cache_path = self.cache_dir / cas_path
+            if cache_path.exists():
+                # File already in cache, remove staging copy
+                staging_path.unlink()
+                continue  # No update for this type
+
+            # Move from staging to cache
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(staging_path), str(cache_path))
+            any_promoted = True
+
+            # Push to DVC remote
+            try:
+                subprocess.run(
+                    ["dvc", "push", str(cas_path)],
+                    cwd=self.cache_dir,
+                    capture_output=True,
+                    check=True,
+                    timeout=30
+                )
+            except subprocess.SubprocessError:
+                warnings.warn(f"Failed to push {test_id}:{stype} to DVC")
+
+        return any_promoted
 
 
 def detect_storage_mode(config: Optional[Dict[str, Any]] = None) -> StorageMode:

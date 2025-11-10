@@ -47,7 +47,7 @@ test book/failing_book.py::test_decorated_async_exception
     File "<workdir>/booktest/utils/coroutines.py", line 6, in maybe_async_call
       return await func(*args2, **kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "<workdir>/booktest/snapshots/env.py", line 239, in wrapper
+    File "<workdir>/booktest/snapshots/env.py", line 246, in wrapper
       return await maybe_async_call(func , args, kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     File "<workdir>/booktest/utils/coroutines.py", line 6, in maybe_async_call
@@ -73,7 +73,7 @@ test book/failing_book.py::test_decorated_exception
     File "<workdir>/booktest/utils/coroutines.py", line 6, in maybe_async_call
       return await func(*args2, **kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    File "<workdir>/booktest/snapshots/env.py", line 239, in wrapper
+    File "<workdir>/booktest/snapshots/env.py", line 246, in wrapper
       return await maybe_async_call(func , args, kwargs)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     File "<workdir>/booktest/utils/coroutines.py", line 8, in maybe_async_call
