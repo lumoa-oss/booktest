@@ -180,8 +180,9 @@ class GitStorage(SnapshotStorage):
                     all_snapshots = json.loads(snapshot_file.read_bytes())
 
                 if snapshot_type in all_snapshots:
-                    # Return the specific snapshot as JSON bytes
-                    return json.dumps(all_snapshots[snapshot_type]).encode('utf-8')
+                    # Return the specific snapshot as normalized JSON bytes
+                    # Use same normalization as store() for consistent hashing
+                    return json.dumps(all_snapshots[snapshot_type], indent=2, sort_keys=True).encode('utf-8')
             except (json.JSONDecodeError, KeyError):
                 pass  # Fall through to legacy format
 
@@ -244,6 +245,10 @@ class GitStorage(SnapshotStorage):
         snapshot_file.parent.mkdir(parents=True, exist_ok=True)
         temp_file = snapshot_file.with_suffix('.tmp')
 
+        # Normalize the snapshot type content for hash calculation
+        # This ensures consistent formatting regardless of input format
+        normalized_content = json.dumps(snapshot_data, indent=2, sort_keys=True).encode('utf-8')
+
         try:
             # Write to temp file with sorted keys for deterministic output
             temp_file.write_text(json.dumps(all_snapshots, indent=2, sort_keys=True))
@@ -255,8 +260,9 @@ class GitStorage(SnapshotStorage):
                 temp_file.unlink()
             raise
 
-        # Calculate and return SHA256 hash of the content
-        hash_obj = hashlib.sha256(content)
+        # Calculate and return SHA256 hash of the normalized content
+        # This matches what's actually stored in the file
+        hash_obj = hashlib.sha256(normalized_content)
         return f"sha256:{hash_obj.hexdigest()}"
 
     def exists(self, test_id: str, snapshot_type: str) -> bool:

@@ -303,30 +303,21 @@ class TestCaseRun(OutputWriter):
         refresh_snapshots = self.config.get("refresh_snapshots", False)
         complete_snapshots = self.config.get("complete_snapshots", False)
 
-        # Track whether snapshots were actually promoted (files changed)
-        attempted_promotion = False
-        snapshots_actually_updated = False
-
         if success_state in (SuccessState.OK, SuccessState.DIFF) and (refresh_snapshots or complete_snapshots):
             # With unified .snapshots.json format, only need to promote once per test
             # (not once per snapshot type)
             if self.snapshot_usage:
-                attempted_promotion = True
                 try:
-                    snapshots_actually_updated = self.storage.promote(self.test_id)
+                    self.storage.promote(self.test_id)
                 except Exception as e:
                     # Log promotion errors but don't fail the test
                     # Promotion is a file management concern, not a test failure
                     import sys
                     print(f"Warning: Failed to promote snapshots: {e}", file=sys.stderr)
 
-        # Determine snapshot state from actual usage tracking and promotion result
-        # If we attempted promotion but files were identical, mark as INTACT
-        base_state = self.get_snapshot_state()
-        if attempted_promotion and not snapshots_actually_updated and base_state == SnapshotState.UPDATED:
-            snapshot_state = SnapshotState.INTACT
-        else:
-            snapshot_state = base_state
+        # Determine snapshot state from actual usage tracking
+        # Hash comparison now uses normalized JSON, so base_state is accurate
+        snapshot_state = self.get_snapshot_state()
 
         # Note: snapshot_state reflects snapshot system operation (INTACT/UPDATED/FAIL)
         # It's independent of test success - snapshots can be successfully updated
