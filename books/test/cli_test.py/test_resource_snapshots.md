@@ -16,7 +16,7 @@ booktest --resource-snapshots
 # test results:
 
   book/test_hello.py::test_hello - <number> ms
-  book/test_snapshot.py::test_auto_function_snapshots - <number> ms (snapshots updated)
+  book/test_snapshot.py::test_auto_function_snapshots - <number> ms
   book/teardown/setup_teardown_test.py::test_setup_teardown - <number> ms
 
 3/3 test succeeded in <number> ms

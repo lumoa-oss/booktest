@@ -31,7 +31,7 @@ test book/broken_snapshots_book.py::test_function_snapshot
   
    * hello: hello world
 
-book/broken_snapshots_book.py::test_function_snapshot DIFF <number> ms (snapshots updated)
+book/broken_snapshots_book.py::test_function_snapshot DIFF <number> ms
 
 test book/broken_snapshots_book.py::test_httpx
 

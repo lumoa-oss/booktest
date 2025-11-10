@@ -299,15 +299,24 @@ class TestCaseRun(OutputWriter):
 
         # Promote snapshots for successful tests (OK or DIFF)
         # This moves snapshots from .out/ to books/ directory
-        if success_state in (SuccessState.OK, SuccessState.DIFF):
-            for snapshot_type in self.snapshot_usage.keys():
+        # Only promote when user explicitly requested snapshot updates
+        refresh_snapshots = self.config.get("refresh_snapshots", False)
+        complete_snapshots = self.config.get("complete_snapshots", False)
+
+        if success_state in (SuccessState.OK, SuccessState.DIFF) and (refresh_snapshots or complete_snapshots):
+            # With unified .snapshots.json format, only need to promote once per test
+            # (not once per snapshot type)
+            if self.snapshot_usage:
                 try:
-                    self.storage.promote(self.test_id, snapshot_type)
+                    self.storage.promote(self.test_id)
                 except Exception as e:
+                    # Log promotion errors but don't fail the test
                     # Promotion is a file management concern, not a test failure
-                    pass
+                    import sys
+                    print(f"Warning: Failed to promote snapshots: {e}", file=sys.stderr)
 
         # Determine snapshot state from actual usage tracking
+        # Hash comparison now uses normalized JSON, so base_state is accurate
         snapshot_state = self.get_snapshot_state()
 
         # Note: snapshot_state reflects snapshot system operation (INTACT/UPDATED/FAIL)

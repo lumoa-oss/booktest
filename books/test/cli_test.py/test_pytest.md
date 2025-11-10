@@ -27,7 +27,7 @@ test book/test_snapshot.py::test_auto_function_snapshots
    * timestamp: 1762340181632560455
    * random: 0.3846126080188771
 
-book/test_snapshot.py::test_auto_function_snapshots OK <number> ms. (snapshots updated)
+book/test_snapshot.py::test_auto_function_snapshots OK <number> ms.
 
 test book/teardown/setup_teardown_test.py::test_setup_teardown
 

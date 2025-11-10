@@ -205,6 +205,7 @@ class SnapshotFunctions:
 
         # Store via storage layer
         content = json.dumps(stored, indent=4).encode('utf-8')
+        # storage.store() returns hash of normalized content
         self.stored_hash = self.storage.store(self.t.test_id, "func", content)
 
         # Store old hash for comparison in t_snapshots

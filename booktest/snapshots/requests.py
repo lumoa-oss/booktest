@@ -316,7 +316,7 @@ class SnapshotRequests:
         # load snapshots
         snapshots = []
 
-        # legacy support - directory format (.requests/)
+        # legacy supALport - directory format (.requests/)
         if os.path.exists(self.legacy_snapshot_path) and not self.refresh_snapshots:
             for mock_file in os.listdir(self.legacy_snapshot_path):
                 with open(os.path.join(self.legacy_snapshot_path, mock_file), "r") as f:
@@ -407,6 +407,7 @@ class SnapshotRequests:
             stored[name] = snapshot.json_object(self._lose_request_details)
 
         content = json.dumps(stored, indent=4).encode('utf-8')
+        # storage.store() returns hash of normalized content
         self.stored_hash = self.storage.store(self.t.test_id, "http", content)
 
         # Store old hash for comparison in t_snapshots
