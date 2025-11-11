@@ -1,0 +1,104 @@
+{
+  "func": [
+    {
+      "call": {
+        "args": [],
+        "func": "Random.random",
+        "hash": "c55c1fc1edcaa1de562846c288daaad1ae261c5d",
+        "kwargs": {}
+      },
+      "result": 0.4470298045720166
+    },
+    {
+      "call": {
+        "args": [
+          1,
+          2,
+          3
+        ],
+        "func": "multiargs",
+        "hash": "4ce53acc47d2c97a04d66dd0d544a8f5ea6b066a",
+        "kwargs": {}
+      },
+      "result": {
+        "a": 1,
+        "args": [],
+        "b": 2,
+        "c": 3,
+        "kwargs": {}
+      }
+    },
+    {
+      "call": {
+        "args": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "func": "multiargs",
+        "hash": "ba89831cf2b196f2ba1f12d84f10b768ba417591",
+        "kwargs": {}
+      },
+      "result": {
+        "a": 1,
+        "args": [
+          4,
+          5
+        ],
+        "b": 2,
+        "c": 3,
+        "kwargs": {}
+      }
+    },
+    {
+      "call": {
+        "args": [],
+        "func": "multiargs",
+        "hash": "f8c8a868fb35bcb767194dadff5474d30e29651e",
+        "kwargs": {
+          "a": 1,
+          "b": 2,
+          "c": 3,
+          "d": 4,
+          "e": 5
+        }
+      },
+      "result": {
+        "a": 1,
+        "args": [],
+        "b": 2,
+        "c": 3,
+        "kwargs": {
+          "d": 4,
+          "e": 5
+        }
+      }
+    },
+    {
+      "call": {
+        "args": [
+          124
+        ],
+        "func": "non_deterministic_and_slow_algorithm",
+        "hash": "a148fb7ca76c7213dac7aa8acd0a4387d04c5021",
+        "kwargs": {}
+      },
+      "result": [
+        8981,
+        92,
+        2900
+      ]
+    },
+    {
+      "call": {
+        "args": [],
+        "func": "time_ns",
+        "hash": "bc2e0043f8879f6f886da0f550eb552d0a839f8f",
+        "kwargs": {}
+      },
+      "result": 1760944896055780943
+    }
+  ]
+}

@@ -144,8 +144,8 @@ class SnapshotFunctions:
             return snapshot.result
 
         if not self.capture_snapshots:
-            raise ValueError(f"missing snapshot for function call {call.func()} - {call.hash}. "
-                             f"try running booktest with '-s' flag to capture the missing snapshot")
+            raise AssertionError(f"missing snapshot for function call {call.func()} - {call.hash}. "
+                                 f"try running booktest with '-s' flag to capture the missing snapshot")
 
         # assume determinism and use past calls as cache
         snapshot = function_calls.get(call.hash)
@@ -172,8 +172,8 @@ class SnapshotFunctions:
                         snapshot = FunctionCallSnapshot.from_json_object(value)
                         snapshots[snapshot.func()][snapshot.hash()] = snapshot
             except Exception as e:
-                raise ValueError(f"test {self.t.name} snapshot file corrupted with {e}. "
-                                 f"Use -S to refresh snapshots")
+                raise AssertionError(f"test {self.t.name} snapshot file corrupted with {e}. "
+                                     f"Use -S to refresh snapshots")
 
         snapshotters = []
 
@@ -205,6 +205,7 @@ class SnapshotFunctions:
 
         # Store via storage layer
         content = json.dumps(stored, indent=4).encode('utf-8')
+        # storage.store() returns hash of normalized content
         self.stored_hash = self.storage.store(self.t.test_id, "func", content)
 
         # Store old hash for comparison in t_snapshots

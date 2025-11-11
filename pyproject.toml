@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "booktest"
-version = "1.0.7"
+version = "1.0.13"
 authors = ["Antti Rauhala <antti@lumoa.me>"]
 description = "Booktest is a snapshot testing library for review driven testing."
 readme = "readme.md"

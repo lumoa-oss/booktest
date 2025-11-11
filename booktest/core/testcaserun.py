@@ -301,7 +301,26 @@ class TestCaseRun(OutputWriter):
             success_state = SuccessState.OK
             legacy_result = TestResult.OK
 
+        # Promote snapshots for successful tests (OK or DIFF)
+        # This moves snapshots from .out/ to books/ directory
+        # Only promote when user explicitly requested snapshot updates
+        refresh_snapshots = self.config.get("refresh_snapshots", False)
+        complete_snapshots = self.config.get("complete_snapshots", False)
+
+        if success_state in (SuccessState.OK, SuccessState.DIFF) and (refresh_snapshots or complete_snapshots):
+            # With unified .snapshots.json format, only need to promote once per test
+            # (not once per snapshot type)
+            if self.snapshot_usage:
+                try:
+                    self.storage.promote(self.test_id)
+                except Exception as e:
+                    # Log promotion errors but don't fail the test
+                    # Promotion is a file management concern, not a test failure
+                    import sys
+                    print(f"Warning: Failed to promote snapshots: {e}", file=sys.stderr)
+
         # Determine snapshot state from actual usage tracking
+        # Hash comparison now uses normalized JSON, so base_state is accurate
         snapshot_state = self.get_snapshot_state()
 
         # Note: snapshot_state reflects snapshot system operation (INTACT/UPDATED/FAIL)
@@ -427,7 +446,11 @@ class TestCaseRun(OutputWriter):
                     manifest_path=self.config.get("storage.dvc.manifest_path", "booktest.manifest.yaml"),
                     batch_dir=batch_dir
                 )
-            return GitStorage(base_path=self.run.out_dir, frozen_path=self.run.exp_dir)
+            return GitStorage(
+                base_path=self.run.out_dir,
+                frozen_path=self.run.exp_dir,
+                is_resource=self.resource_snapshots
+            )
         elif mode == "dvc":
             return DVCStorage(
                 base_path=self.run.out_dir,  # Write to .out
@@ -436,7 +459,11 @@ class TestCaseRun(OutputWriter):
                 batch_dir=batch_dir
             )
         else:  # mode == "git" or fallback
-            return GitStorage(base_path=self.run.out_dir, frozen_path=self.run.exp_dir)
+            return GitStorage(
+                base_path=self.run.out_dir,
+                frozen_path=self.run.exp_dir,
+                is_resource=self.resource_snapshots
+            )
 
     def get_storage(self):
         """

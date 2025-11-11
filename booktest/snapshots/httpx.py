@@ -201,8 +201,8 @@ class SnapshotHttpx:
 
         # legacy support - single file format (.httpx.json)
         legacy_file_path = os.path.join(t.exp_dir_name, ".httpx.json")
-        if os.path.exists(legacy_file_path) and not self.refresh_snapshots:
-            with open(legacy_file_path, "r") as f:
+        if file_or_resource_exists(legacy_file_path, t.resource_snapshots) and not self.refresh_snapshots:
+            with open_file_or_resource(legacy_file_path, t.resource_snapshots) as f:
                 for key, value in json.load(f).items():
                     snapshots.append(RequestSnapshot.from_json_object(value,
                                                                       ignore_headers=ignore_headers,
@@ -218,8 +218,8 @@ class SnapshotHttpx:
                                                                           ignore_headers=ignore_headers,
                                                                           json_to_hash=json_to_hash))
             except Exception as e:
-                raise ValueError(f"test {self.t.name} snapshot file corrupted with {e}. "
-                                 f"Use -S to refresh snapshots")
+                raise AssertionError(f"test {self.t.name} snapshot file corrupted with {e}. "
+                                     f"Use -S to refresh snapshots")
 
         self.snapshots = snapshots
         self.requests = []
@@ -254,8 +254,8 @@ class SnapshotHttpx:
             return key, snapshot.response
 
         if not self.capture_snapshots:
-            raise ValueError(f"missing snapshot for request {request.url} - {key.hash}. "
-                             f"try running booktest with '-s' flag to capture the missing snapshot")
+            raise AssertionError(f"missing snapshot for request {request.url} - {key.hash}. "
+                                 f"try running booktest with '-s' flag to capture the missing snapshot")
 
         return key, None
 
@@ -339,6 +339,7 @@ class SnapshotHttpx:
             stored[name] = snapshot.json_object(self._lose_request_details)
 
         content = json.dumps(stored, indent=4).encode('utf-8')
+        # storage.store() returns hash of normalized content
         self.stored_hash = self.storage.store(self.t.test_id, "httpx", content)
 
         # Store old hash for comparison in t_snapshots

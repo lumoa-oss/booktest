@@ -1,0 +1,161 @@
+{
+  "env": {
+    "OPENAI_API_BASE": "https://lumswectestopenai.openai.azure.com/",
+    "OPENAI_API_VERSION": "2024-12-01-preview",
+    "OPENAI_COMPLETION_MAX_TOKENS": "128000",
+    "OPENAI_DEPLOYMENT": "gpt5-mini-dz",
+    "OPENAI_MODEL": "gpt-5-mini"
+  },
+  "httpx": {
+    "03179e5cb3c41bcbe033a51fec7dd8458494a423": {
+      "request": {
+        "body": "eyJtZXNzYWdlcyI6IFt7InJvbGUiOiAidXNlciIsICJjb250ZW50IjogIllvdSBhcmUgYW4gZXhwZXJ0IHJldmlld2VyIGZvciB0ZXN0IHJlc3VsdHMuIFlvdSBhcmUgZ2l2ZW4gcXVlc3Rpb24gaW4gZm9ybWF0OlxuXG5RdWVzdGlvbj8gKG9wdGlvbkF8b3B0aW9uQnxvcHRpb25DfC4uLilcblxucmV2aWV3ZWQgbWF0ZXJpYWxcblxuUmVzcG9uZCBvbmx5IHdpdGggdGhlIGV4YWN0IG9wdGlvbiB0aGF0IGJlc3QgYW5zd2VycyB0aGUgcXVlc3Rpb24hIERvIG5vdCBwcm9kdWNlIGFueVxub3RoZXIgdGV4dCBvciBleHBsYW5hdGlvbiEgT25seSByZXNwb25kIHdpdGggb25lIG9mIHRoZSBvcHRpb25zIGdpdmVuIGluIHRoZSBwYXJlbnRoZXNlcy5cblxuQXJlIGNvbW1lbnRzIGluIEZpbm5pc2g/IChZZXN8Tm8pXG5cblxuIyByZXF1ZXN0OlxuXG5Xcml0ZSBtZSBhIGhlbGxvIHdvcmxkIGNvZGUgZXhhbXBsZSBpbiBweXRob24hIFRoZSBjb2RlIG11c3QgcHJpbnQgXCJIZWxsbyBXb3JsZCFcIiB0byB0aGUgY29uc29sZS5cblxuVGhpcyBleGFtcGxlIGlzIG1hZGUgZm9yIGEgc2Nob29sIGFnZSBjaGlsZCwgYW5kIGl0IHNob3VsZCBjb250YWluXG5jb21tZW50cyBpbiBGaW5uaXNoIGV4cGxhaW4gZXZlcnkgc3RlcCBvbiB0aGUgd2F5LiBcblxuVGhlIHJlc3BvbnNlIHdpbGwgYmUgcnVuIHdpdGggcHl0aG9uIHRvIHNlZSB0aGUgcmVzdWx0LCBcbnNvIGl0IHNob3VsZCBiZSBzeW50YWN0aWNhbGx5IHZhbGlkIHB5dGhvbi4gICBcblxuXG4jIGNvZGU6XG5gYGBweXRob25cbiMgVFx1MDBlNG1cdTAwZTQgb24geWtzaW5rZXJ0YWluZW4gUHl0aG9uLW9oamVsbWEsIGpva2Egblx1MDBlNHl0dFx1MDBlNFx1MDBlNCBcIkhlbGxvIFdvcmxkIVwiIC10ZWtzdGluIG5cdTAwZTR5dFx1MDBmNmxsXHUwMGU0LlxuIyBSaXZpdCwgam90a2EgYWxrYXZhdCAjLW1lcmtpbGxcdTAwZTQsIG92YXQga29tbWVudHRlamEuIEtvbW1lbnRpdCBzZWxpdHRcdTAwZTR2XHUwMGU0dCBhc2lhYSBpaG1pc2lsbGUsXG4jIG11dHRhIFB5dGhvbiBvaGl0dGFhIG5lIGVpa1x1MDBlNCBuZSB0ZWUgbWl0XHUwMGU0XHUwMGU0biBvaGplbG1hbiBzdW9yaXR1a3NlbiBhaWthbmEuXG5cbiMgTHVvZGFhbiBtdXV0dHVqYSBuaW1lbHRcdTAwZTQgJ3ZpZXN0aScgamEgbGFpdGV0YWFuIHNpaWhlbiB0ZWtzdGluXHUwMGU0IChtZXJra2lqb25vbmEpIFwiSGVsbG8gV29ybGQhXCIuXG4jIFRla3N0aSBraXJqb2l0ZXRhYW4gbGFpbmF1c21lcmtraWVuIHNpc1x1MDBlNFx1MDBlNG4sIGpvdHRhIFB5dGhvbiB0aWV0XHUwMGU0XHUwMGU0LCBldHRcdTAwZTQga3lzZWVzc1x1MDBlNCBvbiB0ZWtzdGkuXG52aWVzdGkgPSBcIkhlbGxvIFdvcmxkIVwiXG5cbiMgcHJpbnQoLi4uKSBvbiBQeXRob25pbiBmdW5rdGlvLCBqb2thIG5cdTAwZTR5dHRcdTAwZTRcdTAwZTQgc2VuLCBtaXRcdTAwZTQgc2VuIHNpc1x1MDBlNGxsZSBsYWl0ZXRhYW4sXG4jIGVsaSB0XHUwMGU0c3NcdTAwZTQgdGFwYXVrc2Vzc2Egblx1MDBlNHl0XHUwMGY2bGxlIHR1bG9zdGV0YWFuIG11dXR0dWphbiAndmllc3RpJyBzaXNcdTAwZTRsdFx1MDBmNi5cbnByaW50KHZpZXN0aSlcbmBgYFxuXG4jIG91dHB1dDpcbkhlbGxvIFdvcmxkIVxuXG4ifV0sICJtb2RlbCI6ICJncHQtNS1taW5pIiwgIm1heF9jb21wbGV0aW9uX3Rva2VucyI6IDEwMjQsICJzZWVkIjogMH0=",
+        "hash": "03179e5cb3c41bcbe033a51fec7dd8458494a423",
+        "method": "POST",
+        "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
+      },
+      "response": {
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoiWWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3NjI3NzQ0ODcsImlkIjoiY2hhdGNtcGwtQ2FLU1Zac3I1VkxNSERWamFBdjNPem5ReFhGZDYiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjo3NSwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjo2NCwicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjB9LCJwcm9tcHRfdG9rZW5zIjozNTYsInByb21wdF90b2tlbnNfZGV0YWlscyI6eyJhdWRpb190b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjB9LCJ0b3RhbF90b2tlbnMiOjQzMX19Cg==",
+        "headers": {
+          "apim-request-id": "54b119db-830c-44cf-99c2-ea2e5aced97a",
+          "azureml-model-session": "d133-20251101183205",
+          "connection": "keep-alive",
+          "content-length": "1033",
+          "content-type": "application/json",
+          "date": "Mon, 10 Nov 2025 11:34:49 GMT",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-ms-deployment-name": "gpt5-mini-dz",
+          "x-ms-rai-invoked": "true",
+          "x-ms-region": "Sweden Central",
+          "x-ratelimit-limit-requests": "100",
+          "x-ratelimit-limit-tokens": "100000",
+          "x-ratelimit-remaining-requests": "89",
+          "x-ratelimit-remaining-tokens": "98848",
+          "x-request-id": "cd033b7b-2746-4ac6-8e52-02298ee6a887"
+        },
+        "statusCode": 200
+      }
+    },
+    "13212e8b229a4d8d3b72a19a633ef5cdc777ba39": {
+      "request": {
+        "body": "eyJtZXNzYWdlcyI6IFt7InJvbGUiOiAidXNlciIsICJjb250ZW50IjogIllvdSBhcmUgYW4gZXhwZXJ0IHJldmlld2VyIGZvciB0ZXN0IHJlc3VsdHMuIFlvdSBhcmUgZ2l2ZW4gcXVlc3Rpb24gaW4gZm9ybWF0OlxuXG5RdWVzdGlvbj8gKG9wdGlvbkF8b3B0aW9uQnxvcHRpb25DfC4uLilcblxucmV2aWV3ZWQgbWF0ZXJpYWxcblxuUmVzcG9uZCBvbmx5IHdpdGggdGhlIGV4YWN0IG9wdGlvbiB0aGF0IGJlc3QgYW5zd2VycyB0aGUgcXVlc3Rpb24hIERvIG5vdCBwcm9kdWNlIGFueVxub3RoZXIgdGV4dCBvciBleHBsYW5hdGlvbiEgT25seSByZXNwb25kIHdpdGggb25lIG9mIHRoZSBvcHRpb25zIGdpdmVuIGluIHRoZSBwYXJlbnRoZXNlcy5cblxuSG93IHdvdWxkIHlvdSBncmFkZSB0aGlzIHJlc3BvbnNlPyAoRXhjZWxsZW50fE9rfEJhZClcblxuXG4jIHJlcXVlc3Q6XG5cbldyaXRlIG1lIGEgaGVsbG8gd29ybGQgY29kZSBleGFtcGxlIGluIHB5dGhvbiEgVGhlIGNvZGUgbXVzdCBwcmludCBcIkhlbGxvIFdvcmxkIVwiIHRvIHRoZSBjb25zb2xlLlxuXG5UaGlzIGV4YW1wbGUgaXMgbWFkZSBmb3IgYSBzY2hvb2wgYWdlIGNoaWxkLCBhbmQgaXQgc2hvdWxkIGNvbnRhaW5cbmNvbW1lbnRzIGluIEZpbm5pc2ggZXhwbGFpbiBldmVyeSBzdGVwIG9uIHRoZSB3YXkuIFxuXG5UaGUgcmVzcG9uc2Ugd2lsbCBiZSBydW4gd2l0aCBweXRob24gdG8gc2VlIHRoZSByZXN1bHQsIFxuc28gaXQgc2hvdWxkIGJlIHN5bnRhY3RpY2FsbHkgdmFsaWQgcHl0aG9uLiAgIFxuXG5cbiMgY29kZTpcbmBgYHB5dGhvblxuIyBUXHUwMGU0bVx1MDBlNCBvbiB5a3NpbmtlcnRhaW5lbiBQeXRob24tb2hqZWxtYSwgam9rYSBuXHUwMGU0eXR0XHUwMGU0XHUwMGU0IFwiSGVsbG8gV29ybGQhXCIgLXRla3N0aW4gblx1MDBlNHl0XHUwMGY2bGxcdTAwZTQuXG4jIFJpdml0LCBqb3RrYSBhbGthdmF0ICMtbWVya2lsbFx1MDBlNCwgb3ZhdCBrb21tZW50dGVqYS4gS29tbWVudGl0IHNlbGl0dFx1MDBlNHZcdTAwZTR0IGFzaWFhIGlobWlzaWxsZSxcbiMgbXV0dGEgUHl0aG9uIG9oaXR0YWEgbmUgZWlrXHUwMGU0IG5lIHRlZSBtaXRcdTAwZTRcdTAwZTRuIG9oamVsbWFuIHN1b3JpdHVrc2VuIGFpa2FuYS5cblxuIyBMdW9kYWFuIG11dXR0dWphIG5pbWVsdFx1MDBlNCAndmllc3RpJyBqYSBsYWl0ZXRhYW4gc2lpaGVuIHRla3N0aW5cdTAwZTQgKG1lcmtraWpvbm9uYSkgXCJIZWxsbyBXb3JsZCFcIi5cbiMgVGVrc3RpIGtpcmpvaXRldGFhbiBsYWluYXVzbWVya2tpZW4gc2lzXHUwMGU0XHUwMGU0biwgam90dGEgUHl0aG9uIHRpZXRcdTAwZTRcdTAwZTQsIGV0dFx1MDBlNCBreXNlZXNzXHUwMGU0IG9uIHRla3N0aS5cbnZpZXN0aSA9IFwiSGVsbG8gV29ybGQhXCJcblxuIyBwcmludCguLi4pIG9uIFB5dGhvbmluIGZ1bmt0aW8sIGpva2Egblx1MDBlNHl0dFx1MDBlNFx1MDBlNCBzZW4sIG1pdFx1MDBlNCBzZW4gc2lzXHUwMGU0bGxlIGxhaXRldGFhbixcbiMgZWxpIHRcdTAwZTRzc1x1MDBlNCB0YXBhdWtzZXNzYSBuXHUwMGU0eXRcdTAwZjZsbGUgdHVsb3N0ZXRhYW4gbXV1dHR1amFuICd2aWVzdGknIHNpc1x1MDBlNGx0XHUwMGY2LlxucHJpbnQodmllc3RpKVxuYGBgXG5cbiMgb3V0cHV0OlxuSGVsbG8gV29ybGQhXG5cbiJ9XSwgIm1vZGVsIjogImdwdC01LW1pbmkiLCAibWF4X2NvbXBsZXRpb25fdG9rZW5zIjogMTAyNCwgInNlZWQiOiAwfQ==",
+        "hash": "13212e8b229a4d8d3b72a19a633ef5cdc777ba39",
+        "method": "POST",
+        "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
+      },
+      "response": {
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoiRXhjZWxsZW50IiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3NjI3NzQ0OTEsImlkIjoiY2hhdGNtcGwtQ2FLU1puOVF5eWNWYUpScGFNbGNSbmNWZk41OXQiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjo3NSwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjo2NCwicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjB9LCJwcm9tcHRfdG9rZW5zIjozNjAsInByb21wdF90b2tlbnNfZGV0YWlscyI6eyJhdWRpb190b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjB9LCJ0b3RhbF90b2tlbnMiOjQzNX19Cg==",
+        "headers": {
+          "apim-request-id": "5af36c26-c0cd-4c28-850c-a57fb7e2d423",
+          "azureml-model-session": "d040-20251101170135",
+          "connection": "keep-alive",
+          "content-length": "1039",
+          "content-type": "application/json",
+          "date": "Mon, 10 Nov 2025 11:34:53 GMT",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-ms-deployment-name": "gpt5-mini-dz",
+          "x-ms-rai-invoked": "true",
+          "x-ms-region": "Sweden Central",
+          "x-ratelimit-limit-requests": "100",
+          "x-ratelimit-limit-tokens": "100000",
+          "x-ratelimit-remaining-requests": "87",
+          "x-ratelimit-remaining-tokens": "98158",
+          "x-request-id": "7d47a018-23f5-4f79-8aa7-27e5c2b66c7a"
+        },
+        "statusCode": 200
+      }
+    },
+    "55565a140b9fe6ced888dd88308a6663f97438e2": {
+      "request": {
+        "body": "eyJtZXNzYWdlcyI6IFt7InJvbGUiOiAic3lzdGVtIiwgImNvbnRlbnQiOiAiWW91IGFyZSBhIGhlbHBmdWwgYXNzaXN0YW50LiJ9LCB7InJvbGUiOiAidXNlciIsICJjb250ZW50IjogIlxuV3JpdGUgbWUgYSBoZWxsbyB3b3JsZCBjb2RlIGV4YW1wbGUgaW4gcHl0aG9uISBUaGUgY29kZSBtdXN0IHByaW50IFwiSGVsbG8gV29ybGQhXCIgdG8gdGhlIGNvbnNvbGUuXG5cblRoaXMgZXhhbXBsZSBpcyBtYWRlIGZvciBhIHNjaG9vbCBhZ2UgY2hpbGQsIGFuZCBpdCBzaG91bGQgY29udGFpblxuY29tbWVudHMgaW4gRmlubmlzaCBleHBsYWluIGV2ZXJ5IHN0ZXAgb24gdGhlIHdheS4gXG5cblRoZSByZXNwb25zZSB3aWxsIGJlIHJ1biB3aXRoIHB5dGhvbiB0byBzZWUgdGhlIHJlc3VsdCwgXG5zbyBpdCBzaG91bGQgYmUgc3ludGFjdGljYWxseSB2YWxpZCBweXRob24uICAgXG4ifV0sICJtb2RlbCI6ICJncHQtNS1taW5pIiwgIm1heF9jb21wbGV0aW9uX3Rva2VucyI6IDEyODAwMCwgInNlZWQiOiAwfQ==",
+        "hash": "55565a140b9fe6ced888dd88308a6663f97438e2",
+        "method": "POST",
+        "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
+      },
+      "response": {
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoiIyBUw6Rtw6Qgb24geWtzaW5rZXJ0YWluZW4gUHl0aG9uLW9oamVsbWEsIGpva2EgbsOkeXR0w6TDpCBcIkhlbGxvIFdvcmxkIVwiIC10ZWtzdGluIG7DpHl0w7ZsbMOkLlxuIyBSaXZpdCwgam90a2EgYWxrYXZhdCAjLW1lcmtpbGzDpCwgb3ZhdCBrb21tZW50dGVqYS4gS29tbWVudGl0IHNlbGl0dMOkdsOkdCBhc2lhYSBpaG1pc2lsbGUsXG4jIG11dHRhIFB5dGhvbiBvaGl0dGFhIG5lIGVpa8OkIG5lIHRlZSBtaXTDpMOkbiBvaGplbG1hbiBzdW9yaXR1a3NlbiBhaWthbmEuXG5cbiMgTHVvZGFhbiBtdXV0dHVqYSBuaW1lbHTDpCAndmllc3RpJyBqYSBsYWl0ZXRhYW4gc2lpaGVuIHRla3N0aW7DpCAobWVya2tpam9ub25hKSBcIkhlbGxvIFdvcmxkIVwiLlxuIyBUZWtzdGkga2lyam9pdGV0YWFuIGxhaW5hdXNtZXJra2llbiBzaXPDpMOkbiwgam90dGEgUHl0aG9uIHRpZXTDpMOkLCBldHTDpCBreXNlZXNzw6Qgb24gdGVrc3RpLlxudmllc3RpID0gXCJIZWxsbyBXb3JsZCFcIlxuXG4jIHByaW50KC4uLikgb24gUHl0aG9uaW4gZnVua3Rpbywgam9rYSBuw6R5dHTDpMOkIHNlbiwgbWl0w6Qgc2VuIHNpc8OkbGxlIGxhaXRldGFhbixcbiMgZWxpIHTDpHNzw6QgdGFwYXVrc2Vzc2EgbsOkeXTDtmxsZSB0dWxvc3RldGFhbiBtdXV0dHVqYW4gJ3ZpZXN0aScgc2lzw6RsdMO2LlxucHJpbnQodmllc3RpKSIsInJlZnVzYWwiOm51bGwsInJvbGUiOiJhc3Npc3RhbnQifX1dLCJjcmVhdGVkIjoxNzYyNzc0NDczLCJpZCI6ImNoYXRjbXBsLUNhS1NITTdBMVE3YXoyMnlDYUIyMlNFU3F1ZFNnIiwibW9kZWwiOiJncHQtNS1taW5pLTIwMjUtMDgtMDciLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJwcm9tcHRfZmlsdGVyX3Jlc3VsdHMiOlt7InByb21wdF9pbmRleCI6MCwiY29udGVudF9maWx0ZXJfcmVzdWx0cyI6eyJoYXRlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNlbGZfaGFybSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZXh1YWwiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwidmlvbGVuY2UiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifX19XSwic3lzdGVtX2ZpbmdlcnByaW50IjpudWxsLCJ1c2FnZSI6eyJjb21wbGV0aW9uX3Rva2VucyI6NzY5LCJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjp7ImFjY2VwdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowLCJhdWRpb190b2tlbnMiOjAsInJlYXNvbmluZ190b2tlbnMiOjU3NiwicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjB9LCJwcm9tcHRfdG9rZW5zIjo4OSwicHJvbXB0X3Rva2Vuc19kZXRhaWxzIjp7ImF1ZGlvX3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MH0sInRvdGFsX3Rva2VucyI6ODU4fX0K",
+        "headers": {
+          "apim-request-id": "cc179ed3-cd87-4d60-ac55-0f93b62a921a",
+          "azureml-model-session": "d132-20251101183205",
+          "connection": "keep-alive",
+          "content-length": "1713",
+          "content-type": "application/json",
+          "date": "Mon, 10 Nov 2025 11:34:43 GMT",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-ms-deployment-name": "gpt5-mini-dz",
+          "x-ms-rai-invoked": "true",
+          "x-ms-region": "Sweden Central",
+          "x-ratelimit-limit-requests": "100",
+          "x-ratelimit-limit-tokens": "100000",
+          "x-ratelimit-remaining-requests": "91",
+          "x-ratelimit-remaining-tokens": "99537",
+          "x-request-id": "ae263a08-76c3-427b-9875-bfea02abb45c"
+        },
+        "statusCode": 200
+      }
+    },
+    "66a05a97e9795258c9bba05051829ae9ba287e5d": {
+      "request": {
+        "body": "eyJtZXNzYWdlcyI6IFt7InJvbGUiOiAidXNlciIsICJjb250ZW50IjogIllvdSBhcmUgYW4gZXhwZXJ0IHJldmlld2VyIGZvciB0ZXN0IHJlc3VsdHMuIFlvdSBhcmUgZ2l2ZW4gcXVlc3Rpb24gaW4gZm9ybWF0OlxuXG5RdWVzdGlvbj8gKG9wdGlvbkF8b3B0aW9uQnxvcHRpb25DfC4uLilcblxucmV2aWV3ZWQgbWF0ZXJpYWxcblxuUmVzcG9uZCBvbmx5IHdpdGggdGhlIGV4YWN0IG9wdGlvbiB0aGF0IGJlc3QgYW5zd2VycyB0aGUgcXVlc3Rpb24hIERvIG5vdCBwcm9kdWNlIGFueVxub3RoZXIgdGV4dCBvciBleHBsYW5hdGlvbiEgT25seSByZXNwb25kIHdpdGggb25lIG9mIHRoZSBvcHRpb25zIGdpdmVuIGluIHRoZSBwYXJlbnRoZXNlcy5cblxuSXMgY29kZSBpbiBweXRob24/IChZZXN8Tm8pXG5cblxuIyByZXF1ZXN0OlxuXG5Xcml0ZSBtZSBhIGhlbGxvIHdvcmxkIGNvZGUgZXhhbXBsZSBpbiBweXRob24hIFRoZSBjb2RlIG11c3QgcHJpbnQgXCJIZWxsbyBXb3JsZCFcIiB0byB0aGUgY29uc29sZS5cblxuVGhpcyBleGFtcGxlIGlzIG1hZGUgZm9yIGEgc2Nob29sIGFnZSBjaGlsZCwgYW5kIGl0IHNob3VsZCBjb250YWluXG5jb21tZW50cyBpbiBGaW5uaXNoIGV4cGxhaW4gZXZlcnkgc3RlcCBvbiB0aGUgd2F5LiBcblxuVGhlIHJlc3BvbnNlIHdpbGwgYmUgcnVuIHdpdGggcHl0aG9uIHRvIHNlZSB0aGUgcmVzdWx0LCBcbnNvIGl0IHNob3VsZCBiZSBzeW50YWN0aWNhbGx5IHZhbGlkIHB5dGhvbi4gICBcblxuXG4jIGNvZGU6XG5gYGBweXRob25cbiMgVFx1MDBlNG1cdTAwZTQgb24geWtzaW5rZXJ0YWluZW4gUHl0aG9uLW9oamVsbWEsIGpva2Egblx1MDBlNHl0dFx1MDBlNFx1MDBlNCBcIkhlbGxvIFdvcmxkIVwiIC10ZWtzdGluIG5cdTAwZTR5dFx1MDBmNmxsXHUwMGU0LlxuIyBSaXZpdCwgam90a2EgYWxrYXZhdCAjLW1lcmtpbGxcdTAwZTQsIG92YXQga29tbWVudHRlamEuIEtvbW1lbnRpdCBzZWxpdHRcdTAwZTR2XHUwMGU0dCBhc2lhYSBpaG1pc2lsbGUsXG4jIG11dHRhIFB5dGhvbiBvaGl0dGFhIG5lIGVpa1x1MDBlNCBuZSB0ZWUgbWl0XHUwMGU0XHUwMGU0biBvaGplbG1hbiBzdW9yaXR1a3NlbiBhaWthbmEuXG5cbiMgTHVvZGFhbiBtdXV0dHVqYSBuaW1lbHRcdTAwZTQgJ3ZpZXN0aScgamEgbGFpdGV0YWFuIHNpaWhlbiB0ZWtzdGluXHUwMGU0IChtZXJra2lqb25vbmEpIFwiSGVsbG8gV29ybGQhXCIuXG4jIFRla3N0aSBraXJqb2l0ZXRhYW4gbGFpbmF1c21lcmtraWVuIHNpc1x1MDBlNFx1MDBlNG4sIGpvdHRhIFB5dGhvbiB0aWV0XHUwMGU0XHUwMGU0LCBldHRcdTAwZTQga3lzZWVzc1x1MDBlNCBvbiB0ZWtzdGkuXG52aWVzdGkgPSBcIkhlbGxvIFdvcmxkIVwiXG5cbiMgcHJpbnQoLi4uKSBvbiBQeXRob25pbiBmdW5rdGlvLCBqb2thIG5cdTAwZTR5dHRcdTAwZTRcdTAwZTQgc2VuLCBtaXRcdTAwZTQgc2VuIHNpc1x1MDBlNGxsZSBsYWl0ZXRhYW4sXG4jIGVsaSB0XHUwMGU0c3NcdTAwZTQgdGFwYXVrc2Vzc2Egblx1MDBlNHl0XHUwMGY2bGxlIHR1bG9zdGV0YWFuIG11dXR0dWphbiAndmllc3RpJyBzaXNcdTAwZTRsdFx1MDBmNi5cbnByaW50KHZpZXN0aSlcbmBgYFxuXG4jIG91dHB1dDpcbkhlbGxvIFdvcmxkIVxuXG4ifV0sICJtb2RlbCI6ICJncHQtNS1taW5pIiwgIm1heF9jb21wbGV0aW9uX3Rva2VucyI6IDEwMjQsICJzZWVkIjogMH0=",
+        "hash": "66a05a97e9795258c9bba05051829ae9ba287e5d",
+        "method": "POST",
+        "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
+      },
+      "response": {
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoiWWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3NjI3NzQ0ODksImlkIjoiY2hhdGNtcGwtQ2FLU1hscTJtNVdyTFdDUm9iRWk3cFFYUVJ5ejUiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjo3NSwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjo2NCwicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjB9LCJwcm9tcHRfdG9rZW5zIjozNTYsInByb21wdF90b2tlbnNfZGV0YWlscyI6eyJhdWRpb190b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjB9LCJ0b3RhbF90b2tlbnMiOjQzMX19Cg==",
+        "headers": {
+          "apim-request-id": "d55b3b75-030c-44b6-bac7-ed8b4efd6856",
+          "azureml-model-session": "d039-20251101170135",
+          "connection": "keep-alive",
+          "content-length": "1033",
+          "content-type": "application/json",
+          "date": "Mon, 10 Nov 2025 11:34:51 GMT",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-ms-deployment-name": "gpt5-mini-dz",
+          "x-ms-rai-invoked": "true",
+          "x-ms-region": "Sweden Central",
+          "x-ratelimit-limit-requests": "100",
+          "x-ratelimit-limit-tokens": "100000",
+          "x-ratelimit-remaining-requests": "88",
+          "x-ratelimit-remaining-tokens": "98506",
+          "x-request-id": "d393a16c-58e4-44cc-a59f-d4a53b88d338"
+        },
+        "statusCode": 200
+      }
+    },
+    "bffce0196e8a27af0f9ca3500884a07a36b63e67": {
+      "request": {
+        "body": "eyJtZXNzYWdlcyI6IFt7InJvbGUiOiAidXNlciIsICJjb250ZW50IjogIllvdSBhcmUgYW4gZXhwZXJ0IHJldmlld2VyIGZvciB0ZXN0IHJlc3VsdHMuIFlvdSBhcmUgZ2l2ZW4gcXVlc3Rpb24gaW4gZm9ybWF0OlxuXG5RdWVzdGlvbj8gKG9wdGlvbkF8b3B0aW9uQnxvcHRpb25DfC4uLilcblxucmV2aWV3ZWQgbWF0ZXJpYWxcblxuUmVzcG9uZCBvbmx5IHdpdGggdGhlIGV4YWN0IG9wdGlvbiB0aGF0IGJlc3QgYW5zd2VycyB0aGUgcXVlc3Rpb24hIERvIG5vdCBwcm9kdWNlIGFueVxub3RoZXIgdGV4dCBvciBleHBsYW5hdGlvbiEgT25seSByZXNwb25kIHdpdGggb25lIG9mIHRoZSBvcHRpb25zIGdpdmVuIGluIHRoZSBwYXJlbnRoZXNlcy5cblxuRG9lcyByZXN1bHRzIGZvbGxvdyBpbnN0cnVjdGlvbnM/IChZZXN8Tm8pXG5cblxuIyByZXF1ZXN0OlxuXG5Xcml0ZSBtZSBhIGhlbGxvIHdvcmxkIGNvZGUgZXhhbXBsZSBpbiBweXRob24hIFRoZSBjb2RlIG11c3QgcHJpbnQgXCJIZWxsbyBXb3JsZCFcIiB0byB0aGUgY29uc29sZS5cblxuVGhpcyBleGFtcGxlIGlzIG1hZGUgZm9yIGEgc2Nob29sIGFnZSBjaGlsZCwgYW5kIGl0IHNob3VsZCBjb250YWluXG5jb21tZW50cyBpbiBGaW5uaXNoIGV4cGxhaW4gZXZlcnkgc3RlcCBvbiB0aGUgd2F5LiBcblxuVGhlIHJlc3BvbnNlIHdpbGwgYmUgcnVuIHdpdGggcHl0aG9uIHRvIHNlZSB0aGUgcmVzdWx0LCBcbnNvIGl0IHNob3VsZCBiZSBzeW50YWN0aWNhbGx5IHZhbGlkIHB5dGhvbi4gICBcblxuXG4jIGNvZGU6XG5gYGBweXRob25cbiMgVFx1MDBlNG1cdTAwZTQgb24geWtzaW5rZXJ0YWluZW4gUHl0aG9uLW9oamVsbWEsIGpva2Egblx1MDBlNHl0dFx1MDBlNFx1MDBlNCBcIkhlbGxvIFdvcmxkIVwiIC10ZWtzdGluIG5cdTAwZTR5dFx1MDBmNmxsXHUwMGU0LlxuIyBSaXZpdCwgam90a2EgYWxrYXZhdCAjLW1lcmtpbGxcdTAwZTQsIG92YXQga29tbWVudHRlamEuIEtvbW1lbnRpdCBzZWxpdHRcdTAwZTR2XHUwMGU0dCBhc2lhYSBpaG1pc2lsbGUsXG4jIG11dHRhIFB5dGhvbiBvaGl0dGFhIG5lIGVpa1x1MDBlNCBuZSB0ZWUgbWl0XHUwMGU0XHUwMGU0biBvaGplbG1hbiBzdW9yaXR1a3NlbiBhaWthbmEuXG5cbiMgTHVvZGFhbiBtdXV0dHVqYSBuaW1lbHRcdTAwZTQgJ3ZpZXN0aScgamEgbGFpdGV0YWFuIHNpaWhlbiB0ZWtzdGluXHUwMGU0IChtZXJra2lqb25vbmEpIFwiSGVsbG8gV29ybGQhXCIuXG4jIFRla3N0aSBraXJqb2l0ZXRhYW4gbGFpbmF1c21lcmtraWVuIHNpc1x1MDBlNFx1MDBlNG4sIGpvdHRhIFB5dGhvbiB0aWV0XHUwMGU0XHUwMGU0LCBldHRcdTAwZTQga3lzZWVzc1x1MDBlNCBvbiB0ZWtzdGkuXG52aWVzdGkgPSBcIkhlbGxvIFdvcmxkIVwiXG5cbiMgcHJpbnQoLi4uKSBvbiBQeXRob25pbiBmdW5rdGlvLCBqb2thIG5cdTAwZTR5dHRcdTAwZTRcdTAwZTQgc2VuLCBtaXRcdTAwZTQgc2VuIHNpc1x1MDBlNGxsZSBsYWl0ZXRhYW4sXG4jIGVsaSB0XHUwMGU0c3NcdTAwZTQgdGFwYXVrc2Vzc2Egblx1MDBlNHl0XHUwMGY2bGxlIHR1bG9zdGV0YWFuIG11dXR0dWphbiAndmllc3RpJyBzaXNcdTAwZTRsdFx1MDBmNi5cbnByaW50KHZpZXN0aSlcbmBgYFxuXG4jIG91dHB1dDpcbkhlbGxvIFdvcmxkIVxuXG4ifV0sICJtb2RlbCI6ICJncHQtNS1taW5pIiwgIm1heF9jb21wbGV0aW9uX3Rva2VucyI6IDEwMjQsICJzZWVkIjogMH0=",
+        "hash": "bffce0196e8a27af0f9ca3500884a07a36b63e67",
+        "method": "POST",
+        "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
+      },
+      "response": {
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoiWWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3NjI3NzQ0ODQsImlkIjoiY2hhdGNtcGwtQ2FLU1NBbmxCem5uM0hoQkJodnVSM3hZVmtxZm8iLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjoyMDMsImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjAsImF1ZGlvX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6MTkyLCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjM1NiwicHJvbXB0X3Rva2Vuc19kZXRhaWxzIjp7ImF1ZGlvX3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MH0sInRvdGFsX3Rva2VucyI6NTU5fX0K",
+        "headers": {
+          "apim-request-id": "c0c16d23-0865-4741-968d-7164b48fafca",
+          "azureml-model-session": "d038-20251101170135",
+          "connection": "keep-alive",
+          "content-length": "1035",
+          "content-type": "application/json",
+          "date": "Mon, 10 Nov 2025 11:34:47 GMT",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-ms-deployment-name": "gpt5-mini-dz",
+          "x-ms-rai-invoked": "true",
+          "x-ms-region": "Sweden Central",
+          "x-ratelimit-limit-requests": "100",
+          "x-ratelimit-limit-tokens": "100000",
+          "x-ratelimit-remaining-requests": "90",
+          "x-ratelimit-remaining-tokens": "99191",
+          "x-request-id": "2b115650-c313-4431-9c18-86dbe312e809"
+        },
+        "statusCode": 200
+      }
+    }
+  }
+}

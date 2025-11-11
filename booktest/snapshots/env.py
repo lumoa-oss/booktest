@@ -27,8 +27,8 @@ class SnapshotEnv:
 
         # Legacy support - single file format (.env.json)
         legacy_file_path = os.path.join(t.exp_dir_name, ".env.json")
-        if os.path.exists(legacy_file_path) and not self.refresh_snapshots:
-            with open(legacy_file_path, "r") as f:
+        if file_or_resource_exists(legacy_file_path, t.resource_snapshots) and not self.refresh_snapshots:
+            with open_file_or_resource(legacy_file_path, t.resource_snapshots) as f:
                 self.snaphots = json.load(f)
 
         # Load snapshots from storage if not refreshing
@@ -39,7 +39,7 @@ class SnapshotEnv:
 
     def start(self):
         if self._old_env is None:
-            raise ValueError("already started")
+            raise AssertionError("already started")
 
         self._old_env = {}
         for name in self.names:
@@ -77,6 +77,7 @@ class SnapshotEnv:
 
         # Store via storage layer
         content = json.dumps(self.capture, indent=4).encode('utf-8')
+        # storage.store() returns hash of normalized content
         self.stored_hash = self.storage.store(self.t.test_id, "env", content)
 
         # Store old hash for comparison in t_snapshots
@@ -148,7 +149,7 @@ class MockMissingEnv:
 
     def start(self):
         if self._old_env is None:
-            raise ValueError("already started")
+            raise AssertionError("already started")
 
         self._old_env = {}
         for name, value in self.env.items():
@@ -202,7 +203,7 @@ class MockEnv:
 
     def start(self):
         if self._old_env is not None:
-            raise ValueError("already started")
+            raise AssertionError("already started")
 
         self._old_env = {}
         for name, value in self.env.items():

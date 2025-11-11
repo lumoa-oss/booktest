@@ -1,0 +1,33 @@
+{
+  "http": {
+    "60dd61ad853e1c69c795a9b530b36f8afe643079": {
+      "request": {
+        "body": "eyJtZXNzYWdlIjogImhlbGxvIn0=",
+        "hash": "60dd61ad853e1c69c795a9b530b36f8afe643079",
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Connection": "keep-alive",
+          "Content-Length": "20",
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "url": "https://httpbin.org/anything"
+      },
+      "response": {
+        "content": "{\n  \"args\": {}, \n  \"data\": \"{\\\"message\\\": \\\"hello\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Accept\": \"*/*\", \n    \"Accept-Encoding\": \"gzip, deflate\", \n    \"Content-Length\": \"20\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"User-Agent\": \"python-requests/2.32.3\", \n    \"X-Amzn-Trace-Id\": \"Root=1-68f5e301-18f7aadc2098580c61aa790b\"\n  }, \n  \"json\": {\n    \"message\": \"hello\"\n  }, \n  \"method\": \"POST\", \n  \"origin\": \"85.131.27.192\", \n  \"url\": \"https://httpbin.org/anything\"\n}\n",
+        "encoding": "utf-8",
+        "headers": {
+          "Access-Control-Allow-Credentials": "true",
+          "Access-Control-Allow-Origin": "*",
+          "Connection": "keep-alive",
+          "Content-Length": "514",
+          "Content-Type": "application/json",
+          "Date": "Mon, 20 Oct 2025 07:21:39 GMT",
+          "Server": "gunicorn/19.9.0"
+        },
+        "statusCode": 200
+      }
+    }
+  }
+}

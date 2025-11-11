@@ -183,6 +183,7 @@ def test_failures(t: bt.TestCaseRun, context: str):
 def break_snapshots(t: bt.TestCaseRun, context:dir, title="breaking snapshots"):
     path = "books/book/broken_snapshots"
     files = [
+        "function_snapshot.snapshots.json",
         "function_snapshot/_snapshots/functions.json",
         "httpx/_snapshots/httpx.json",
         "requests/_snapshots/requests.json"
@@ -240,3 +241,12 @@ def test_pytest(t: bt.TestCaseRun, context: str):
             t.tln(replace_s(i))
     t.tln()
     t.t(f"return code is {result.returncode}..").assertln(result.returncode==0)
+
+
+@bt.depends_on(PYTEST_CONTEXT)
+def test_resource_snapshots(t: bt.TestCaseRun, context: str):
+    t.h1("description:")
+
+    t.tln("resources snapshots files makes booktest look for files via python resource system")
+
+    t_cli(t, ["--resource-snapshots"], context)
