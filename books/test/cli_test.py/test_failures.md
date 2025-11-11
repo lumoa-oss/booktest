@@ -30,7 +30,7 @@ test book/failing_book.py::test_assert
 
   # fail with assert() method:
   
-! is 1 == 2? FAILED                                            | EOF
+! is 1 == 2? FAILED                                            ≠ EOF
 
 book/failing_book.py::test_assert FAILED in <number> ms
 
@@ -39,7 +39,7 @@ test book/failing_book.py::test_decorated_async_exception
   # fail with exception:
   
   
-! test raised exception this is an exception:                  | EOF
+! test raised exception this is an exception:                  ≠ EOF
   Traceback (most recent call last):
     File "<workdir>/booktest/core/testrun.py", line 105, in run_case
       rv = await maybe_async_call(case, [t], {})
@@ -65,7 +65,7 @@ test book/failing_book.py::test_decorated_exception
   # fail with exception:
   
   
-! test raised exception this is an exception:                  | EOF
+! test raised exception this is an exception:                  ≠ EOF
   Traceback (most recent call last):
     File "<workdir>/booktest/core/testrun.py", line 105, in run_case
       rv = await maybe_async_call(case, [t], {})
@@ -91,7 +91,7 @@ test book/failing_book.py::test_exception
   # fail with exception:
   
   
-! test raised exception this is an exception:                  | EOF
+! test raised exception this is an exception:                  ≠ EOF
   Traceback (most recent call last):
     File "<workdir>/booktest/core/testrun.py", line 105, in run_case
       rv = await maybe_async_call(case, [t], {})
@@ -110,7 +110,7 @@ test book/failing_book.py::test_fail
 
   # fail with fail() method:
   
-! failed!                                                      | EOF
+! failed!                                                      ≠ EOF
 
 book/failing_book.py::test_fail FAILED in <number> ms
 
@@ -119,7 +119,7 @@ test book/failing_book.py::test_memory_monitor_exception
   # fail with exception:
   
   
-! test raised exception this is an exception:                  | EOF
+! test raised exception this is an exception:                  ≠ EOF
   Traceback (most recent call last):
     File "<workdir>/booktest/core/testrun.py", line 105, in run_case
       rv = await maybe_async_call(case, [t], {})

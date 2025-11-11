@@ -15,7 +15,11 @@ from booktest.reporting.reports import TestResult, TwoDimensionalTestResult, Suc
 from booktest.utils.utils import file_or_resource_exists, open_file_or_resource
 from booktest.config.naming import to_filesystem_path, from_filesystem_path
 from booktest.reporting.output import OutputWriter
-from booktest.reporting.colors import yellow, red, gray, cyan
+from booktest.reporting.colors import yellow, red, gray, cyan, dim_gray
+
+
+
+DIFF_POSITION = 60
 
 
 class TestCaseRun(OutputWriter):
@@ -683,6 +687,16 @@ class TestCaseRun(OutputWriter):
                 pos = 0
 
             # Choose coloring approach based on markers
+
+            # Pad the uncolored line to 60 chars, then apply coloring
+            # We need to pad before coloring to get correct alignment
+            if len(self.out_line) < DIFF_POSITION:
+                padded_line = self.out_line + " " * (DIFF_POSITION - len(self.out_line))
+                diff_separator = f" {dim_gray('≠')} "
+            else:
+                padded_line = self.out_line
+                diff_separator = f"\n{dim_gray('≠')} "
+
             if has_token_markers and len(self.line_markers) > 0:
                 # Use token-level coloring
                 try:
@@ -693,9 +707,6 @@ class TestCaseRun(OutputWriter):
                         colored_symbol = yellow(symbol)
                     else:
                         colored_symbol = cyan(symbol)
-                    # Pad the uncolored line to 60 chars, then apply coloring
-                    # We need to pad before coloring to get correct alignment
-                    padded_line = f"{self.out_line:60s}"
                     # Now colorize the padded content
                     colored_padded = self._colorize_line_with_markers(
                         padded_line, self.line_markers,
@@ -714,7 +725,7 @@ class TestCaseRun(OutputWriter):
                         color_fn = yellow
                     else:
                         color_fn = cyan
-                    left_side = color_fn(f"{symbol} {self.out_line:60s}")
+                    left_side = color_fn(f"{symbol} {padded_line}")
             else:
                 # Use line-level coloring
                 if has_error:
@@ -723,15 +734,14 @@ class TestCaseRun(OutputWriter):
                     color_fn = yellow
                 else:
                     color_fn = cyan
-                left_side = color_fn(f"{symbol} {self.out_line:60s}")
+                left_side = color_fn(f"{symbol} {padded_line}")
 
             if self.exp_line is not None:
                 # Colorize expected line with differing tokens highlighted
                 right_side = self._colorize_expected_line(self.exp_line, self.line_markers)
-                self.report(f"{left_side} | {right_side}")
             else:
                 right_side = gray("EOF")
-                self.report(f"{left_side} | {right_side}")
+            self.report(f"{left_side}{diff_separator}{right_side}")
 
             if self.point_error_pos:
                 self.report("  " + (" " * pos) + "^")
