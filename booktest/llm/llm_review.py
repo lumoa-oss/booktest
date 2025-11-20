@@ -119,7 +119,7 @@ class LlmReview(OutputWriter):
         - OPENAI_COMPLETION_MAX_TOKENS: Max tokens (default: 1024)
     """
 
-    def __init__(self, test_case_run: 'TestCaseRun', llm: Optional[Llm] = None):
+    def __init__(self, output: OutputWriter, llm: Optional[Llm] = None):
         """
         Initialize LLM review.
 
@@ -127,7 +127,7 @@ class LlmReview(OutputWriter):
             test_case_run: Parent TestCaseRun instance
             llm: Optional LLM instance. If None, uses get_llm() default.
         """
-        self.t = test_case_run
+        self.output = output
         self.buffer = ""
         self.llm = llm if llm is not None else get_llm()
 
@@ -137,55 +137,55 @@ class LlmReview(OutputWriter):
         """Write a header at the specified level (primitive method)."""
         label = "#" * level + " " + title
         self.buffer += f"\n{label}\n"
-        self.t.h(level, title)
+        self.output.h(level, title)
         return self
 
     def t(self, text: str):
         """Write tested text inline (primitive method)."""
         self.buffer += text
-        self.t.t(text)
+        self.output.t(text)
         return self
 
     def i(self, text: str):
         """Write info text inline (primitive method)."""
         self.buffer += text
-        self.t.i(text)
+        self.output.i(text)
         return self
 
     def f(self, text: str):
         """Write failed text inline (primitive method)."""
         self.buffer += text
-        self.t.f(text)
+        self.output.f(text)
         return self
 
     def info_token(self):
         """Mark the token as different (primitive method)."""
-        self.t.info_token()
+        self.output.info_token()
         return self
 
     def diff(self):
         """Mark the test as different (primitive method)."""
-        self.t.diff()
+        self.output.diff()
         return self
 
     def diff_token(self):
         """Mark the token as different (primitive method)."""
-        self.t.diff_token()
+        self.output.diff_token()
         return self
 
     def fail(self):
         """Mark the test as failed (primitive method)."""
-        self.t.fail()
+        self.output.fail()
         return self
 
     def fail_token(self):
         """Mark the token as failed (primitive method)."""
-        self.t.fail_token()
+        self.output.fail_token()
         return self
 
     def start_review(self):
         """Start the review section."""
-        self.t.h1("review:")
+        self.output.h1("review:")
         return self
 
     def reviewln(self, prompt: str, expected: str, *fail_options: str):
@@ -217,7 +217,7 @@ other text or explanation! Only respond with one of the options given in the par
         request = f"{system_prompt}\n\n{prompt} ({'|'.join(options)})\n\n{self.buffer}"
         result = self.llm.prompt(request)
 
-        self.t.anchor(f" * {prompt} ").i(result).i(" - ").assertln(result == expected)
+        self.output.anchor(f" * {prompt} ").i(result).i(" - ").assertln(result == expected)
         return self
 
     def ireviewln(self, prompt: str, expected: str, *fail_options: str) -> str:
@@ -254,7 +254,7 @@ other text or explanation! Only respond with one of the options given in the par
         result = self.llm.prompt(request)
 
         # Just output the result, don't assert
-        self.t.anchor(f" * {prompt} ").iln(result)
+        self.output.anchor(f" * {prompt} ").iln(result)
         return result
 
     def treviewln(self, prompt: str, expected: str, *fail_options: str) -> str:
@@ -291,7 +291,7 @@ other text or explanation! Only respond with one of the options given in the par
         result = self.llm.prompt(request)
 
         # Write to tested output so it's compared against snapshot
-        self.t.anchor(f" * {prompt} ").tln(result)
+        self.output.anchor(f" * {prompt} ").tln(result)
         return result
 
     def assertln(self, title: str, condition: bool):
@@ -305,7 +305,7 @@ other text or explanation! Only respond with one of the options given in the par
         Example:
             r.assertln("Code runs without errors", exception is None)
         """
-        self.t.anchor(f" * {title} ").assertln(condition)
+        self.output.anchor(f" * {title} ").assertln(condition)
         return self
 
     def review_test_diff(
