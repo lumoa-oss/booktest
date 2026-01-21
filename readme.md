@@ -539,10 +539,11 @@ More examples: [test/examples/](test/examples/) and [test/datascience/](test/dat
 ## Documentation
 
 - **[Getting Started Guide](getting-started.md)** - Your first test in 5 minutes
+- **[Use Case Gallery](docs/use-cases.md)** - Quick recipes for common scenarios
 - **[Complete Feature Guide](docs/features.md)** - Comprehensive documentation of all features
+- **[CI/CD Integration](docs/ci-cd.md)** - GitHub Actions, GitLab CI, CircleCI
 - **[API Reference](docs/)** - Full API documentation
 - **[Examples](test/examples/)** - Copy-pasteable examples
-- **[Workflows & CI](workflows.md)** - Coverage, continuous integration
 - **[Development Guide](development.md)** - Contributing to booktest
 
 ---
