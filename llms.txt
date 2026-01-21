@@ -1,0 +1,280 @@
+# Booktest - AI-Friendly Documentation
+
+> Booktest is a review-driven testing framework for data science and ML applications.
+> Use it when outputs need expert review, not just pass/fail assertions.
+
+## When to Use Booktest
+
+- Testing LLM/AI outputs (non-deterministic)
+- ML model evaluation with tolerance metrics
+- Data pipelines where "close enough" matters
+- Any test where you need to review changes, not just detect them
+
+## Installation
+
+```bash
+pip install booktest
+booktest --setup  # Initialize in current directory
+```
+
+## Basic Test Structure
+
+```python
+import booktest as bt
+
+def test_example(t: bt.TestCaseRun):
+    # Headers
+    t.h1("Main Section")
+    t.h2("Subsection")
+
+    # Tested output (compared against snapshots)
+    t.tln("This line is tested")
+    t.tcode(code_string, lang="python")
+    t.tdf(pandas_dataframe)  # DataFrame as markdown table
+
+    # Info output (shown but not tested)
+    t.iln("This is informational only")
+    t.icode(debug_info)
+
+    # Metrics with tolerance (catches regressions, ignores noise)
+    t.tmetric(0.95, tolerance=0.05)  # 95% +/- 5% = OK
+    t.tmetric_pct(value, tolerance_pct=5)  # 5% relative tolerance
+
+    # Hard assertions (must pass)
+    t.assertln("Accuracy >= 80%", accuracy >= 0.80)
+
+    # Key-value pairs
+    t.key("Model:").tln(model_name)
+    t.keyvalueln("Accuracy", f"{accuracy:.1%}")
+```
+
+## Test Dependencies (Build System)
+
+Tests can return values and depend on other tests:
+
+```python
+def test_load_data(t: bt.TestCaseRun):
+    data = expensive_load()  # Runs once, cached
+    t.tln(f"Loaded {len(data)} rows")
+    return data
+
+@bt.depends_on(test_load_data)
+def test_process(t: bt.TestCaseRun, data):
+    # 'data' is the return value from test_load_data
+    result = process(data)
+    t.tdf(result)
+    return result
+
+@bt.depends_on(test_process)
+def test_report(t: bt.TestCaseRun, result):
+    # Only this test re-runs when you change it
+    t.h1("Final Report")
+    t.tln(format_report(result))
+```
+
+## HTTP/API Mocking (Record & Replay)
+
+```python
+@bt.snapshot_httpx()  # For httpx library
+def test_api_call(t: bt.TestCaseRun):
+    response = httpx.get("https://api.example.com/data")
+    t.tcode(response.json(), lang="json")
+    # First run: records response
+    # Subsequent runs: replays instantly
+
+@bt.snapshot_requests()  # For requests library
+def test_requests_call(t: bt.TestCaseRun):
+    response = requests.get("https://api.example.com/data")
+    t.tln(response.text)
+```
+
+## LLM Provider Configuration
+
+Booktest auto-detects which LLM to use based on environment variables:
+
+```bash
+# Option 1: Anthropic Claude (recommended)
+export ANTHROPIC_API_KEY=sk-ant-...
+export ANTHROPIC_MODEL=claude-sonnet-4-20250514  # optional
+
+# Option 2: Local LLMs via Ollama
+export OLLAMA_MODEL=llama3.2
+export OLLAMA_HOST=http://localhost:11434  # optional
+
+# Option 3: OpenAI / Azure OpenAI
+export OPENAI_API_KEY=sk-...
+export OPENAI_API_BASE=https://your-endpoint.openai.azure.com/
+export OPENAI_MODEL=gpt-4
+```
+
+Priority: Anthropic → Ollama → OpenAI (first configured wins)
+
+Programmatic configuration:
+
+```python
+import booktest as bt
+
+# Use Claude explicitly
+bt.set_llm(bt.ClaudeLlm())
+
+# Use Ollama explicitly
+bt.set_llm(bt.OllamaLlm(model="llama3.2"))
+
+# Use for a single test
+@bt.use_llm(bt.ClaudeLlm())
+def test_with_claude(t: bt.TestCaseRun):
+    r = t.start_review()
+    r.reviewln("Is output correct?", "Yes", "No")
+```
+
+## AI-Assisted Review
+
+```python
+def test_llm_output(t: bt.TestCaseRun):
+    response = generate_response("Write a haiku about testing")
+
+    # Start AI review section (uses configured LLM provider)
+    r = t.start_review()
+    r.iln(response)  # Show the output
+
+    # AI evaluates these criteria (cached after first run)
+    r.reviewln("Is it a valid haiku (5-7-5)?", "Yes", "No")
+    r.reviewln("Is it about testing?", "Yes", "No")
+    r.reviewln("Quality?", "Excellent", "Good", "Poor")
+```
+
+Run with AI-assisted diff review:
+
+```bash
+booktest -R  # AI reviews all test diffs
+```
+
+## Running Tests
+
+```bash
+# Basic commands
+booktest                    # Run all tests
+booktest test_file.py       # Run specific file
+booktest test/file.py::test_func  # Run specific test
+
+# Output modes
+booktest -v                 # Verbose (show output during run)
+booktest -i                 # Interactive (review each test)
+booktest -R                 # AI-assisted diff review
+
+# Handling failures
+booktest -c                 # Continue on failure
+booktest -f                 # Fail fast
+booktest -u                 # Update all snapshots (accept changes)
+
+# Parallel execution
+booktest -p8                # Run on 8 cores
+```
+
+## Output Methods Reference
+
+| Method | Description | Tested? |
+|--------|-------------|---------|
+| `t.h1(text)` - `t.h5(text)` | Headers | Yes |
+| `t.tln(text)` | Text line | Yes |
+| `t.iln(text)` | Info line | No |
+| `t.tcode(text, lang)` | Code block | Yes |
+| `t.icode(text, lang)` | Code block | No |
+| `t.tdf(df)` | DataFrame table | Yes |
+| `t.idf(df)` | DataFrame table | No |
+| `t.tmetric(val, tolerance)` | Metric with tolerance | Yes |
+| `t.assertln(msg, condition)` | Hard assertion | Yes |
+| `t.key(label)` | Key prefix | - |
+| `t.timage(path)` | Image embed | Yes |
+
+## Common Patterns
+
+### Testing LLM Applications
+
+```python
+@bt.snapshot_httpx()
+def test_chatbot(t: bt.TestCaseRun):
+    response = openai.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": "Hello"}]
+    )
+
+    t.h1("Chatbot Response")
+    t.iln(response.choices[0].message.content)
+
+    r = t.start_review()
+    r.reviewln("Is response helpful?", "Yes", "No")
+    r.reviewln("Is response safe?", "Yes", "No")
+```
+
+### Testing ML Models
+
+```python
+def test_model_accuracy(t: bt.TestCaseRun):
+    model = load_model()
+    predictions = model.predict(test_data)
+
+    accuracy = (predictions == labels).mean()
+    f1 = calculate_f1(predictions, labels)
+
+    t.h1("Model Evaluation")
+    t.key("Accuracy:").tmetric(accuracy, tolerance=0.05)
+    t.key("F1 Score:").tmetric(f1, tolerance=0.05)
+
+    # Hard minimum requirements
+    t.assertln("Accuracy >= 80%", accuracy >= 0.80)
+```
+
+### Testing Data Pipelines
+
+```python
+def test_etl_output(t: bt.TestCaseRun):
+    result = run_etl_pipeline()
+
+    t.h1("ETL Results")
+    t.key("Row count:").tln(len(result))
+    t.key("Columns:").tln(list(result.columns))
+
+    t.h2("Sample Data")
+    t.tdf(result.head(10))
+
+    t.h2("Statistics")
+    t.tdf(result.describe())
+```
+
+## File Structure
+
+```
+project/
+  test/           # Test files (*_test.py)
+  books/          # Generated markdown output (Git-tracked)
+  .booktest       # Configuration
+```
+
+## Configuration (.booktest or booktest.ini)
+
+```ini
+[booktest]
+test_paths = test
+books_path = books
+processes = 8
+timeout = 1800
+```
+
+## Key Concepts
+
+1. **Tested vs Info**: `t.tln()` is compared against snapshots; `t.iln()` is shown but not tested
+2. **Snapshots**: Test outputs saved as markdown in `books/` directory
+3. **Review workflow**: Changes appear as Git diffs; accept with `booktest -u` or interactively with `booktest -i`
+4. **Tolerance metrics**: `tmetric(val, tolerance=0.05)` allows +/-5% variation without failing
+5. **Dependencies**: Tests can return values; other tests depend on them with `@bt.depends_on()`
+6. **Mocking**: `@bt.snapshot_httpx()` records API calls on first run, replays on subsequent runs
+7. **LLM Providers**: `bt.ClaudeLlm`, `bt.OllamaLlm`, `bt.GptLlm` - auto-detected or set explicitly
+
+## Available LLM Classes
+
+| Class | Provider | Env Vars |
+|-------|----------|----------|
+| `bt.ClaudeLlm` | Anthropic | `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` |
+| `bt.OllamaLlm` | Ollama (local) | `OLLAMA_HOST`, `OLLAMA_MODEL` |
+| `bt.GptLlm` | OpenAI/Azure | `OPENAI_API_KEY`, `OPENAI_API_BASE`, `OPENAI_MODEL` |

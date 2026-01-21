@@ -86,6 +86,101 @@ class GptLlm(Llm):
         return response.choices[0].message.content
 
 
+class ClaudeLlm(Llm):
+    """
+    Anthropic Claude implementation of the LLM interface.
+
+    Requires:
+    - anthropic package: pip install anthropic
+    - ANTHROPIC_API_KEY environment variable
+
+    Optional environment variables:
+    - ANTHROPIC_MODEL: Model name (default: claude-sonnet-4-20250514)
+    """
+
+    def __init__(self, client=None):
+        """
+        Initialize Claude LLM.
+
+        Args:
+            client: Optional Anthropic client. If None, creates client
+                   from ANTHROPIC_API_KEY environment variable.
+        """
+        if client is None:
+            from anthropic import Anthropic
+            self.client = Anthropic()  # Uses ANTHROPIC_API_KEY automatically
+        else:
+            self.client = client
+
+    def prompt(self, request: str, max_completion_tokens: int = 1024) -> str:
+        """
+        Send a prompt to Claude and get a response.
+
+        Args:
+            request: The prompt text to send to Claude
+            max_completion_tokens: Maximum tokens for Claude's response
+
+        Returns:
+            Claude's response as a string
+        """
+        message = self.client.messages.create(
+            model=os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514"),
+            max_tokens=max_completion_tokens,
+            messages=[{"role": "user", "content": request}]
+        )
+        return message.content[0].text
+
+
+class OllamaLlm(Llm):
+    """
+    Ollama implementation of the LLM interface for local LLMs.
+
+    Requires:
+    - Ollama running locally (default: http://localhost:11434)
+
+    Optional environment variables:
+    - OLLAMA_HOST: Ollama server URL (default: http://localhost:11434)
+    - OLLAMA_MODEL: Model name (default: llama3.2)
+    """
+
+    def __init__(self, host: str = None, model: str = None):
+        """
+        Initialize Ollama LLM.
+
+        Args:
+            host: Ollama server URL. If None, uses OLLAMA_HOST env var
+                  or defaults to http://localhost:11434.
+            model: Model name. If None, uses OLLAMA_MODEL env var
+                   or defaults to llama3.2.
+        """
+        self.host = host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        self.model = model or os.getenv("OLLAMA_MODEL", "llama3.2")
+
+    def prompt(self, request: str, max_completion_tokens: int = 1024) -> str:
+        """
+        Send a prompt to Ollama and get a response.
+
+        Args:
+            request: The prompt text to send to Ollama
+            max_completion_tokens: Maximum tokens for Ollama's response
+
+        Returns:
+            Ollama's response as a string
+        """
+        import requests
+        response = requests.post(
+            f"{self.host}/api/generate",
+            json={
+                "model": self.model,
+                "prompt": request,
+                "stream": False,
+                "options": {"num_predict": max_completion_tokens}
+            }
+        )
+        response.raise_for_status()
+        return response.json()["response"]
+
+
 # Global default LLM instance
 _default_llm: Optional[Llm] = None
 
@@ -94,14 +189,22 @@ def get_llm() -> Llm:
     """
     Get the default LLM instance.
 
-    Returns the global default LLM, creating a GptLlm instance if none is set.
+    Auto-detects the LLM provider based on environment variables:
+    1. ANTHROPIC_API_KEY -> ClaudeLlm
+    2. OLLAMA_HOST or OLLAMA_MODEL -> OllamaLlm
+    3. Otherwise -> GptLlm (Azure OpenAI)
 
     Returns:
         The default LLM instance
     """
     global _default_llm
     if _default_llm is None:
-        _default_llm = GptLlm()
+        if os.getenv("ANTHROPIC_API_KEY"):
+            _default_llm = ClaudeLlm()
+        elif os.getenv("OLLAMA_HOST") or os.getenv("OLLAMA_MODEL"):
+            _default_llm = OllamaLlm()
+        else:
+            _default_llm = GptLlm()
     return _default_llm
 
 

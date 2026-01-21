@@ -43,7 +43,9 @@ from booktest.dependencies.memory import monitor_memory, MemoryMonitor, t_memory
 from booktest.dependencies.cache import LruCache, NoCache
 
 # LLM integration
-from booktest.llm.llm import Llm, GptLlm, get_llm, set_llm, LlmSentry, use_llm
+from booktest.llm.llm import (
+    Llm, GptLlm, ClaudeLlm, OllamaLlm, get_llm, set_llm, LlmSentry, use_llm
+)
 from booktest.llm.llm_review import LlmReview, GptReview, AIReviewResult
 from booktest.llm.tokenizer import TestTokenizer, BufferIterator
 
@@ -124,6 +126,8 @@ __all__ = {
     "Books",
     "Llm",
     "GptLlm",
+    "ClaudeLlm",
+    "OllamaLlm",
     "get_llm",
     "set_llm",
     "LlmSentry",

@@ -2,7 +2,9 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/booktest.svg)](https://pypi.org/project/booktest/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![GitHub stars](https://img.shields.io/github/stars/lumoa-oss/booktest)](https://github.com/lumoa-oss/booktest/stargazers)
+[![GitHub last commit](https://img.shields.io/github/last-commit/lumoa-oss/booktest)](https://github.com/lumoa-oss/booktest/commits/main)
 
 > Stop playing whack-a-mole with regressions. Stop waiting hours for test suites.
 > Stop pretending `assertEqual()` works for "Is this good enough?"
