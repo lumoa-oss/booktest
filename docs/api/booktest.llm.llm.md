@@ -141,7 +141,7 @@ prompt_json(
     required_fields: List[str] = None,
     validator: Callable[[dict], bool] = None,
     max_retries: int = 3,
-    max_completion_tokens: int = 2048
+    max_completion_tokens: int = 4096
 ) → dict
 ```
 
@@ -232,7 +232,7 @@ prompt_json(
     required_fields: List[str] = None,
     validator: Callable[[dict], bool] = None,
     max_retries: int = 3,
-    max_completion_tokens: int = 2048
+    max_completion_tokens: int = 4096
 ) → dict
 ```
 
@@ -323,7 +323,7 @@ prompt_json(
     required_fields: List[str] = None,
     validator: Callable[[dict], bool] = None,
     max_retries: int = 3,
-    max_completion_tokens: int = 2048
+    max_completion_tokens: int = 4096
 ) → dict
 ```
 
@@ -416,7 +416,7 @@ prompt_json(
     required_fields: List[str] = None,
     validator: Callable[[dict], bool] = None,
     max_retries: int = 3,
-    max_completion_tokens: int = 2048
+    max_completion_tokens: int = 4096
 ) → dict
 ```
 

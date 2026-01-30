@@ -203,7 +203,7 @@ __init__(
     ignore_headers=True,
     json_to_hash=None,
     encode_body=None,
-    match_request=<function accept_all at 0x72c1fc8b2480>
+    match_request=<function accept_all at 0x7e77b54ba480>
 )
 ```
 

@@ -263,7 +263,7 @@ ireviewln(prompt: str, expected: str, *fail_options: str) → str
 
 Use LLM to review accumulated output WITHOUT failing the test. 
 
-Returns the LLM's answer for later evaluation. Unlike reviewln(), this does not assert - it just records the answer as info output. 
+Returns the LLM's answer for later evaluation. Unlike treviewln(), this does not assert - it just records the answer as info output. 
 
 
 
@@ -318,6 +318,34 @@ Use AI to review test output differences and provide a recommendation.
 
 **Example:**
  result = review.review_test_diff(  test_name="test_sentiment_analysis",  expected=previous_output,  actual=current_output,  diff=unified_diff ) if result.should_auto_reject():  print(f"Auto-rejecting: {result.summary}") 
+
+---
+
+### <kbd>method</kbd> `reviewln`
+
+```python
+reviewln(prompt: str, expected: str, *fail_options: str) → str
+```
+
+Unlike treviewln, this version returns the review object to allow chaining reviews 
+
+
+
+**Args:**
+ 
+ - <b>`prompt`</b>:  Question to ask about the output 
+ - <b>`expected`</b>:  Expected answer (for display/context) 
+ - <b>`*fail_options`</b>:  Alternative answers (for display/context) 
+
+
+
+**Returns:**
+ The LLM's response 
+
+
+
+**Example:**
+ result = r.ireviewln("Is code well documented?", "Yes", "No") # Test continues regardless of result 
 
 ---
 
@@ -528,7 +556,7 @@ ireviewln(prompt: str, expected: str, *fail_options: str) → str
 
 Use LLM to review accumulated output WITHOUT failing the test. 
 
-Returns the LLM's answer for later evaluation. Unlike reviewln(), this does not assert - it just records the answer as info output. 
+Returns the LLM's answer for later evaluation. Unlike treviewln(), this does not assert - it just records the answer as info output. 
 
 
 
@@ -583,6 +611,34 @@ Use AI to review test output differences and provide a recommendation.
 
 **Example:**
  result = review.review_test_diff(  test_name="test_sentiment_analysis",  expected=previous_output,  actual=current_output,  diff=unified_diff ) if result.should_auto_reject():  print(f"Auto-rejecting: {result.summary}") 
+
+---
+
+### <kbd>method</kbd> `reviewln`
+
+```python
+reviewln(prompt: str, expected: str, *fail_options: str) → str
+```
+
+Unlike treviewln, this version returns the review object to allow chaining reviews 
+
+
+
+**Args:**
+ 
+ - <b>`prompt`</b>:  Question to ask about the output 
+ - <b>`expected`</b>:  Expected answer (for display/context) 
+ - <b>`*fail_options`</b>:  Alternative answers (for display/context) 
+
+
+
+**Returns:**
+ The LLM's response 
+
+
+
+**Example:**
+ result = r.ireviewln("Is code well documented?", "Yes", "No") # Test continues regardless of result 
 
 ---
 

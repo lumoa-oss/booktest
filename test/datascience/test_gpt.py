@@ -224,9 +224,9 @@ def test_review(t: bt.TestCaseRun):
         r.iln(output)
 
     r.start_review()
-    r.treviewln("Does results follow instructions?", "Yes", "No")
-    r.treviewln("Are comments in Finnish?", "Yes", "No")
-    r.treviewln("Is code in python?", "Yes", "No")
-    r.treviewln("How would you grade this response?", "Excellent", "Ok", "Bad")
+    r.reviewln("Does results follow instructions?", "Yes", "No")
+    r.reviewln("Are comments in Finnish?", "Yes", "No")
+    r.reviewln("Is code in python?", "Yes", "No")
+    r.reviewln("How would you grade this response?", "Excellent", "Ok", "Bad")
     r.assertln("Does the code run without errors?", exception is None)
     r.assertln("Does the code print 'Hello World!'?", output.strip() == "Hello World!")

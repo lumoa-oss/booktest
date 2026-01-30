@@ -28,18 +28,17 @@ Hello World!
 
 # review:
 
- * Does results follow instructions? Yes
+ * Does results follow instructions? Yes - ok
     * Prints "Hello World!" when run and does not use a separate main function.
     * Contains Finnish comments explaining each step, is syntactically valid and runnable Python, and the response is only Python code.
- * Are comments in Finnish? Yes
-    * Koodissa olevat kommentit ovat suomea (esim. 'Tämä ohjelma näyttää, miten tulostetaan teksti konsoliin.').
-    * Kommentit selittävät jokaisen askeleen: ohjelman tarkoituksen, muuttujan määrittelyn ja tulostuksen.
- * Is code in python? Yes
-    * Koodi käyttää Python-syntaksia: rivikommentit '#' , muuttujan määrittely (viesti = ...) ja print-funktio print(viesti).
-    * Koodi on syntaksisesti validia Pythonia ja tuotoksesta nähdään, että se tulostaa 'Hello World!' kuten vaadittiin.
- * How would you grade this response? Excellent
-    * Code is valid, runnable Python and prints exactly "Hello World!".
-    * Contains Finnish comments that explain each step (variable definition and printing) suitable for a school-age child.
-    * No separate main method is used and the response contains only Python code.
+ * Are comments in Finnish? Yes - ok
+    * All comment lines (those starting with #) are written in Finnish, e.g. 'Tämä ohjelma näyttää, miten tulostetaan teksti konsoliin.'
+    * The comments describe each step (introducing the program, defining the variable viesti, and using print) in Finnish, fulfilling the requirement.
+ * Is code in python? Yes - ok
+    * Koodi käyttää kelvollista Python-syntaksia (muuttujan määrittely ja print-funktio).
+    * Kommentit ovat suomeksi mutta eivät vaikuta suoritettavuuteen — koodi tulostaa 'Hello World!' ilman muuta muutoksia.
+ * How would you grade this response? Excellent - ok
+    * Meets all requirements: syntactically valid Python, contains only runnable Python, prints "Hello World!" and does not use a separate main function.
+    * Includes Finnish comments that explain each step clearly, appropriate for a school-age child.
  * Does the code run without errors? ok
  * Does the code print 'Hello World!'? ok

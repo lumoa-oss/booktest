@@ -303,7 +303,7 @@ Reasons MUST contain concise explanations for the result in the same language th
             result = r.ireviewln("Is code well documented?", "Yes", "No")
             # Test continues regardless of result
         """
-        self._reviewln(False, prompt, expected, *fail_options)
+        self._reviewln(True, prompt, expected, *fail_options)
         return self
 
     def assertln(self, title: str, condition: bool):
