@@ -39,7 +39,7 @@ class Llm(ABC):
         required_fields: List[str] = None,
         validator: Callable[[dict], bool] = None,
         max_retries: int = 3,
-        max_completion_tokens: int = 2048
+        max_completion_tokens: int = 4 * 1024
     ) -> dict:
         """
         Send a prompt and parse the response as JSON with validation and retry.

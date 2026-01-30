@@ -5,7 +5,7 @@ Agent analyzes the question and creates an answering strategy
 
 ## Loading Context
 
-Loaded 33987 characters of documentation
+Loaded 34000 characters of documentation
 
 
 ## Creating Plan
@@ -30,9 +30,8 @@ How do I test a multi-step ML pipeline with booktest?
 ### Plan Review
 
  * Does plan address the question? Yes
-    * Covers the relevant booktest features needed (TestCaseRun API, named steps, snapshotting/artifacts, reviewer annotations, diff helpers) that are central to testing multi-step pipelines.
-    * Specifies key testing concepts (isolate stages, normalize outputs, deterministic fixtures, snapshot/regression checks) and captures intermediate artifacts for reviewer judgment.
-    * Promises a clear, actionable structure including a minimal 3-step example, running/reviewing workflow, and practical tips (seeding, caching/mocking, updating snapshots, CI), so it is directly usable.
+    * The plan explicitly covers booktest features needed for multi-step pipelines (TestCaseRun, named steps, snapshotting, artifact capture, reviewer flow and diffs).
+    * It lays out testing strategy and key concepts (stage isolation, deterministic fixtures, normalized outputs, combining automated checks with human review) and promises a concrete 3-step example plus practical tips (seeding, caching, CI), which directly answers how to test such pipelines.
  * Does plan reference relevant features? Yes
-    * The plan explicitly references core booktest features needed for multi-step pipelines: TestCaseRun API, named sections/steps, snapshotting/artifact capture, reviewer annotations/approval flow, and built-in diff helpers.
-    * It covers practical testing strategy and implementation: isolating stages, normalizing outputs, deterministic fixtures/seeding, handling slow steps (caching/mocking), a minimal concrete example, and CI/integration tips.
+    * The plan explicitly calls out and plans to demonstrate key booktest features: the TestCaseRun API, named sections/steps, snapshotting/artifact capture, reviewer annotations/approval flow, and built-in diff/comparison helpers.
+    * It also covers practical, relevant practices for ML pipelines—capturing intermediate outputs, normalizing outputs for stable diffs, deterministic fixtures/seeding, caching/mocking, and CI/update workflows—and includes a concrete example to show those features in action.

@@ -17,32 +17,34 @@ Loaded 1103 lines of documentation
 **Question:** What is booktest?
 
 **Answer:**
-Booktest is a Python testing framework for data science that treats test outputs as Git-tracked, reviewable snapshots and combines AI-assisted evaluation, tolerance-based metrics, and a dependency/build system so you can manage non-deterministic and expensive ML/LLM workflows. It also provides HTTP/LLM mocking, DVC integration for large snapshots, and parallel execution to speed iteration and triage regressions.
+Booktest is a Python testing framework for data science that turns test outputs into Git‑tracked, reviewable markdown snapshots and adds AI‑assisted review and tolerance‑based metrics to handle non‑deterministic ML/LLM outputs. It also provides pipeline-style dependency caching, HTTP/LLM request snapshotting, DVC integration and parallel execution to speed iteration and manage regressions.
 
 
 #### Evaluation:
 
  * Does answer mention snapshot or review-driven testing? Yes
-    * The answer explicitly says it 'treats test outputs as Git-tracked, reviewable snapshots'.
-    * That wording directly indicates snapshot-based and review-driven testing.
+    * The answer explicitly says it turns test outputs into "reviewable markdown snapshots" (snapshot testing).
+    * It also mentions "AI‑assisted review," indicating a review-driven testing approach.
  * Does answer mention data science focus? Yes
     * The answer explicitly calls Booktest a "Python testing framework for data science."
-    * It references ML/LLM workflows and DVC integration, which are data-science-specific features.
+    * It references handling non-deterministic ML/LLM outputs and DVC integration, which are data‑science/ML concerns.
  * Does answer mention Git-tracked results? Yes
-    * The answer explicitly states that Booktest "treats test outputs as Git-tracked, reviewable snapshots."
-    * This description directly indicates that results are tracked with Git and intended to be reviewable.
+    * The answer explicitly states it "turns test outputs into Git‑tracked, reviewable markdown snapshots."
+    * That phrase directly indicates test results are tracked in Git, so Git-tracked results are clearly mentioned.
 
 #### Quality ratings:
 
- * How clear and concise is the explanation? Excellent
-    * Provides a concise, high-level definition of purpose and scope (Python testing framework for data science).
-    * Lists key features clearly and specifically (Git-tracked snapshots, AI-assisted evaluation, tolerance metrics, mocking, DVC integration, parallel execution) without unnecessary detail.
- * How compelling is the value proposition for using booktest? Excellent
-    * Directly tackles core ML/LLM testing pain points: Git-tracked, reviewable snapshots plus AI-assisted evaluation and tolerance-based metrics make non-deterministic outputs testable and auditable.
-    * Practical operational features (dependency/build system for expensive workflows, HTTP/LLM mocking, DVC integration, parallel execution) meaningfully reduce iteration and triage cost — potential caveat is typical maturity/learning-curve risk, but the value proposition is strong.
+ * How clear and concise is the explanation? Good
+    * The explanation succinctly states the core purpose (a Python testing framework for data science) and lists key features (markdown snapshots, AI‑assisted review, tolerance metrics, caching, HTTP/LLM snapshotting, DVC integration, parallel execution).
+    * It is concise but uses some domain-specific jargon (e.g., “pipeline-style dependency caching”, “AI‑assisted review”) that could be clearer for readers unfamiliar with those terms.
+ * How compelling is the value proposition for using booktest? Good
+    * Addresses real and common pain points in ML/LLM testing: snapshotting, non-deterministic outputs, and reviewability via Git-markdown snapshots.
+    * Unique features (AI-assisted review and tolerance-based metrics) directly tackle flaky/approximate outputs that standard test frameworks miss.
+    * Practical integrations (DVC, HTTP/LLM request snapshotting, caching and parallel execution) make it useful in real data-science pipelines and likely to speed iteration and regression tracking.
+    * Not rated Excellent because of typical caveats: potential operational/storage overhead of snapshots, reliance on AI review quality, and unknowns about maturity/compatibility and maintenance burden.
 
  * **Criteria Score:** 3/3
- * **Rating Score:** 2/2
+ * **Rating Score:** 1.5/2
 
 
 ### Prompt 2: When should I use booktest instead of pytest?
@@ -50,29 +52,30 @@ Booktest is a Python testing framework for data science that treats test outputs
 **Question:** When should I use booktest instead of pytest?
 
 **Answer:**
-Use booktest when you're testing data‑science or LLM workflows with non‑deterministic or subjective outputs that need human/AI review, tolerance‑based metrics, snapshot diffs, incremental/cached pipeline steps, and HTTP/LLM mocking. For traditional deterministic unit tests with strict equality assertions, stick with pytest.
+Use booktest for data‑science/integration tests where outputs are non‑deterministic or subjective (LLM outputs, model evaluations, pipelines) and you need snapshotting, AI/human review, tolerance metrics, and cached dependency-style runs to speed expensive work. For traditional deterministic unit tests with strict equality checks, stick with pytest.
 
 
 #### Evaluation:
 
  * Does answer mention expert review needs? Yes
-    * The answer explicitly states outputs "that need human/AI review", directly mentioning expert review.
-    * It highlights subjective or non‑deterministic outputs which require human/AI judgment rather than pure automated assertions.
+    * The answer explicitly mentions "AI/human review", which indicates a need for human (expert) review.
+    * It recommends booktest for subjective, non‑deterministic outputs (LLM outputs, model evaluations) that typically require human oversight.
  * Does answer mention non-deterministic or probabilistic results? Yes
-    * The answer explicitly mentions "non‑deterministic or subjective outputs."
-    * It recommends booktest for cases with tolerance‑based metrics and human/AI review, which are typical for probabilistic behavior.
+    * The answer explicitly states "where outputs are non‑deterministic or subjective (LLM outputs, model evaluations, pipelines)".
+    * It describes handling probabilistic outputs with snapshotting, tolerance metrics, and AI/human review, which addresses non-deterministic results.
  * Does answer mention data science workflows or caching? Yes
-    * The answer explicitly refers to "data‑science or LLM workflows."
-    * It also mentions "incremental/cached pipeline steps," which indicates caching.
+    * The answer explicitly mentions "data‑science/integration tests" and examples like LLM outputs, model evaluations, and pipelines.
+    * The answer explicitly refers to "cached dependency-style runs to speed expensive work," which describes caching.
 
 #### Quality ratings:
 
  * How clearly are the use cases differentiated? Excellent
-    * Provides a clear, actionable rule: use booktest for non‑deterministic/subjective ML/LLM workflows and pytest for deterministic unit tests.
-    * Lists specific features and scenarios (human/AI review, tolerance metrics, snapshot diffs, incremental/cached steps, HTTP/LLM mocking) that justify choosing booktest, making the distinction concrete.
+    * The answer gives a clear, direct contrast: booktest for non‑deterministic/subjective data‑science and integration scenarios, pytest for deterministic unit tests.
+    * It lists concrete examples and distinguishing features (LLM outputs, snapshotting, AI/human review, tolerance metrics, cached dependency runs), making the decision actionable.
  * How helpful would this be for someone choosing a testing framework? Good
-    * Directly contrasts the strengths of booktest (non‑deterministic, human/AI review, snapshot diffs, caching, HTTP/LLM mocking) with pytest (deterministic unit tests), which is exactly the core decision factor.
-    * Lacks supporting details (ecosystem/maturity, examples, integration cost, when not to use booktest beyond strict equality), so it's helpful but not comprehensive enough to be rated Excellent.
+    * Directly addresses the core decision: use booktest for non‑deterministic/subjective ML or pipeline tests and pytest for deterministic unit tests.
+    * Highlights useful differentiators (snapshotting, human/AI review, tolerance metrics, cached dependency runs) that are important for data‑science workflows.
+    * Lacks concrete examples, tradeoffs, maturity/ecosystem info, and guidance on integration/migration, so not fully comprehensive for someone making a final choice.
 
  * **Criteria Score:** 3/3
  * **Rating Score:** 1.75/2
@@ -83,52 +86,47 @@ Use booktest when you're testing data‑science or LLM workflows with non‑dete
 **Question:** Write a simple booktest example for fizzbuzz
 
 **Answer:**
-Create test/test_fizzbuzz.py with a Booktest test that prints FizzBuzz for 1–15 and snapshots the output:
+Here's a minimal booktest for FizzBuzz (1–15): 
 
 ```python
 import booktest as bt
 
-def fizzbuzz(n):
-    if n % 15 == 0: return "FizzBuzz"
-    if n % 3 == 0: return "Fizz"
-    if n % 5 == 0: return "Buzz"
-    return str(n)
-
 def test_fizzbuzz(t: bt.TestCaseRun):
-    t.h1("FizzBuzz 1..15")
+    t.h1("FizzBuzz 1-15")
     for i in range(1, 16):
-        t.tln(f"{i}: {fizzbuzz(i)}")
+        out = "FizzBuzz" if i % 15 == 0 else "Fizz" if i % 3 == 0 else "Buzz" if i % 5 == 0 else str(i)
+        t.tln(out)
 ```
 
 
 #### Evaluation:
 
  * Does code include 'import booktest' or 'import booktest as bt'? Yes
-    * The snippet begins with 'import booktest as bt'.
-    * This matches the allowed forms (specifically the 'import booktest as bt' variant).
+    * The code contains the line "import booktest as bt" at the top.
+    * This exactly matches one of the required import patterns ('import booktest as bt').
  * Does code define a test function starting with 'test_'? Yes
-    * The code includes a top-level function named def test_fizzbuzz(...).
-    * The function name begins with 'test_', matching the required test-function naming convention.
+    * The code defines a function named 'test_fizzbuzz' which begins with 'test_'.
+    * The function appears to be intended as a test (accepts a TestCaseRun parameter and uses test methods), so it matches the required naming convention.
  * Does code use TestCaseRun parameter (like 't: bt.TestCaseRun')? Yes
-    * The test function is defined as test_fizzbuzz(t: bt.TestCaseRun), i.e. it declares a parameter of type bt.TestCaseRun.
-    * The code calls methods on t (t.h1 and t.tln), showing it uses the TestCaseRun instance.
+    * The test function signature is def test_fizzbuzz(t: bt.TestCaseRun), which uses the TestCaseRun parameter with type annotation.
+    * The parameter t is actually used in the body (t.h1 and t.tln), confirming active use of TestCaseRun.
  * Does code use output methods like t.h1() or t.tln()? Yes
-    * The test function calls t.h1("FizzBuzz 1..15").
-    * The loop uses t.tln(...) to print each fizzbuzz line.
+    * The code calls t.h1("FizzBuzz 1-15") to produce a heading.
+    * It uses t.tln(out) inside the loop to emit each output line.
  * Is the code syntactically valid Python? Yes
-    * All constructs used (import, def, if/return, for loop, f-strings, type annotation) are valid Python syntax.
-    * Annotations and references to booktest are syntactically allowed; any missing module or attributes would be a runtime issue, not a syntax error.
+    * The import, function definition, annotated parameter, for-loop, and nested conditional expression are all valid Python syntax.
+    * Although 'booktest' or 'bt.TestCaseRun' may be undefined at runtime, that does not make the code syntactically invalid.
 
 #### Quality ratings:
 
  * How clear and understandable is the code example? Good
-    * The example is simple and shows both the fizzbuzz implementation and a Booktest test that emits structured output (t.h1 and t.tln) for 1..15.
-    * It uses clear, idiomatic Python and a minimal amount of code, so readers can quickly understand and reuse it.
-    * Minor omissions reduce perfect clarity: it doesn't show how to run the test or explicitly snapshot/assert the output (e.g. t.snapshot() or expected output), so a reader unfamiliar with Booktest may be unsure how the output is validated.
+    * The example is minimal and shows the core FizzBuzz logic and usage of booktest functions (t.h1, t.tln) clearly.
+    * The single-line nested conditional is compact but slightly reduces readability compared to an if/elif/else block.
+    * It lacks comments or explanation of booktest semantics and does not show explicit assertions/expected output, which could confuse readers unfamiliar with the library.
  * How well does the example demonstrate booktest features? Good
-    * Demonstrates a minimal, runnable test file that uses booktest's TestCaseRun API (t.h1 and t.tln) to produce readable output.
-    * Illustrates the fizzbuzz logic and shows how to emit output that can be snapshotted, but it doesn't show the snapshot/assert call or the expected snapshot content.
-    * Omits other common booktest features (snapshot storage, verification, setup/teardown, richer formatting or examples), so it's useful as a basic example but not comprehensive.
+    * The example correctly uses booktest basics (a test function accepting bt.TestCaseRun, t.h1 and t.tln) and produces the right FizzBuzz output for 1–15.
+    * It is minimal and clear, which is useful as a quick starting example.
+    * It does not show important booktest features such as expressing expected outputs/assertions, test metadata, or how to run/verify the test, so it is not comprehensive enough for an 'Excellent' rating.
 
  * **Criteria Score:** 5/5
  * **Rating Score:** 1.5/2
@@ -139,34 +137,33 @@ def test_fizzbuzz(t: bt.TestCaseRun):
 **Question:** How does booktest handle non-deterministic results?
 
 **Answer:**
-Booktest makes non‑deterministic behavior deterministic by snapshotting external effects: use decorators like @bt.snapshot_httpx(), @bt.snapshot_requests(), or @bt.snapshot_functions(time.time, random.random) to record HTTP/LLM responses and noisy functions on first run and replay them thereafter. It also snapshottes AI reviews (so evaluations are reused), so subsequent runs are fast and repeatable unless the outputs actually change.
+Booktest makes non-determinism deterministic by snapshotting and mocking external sources and functions: use decorators like @bt.snapshot_httpx() (or @bt.snapshot_functions(time.time, random.random)) to record real HTTP/LLM responses or random/timestamp functions on the first run and replay them thereafter. AI reviews are likewise snapshotted, and tests can return/cached objects (with @depends_on) so expensive/noisy steps aren’t re-run.
 
 
 #### Evaluation:
 
  * Does answer mention snapshots or snapshot testing? Yes
-    * Answer explicitly states it makes behavior deterministic by "snapshotting external effects".
-    * Lists decorators like @bt.snapshot_httpx(), @bt.snapshot_requests(), @bt.snapshot_functions(...) and describes recording and replaying responses (including AI reviews).
+    * The answer explicitly uses the term 'snapshotting' and says Booktest makes non-determinism deterministic by snapshotting and mocking external sources and functions.
+    * It provides concrete snapshot-related decorators (@bt.snapshot_httpx(), @bt.snapshot_functions(...)) and notes AI reviews are 'snapshotted' and replayed on subsequent runs.
  * Does answer mention caching intermediate results? Yes
-    * It explicitly describes “snapshotting” external effects to record on first run and replay thereafter — this is caching intermediate results.
-    * It notes AI reviews are snapshotted and reused, and shows decorators (e.g. @bt.snapshot_functions) that capture noisy function outputs for reuse.
+    * The answer explicitly says tests can return/cached objects (with @depends_on) so expensive/noisy steps aren’t re-run.
+    * It also describes snapshotting and replaying responses (record on first run, replay thereafter), which is a form of caching intermediate results.
  * Does answer mention mocking functions or environment variables? Partially
-    * The answer explicitly mentions snapshotting/noisy functions using @bt.snapshot_functions(time.time, random.random), which corresponds to handling/mocking functions.
-    * The answer does not mention environment variables at all.
+    * Answer explicitly mentions mocking functions (e.g., @bt.snapshot_functions(time.time, random.random) and snapshotting external sources).
+    * Answer does not mention environment variables at all.
 
 #### Quality ratings:
 
- * How well does the answer explain the technical approach? Good
-    * Explains the core mechanism clearly — snapshotting external effects to record on first run and replay thereafter — and gives concrete decorator examples (@bt.snapshot_httpx(), @bt.snapshot_requests(), @bt.snapshot_functions(...)).
-    * Notes important use cases (HTTP/LLM responses, noisy functions, AI reviews) and the practical outcome (fast, repeatable subsequent runs).
-    * Does not cover lower‑level implementation details (storage format, matching/validation, handling changed outputs or environment drift), so it is informative but not exhaustive.
+ * How well does the answer explain the technical approach? Excellent
+    * Explains the snapshot-and-replay approach that makes non-determinism deterministic.
+    * Provides concrete decorators (@bt.snapshot_httpx, @bt.snapshot_functions) and examples (time.random, LLM/HTTP) and mentions caching with @depends_on.
  * How practical and actionable is the explanation? Excellent
-    * Provides concrete, actionable mechanisms (specific decorators like @bt.snapshot_httpx(), @bt.snapshot_requests(), @bt.snapshot_functions(...)) that a user can apply immediately.
-    * Clearly explains what is snapshotted (HTTP/LLM responses and noisy functions) and the runtime behavior (record on first run, replay thereafter) making repeatability and performance implications obvious.
-    * Notes the practical limitation (outputs will update if they actually change), so users understand when snapshots are reused versus refreshed.
+    * Provides concrete, actionable mechanisms (specific decorators like @bt.snapshot_httpx() and @bt.snapshot_functions(...)) so a developer can implement it directly.
+    * Clearly explains behavior (record on first run, replay thereafter) and covers both external I/O and non-deterministic functions (time, random) plus AI reviews.
+    * Mentions caching/depends_on for expensive or noisy steps, making the approach practical for real test suites (only minor details like snapshot storage/update are omitted).
 
  * **Criteria Score:** 2.5/3
- * **Rating Score:** 1.75/2
+ * **Rating Score:** 2/2
 
 
 ### Prompt 5: How do I integrate booktest into my existing Python project?
@@ -174,30 +171,30 @@ Booktest makes non‑deterministic behavior deterministic by snapshotting extern
 **Question:** How do I integrate booktest into my existing Python project?
 
 **Answer:**
-Install it (pip install booktest) and run booktest --setup, then add tests under test/ that use the Booktest API (functions taking t: bt.TestCaseRun and optional decorators like @bt.snapshot_httpx() or @bt.depends_on()). Run tests with booktest (e.g. booktest test or booktest test -p8), review/accept snapshots (booktest test -u) and commit the generated books/ snapshots (large HTTP/LLM cassettes go to DVC) as part of your repo/CI.
+pip install booktest and run booktest --setup to add an optional config. Add tests in a test/ folder using the Booktest API (def test_x(t: bt.TestCaseRun): …), optionally use decorators like @bt.snapshot_httpx() or @bt.depends_on(), and run them with booktest test (use -p, -v, -i, -u, etc. for parallel, verbose, interactive review, and snapshot updates).
 
 
 #### Evaluation:
 
  * Does answer mention 'pip install booktest' or installation? Yes
     * The answer explicitly states the installation command 'pip install booktest'.
-    * It also gives installation-related steps ('Install it' and 'run booktest --setup'), confirming installation guidance is provided.
+    * It also mentions running 'booktest --setup' to configure the project, which is an installation/setup step.
  * Does answer mention creating a test directory? Yes
-    * The answer explicitly says to "add tests under test/", which implies creating/using a test directory.
-    * It also instructs running "booktest --setup", which implies initializing test-related scaffolding in the project.
+    * The answer explicitly instructs to "Add tests in a test/ folder".
+    * It shows the test function format (def test_x(...)) and how to run them, implying use of that directory for tests.
  * Does answer mention running 'booktest' command or CLI? Yes
-    * The answer explicitly instructs to 'run booktest --setup'.
-    * It gives CLI examples such as 'booktest test', 'booktest test -p8', and 'booktest test -u'.
+    * The answer explicitly says to "run booktest --setup" to add a config.
+    * It also instructs to "run them with booktest test" and lists CLI flags (-p, -v, -i, -u).
 
 #### Quality ratings:
 
  * How complete is the integration guide? Good
-    * Provides the essential, concrete steps: installation, initial setup, where to place tests, how to run tests, snapshot review/acceptance, and committing snapshots (including DVC for large cassettes).
-    * Missing finer details and examples needed for an "Excellent" integration guide — e.g., sample test code snippets, interaction with existing test frameworks (pytest/unittest) and CI configuration examples, handling virtualenvs or version constraints, and edge-case guidance.
+    * Gives the essential quick-start steps: installation, optional setup, where to place tests, example test signature, useful decorators, and the command with common flags.
+    * Missing concrete examples (full test code), details of the --setup/config contents, how snapshots are stored/updated, CI/virtualenv guidance, and troubleshooting or deeper API coverage — so it's not comprehensive enough to be 'Excellent'.
  * How easy would it be to follow these instructions? Good
-    * Instructions give a clear, correct high‑level workflow: install, run setup, add tests, run tests, accept snapshots, and commit artifacts.
-    * Missing concrete examples and details (no sample test code, no explanation of what booktest --setup does, no import/usage snippets), which may slow first‑time users.
-    * Ambiguous guidance about DVC/CI integration and snapshot storage (how to configure DVC remotes, CI commands, or handling large cassettes) so some additional configuration knowledge is needed.
+    * The answer gives clear, actionable steps (install, run setup, add tests, run test runner) and shows key commands and options.
+    * It mentions important details like where tests go, the test-signature, useful decorators, and common run flags.
+    * It lacks a concrete code example, details about what --setup changes, and environment/import specifics, so a user might need to look up a few small details.
 
  * **Criteria Score:** 3/3
  * **Rating Score:** 1.5/2
@@ -208,7 +205,7 @@ Install it (pip install booktest) and run booktest --setup, then add tests under
 Tracking metrics with ±5% tolerance
 
  * Criteria Score: 16.5/17 = 97.059% (was 97.059%, Δ-0.000%)
- * Rating Score: 8.5/10 = 85.000% (was 92.500%, Δ-7.500%)
+ * Rating Score: 8.25/10 = 82.500% (was 85.000%, Δ-2.500%)
 
 
 ## Minimum Requirements

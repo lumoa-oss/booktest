@@ -38,12 +38,14 @@ Validation (2 sentences):
 ### Quality Assessment
 
  * Overall answer quality? Good
-    * Covers a sensible, practical workflow and references appropriate booktest features (staging, snapshots, metrics).
-    * Missing runnable example and precise API/commands, so some implementation details remain ambiguous.
+    * Provides a sensible, practical workflow and references relevant booktest capabilities (staging, snapshotting, metrics, reviewer annotations).
+    * Offers actionable normalization and CI tips (sort keys, round floats, redact timestamps, seed RNGs, mock slow steps) that improve test robustness.
+    * Lacks a minimal runnable example, concrete commands for running/updating snapshots, and verification of exact API names, which makes immediate adoption ambiguous.
  * Completeness? Mostly Complete
-    * Explains a sensible, practical workflow and references appropriate booktest capabilities (staged tests, snapshotting, metrics, reviewer annotations).
-    * Omits concrete, runnable examples and exact API semantics (imports, TestCaseRun construction, snapshot update commands), which reduces immediate executability.
-    * Doesn't fully clarify CI handling (fail vs. defer to human review), exact helper names, or patterns for mocking/caching slow pipeline steps.
+    * Gives a correct, practical high-level workflow (stage snapshots, normalize outputs, combine automated checks with human review).
+    * References appropriate booktest capabilities (staged tests, artifact capture, metrics, reviewer annotations) and offers useful normalization/CI tips.
+    * Lacks a minimal runnable example (imports, test skeleton) and precise commands for running/reviewing/updating snapshots, reducing immediate usability.
+    * Assumes specific helper/API names without verifying exact semantics (e.g., t.iln/t.tln), so some implementation details remain ambiguous.
 
 
 ### Metrics

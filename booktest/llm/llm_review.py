@@ -209,8 +209,8 @@ Question? (optionA|optionB|optionC|...)
 
 reviewed material
 
-Respond with the following JSON format that best answers the question! Option MUST BE be one of listed options. 
-Reasons must contain concise explanations for the decision in the same language the question and the options are defined. 
+Respond with the following JSON format! "result" field value MUST BE be one of listed options. 
+Reasons MUST contain concise explanations for the result in the same language the question and the options were defined. 
 
 {
   "result": "optionA", 
@@ -249,7 +249,7 @@ Reasons must contain concise explanations for the decision in the same language 
         """
         Use LLM to review accumulated output WITHOUT failing the test.
 
-        Returns the LLM's answer for later evaluation. Unlike reviewln(), this does
+        Returns the LLM's answer for later evaluation. Unlike treviewln(), this does
         not assert - it just records the answer as info output.
 
         Args:
@@ -286,6 +286,25 @@ Reasons must contain concise explanations for the decision in the same language 
             # Test continues regardless of result
         """
         return self._reviewln(False, prompt, expected, *fail_options)
+
+    def reviewln(self, prompt: str, expected: str, *fail_options: str) -> str:
+        """
+        Unlike treviewln, this version returns the review object to allow chaining reviews
+
+        Args:
+            prompt: Question to ask about the output
+            expected: Expected answer (for display/context)
+            *fail_options: Alternative answers (for display/context)
+
+        Returns:
+            The LLM's response
+
+        Example:
+            result = r.ireviewln("Is code well documented?", "Yes", "No")
+            # Test continues regardless of result
+        """
+        self._reviewln(False, prompt, expected, *fail_options)
+        return self
 
     def assertln(self, title: str, condition: bool):
         """
