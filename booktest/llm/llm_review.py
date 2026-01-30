@@ -188,7 +188,7 @@ class LlmReview(OutputWriter):
         self.output.h1("review:")
         return self
 
-    def reviewln(self, prompt: str, expected: str, *fail_options: str):
+    def _reviewln(self, do_assert: bool, prompt: str, expected: str, *fail_options: str):
         """
         Use LLM to review accumulated output and validate against expected answer.
 
@@ -235,7 +235,9 @@ Reasons must contain concise explanations for the decision in the same language 
         result = response["result"]
         why = response["why"]
 
-        self.output.anchor(f" * {prompt} ").i(result).i(" - ").assertln(result == expected)
+        self.output.anchor(f" * {prompt} ").i(result)
+        if do_assert:
+            self.output.i(" - ").assertln(result == expected)
         for i in why:
             self.output.iln(f"    * {i}")
 

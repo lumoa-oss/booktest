@@ -1,0 +1,247 @@
+<!-- markdownlint-disable -->
+
+# API Overview
+
+## Modules
+
+- [`booktest.booktest`](./booktest.booktest.md#module-booktestbooktest): Book test addresses problems with data science RnD workflow and regression
+- [`booktest.cli`](./booktest.cli.md#module-booktestcli): This package introduces the lumoa-rl cli interface.
+- [`booktest.config`](./booktest.config.md#module-booktestconfig)
+- [`booktest.config.config`](./booktest.config.config.md#module-booktestconfigconfig)
+- [`booktest.config.detection`](./booktest.config.detection.md#module-booktestconfigdetection)
+- [`booktest.config.naming`](./booktest.config.naming.md#module-booktestconfignaming)
+- [`booktest.config.selection`](./booktest.config.selection.md#module-booktestconfigselection)
+- [`booktest.core`](./booktest.core.md#module-booktestcore)
+- [`booktest.core.runs`](./booktest.core.runs.md#module-booktestcoreruns)
+- [`booktest.core.testbook`](./booktest.core.testbook.md#module-booktestcoretestbook)
+- [`booktest.core.testcaserun`](./booktest.core.testcaserun.md#module-booktestcoretestcaserun)
+- [`booktest.core.testrun`](./booktest.core.testrun.md#module-booktestcoretestrun)
+- [`booktest.core.tests`](./booktest.core.tests.md#module-booktestcoretests)
+- [`booktest.core.testsuite`](./booktest.core.testsuite.md#module-booktestcoretestsuite)
+- [`booktest.dependencies`](./booktest.dependencies.md#module-booktestdependencies)
+- [`booktest.dependencies.cache`](./booktest.dependencies.cache.md#module-booktestdependenciescache)
+- [`booktest.dependencies.dependencies`](./booktest.dependencies.dependencies.md#module-booktestdependenciesdependencies)
+- [`booktest.dependencies.memory`](./booktest.dependencies.memory.md#module-booktestdependenciesmemory)
+- [`booktest.llm`](./booktest.llm.md#module-booktestllm)
+- [`booktest.llm.llm`](./booktest.llm.llm.md#module-booktestllmllm): LLM abstraction for booktest.
+- [`booktest.llm.llm_review`](./booktest.llm.llm_review.md#module-booktestllmllm_review): LLM-assisted review functionality for booktest.
+- [`booktest.llm.tokenizer`](./booktest.llm.tokenizer.md#module-booktestllmtokenizer)
+- [`booktest.migration`](./booktest.migration.md#module-booktestmigration)
+- [`booktest.migration.migrate`](./booktest.migration.migrate.md#module-booktestmigrationmigrate): Automatic migration from v1 (legacy) to v2 (pytest-style) filesystem layout.
+- [`booktest.reporting`](./booktest.reporting.md#module-booktestreporting)
+- [`booktest.reporting.books`](./booktest.reporting.books.md#module-booktestreportingbooks)
+- [`booktest.reporting.colors`](./booktest.reporting.colors.md#module-booktestreportingcolors): ANSI color code utilities for terminal output.
+- [`booktest.reporting.output`](./booktest.reporting.output.md#module-booktestreportingoutput): Base output interface for test case writing and review.
+- [`booktest.reporting.reports`](./booktest.reporting.reports.md#module-booktestreportingreports)
+- [`booktest.reporting.review`](./booktest.reporting.review.md#module-booktestreportingreview)
+- [`booktest.reporting.testing`](./booktest.reporting.testing.md#module-booktestreportingtesting)
+- [`booktest.snapshots`](./booktest.snapshots.md#module-booktestsnapshots)
+- [`booktest.snapshots.env`](./booktest.snapshots.env.md#module-booktestsnapshotsenv)
+- [`booktest.snapshots.functions`](./booktest.snapshots.functions.md#module-booktestsnapshotsfunctions)
+- [`booktest.snapshots.httpx`](./booktest.snapshots.httpx.md#module-booktestsnapshotshttpx)
+- [`booktest.snapshots.requests`](./booktest.snapshots.requests.md#module-booktestsnapshotsrequests)
+- [`booktest.snapshots.snapshots`](./booktest.snapshots.snapshots.md#module-booktestsnapshotssnapshots)
+- [`booktest.snapshots.storage`](./booktest.snapshots.storage.md#module-booktestsnapshotsstorage): Storage abstraction layer for booktest snapshots.
+- [`booktest.utils`](./booktest.utils.md#module-booktestutils)
+- [`booktest.utils.coroutines`](./booktest.utils.coroutines.md#module-booktestutilscoroutines)
+- [`booktest.utils.setup`](./booktest.utils.setup.md#module-booktestutilssetup)
+- [`booktest.utils.utils`](./booktest.utils.utils.md#module-booktestutilsutils)
+
+## Classes
+
+- [`detection.BookTestSetup`](./booktest.config.detection.md#class-booktestsetup)
+- [`runs.ParallelRunner`](./booktest.core.runs.md#class-parallelrunner)
+- [`runs.RunBatch`](./booktest.core.runs.md#class-runbatch)
+- [`testbook.OrderedClass`](./booktest.core.testbook.md#class-orderedclass)
+- [`testbook.TestBook`](./booktest.core.testbook.md#class-testbook): Base class for test book instances
+- [`testbook.member_table`](./booktest.core.testbook.md#class-member_table)
+- [`testcaserun.TestCaseRun`](./booktest.core.testcaserun.md#class-testcaserun): A utility, that manages an invidiual test run, and provides the
+- [`testrun.TestRun`](./booktest.core.testrun.md#class-testrun): Runs a selection of test cases from the test-object
+- [`tests.Tests`](./booktest.core.tests.md#class-tests)
+- [`testsuite.TestSuite`](./booktest.core.testsuite.md#class-testsuite)
+- [`cache.LruCache`](./booktest.dependencies.cache.md#class-lrucache)
+- [`cache.NoCache`](./booktest.dependencies.cache.md#class-nocache)
+- [`dependencies.Pool`](./booktest.dependencies.dependencies.md#class-pool): A pool of resource like ports, that must not be used simultaneously.
+- [`dependencies.Resource`](./booktest.dependencies.dependencies.md#class-resource): Represents an exclusive resources, which must not be
+- [`dependencies.ResourceAllocator`](./booktest.dependencies.dependencies.md#class-resourceallocator): Allocators are used to allocate resources for tests.
+- [`dependencies.SingleResourceAllocator`](./booktest.dependencies.dependencies.md#class-singleresourceallocator): Allocators are used to allocate resources for tests.
+- [`memory.MemoryMonitor`](./booktest.dependencies.memory.md#class-memorymonitor)
+- [`llm.ClaudeLlm`](./booktest.llm.llm.md#class-claudellm): Anthropic Claude implementation of the LLM interface.
+- [`llm.GptLlm`](./booktest.llm.llm.md#class-gptllm): GPT/Azure OpenAI implementation of the LLM interface.
+- [`llm.Llm`](./booktest.llm.llm.md#class-llm): Abstract base class for LLM providers.
+- [`llm.LlmSentry`](./booktest.llm.llm.md#class-llmsentry): Context manager for temporarily switching the default LLM.
+- [`llm.OllamaLlm`](./booktest.llm.llm.md#class-ollamallm): Ollama implementation of the LLM interface for local LLMs.
+- [`llm_review.AIReviewResult`](./booktest.llm.llm_review.md#class-aireviewresult): Result of an AI-assisted test review.
+- [`llm_review.LlmReview`](./booktest.llm.llm_review.md#class-llmreview): LLM-assisted review for test outputs.
+- [`llm_review.LlmReview`](./booktest.llm.llm_review.md#class-llmreview): LLM-assisted review for test outputs.
+- [`tokenizer.BufferIterator`](./booktest.llm.tokenizer.md#class-bufferiterator)
+- [`tokenizer.TestTokenizer`](./booktest.llm.tokenizer.md#class-testtokenizer): simple tokenizer, that tokenizes whitespaces, words and numbers 
+- [`books.Books`](./booktest.reporting.books.md#class-books): This is a for helping run books locally e.g. inside pytest or inside a script
+- [`colors.Colors`](./booktest.reporting.colors.md#class-colors): ANSI color codes for terminal output.
+- [`output.OutputWriter`](./booktest.reporting.output.md#class-outputwriter): Abstract base class for output writing.
+- [`reports.CaseReports`](./booktest.reporting.reports.md#class-casereports): This class manages the saved case specific metrics/results.
+- [`reports.Metrics`](./booktest.reporting.reports.md#class-metrics): Stores the top level test metrics/results
+- [`reports.SnapshotState`](./booktest.reporting.reports.md#class-snapshotstate): Snapshot integrity outcome - independent of test logic
+- [`reports.SuccessState`](./booktest.reporting.reports.md#class-successstate): Test logic outcome - independent of snapshot management
+- [`reports.TestResult`](./booktest.reporting.reports.md#class-testresult): Legacy single-dimensional test result (for backward compatibility)
+- [`reports.TwoDimensionalTestResult`](./booktest.reporting.reports.md#class-twodimensionaltestresult): Two-dimensional test result separating logic success from snapshot management
+- [`reports.UserRequest`](./booktest.reporting.reports.md#class-userrequest)
+- [`testing.TestIt`](./booktest.reporting.testing.md#class-testit): utility for making assertions related to a specific object 
+- [`env.MockEnv`](./booktest.snapshots.env.md#class-mockenv)
+- [`env.MockMissingEnv`](./booktest.snapshots.env.md#class-mockmissingenv)
+- [`env.SnapshotEnv`](./booktest.snapshots.env.md#class-snapshotenv)
+- [`functions.FunctionCall`](./booktest.snapshots.functions.md#class-functioncall)
+- [`functions.FunctionCallSnapshot`](./booktest.snapshots.functions.md#class-functioncallsnapshot)
+- [`functions.FunctionSnapshotter`](./booktest.snapshots.functions.md#class-functionsnapshotter)
+- [`functions.MockFunctions`](./booktest.snapshots.functions.md#class-mockfunctions)
+- [`functions.SnapshotFunctions`](./booktest.snapshots.functions.md#class-snapshotfunctions)
+- [`httpx.RequestKey`](./booktest.snapshots.httpx.md#class-requestkey)
+- [`httpx.RequestSnapshot`](./booktest.snapshots.httpx.md#class-requestsnapshot)
+- [`httpx.SnapshotHttpx`](./booktest.snapshots.httpx.md#class-snapshothttpx)
+- [`requests.RequestKey`](./booktest.snapshots.requests.md#class-requestkey)
+- [`requests.RequestSnapshot`](./booktest.snapshots.requests.md#class-requestsnapshot)
+- [`requests.SnapshotAdapter`](./booktest.snapshots.requests.md#class-snapshotadapter): A fake adapter than can return predefined responses.
+- [`requests.SnapshotRequests`](./booktest.snapshots.requests.md#class-snapshotrequests)
+- [`storage.DVCStorage`](./booktest.snapshots.storage.md#class-dvcstorage): DVC-based content-addressable storage implementation.
+- [`storage.GitStorage`](./booktest.snapshots.storage.md#class-gitstorage): Git-based storage implementation with unified snapshot files.
+- [`storage.SnapshotStorage`](./booktest.snapshots.storage.md#class-snapshotstorage): Abstract base class for snapshot storage backends.
+- [`storage.StorageMode`](./booktest.snapshots.storage.md#class-storagemode): Available storage backends for snapshots.
+- [`utils.SetupTeardown`](./booktest.utils.utils.md#class-setupteardown)
+
+## Functions
+
+- [`cli.add_exec`](./booktest.cli.md#function-add_exec)
+- [`cli.exec_parsed`](./booktest.cli.md#function-exec_parsed)
+- [`cli.main`](./booktest.cli.md#function-main)
+- [`cli.setup_test_suite`](./booktest.cli.md#function-setup_test_suite)
+- [`config.extract_env_vars`](./booktest.config.config.md#function-extract_env_vars): Extract environment variables from config.
+- [`config.get_default_config`](./booktest.config.config.md#function-get_default_config)
+- [`config.get_fs_version`](./booktest.config.config.md#function-get_fs_version): Get the filesystem version from config.
+- [`config.parse_config_file`](./booktest.config.config.md#function-parse_config_file)
+- [`config.parse_config_value`](./booktest.config.config.md#function-parse_config_value)
+- [`config.resolve_default_config`](./booktest.config.config.md#function-resolve_default_config)
+- [`config.set_fs_version`](./booktest.config.config.md#function-set_fs_version): Set the filesystem version in config.
+- [`config.update_config_value`](./booktest.config.config.md#function-update_config_value): Update or add a configuration value in a config file.
+- [`detection.detect_module_setup`](./booktest.config.detection.md#function-detect_module_setup)
+- [`detection.detect_module_test_suite`](./booktest.config.detection.md#function-detect_module_test_suite)
+- [`detection.detect_module_tests`](./booktest.config.detection.md#function-detect_module_tests): Detects tests in a module. This is needed e.g. in pants, where original FS is not easily accessible 
+- [`detection.detect_setup`](./booktest.config.detection.md#function-detect_setup)
+- [`detection.detect_test_suite`](./booktest.config.detection.md#function-detect_test_suite)
+- [`detection.detect_tests`](./booktest.config.detection.md#function-detect_tests): Detects tests in a file system path
+- [`detection.empty_setup_teardown`](./booktest.config.detection.md#function-empty_setup_teardown)
+- [`detection.get_file_tests`](./booktest.config.detection.md#function-get_file_tests)
+- [`detection.get_module_tests`](./booktest.config.detection.md#function-get_module_tests)
+- [`detection.include_sys_path`](./booktest.config.detection.md#function-include_sys_path)
+- [`detection.parse_booktest_setup`](./booktest.config.detection.md#function-parse_booktest_setup)
+- [`detection.parse_booktest_setup_module`](./booktest.config.detection.md#function-parse_booktest_setup_module)
+- [`naming.camel_case_to_snake_case`](./booktest.config.naming.md#function-camel_case_to_snake_case)
+- [`naming.class_to_pytest_name`](./booktest.config.naming.md#function-class_to_pytest_name): Convert a test class to pytest-style name.
+- [`naming.class_to_test_path`](./booktest.config.naming.md#function-class_to_test_path)
+- [`naming.clean_class_name`](./booktest.config.naming.md#function-clean_class_name)
+- [`naming.clean_method_name`](./booktest.config.naming.md#function-clean_method_name)
+- [`naming.clean_test_postfix`](./booktest.config.naming.md#function-clean_test_postfix)
+- [`naming.from_filesystem_path`](./booktest.config.naming.md#function-from_filesystem_path): Convert filesystem path back to pytest-style name.
+- [`naming.function_to_pytest_name`](./booktest.config.naming.md#function-function_to_pytest_name): Convert a standalone test function to pytest-style name.
+- [`naming.is_pytest_name`](./booktest.config.naming.md#function-is_pytest_name): Check if a name is in pytest format (contains ::).
+- [`naming.method_to_pytest_name`](./booktest.config.naming.md#function-method_to_pytest_name): Convert a test method to pytest-style name.
+- [`naming.normalize_test_name`](./booktest.config.naming.md#function-normalize_test_name): Normalize test name to internal filesystem format.
+- [`naming.to_filesystem_path`](./booktest.config.naming.md#function-to_filesystem_path): Convert pytest-style name to safe filesystem path.
+- [`selection.is_selected`](./booktest.config.selection.md#function-is_selected): checks whether the test name is selected
+- [`selection.is_selected_test_suite`](./booktest.config.selection.md#function-is_selected_test_suite): checks whether the test suiite is selected
+- [`selection.match_selection_with_test_suite_name`](./booktest.config.selection.md#function-match_selection_with_test_suite_name)
+- [`runs.batch_dir`](./booktest.core.runs.md#function-batch_dir)
+- [`runs.case_batch_dir_and_report_file`](./booktest.core.runs.md#function-case_batch_dir_and_report_file)
+- [`runs.parallel_run_tests`](./booktest.core.runs.md#function-parallel_run_tests)
+- [`runs.prepare_batch_dir`](./booktest.core.runs.md#function-prepare_batch_dir)
+- [`runs.run_tests`](./booktest.core.runs.md#function-run_tests)
+- [`runs.run_tests_async`](./booktest.core.runs.md#function-run_tests_async)
+- [`testrun.match_method`](./booktest.core.testrun.md#function-match_method)
+- [`testrun.method_identity`](./booktest.core.testrun.md#function-method_identity)
+- [`testsuite.cases_of`](./booktest.core.testsuite.md#function-cases_of)
+- [`testsuite.decorate_tests`](./booktest.core.testsuite.md#function-decorate_tests)
+- [`testsuite.drop_prefix`](./booktest.core.testsuite.md#function-drop_prefix): removes a prefix like 'test' from all test.
+- [`testsuite.merge_tests`](./booktest.core.testsuite.md#function-merge_tests): Combines a list of Tests into a single Tests entity
+- [`dependencies.bind_dependent_method_if_unbound`](./booktest.dependencies.dependencies.md#function-bind_dependent_method_if_unbound)
+- [`dependencies.call_class_method_test`](./booktest.dependencies.dependencies.md#function-call_class_method_test)
+- [`dependencies.call_function_test`](./booktest.dependencies.dependencies.md#function-call_function_test)
+- [`dependencies.call_test`](./booktest.dependencies.dependencies.md#function-call_test)
+- [`dependencies.depends_on`](./booktest.dependencies.dependencies.md#function-depends_on): This method depends on a method on this object.
+- [`dependencies.get_decorated_attr`](./booktest.dependencies.dependencies.md#function-get_decorated_attr)
+- [`dependencies.port`](./booktest.dependencies.dependencies.md#function-port): Generates a resource for given port.
+- [`dependencies.port_range`](./booktest.dependencies.dependencies.md#function-port_range)
+- [`dependencies.release_dependencies`](./booktest.dependencies.dependencies.md#function-release_dependencies): Releases all dependencies
+- [`dependencies.remove_decoration`](./booktest.dependencies.dependencies.md#function-remove_decoration)
+- [`memory.monitor_memory`](./booktest.dependencies.memory.md#function-monitor_memory)
+- [`memory.t_memory`](./booktest.dependencies.memory.md#function-t_memory)
+- [`llm.get_llm`](./booktest.llm.llm.md#function-get_llm): Get the default LLM instance.
+- [`llm.set_llm`](./booktest.llm.llm.md#function-set_llm): Set a specific LLM instance to use globally.
+- [`llm.set_llm_factory`](./booktest.llm.llm.md#function-set_llm_factory): Set which LLM class to use without creating an instance immediately.
+- [`llm.use_llm`](./booktest.llm.llm.md#function-use_llm): Decorator to set the LLM for a specific test function.
+- [`migrate.check_and_migrate`](./booktest.migration.migrate.md#function-check_and_migrate): Check filesystem version and migrate if needed.
+- [`migrate.cleanup_empty_directories`](./booktest.migration.migrate.md#function-cleanup_empty_directories): Remove empty directories after migration.
+- [`migrate.get_migration_status`](./booktest.migration.migrate.md#function-get_migration_status): Get current migration status information.
+- [`migrate.migrate_dvc_manifest_keys`](./booktest.migration.migrate.md#function-migrate_dvc_manifest_keys): Migrate DVC manifest keys from legacy to pytest-style format.
+- [`migrate.migrate_test_files`](./booktest.migration.migrate.md#function-migrate_test_files): Migrate test output files from legacy to pytest-style paths.
+- [`migrate.pytest_name_to_legacy_path`](./booktest.migration.migrate.md#function-pytest_name_to_legacy_path): Convert pytest-style name to legacy filesystem path.
+- [`colors.blue`](./booktest.reporting.colors.md#function-blue): Colorize text in blue.
+- [`colors.colorize`](./booktest.reporting.colors.md#function-colorize): Wrap text with ANSI color codes if color is enabled.
+- [`colors.cyan`](./booktest.reporting.colors.md#function-cyan): Colorize text in cyan.
+- [`colors.default_color`](./booktest.reporting.colors.md#function-default_color): Return text in terminal's default color (adapts to light/dark themes).
+- [`colors.dim_gray`](./booktest.reporting.colors.md#function-dim_gray): Colorize text in dim gray (more subtle than regular gray).
+- [`colors.gray`](./booktest.reporting.colors.md#function-gray): Colorize text in gray.
+- [`colors.green`](./booktest.reporting.colors.md#function-green): Colorize text in green.
+- [`colors.is_color_enabled`](./booktest.reporting.colors.md#function-is_color_enabled): Check if color output is enabled.
+- [`colors.red`](./booktest.reporting.colors.md#function-red): Colorize text in red (for errors).
+- [`colors.set_color_enabled`](./booktest.reporting.colors.md#function-set_color_enabled): Override color support detection.
+- [`colors.white`](./booktest.reporting.colors.md#function-white): Colorize text in bright white.
+- [`colors.yellow`](./booktest.reporting.colors.md#function-yellow): Colorize text in yellow (for diffs).
+- [`reports.read_lines`](./booktest.reporting.reports.md#function-read_lines)
+- [`reports.test_result_to_exit_code`](./booktest.reporting.reports.md#function-test_result_to_exit_code): Convert test result to exit code (supports both legacy and new format)
+- [`reports.write_lines`](./booktest.reporting.reports.md#function-write_lines)
+- [`review.case_review`](./booktest.reporting.review.md#function-case_review)
+- [`review.create_index`](./booktest.reporting.review.md#function-create_index)
+- [`review.end_report`](./booktest.reporting.review.md#function-end_report): Print end of test run summary.
+- [`review.freeze_case`](./booktest.reporting.review.md#function-freeze_case)
+- [`review.interact`](./booktest.reporting.review.md#function-interact)
+- [`review.maybe_print_logs`](./booktest.reporting.review.md#function-maybe_print_logs)
+- [`review.perform_ai_review`](./booktest.reporting.review.md#function-perform_ai_review): Perform AI review of test differences.
+- [`review.print_ai_review_result`](./booktest.reporting.review.md#function-print_ai_review_result): Print AI review result to console.
+- [`review.report_case`](./booktest.reporting.review.md#function-report_case)
+- [`review.report_case_begin`](./booktest.reporting.review.md#function-report_case_begin)
+- [`review.report_case_result`](./booktest.reporting.review.md#function-report_case_result)
+- [`review.review`](./booktest.reporting.review.md#function-review)
+- [`review.run_tool`](./booktest.reporting.review.md#function-run_tool): Run a tool used in reviews 
+- [`review.start_report`](./booktest.reporting.review.md#function-start_report)
+- [`testing.value_format`](./booktest.reporting.testing.md#function-value_format)
+- [`env.mock_env`](./booktest.snapshots.env.md#function-mock_env)
+- [`env.mock_missing_env`](./booktest.snapshots.env.md#function-mock_missing_env)
+- [`env.snapshot_env`](./booktest.snapshots.env.md#function-snapshot_env)
+- [`functions.mock_functions`](./booktest.snapshots.functions.md#function-mock_functions): @param lose_request_details Saves no request details to avoid leaking keys
+- [`functions.set_function`](./booktest.snapshots.functions.md#function-set_function)
+- [`functions.snapshot_functions`](./booktest.snapshots.functions.md#function-snapshot_functions): @param lose_request_details Saves no request details to avoid leaking keys
+- [`httpx.snapshot_httpx`](./booktest.snapshots.httpx.md#function-snapshot_httpx): @param lose_request_details Saves no request details to avoid leaking keys
+- [`requests.default_encode_body`](./booktest.snapshots.requests.md#function-default_encode_body)
+- [`requests.json_to_sha1`](./booktest.snapshots.requests.md#function-json_to_sha1)
+- [`requests.snapshot_requests`](./booktest.snapshots.requests.md#function-snapshot_requests): @param lose_request_details Saves no request details to avoid leaking keys
+- [`requests.threading_rlock`](./booktest.snapshots.requests.md#function-threading_rlock)
+- [`snapshots.frozen_snapshot_path`](./booktest.snapshots.snapshots.md#function-frozen_snapshot_path)
+- [`snapshots.have_snapshots_dir`](./booktest.snapshots.snapshots.md#function-have_snapshots_dir)
+- [`snapshots.out_snapshot_path`](./booktest.snapshots.snapshots.md#function-out_snapshot_path)
+- [`storage.create_storage`](./booktest.snapshots.storage.md#function-create_storage): Create appropriate storage backend based on mode and configuration.
+- [`storage.detect_storage_mode`](./booktest.snapshots.storage.md#function-detect_storage_mode): Detect which storage mode to use based on configuration and environment.
+- [`coroutines.maybe_async_call`](./booktest.utils.coroutines.md#function-maybe_async_call)
+- [`setup.prompt_config`](./booktest.utils.setup.md#function-prompt_config)
+- [`setup.setup_booktest`](./booktest.utils.setup.md#function-setup_booktest)
+- [`setup.setup_personal`](./booktest.utils.setup.md#function-setup_personal)
+- [`setup.setup_project`](./booktest.utils.setup.md#function-setup_project)
+- [`utils.accept_all`](./booktest.utils.utils.md#function-accept_all)
+- [`utils.combine_decorators`](./booktest.utils.utils.md#function-combine_decorators)
+- [`utils.file_or_resource_exists`](./booktest.utils.utils.md#function-file_or_resource_exists): Check if a file or resource exists.
+- [`utils.open_file_or_resource`](./booktest.utils.utils.md#function-open_file_or_resource): Open a file or resource for reading.
+- [`utils.path_to_module_resource`](./booktest.utils.utils.md#function-path_to_module_resource): DEPRECATED: Old API that doesn't handle dots in filenames.
+- [`utils.setup_teardown`](./booktest.utils.utils.md#function-setup_teardown)
+
+
+---
+
+_This file was automatically generated via [lazydocs](https://github.com/ml-tooling/lazydocs)._
