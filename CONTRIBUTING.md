@@ -41,6 +41,17 @@ Thanks for your interest in contributing to Booktest! This document provides gui
 ./do coverage
 ```
 
+## Generating Documentation
+
+API documentation is generated using [lazydocs](https://github.com/ml-tooling/lazydocs):
+
+```bash
+# Generate API docs
+./do docs
+```
+
+This creates/updates markdown files in `docs/api/` from the Python docstrings.
+
 ## Code Style
 
 We use `pycodestyle` for linting:
