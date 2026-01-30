@@ -18,7 +18,7 @@ test book/test_hello.py::test_hello
 
   the message is hello world!
 
-book/test_hello.py::test_hello OK <number> ms.
+book/test_hello.py::test_hello ok <number> ms.
 
 test book/test_snapshot.py::test_auto_function_snapshots
 
@@ -27,7 +27,7 @@ test book/test_snapshot.py::test_auto_function_snapshots
    * timestamp: 1762340181632560455
    * random: 0.3846126080188771
 
-book/test_snapshot.py::test_auto_function_snapshots OK <number> ms.
+book/test_snapshot.py::test_auto_function_snapshots ok <number> ms.
 
 test book/teardown/setup_teardown_test.py::test_setup_teardown
 
@@ -45,7 +45,7 @@ test book/teardown/setup_teardown_test.py::test_setup_teardown
   
   global variable is 'set'..ok
 
-book/teardown/setup_teardown_test.py::test_setup_teardown OK <number> ms.
+book/teardown/setup_teardown_test.py::test_setup_teardown ok <number> ms.
 
 
 3/3 test succeeded in <number> ms

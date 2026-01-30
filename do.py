@@ -105,6 +105,24 @@ def clean() -> int:
     return os.system("rm -r build dist booktest.egg-info")
 
 
+def docs() -> int:
+    """Generate API documentation using lazydocs.
+
+    Runs from /tmp to avoid module shadowing issue with booktest/booktest.py.
+    """
+    import subprocess
+    result = subprocess.run(
+        ["lazydocs", "--output-path",
+         os.path.abspath("docs/api"),
+         "--overview-file", "README.md",
+         "booktest"],
+        cwd="/tmp"
+    )
+    if result.returncode == 0:
+        print("\nAPI docs generated in docs/api/")
+    return result.returncode
+
+
 def do(cmd, cache=None):
     if cache is None:
         cache = {}
@@ -145,6 +163,12 @@ def setup_subparser(subparsers):
                     help='runs linter') \
         .set_defaults(
             exec=lambda parsed: lint())
+
+    subparsers\
+        .add_parser('docs',
+                    help='generates API documentation with lazydocs') \
+        .set_defaults(
+            exec=lambda parsed: docs())
 
 
 def do_args(args, cache={}) -> int:

@@ -446,7 +446,7 @@ def report_case_result(printer,
 
         if result.success.name == "OK":
             if verbose:
-                printer(f"{green('OK')} {int_took_ms} ms.{snapshot_msg}{ai_summary}")
+                printer(f"{green('ok')} {int_took_ms} ms.{snapshot_msg}{ai_summary}")
             else:
                 printer(f"{green(str(int_took_ms) + ' ms')}{snapshot_msg}{ai_summary}")
         elif result.success.name == "DIFF":

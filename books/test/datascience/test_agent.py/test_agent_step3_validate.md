@@ -6,25 +6,46 @@ Agent validates the answer for quality and completeness
 ## Inherited State from Steps 1-2
 
 Question: How do I test a multi-step ML pipeline with booktest?
-Answer: Break the pipeline into independent stages and write one Booktest TestCaseRun that runs each stage on deterministic or sampled inputs, saving intermed...
+Answer: Use the TestCaseRun API to author multi-step tests: name each stage with t.h1 / t.h2, emit intermediate inputs/outputs with t.iln/t.tln so booktest wi...
 
 
 ## Validation
 
-✓ Completed validation with 133 words
+✓ Completed validation with 289 words
 
 
 ### Validation Result
 
-What works well: The answer gives a sensible, actionable high-level strategy—split the pipeline into stages, record intermediate artifacts, assert on stable metrics with tolerances, use sampling to keep tests fast, and escalate borderline cases to human review.  
-Issues / missing information: It omits concrete examples and wiring (no code snippets showing how to save/load checkpoints, set seeds or control nondeterminism, or run Booktest in CI), and some API names (t.h1/t.iln/t.tln/t.tmetric/t.start_review etc.) should be verified against the official booktest docs because the exact call signatures and artifact/metric APIs aren’t shown; it also doesn’t discuss mocking, stubbing heavy components, or strategies for automating or gating human reviews.  
-Overall assessment: Good — useful and practical guidance, but needs concrete code examples, precise API references, and extra details on reproducibility and CI integration to be fully actionable.
+1) Does it accurately answer the question?
+- Mostly. The answer gives a correct high-level approach for testing a multi-step ML pipeline with booktest (capture stage-by-stage outputs, normalize results, combine automated checks with human review), but it assumes specific API names without showing concrete, runnable code so some details may be ambiguous.
+
+2) Does it reference appropriate booktest features?
+- Yes. It mentions the right kinds of features you’d expect to use: staged/sectioned tests, snapshotting intermediate artifacts, numeric metrics/assertions, reviewer annotations, and artifact capture. However, the exact helper names (t.h1/t.h2/t.iln/t.tln) should be verified against the booktest docs — the answer would be stronger if it linked to or quoted exact API semantics.
+
+3) Is it clear and actionable?
+- Partly. The recommended workflow and normalization tips (sort keys, round floats, redact timestamps, seed RNGs, mock slow steps) are practical and actionable. But it lacks a minimal runnable example (imports, test skeleton) and concrete commands for running tests, reviewing diffs, and updating snapshots, which reduces immediate usability.
+
+4) What could be improved?
+- Include a short, runnable example test function showing imports and how to construct a TestCaseRun and use the exact API calls.
+- Clarify the semantics of t.iln/t.tln and header helpers, and show how snapshots are stored and updated (commands and CI best practices).
+- Explain how to fail vs. defer to human review in automated runs, and give patterns for caching/mocking slow pipeline steps in CI.
+
+Validation (2 sentences):
+- What works well: the answer provides a sensible, practical workflow and points to relevant booktest capabilities (staging, snapshotting, metrics, reviewer annotations) and useful normalization/CI tips. 
+- Issues/missing information: it relies on terse API names without runnable examples or precise commands for running/reviewing/updating snapshots, so overall assessment: Good.
 
 
 ### Quality Assessment
 
  * Overall answer quality? Good
+    * Provides a sensible, practical workflow and references relevant booktest capabilities (staging, snapshotting, metrics, reviewer annotations).
+    * Offers actionable normalization and CI tips (sort keys, round floats, redact timestamps, seed RNGs, mock slow steps) that improve test robustness.
+    * Lacks a minimal runnable example, concrete commands for running/updating snapshots, and verification of exact API names, which makes immediate adoption ambiguous.
  * Completeness? Mostly Complete
+    * Gives a correct, practical high-level workflow (stage snapshots, normalize outputs, combine automated checks with human review).
+    * References appropriate booktest capabilities (staged tests, artifact capture, metrics, reviewer annotations) and offers useful normalization/CI tips.
+    * Lacks a minimal runnable example (imports, test skeleton) and precise commands for running/reviewing/updating snapshots, reducing immediate usability.
+    * Assumes specific helper/API names without verifying exact semantics (e.g., t.iln/t.tln), so some implementation details remain ambiguous.
 
 
 ### Metrics

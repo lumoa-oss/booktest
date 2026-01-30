@@ -2,10 +2,16 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/booktest.svg)](https://pypi.org/project/booktest/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![GitHub stars](https://img.shields.io/github/stars/lumoa-oss/booktest)](https://github.com/lumoa-oss/booktest/stargazers)
+[![GitHub last commit](https://img.shields.io/github/last-commit/lumoa-oss/booktest)](https://github.com/lumoa-oss/booktest/commits/main)
 
 > Stop playing whack-a-mole with regressions. Stop waiting hours for test suites.
 > Stop pretending `assertEqual()` works for "Is this good enough?"
+
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="Booktest Demo" width="700">
+</p>
 
 Booktest is the first testing framework built for the **three fundamental realities** of data science:
 
@@ -537,10 +543,11 @@ More examples: [test/examples/](test/examples/) and [test/datascience/](test/dat
 ## Documentation
 
 - **[Getting Started Guide](getting-started.md)** - Your first test in 5 minutes
+- **[Use Case Gallery](docs/use-cases.md)** - Quick recipes for common scenarios
 - **[Complete Feature Guide](docs/features.md)** - Comprehensive documentation of all features
-- **[API Reference](docs/)** - Full API documentation
+- **[CI/CD Integration](docs/ci-cd.md)** - GitHub Actions, GitLab CI, CircleCI
+- **[API Reference](docs/api/README.md)** - Full API documentation
 - **[Examples](test/examples/)** - Copy-pasteable examples
-- **[Workflows & CI](workflows.md)** - Coverage, continuous integration
 - **[Development Guide](development.md)** - Contributing to booktest
 
 ---
@@ -609,3 +616,9 @@ Test outputs are organized like a book - chapters (test files), sections (test c
 ---
 
 **Ready to stop the whack-a-mole?** → [Get Started](getting-started.md)
+
+---
+
+![Booktest - Review-Driven Testing for Data Science](docs/assets/social_preview.png)
+
+*Found this useful? Give us a ⭐ on [GitHub](https://github.com/lumoa-oss/booktest)!*

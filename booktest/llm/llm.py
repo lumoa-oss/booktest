@@ -5,9 +5,10 @@ This module provides an abstract LLM interface and implementations for
 different LLM providers. The default LLM can be configured globally.
 """
 
+import json
 import os
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Any, List, Callable
 
 
 class Llm(ABC):
@@ -19,7 +20,7 @@ class Llm(ABC):
     """
 
     @abstractmethod
-    def prompt(self, request: str, max_completion_tokens: int = 1024) -> str:
+    def prompt(self, request: str, max_completion_tokens: int = 2048) -> str:
         """
         Send a prompt to the LLM and get a response.
 
@@ -32,6 +33,70 @@ class Llm(ABC):
         """
         pass
 
+    def prompt_json(
+        self,
+        request: str,
+        required_fields: List[str] = None,
+        validator: Callable[[dict], bool] = None,
+        max_retries: int = 3,
+        max_completion_tokens: int = 4 * 1024
+    ) -> dict:
+        """
+        Send a prompt and parse the response as JSON with validation and retry.
+
+        Note: Retries use the same request to preserve HTTP snapshot compatibility.
+        The request is not modified between retries.
+
+        Args:
+            request: The prompt text (should instruct LLM to respond with JSON)
+            required_fields: List of field names that must be present in response
+            validator: Optional function to validate parsed JSON, returns True if valid
+            max_retries: Number of retry attempts on parse/validation failure
+            max_completion_tokens: Maximum tokens for the LLM's response
+
+        Returns:
+            Parsed JSON as a dictionary
+
+        Raises:
+            ValueError: If JSON parsing or validation fails after all retries
+        """
+        last_error = None
+        last_response = None
+
+        for attempt in range(max_retries):
+            try:
+                response = self.prompt(request, max_completion_tokens)
+                last_response = response
+
+                # Try to extract JSON from response (LLM might add extra text)
+                json_start = response.find('{')
+                json_end = response.rfind('}') + 1
+                if json_start >= 0 and json_end > json_start:
+                    response = response[json_start:json_end]
+
+                parsed = json.loads(response)
+
+                # Validate required fields
+                if required_fields:
+                    missing = [f for f in required_fields if f not in parsed]
+                    if missing:
+                        raise ValueError(f"Missing required fields: {missing}")
+
+                # Run custom validator
+                if validator and not validator(parsed):
+                    raise ValueError("Custom validation failed")
+
+                return parsed
+
+            except (json.JSONDecodeError, ValueError, KeyError, TypeError) as e:
+                last_error = e
+                # Don't modify request - retries use same request for snapshot compatibility
+
+        raise ValueError(
+            f"Failed to get valid JSON after {max_retries} attempts. "
+            f"Last error: {last_error}. Last response: {last_response[:500] if last_response else 'None'}"
+        )
+
 
 class GptLlm(Llm):
     """
@@ -43,7 +108,7 @@ class GptLlm(Llm):
     - OPENAI_MODEL: Model name
     - OPENAI_DEPLOYMENT: Deployment name (for Azure)
     - OPENAI_API_VERSION: API version (for Azure)
-    - OPENAI_COMPLETION_MAX_TOKENS: Max tokens (default: 1024)
+    - OPENAI_COMPLETION_MAX_TOKENS: Max tokens (default: 2048)
     """
 
     def __init__(self, client=None):
@@ -65,7 +130,7 @@ class GptLlm(Llm):
         else:
             self.client = client
 
-    def prompt(self, request: str, max_completion_tokens: int = 1024) -> str:
+    def prompt(self, request: str, max_completion_tokens: int = 2048) -> str:
         """
         Send a prompt to GPT and get a response.
 
@@ -86,34 +151,177 @@ class GptLlm(Llm):
         return response.choices[0].message.content
 
 
-# Global default LLM instance
+class ClaudeLlm(Llm):
+    """
+    Anthropic Claude implementation of the LLM interface.
+
+    Requires:
+    - anthropic package: pip install anthropic
+    - ANTHROPIC_API_KEY environment variable
+
+    Optional environment variables:
+    - ANTHROPIC_MODEL: Model name (default: claude-sonnet-4-20250514)
+    """
+
+    def __init__(self, client=None):
+        """
+        Initialize Claude LLM.
+
+        Args:
+            client: Optional Anthropic client. If None, creates client
+                   from ANTHROPIC_API_KEY environment variable.
+        """
+        if client is None:
+            from anthropic import Anthropic
+            self.client = Anthropic()  # Uses ANTHROPIC_API_KEY automatically
+        else:
+            self.client = client
+
+    def prompt(self, request: str, max_completion_tokens: int = 2048) -> str:
+        """
+        Send a prompt to Claude and get a response.
+
+        Args:
+            request: The prompt text to send to Claude
+            max_completion_tokens: Maximum tokens for Claude's response
+
+        Returns:
+            Claude's response as a string
+        """
+        message = self.client.messages.create(
+            model=os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514"),
+            max_tokens=max_completion_tokens,
+            messages=[{"role": "user", "content": request}]
+        )
+        return message.content[0].text
+
+
+class OllamaLlm(Llm):
+    """
+    Ollama implementation of the LLM interface for local LLMs.
+
+    Requires:
+    - Ollama running locally (default: http://localhost:11434)
+
+    Optional environment variables:
+    - OLLAMA_HOST: Ollama server URL (default: http://localhost:11434)
+    - OLLAMA_MODEL: Model name (default: llama3.2)
+    """
+
+    def __init__(self, host: str = None, model: str = None):
+        """
+        Initialize Ollama LLM.
+
+        Args:
+            host: Ollama server URL. If None, uses OLLAMA_HOST env var
+                  or defaults to http://localhost:11434.
+            model: Model name. If None, uses OLLAMA_MODEL env var
+                   or defaults to llama3.2.
+        """
+        self.host = host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        self.model = model or os.getenv("OLLAMA_MODEL", "llama3.2")
+
+    def prompt(self, request: str, max_completion_tokens: int = 2048) -> str:
+        """
+        Send a prompt to Ollama and get a response.
+
+        Args:
+            request: The prompt text to send to Ollama
+            max_completion_tokens: Maximum tokens for Ollama's response
+
+        Returns:
+            Ollama's response as a string
+        """
+        import requests
+        response = requests.post(
+            f"{self.host}/api/generate",
+            json={
+                "model": self.model,
+                "prompt": request,
+                "stream": False,
+                "options": {"num_predict": max_completion_tokens}
+            }
+        )
+        response.raise_for_status()
+        return response.json()["response"]
+
+
+# Global LLM configuration
+_llm_factory: Optional[Callable[[], Llm]] = None
 _default_llm: Optional[Llm] = None
+
+
+def _auto_detect_llm() -> Llm:
+    """Create LLM based on environment variables."""
+    if os.getenv("ANTHROPIC_API_KEY"):
+        return ClaudeLlm()
+    elif os.getenv("OLLAMA_HOST") or os.getenv("OLLAMA_MODEL"):
+        return OllamaLlm()
+    else:
+        return GptLlm()
 
 
 def get_llm() -> Llm:
     """
     Get the default LLM instance.
 
-    Returns the global default LLM, creating a GptLlm instance if none is set.
+    The instance is cached for efficiency. To reset the cache (e.g., after
+    environment variables change), call set_llm(None).
+
+    Auto-detects the LLM provider based on environment variables:
+    1. ANTHROPIC_API_KEY -> ClaudeLlm
+    2. OLLAMA_HOST or OLLAMA_MODEL -> OllamaLlm
+    3. Otherwise -> GptLlm (Azure OpenAI)
+
+    You can override with set_llm_factory() to use a specific LLM class.
 
     Returns:
-        The default LLM instance
+        The cached LLM instance
     """
-    global _default_llm
+    global _default_llm, _llm_factory
     if _default_llm is None:
-        _default_llm = GptLlm()
+        if _llm_factory is not None:
+            _default_llm = _llm_factory()
+        else:
+            _default_llm = _auto_detect_llm()
     return _default_llm
 
 
-def set_llm(llm: Llm):
+def set_llm(llm: Optional[Llm]):
     """
-    Set the global default LLM instance.
+    Set a specific LLM instance to use globally.
 
     Args:
-        llm: The LLM instance to use as default
+        llm: The LLM instance to use, or None to reset cache
     """
     global _default_llm
     _default_llm = llm
+
+
+def set_llm_factory(factory: Optional[Callable[[], Llm]]):
+    """
+    Set which LLM class to use without creating an instance immediately.
+
+    The factory is called once when get_llm() is first invoked (after any
+    cache reset). The created instance is then cached.
+
+    Args:
+        factory: A callable that returns an Llm (e.g., bt.GptLlm, bt.ClaudeLlm),
+                 or None to reset to auto-detection
+
+    Example:
+        # Use GPT regardless of environment
+        bt.set_llm_factory(bt.GptLlm)
+
+        # Use Claude
+        bt.set_llm_factory(bt.ClaudeLlm)
+
+        # Custom configuration
+        bt.set_llm_factory(lambda: bt.OllamaLlm(model="codellama"))
+    """
+    global _llm_factory, _default_llm
+    _llm_factory = factory
+    _default_llm = None  # Reset cache so factory is used on next get_llm()
 
 
 class LlmSentry:
