@@ -238,10 +238,12 @@ Reasons must contain concise explanations for the decision in the same language 
         self.output.anchor(f" * {prompt} ").i(result)
         if do_assert:
             self.output.i(" - ").assertln(result == expected)
+        else:
+            self.iln()
         for i in why:
             self.output.iln(f"    * {i}")
 
-        return self
+        return result
 
     def ireviewln(self, prompt: str, expected: str, *fail_options: str) -> str:
         """
@@ -262,23 +264,7 @@ Reasons must contain concise explanations for the decision in the same language 
             result = r.ireviewln("Is code well documented?", "Yes", "No")
             # Test continues regardless of result
         """
-        system_prompt = '''You are an expert reviewer for test results. You are given question in format:
-
-Question? (optionA|optionB|optionC|...)
-
-reviewed material
-
-Respond only with the exact option that best answers the question! Do not produce any
-other text or explanation! Only respond with one of the options given in the parentheses.'''
-
-        options = [expected] + list(fail_options)
-
-        request = f"{system_prompt}\n\n{prompt} ({'|'.join(options)})\n\n{self.buffer}"
-        result = self.llm.prompt(request)
-
-        # Just output the result, don't assert
-        self.output.anchor(f" * {prompt} ").iln(result)
-        return result
+        return self._reviewln(False, prompt, expected, *fail_options)
 
     def treviewln(self, prompt: str, expected: str, *fail_options: str) -> str:
         """
@@ -299,23 +285,7 @@ other text or explanation! Only respond with one of the options given in the par
             result = r.treviewln("Is code well documented?", "Yes", "No")
             # Test continues regardless of result
         """
-        system_prompt = '''You are an expert reviewer for test results. You are given question in format:
-
-Question? (optionA|optionB|optionC|...)
-
-reviewed material
-
-Respond only with the exact option that best answers the question! Do not produce any
-other text or explanation! Only respond with one of the options given in the parentheses.'''
-
-        options = [expected] + list(fail_options)
-
-        request = f"{system_prompt}\n\n{prompt} ({'|'.join(options)})\n\n{self.buffer}"
-        result = self.llm.prompt(request)
-
-        # Write to tested output so it's compared against snapshot
-        self.output.anchor(f" * {prompt} ").tln(result)
-        return result
+        return self._reviewln(False, prompt, expected, *fail_options)
 
     def assertln(self, title: str, condition: bool):
         """

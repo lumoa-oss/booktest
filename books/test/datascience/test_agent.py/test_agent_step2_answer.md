@@ -25,5 +25,11 @@ Run with booktest test and review generated diffs; for CI keep slow steps mocked
 ### Answer Review
 
  * Does answer follow the plan? Yes
+    * The answer directly follows the plan: it shows naming stages (t.h1/t.h2), emitting intermediate I/O (t.iln/t.tln), and using snapshots/diffs and reviewer annotations (t.start_review).
+    * It covers the required practices: normalizing outputs for stable diffs, adding metrics/assertions (t.tmetric), storing artifacts, and gives concrete code patterns and CI recommendations (mocking, seeding RNGs).
  * Is answer accurate per documentation? No
+    * The answer asserts specific API names and behaviors (t.h1/t.h2, t.tln/t.iln, t.tmetric, t.start_review, TestCaseRun/booktest) that are not verifiable from the documentation and appear to be invented or speculative.
+    * It promises concrete guarantees (automatic section snapshotting/diffing, reviewer prompts, exact artifact capture workflow) without citing documented method signatures, parameters, or constraints, so the precise usage and effects may be incorrect or incomplete.
  * Is answer clear and concise? Yes
+    * Da instrucciones paso a paso y ejemplos concretos (t.h1/t.tln, t.tmetric), lo que facilita la implementación.
+    * Incluye flujo de trabajo y recomendaciones para CI y estabilidad, haciendo las acciones claras y aplicables.

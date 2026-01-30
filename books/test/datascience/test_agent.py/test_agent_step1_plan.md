@@ -30,4 +30,9 @@ How do I test a multi-step ML pipeline with booktest?
 ### Plan Review
 
  * Does plan address the question? Yes
+    * Covers the relevant booktest features needed (TestCaseRun API, named steps, snapshotting/artifacts, reviewer annotations, diff helpers) that are central to testing multi-step pipelines.
+    * Specifies key testing concepts (isolate stages, normalize outputs, deterministic fixtures, snapshot/regression checks) and captures intermediate artifacts for reviewer judgment.
+    * Promises a clear, actionable structure including a minimal 3-step example, running/reviewing workflow, and practical tips (seeding, caching/mocking, updating snapshots, CI), so it is directly usable.
  * Does plan reference relevant features? Yes
+    * The plan explicitly references core booktest features needed for multi-step pipelines: TestCaseRun API, named sections/steps, snapshotting/artifact capture, reviewer annotations/approval flow, and built-in diff helpers.
+    * It covers practical testing strategy and implementation: isolating stages, normalizing outputs, deterministic fixtures/seeding, handling slow steps (caching/mocking), a minimal concrete example, and CI/integration tips.

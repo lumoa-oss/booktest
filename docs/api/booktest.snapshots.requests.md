@@ -240,7 +240,7 @@ __init__(
     ignore_headers,
     json_to_hash=None,
     encode_body=None,
-    match_request=<function accept_all at 0x79bd3f5ca480>
+    match_request=<function accept_all at 0x72c1fc8b2480>
 )
 ```
 
@@ -328,7 +328,7 @@ __init__(
     ignore_headers=True,
     json_to_hash=None,
     encode_body=None,
-    match_request=<function accept_all at 0x79bd3f5ca480>
+    match_request=<function accept_all at 0x72c1fc8b2480>
 )
 ```
 
