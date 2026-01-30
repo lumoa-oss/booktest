@@ -619,10 +619,6 @@ Test outputs are organized like a book - chapters (test files), sections (test c
 
 ---
 
-<p align="center">
-  <a href="https://github.com/lumoa-oss/booktest">
-    <img src="docs/assets/social_preview.png" alt="Booktest - Review-Driven Testing for Data Science" width="500">
-  </a>
-  <br>
-  <em>Found this useful? Give us a ⭐ on GitHub!</em>
-</p>
+![Booktest - Review-Driven Testing for Data Science](docs/assets/social_preview.png)
+
+*Found this useful? Give us a ⭐ on [GitHub](https://github.com/lumoa-oss/booktest)!*
