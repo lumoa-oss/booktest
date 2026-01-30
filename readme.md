@@ -546,7 +546,7 @@ More examples: [test/examples/](test/examples/) and [test/datascience/](test/dat
 - **[Use Case Gallery](docs/use-cases.md)** - Quick recipes for common scenarios
 - **[Complete Feature Guide](docs/features.md)** - Comprehensive documentation of all features
 - **[CI/CD Integration](docs/ci-cd.md)** - GitHub Actions, GitLab CI, CircleCI
-- **[API Reference](docs/)** - Full API documentation
+- **[API Reference](docs/api/README.md)** - Full API documentation
 - **[Examples](test/examples/)** - Copy-pasteable examples
 - **[Development Guide](development.md)** - Contributing to booktest
 
