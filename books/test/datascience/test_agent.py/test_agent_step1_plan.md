@@ -5,12 +5,12 @@ Agent analyzes the question and creates an answering strategy
 
 ## Loading Context
 
-Loaded 33366 characters of documentation
+Loaded 33718 characters of documentation
 
 
 ## Creating Plan
 
-✓ Created plan with 109 words
+✓ Created plan with 162 words
 
 
 ### Question
@@ -20,9 +20,9 @@ How do I test a multi-step ML pipeline with booktest?
 
 ### Plan
 
-- Relevant features: TestCaseRun (per-test context), saving intermediate artifacts/checkpoints or "snapshots" for human review, diffing/visualization of outputs, and metric/threshold checks to auto-fail obvious regressions.
-- Key concepts to explain: break the pipeline into independent stages, use deterministic/sample inputs, capture and attach intermediate outputs for review (not just final output), combine automated checks (sanity metrics) with human review where needed, and keep tests fast by sampling.
-- Order to present: 1) design — define inputs and per-stage expectations; 2) implementation — show a test that runs each stage, saves checkpoints/artifacts, computes simple metrics and calls t.review or stores snapshots; 3) validation — run end-to-end on a sample, inspect diffs/metrics, iterate.
+- Relevant features to highlight: the TestCaseRun API (t...) for stepwise reporting, artifact logging (headings, text, tables/dataframes, plots, serialized outputs or snapshots), and the review/approval workflow (snapshots/diffs) so humans can accept regressions instead of strict asserts. Also mention lightweight smoke checks / numeric thresholds for automated gating.
+- Key concepts to explain: structure tests around pipeline checkpoints (ingest → preprocess → model → postprocess), log representative artifacts for each step, use deterministic small test data and mocks to keep runs fast, combine visual/textual snapshots with numeric assertions (e.g., metric thresholds) for automated failures vs human review, and how to approve/record expected outputs.
+- Order to present the answer: 1) short rationale for using booktest on multi-step pipelines, 2) minimal runnable example showing a TestCaseRun with one heading per pipeline step and artifact/log calls at each checkpoint, 3) explain review/approval flow and CI tips (mocks, caching, seeds, what to assert vs what to review), plus a couple of practical tips for expensive models.
 
 
 ### Plan Review

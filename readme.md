@@ -9,6 +9,10 @@
 > Stop playing whack-a-mole with regressions. Stop waiting hours for test suites.
 > Stop pretending `assertEqual()` works for "Is this good enough?"
 
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="Booktest Demo" width="700">
+</p>
+
 Booktest is the first testing framework built for the **three fundamental realities** of data science:
 
 1. **No correct answer** - Results need expert review, not binary pass/fail

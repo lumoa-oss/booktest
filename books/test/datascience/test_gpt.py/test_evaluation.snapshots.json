@@ -15,15 +15,15 @@
         "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
       },
       "response": {
-        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50Ijoicm9ib3QiLCJyZWZ1c2FsIjpudWxsLCJyb2xlIjoiYXNzaXN0YW50In19XSwiY3JlYXRlZCI6MTc2Mjc3NDQ2NiwiaWQiOiJjaGF0Y21wbC1DYUtTQUhkZ21vSzE4ZXBsV2JyaFdOSGg1enNmaCIsIm1vZGVsIjoiZ3B0LTUtbWluaS0yMDI1LTA4LTA3Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwicHJvbXB0X2ZpbHRlcl9yZXN1bHRzIjpbeyJwcm9tcHRfaW5kZXgiOjAsImNvbnRlbnRfZmlsdGVyX3Jlc3VsdHMiOnsiaGF0ZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZWxmX2hhcm0iOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2V4dWFsIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInZpb2xlbmNlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn19fV0sInN5c3RlbV9maW5nZXJwcmludCI6bnVsbCwidXNhZ2UiOnsiY29tcGxldGlvbl90b2tlbnMiOjMzMSwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjozMjAsInJlamVjdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowfSwicHJvbXB0X3Rva2VucyI6NjUsInByb21wdF90b2tlbnNfZGV0YWlscyI6eyJhdWRpb190b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjB9LCJ0b3RhbF90b2tlbnMiOjM5Nn19Cg==",
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50Ijoicm9ib3QiLCJyZWZ1c2FsIjpudWxsLCJyb2xlIjoiYXNzaXN0YW50In19XSwiY3JlYXRlZCI6MTc2OTc4MTEzNiwiaWQiOiJjaGF0Y21wbC1EM2pDeUoyYWt6TmpKcEJyNXI0ZThFT2Q1QmdDNiIsIm1vZGVsIjoiZ3B0LTUtbWluaS0yMDI1LTA4LTA3Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwicHJvbXB0X2ZpbHRlcl9yZXN1bHRzIjpbeyJwcm9tcHRfaW5kZXgiOjAsImNvbnRlbnRfZmlsdGVyX3Jlc3VsdHMiOnsiaGF0ZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZWxmX2hhcm0iOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2V4dWFsIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInZpb2xlbmNlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn19fV0sInN5c3RlbV9maW5nZXJwcmludCI6bnVsbCwidXNhZ2UiOnsiY29tcGxldGlvbl90b2tlbnMiOjIwMywiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjoxOTIsInJlamVjdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowfSwicHJvbXB0X3Rva2VucyI6NjUsInByb21wdF90b2tlbnNfZGV0YWlscyI6eyJhdWRpb190b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjB9LCJ0b3RhbF90b2tlbnMiOjI2OH19Cg==",
         "headers": {
-          "apim-request-id": "0eb53868-b552-47df-a5e3-3800fd42a2f0",
-          "azureml-model-session": "d040-20251101170135",
-          "connection": "keep-alive",
+          "apim-request-id": "ead8651d-d2c4-470f-a482-ea8678fad4e6",
+          "azureml-model-session": "d20260101084922-32b8d09c064d4ed8",
           "content-length": "1036",
           "content-type": "application/json",
-          "date": "Mon, 10 Nov 2025 11:34:31 GMT",
+          "date": "Fri, 30 Jan 2026 13:52:18 GMT",
           "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-accel-buffering": "no",
           "x-content-type-options": "nosniff",
           "x-ms-deployment-name": "gpt5-mini-dz",
           "x-ms-rai-invoked": "true",
@@ -32,7 +32,7 @@
           "x-ratelimit-limit-tokens": "100000",
           "x-ratelimit-remaining-requests": "93",
           "x-ratelimit-remaining-tokens": "99651",
-          "x-request-id": "22dc508f-3932-4882-9877-a93b2404c245"
+          "x-request-id": "437b64aa-5ab1-493a-815e-6aebb9d5bb30"
         },
         "statusCode": 200
       }
@@ -45,15 +45,15 @@
         "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
       },
       "response": {
-        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50Ijoibm8iLCJyZWZ1c2FsIjpudWxsLCJyb2xlIjoiYXNzaXN0YW50In19XSwiY3JlYXRlZCI6MTc2Mjc3NDQ0OCwiaWQiOiJjaGF0Y21wbC1DYUtSc3QxbVdtT0tzZHBOOFRoTk5wSjA4OFZMZSIsIm1vZGVsIjoiZ3B0LTUtbWluaS0yMDI1LTA4LTA3Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwicHJvbXB0X2ZpbHRlcl9yZXN1bHRzIjpbeyJwcm9tcHRfaW5kZXgiOjAsImNvbnRlbnRfZmlsdGVyX3Jlc3VsdHMiOnsiaGF0ZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZWxmX2hhcm0iOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2V4dWFsIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInZpb2xlbmNlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn19fV0sInN5c3RlbV9maW5nZXJwcmludCI6bnVsbCwidXNhZ2UiOnsiY29tcGxldGlvbl90b2tlbnMiOjc1LCJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjp7ImFjY2VwdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowLCJhdWRpb190b2tlbnMiOjAsInJlYXNvbmluZ190b2tlbnMiOjY0LCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjQ5LCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiYXVkaW9fdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowfSwidG90YWxfdG9rZW5zIjoxMjR9fQo=",
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50Ijoibm8iLCJyZWZ1c2FsIjpudWxsLCJyb2xlIjoiYXNzaXN0YW50In19XSwiY3JlYXRlZCI6MTc2OTc4MTEyMiwiaWQiOiJjaGF0Y21wbC1EM2pDa015VGh4Qm9Za0JXSmc0U2VYc0RScXJmeSIsIm1vZGVsIjoiZ3B0LTUtbWluaS0yMDI1LTA4LTA3Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwicHJvbXB0X2ZpbHRlcl9yZXN1bHRzIjpbeyJwcm9tcHRfaW5kZXgiOjAsImNvbnRlbnRfZmlsdGVyX3Jlc3VsdHMiOnsiaGF0ZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZWxmX2hhcm0iOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2V4dWFsIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInZpb2xlbmNlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn19fV0sInN5c3RlbV9maW5nZXJwcmludCI6bnVsbCwidXNhZ2UiOnsiY29tcGxldGlvbl90b2tlbnMiOjc1LCJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjp7ImFjY2VwdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowLCJhdWRpb190b2tlbnMiOjAsInJlYXNvbmluZ190b2tlbnMiOjY0LCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjQ5LCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiYXVkaW9fdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowfSwidG90YWxfdG9rZW5zIjoxMjR9fQo=",
         "headers": {
-          "apim-request-id": "54a3ed5d-905e-41cc-9b43-7d987610b658",
-          "azureml-model-session": "d126-20251101170135",
-          "connection": "keep-alive",
+          "apim-request-id": "d99d8ed0-91a8-4be1-bb52-e378a2814898",
+          "azureml-model-session": "d20260129025446-2cf0f6cd6f50",
           "content-length": "1031",
           "content-type": "application/json",
-          "date": "Mon, 10 Nov 2025 11:34:10 GMT",
+          "date": "Fri, 30 Jan 2026 13:52:03 GMT",
           "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-accel-buffering": "no",
           "x-content-type-options": "nosniff",
           "x-ms-deployment-name": "gpt5-mini-dz",
           "x-ms-rai-invoked": "true",
@@ -62,7 +62,7 @@
           "x-ratelimit-limit-tokens": "100000",
           "x-ratelimit-remaining-requests": "98",
           "x-ratelimit-remaining-tokens": "99907",
-          "x-request-id": "8206cf48-2087-401f-bfcc-c1ebf4716c84"
+          "x-request-id": "dd591b3d-f99f-47ef-b5e9-e1251a1071bc"
         },
         "statusCode": 200
       }
@@ -75,15 +75,15 @@
         "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
       },
       "response": {
-        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoieWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3NjI3NzQ0NTcsImlkIjoiY2hhdGNtcGwtQ2FLUzE0QlhNWjFjd0VySmRoSms3dGQ3ejAwN3ciLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjo3NSwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjo2NCwicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjB9LCJwcm9tcHRfdG9rZW5zIjo0OSwicHJvbXB0X3Rva2Vuc19kZXRhaWxzIjp7ImF1ZGlvX3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MH0sInRvdGFsX3Rva2VucyI6MTI0fX0K",
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoieWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3Njk3ODExMjksImlkIjoiY2hhdGNtcGwtRDNqQ3JjQlI3ZFNCcXZubjd6NndnZXd3RlN5RTMiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjoxMzksImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjAsImF1ZGlvX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6MTI4LCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjQ5LCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiYXVkaW9fdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowfSwidG90YWxfdG9rZW5zIjoxODh9fQo=",
         "headers": {
-          "apim-request-id": "560a9d64-c54a-4cc1-a815-b9e3085493ae",
-          "azureml-model-session": "d126-20251101170135",
-          "connection": "keep-alive",
-          "content-length": "1032",
+          "apim-request-id": "abf5271d-9e9c-45a8-bd01-e52bcc820b59",
+          "azureml-model-session": "d20260129025446-2cf0f6cd6f50",
+          "content-length": "1034",
           "content-type": "application/json",
-          "date": "Mon, 10 Nov 2025 11:34:19 GMT",
+          "date": "Fri, 30 Jan 2026 13:52:11 GMT",
           "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-accel-buffering": "no",
           "x-content-type-options": "nosniff",
           "x-ms-deployment-name": "gpt5-mini-dz",
           "x-ms-rai-invoked": "true",
@@ -92,7 +92,7 @@
           "x-ratelimit-limit-tokens": "100000",
           "x-ratelimit-remaining-requests": "95",
           "x-ratelimit-remaining-tokens": "99768",
-          "x-request-id": "9463ce7f-efd9-4f20-b618-8df5d42af3c3"
+          "x-request-id": "92270d01-7780-4589-a5bf-8e756a624ba3"
         },
         "statusCode": 200
       }
@@ -105,15 +105,15 @@
         "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
       },
       "response": {
-        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoieWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3NjI3NzQ0NTMsImlkIjoiY2hhdGNtcGwtQ2FLUnhMNDFiNllSRndFUXdwS3A4UndMM0E5bm0iLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjo3NSwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjo2NCwicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjB9LCJwcm9tcHRfdG9rZW5zIjo0OCwicHJvbXB0X3Rva2Vuc19kZXRhaWxzIjp7ImF1ZGlvX3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MH0sInRvdGFsX3Rva2VucyI6MTIzfX0K",
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoieWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3Njk3ODExMjcsImlkIjoiY2hhdGNtcGwtRDNqQ3B0SkFOQlVlbjdGYlVBZGNsVXZ2NzhUV1QiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjoxMzksImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjAsImF1ZGlvX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6MTI4LCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjQ4LCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiYXVkaW9fdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowfSwidG90YWxfdG9rZW5zIjoxODd9fQo=",
         "headers": {
-          "apim-request-id": "c49615a5-dc06-4e00-9287-bfa3ac253d66",
-          "azureml-model-session": "d126-20251101170135",
-          "connection": "keep-alive",
-          "content-length": "1032",
+          "apim-request-id": "6dca847d-2577-45e2-8f92-2652a7dd9e8a",
+          "azureml-model-session": "d20260129025446-2cf0f6cd6f50",
+          "content-length": "1034",
           "content-type": "application/json",
-          "date": "Mon, 10 Nov 2025 11:34:17 GMT",
+          "date": "Fri, 30 Jan 2026 13:52:08 GMT",
           "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-accel-buffering": "no",
           "x-content-type-options": "nosniff",
           "x-ms-deployment-name": "gpt5-mini-dz",
           "x-ms-rai-invoked": "true",
@@ -122,7 +122,7 @@
           "x-ratelimit-limit-tokens": "100000",
           "x-ratelimit-remaining-requests": "96",
           "x-ratelimit-remaining-tokens": "99814",
-          "x-request-id": "46c0ad37-9908-4fda-b730-86b8b46419c8"
+          "x-request-id": "6d6170ca-d5a0-4db1-8052-c6f2eb709838"
         },
         "statusCode": 200
       }
@@ -135,15 +135,15 @@
         "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
       },
       "response": {
-        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoieWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3NjI3NzQ0NTksImlkIjoiY2hhdGNtcGwtQ2FLUzM1T2VIM0dRMmlOOWV6V1owNjBZWU15ekUiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjozOTUsImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjAsImF1ZGlvX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6Mzg0LCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjU5LCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiYXVkaW9fdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowfSwidG90YWxfdG9rZW5zIjo0NTR9fQo=",
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoieWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3Njk3ODExMzIsImlkIjoiY2hhdGNtcGwtRDNqQ3VLaWxqVnRNREI0MjRaTmd1OTdVZldJeXMiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjoxMzksImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjAsImF1ZGlvX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6MTI4LCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjU5LCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiYXVkaW9fdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowfSwidG90YWxfdG9rZW5zIjoxOTh9fQo=",
         "headers": {
-          "apim-request-id": "ca451c0b-c461-486c-83a3-6bdc13576d05",
-          "azureml-model-session": "d132-20251101183205",
-          "connection": "keep-alive",
+          "apim-request-id": "ae10ab10-ce62-43fd-bb9b-882b81ff13c1",
+          "azureml-model-session": "d158-20251214112904",
           "content-length": "1034",
           "content-type": "application/json",
-          "date": "Mon, 10 Nov 2025 11:34:26 GMT",
+          "date": "Fri, 30 Jan 2026 13:52:15 GMT",
           "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-accel-buffering": "no",
           "x-content-type-options": "nosniff",
           "x-ms-deployment-name": "gpt5-mini-dz",
           "x-ms-rai-invoked": "true",
@@ -152,7 +152,7 @@
           "x-ratelimit-limit-tokens": "100000",
           "x-ratelimit-remaining-requests": "94",
           "x-ratelimit-remaining-tokens": "99713",
-          "x-request-id": "0506d0e7-15ca-4a9b-94e9-8eb7bb69eb7d"
+          "x-request-id": "e3051540-2c36-4893-abb6-016cc4f7b077"
         },
         "statusCode": 200
       }
@@ -165,15 +165,15 @@
         "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
       },
       "response": {
-        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50Ijoibm8iLCJyZWZ1c2FsIjpudWxsLCJyb2xlIjoiYXNzaXN0YW50In19XSwiY3JlYXRlZCI6MTc2Mjc3NDQ1MSwiaWQiOiJjaGF0Y21wbC1DYUtSdlV6a3FHbWJ4R1I3M3pVaU1ZMFVScVA2NiIsIm1vZGVsIjoiZ3B0LTUtbWluaS0yMDI1LTA4LTA3Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwicHJvbXB0X2ZpbHRlcl9yZXN1bHRzIjpbeyJwcm9tcHRfaW5kZXgiOjAsImNvbnRlbnRfZmlsdGVyX3Jlc3VsdHMiOnsiaGF0ZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZWxmX2hhcm0iOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2V4dWFsIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInZpb2xlbmNlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn19fV0sInN5c3RlbV9maW5nZXJwcmludCI6bnVsbCwidXNhZ2UiOnsiY29tcGxldGlvbl90b2tlbnMiOjEzOSwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjoxMjgsInJlamVjdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowfSwicHJvbXB0X3Rva2VucyI6NDksInByb21wdF90b2tlbnNfZGV0YWlscyI6eyJhdWRpb190b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjB9LCJ0b3RhbF90b2tlbnMiOjE4OH19Cg==",
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50Ijoibm8iLCJyZWZ1c2FsIjpudWxsLCJyb2xlIjoiYXNzaXN0YW50In19XSwiY3JlYXRlZCI6MTc2OTc4MTEyNSwiaWQiOiJjaGF0Y21wbC1EM2pDblJkNk1wUWlNRW56dlR6VnlBeDc3ckVhRiIsIm1vZGVsIjoiZ3B0LTUtbWluaS0yMDI1LTA4LTA3Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwicHJvbXB0X2ZpbHRlcl9yZXN1bHRzIjpbeyJwcm9tcHRfaW5kZXgiOjAsImNvbnRlbnRfZmlsdGVyX3Jlc3VsdHMiOnsiaGF0ZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZWxmX2hhcm0iOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2V4dWFsIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInZpb2xlbmNlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn19fV0sInN5c3RlbV9maW5nZXJwcmludCI6bnVsbCwidXNhZ2UiOnsiY29tcGxldGlvbl90b2tlbnMiOjc1LCJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjp7ImFjY2VwdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowLCJhdWRpb190b2tlbnMiOjAsInJlYXNvbmluZ190b2tlbnMiOjY0LCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjQ5LCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiYXVkaW9fdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowfSwidG90YWxfdG9rZW5zIjoxMjR9fQo=",
         "headers": {
-          "apim-request-id": "f853a783-6668-4f6f-bc6a-aa8de24c4dfa",
-          "azureml-model-session": "d126-20251101170135",
-          "connection": "keep-alive",
-          "content-length": "1033",
+          "apim-request-id": "81deb58b-6774-467b-83d7-1d434316a72b",
+          "azureml-model-session": "d164-20251214154715",
+          "content-length": "1031",
           "content-type": "application/json",
-          "date": "Mon, 10 Nov 2025 11:34:13 GMT",
+          "date": "Fri, 30 Jan 2026 13:52:06 GMT",
           "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-accel-buffering": "no",
           "x-content-type-options": "nosniff",
           "x-ms-deployment-name": "gpt5-mini-dz",
           "x-ms-rai-invoked": "true",
@@ -182,7 +182,7 @@
           "x-ratelimit-limit-tokens": "100000",
           "x-ratelimit-remaining-requests": "97",
           "x-ratelimit-remaining-tokens": "99861",
-          "x-request-id": "c5debc97-d262-472b-a5a3-10184707a28f"
+          "x-request-id": "609389d5-5cbf-4b91-babb-b5d842b661e9"
         },
         "statusCode": 200
       }
@@ -195,15 +195,15 @@
         "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
       },
       "response": {
-        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoieWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3NjI3NzQ0NDYsImlkIjoiY2hhdGNtcGwtQ2FLUnFkWjBGQ3Y3OXVIeGJEcHh6Qk9ZZ2ZhTGsiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjoxMzksImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjAsImF1ZGlvX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6MTI4LCJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6MH0sInByb21wdF90b2tlbnMiOjUyLCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiYXVkaW9fdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowfSwidG90YWxfdG9rZW5zIjoxOTF9fQo=",
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoieWVzIiwicmVmdXNhbCI6bnVsbCwicm9sZSI6ImFzc2lzdGFudCJ9fV0sImNyZWF0ZWQiOjE3Njk3ODExMjAsImlkIjoiY2hhdGNtcGwtRDNqQ2kwS3lTWlhsc2JMcWdjSzNMeDMyZldHQVEiLCJtb2RlbCI6ImdwdC01LW1pbmktMjAyNS0wOC0wNyIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsInByb21wdF9maWx0ZXJfcmVzdWx0cyI6W3sicHJvbXB0X2luZGV4IjowLCJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fX1dLCJzeXN0ZW1fZmluZ2VycHJpbnQiOm51bGwsInVzYWdlIjp7ImNvbXBsZXRpb25fdG9rZW5zIjo3NSwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6MCwiYXVkaW9fdG9rZW5zIjowLCJyZWFzb25pbmdfdG9rZW5zIjo2NCwicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjB9LCJwcm9tcHRfdG9rZW5zIjo1MiwicHJvbXB0X3Rva2Vuc19kZXRhaWxzIjp7ImF1ZGlvX3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MH0sInRvdGFsX3Rva2VucyI6MTI3fX0K",
         "headers": {
-          "apim-request-id": "e5a92eed-abca-493d-ad42-f2914d4c22f8",
-          "azureml-model-session": "d127-20251101170135",
-          "connection": "keep-alive",
-          "content-length": "1034",
+          "apim-request-id": "ba72535f-4cc7-42de-8bdc-0078edba7451",
+          "azureml-model-session": "d165-20251214172316",
+          "content-length": "1032",
           "content-type": "application/json",
-          "date": "Mon, 10 Nov 2025 11:34:08 GMT",
+          "date": "Fri, 30 Jan 2026 13:52:01 GMT",
           "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-accel-buffering": "no",
           "x-content-type-options": "nosniff",
           "x-ms-deployment-name": "gpt5-mini-dz",
           "x-ms-rai-invoked": "true",
@@ -212,7 +212,7 @@
           "x-ratelimit-limit-tokens": "100000",
           "x-ratelimit-remaining-requests": "99",
           "x-ratelimit-remaining-tokens": "99953",
-          "x-request-id": "d0819cef-aa7c-4a6f-bb48-83b9a51f2e13"
+          "x-request-id": "8ad62c90-7a1e-4129-82dd-90b2403451fe"
         },
         "statusCode": 200
       }

@@ -6,19 +6,19 @@ Agent validates the answer for quality and completeness
 ## Inherited State from Steps 1-2
 
 Question: How do I test a multi-step ML pipeline with booktest?
-Answer: Break the pipeline into independent stages and write one Booktest TestCaseRun that runs each stage on deterministic or sampled inputs, saving intermed...
+Answer: Treat each pipeline step as something to record, not assert-to-death: use the TestCaseRun API to log headings and notes (t.h1, t.tln), create checkpoi...
 
 
 ## Validation
 
-✓ Completed validation with 133 words
+✓ Completed validation with 121 words
 
 
 ### Validation Result
 
-What works well: The answer gives a sensible, actionable high-level strategy—split the pipeline into stages, record intermediate artifacts, assert on stable metrics with tolerances, use sampling to keep tests fast, and escalate borderline cases to human review.  
-Issues / missing information: It omits concrete examples and wiring (no code snippets showing how to save/load checkpoints, set seeds or control nondeterminism, or run Booktest in CI), and some API names (t.h1/t.iln/t.tln/t.tmetric/t.start_review etc.) should be verified against the official booktest docs because the exact call signatures and artifact/metric APIs aren’t shown; it also doesn’t discuss mocking, stubbing heavy components, or strategies for automating or gating human reviews.  
-Overall assessment: Good — useful and practical guidance, but needs concrete code examples, precise API references, and extra details on reproducibility and CI integration to be fully actionable.
+What works well: The answer gives a practical, testable strategy (record checkpoints, attach artifacts, unit-test stages with synthetic inputs, and use toleranced metrics for regressions) and mentions useful operational tips (fixed seeds, caching, sampling, visualizations) that are directly applicable when testing ML pipelines.  
+Issues or missing information: It’s high-level and assumes specific Booktest APIs (t.h1, t.tln, t.tmetric, t.start_review) without examples or exact usage, and it omits details on how to snapshot/attach large artifacts, set comparator/tolerance semantics, integrate with CI or model registries, and manage privacy/size of artifacts or rebaselining diffs.  
+Overall assessment: Good — actionable guidance and appropriate feature calls, but would be stronger with concrete code snippets, explicit API references, and practical rules for choosing checkpoints, tolerances, and CI integration.
 
 
 ### Quality Assessment

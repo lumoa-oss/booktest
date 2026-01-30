@@ -6,7 +6,7 @@ using documentation as context.
 
 ## Loading Context
 
-Loaded 1090 lines of documentation
+Loaded 1093 lines of documentation
 
 
 ## Testing Prompts
@@ -17,7 +17,7 @@ Loaded 1090 lines of documentation
 **Question:** What is booktest?
 
 **Answer:**
-Booktest is a Python testing framework for data science and LLM workflows that treats test outputs as human-readable, Git-tracked markdown snapshots instead of binary asserts. It combines build-style caching/dependencies, tolerance-based metrics, HTTP/LLM snapshotting, and AI-assisted review/diffing to make non-deterministic outputs reviewable and regressions manageable.
+Booktest is a Python testing framework for data science that turns test outputs into Git-trackable, human-readable snapshots and adds review-driven workflows (including AI-assisted evaluation) and tolerance-based metrics for non-deterministic ML/LLM outputs. It also provides a build-style dependency system with caching and automatic HTTP/LLM mocking to speed up expensive pipelines and make regressions reviewable rather than simply failing.
 
 
 #### Evaluation:
@@ -40,7 +40,7 @@ Booktest is a Python testing framework for data science and LLM workflows that t
 **Question:** When should I use booktest instead of pytest?
 
 **Answer:**
-Use booktest for data‑science or LLM workflows where outputs are non‑deterministic or subjective and need human/AI review, tolerance‑based metrics, snapshot diffs, HTTP/LLM mocking, and incremental/cached pipelines. For traditional deterministic unit tests with strict pass/fail assertions, stick with pytest.
+Use booktest when outputs are non‑deterministic or need expert/AI review — e.g., LLM responses, model evaluation, large data pipelines that need snapshot diffs, tolerance metrics, caching, and incremental runs. For traditional deterministic unit tests with clear pass/fail assertions, stick with pytest.
 
 
 #### Evaluation:
@@ -51,11 +51,11 @@ Use booktest for data‑science or LLM workflows where outputs are non‑determi
 
 #### Quality ratings:
 
- * How clearly are the use cases differentiated? Excellent
+ * How clearly are the use cases differentiated? Good
  * How helpful would this be for someone choosing a testing framework? Excellent
 
  * **Criteria Score:** 3/3
- * **Rating Score:** 2/2
+ * **Rating Score:** 1.75/2
 
 
 ### Prompt 3: Write a simple booktest example for fizzbuzz
@@ -63,22 +63,19 @@ Use booktest for data‑science or LLM workflows where outputs are non‑determi
 **Question:** Write a simple booktest example for fizzbuzz
 
 **Answer:**
-Create test/test_fizzbuzz.py to snapshot FizzBuzz output (so future changes are reviewable). Example:
+Create test/test_fizzbuzz.py with this content. Run with `booktest test` to snapshot and review the FizzBuzz output.
 
 ```python
 import booktest as bt
 
 def fizzbuzz(n):
-    if n % 15 == 0:
-        return "fizzbuzz"
-    if n % 3 == 0:
-        return "fizz"
-    if n % 5 == 0:
-        return "buzz"
+    if n % 15 == 0: return "FizzBuzz"
+    if n % 3 == 0: return "Fizz"
+    if n % 5 == 0: return "Buzz"
     return str(n)
 
 def test_fizzbuzz(t: bt.TestCaseRun):
-    t.h1("FizzBuzz 1–15")
+    t.h1("FizzBuzz 1-15")
     for i in range(1, 16):
         t.tln(f"{i}: {fizzbuzz(i)}")
 ```
@@ -95,10 +92,10 @@ def test_fizzbuzz(t: bt.TestCaseRun):
 #### Quality ratings:
 
  * How clear and understandable is the code example? Excellent
- * How well does the example demonstrate booktest features? Excellent
+ * How well does the example demonstrate booktest features? Good
 
  * **Criteria Score:** 5/5
- * **Rating Score:** 2/2
+ * **Rating Score:** 1.75/2
 
 
 ### Prompt 4: How does booktest handle non-deterministic results?
@@ -106,21 +103,21 @@ def test_fizzbuzz(t: bt.TestCaseRun):
 **Question:** How does booktest handle non-deterministic results?
 
 **Answer:**
-Booktest makes non‑deterministic outputs reproducible by recording and replaying them: use decorators like @bt.snapshot_httpx()/@bt.snapshot_requests() to cassette HTTP/LLM calls and @bt.snapshot_functions(time.time, random.random) to stub random/timestamps. First runs record snapshots (including AI reviews) and cached test returns; subsequent runs replay those snapshots so tests behave deterministically.
+Booktest makes non-deterministic outputs deterministic by snapshotting them on the first run and replaying those recordings thereafter. You can explicitly mock/record unstable sources with decorators like @bt.snapshot_httpx(), @bt.snapshot_functions(time.time, random.random) or @bt.snapshot_gpt(), so timestamps/HTTP/LLM/randomness are recorded and only change when you re-capture snapshots.
 
 
 #### Evaluation:
 
  * Does answer mention snapshots or snapshot testing? Yes
  * Does answer mention caching intermediate results? Yes
- * Does answer mention mocking functions or environment variables? Partially
+ * Does answer mention mocking functions or environment variables? Yes
 
 #### Quality ratings:
 
  * How well does the answer explain the technical approach? Excellent
  * How practical and actionable is the explanation? Excellent
 
- * **Criteria Score:** 2.5/3
+ * **Criteria Score:** 3/3
  * **Rating Score:** 2/2
 
 
@@ -129,7 +126,7 @@ Booktest makes non‑deterministic outputs reproducible by recording and replayi
 **Question:** How do I integrate booktest into my existing Python project?
 
 **Answer:**
-Install booktest (pip install booktest) and run booktest --setup, then add tests under test/ as functions taking t: bt.TestCaseRun that use t.h1/t.tln/t.tdf/tmetric/etc. to produce snapshots and run them with the CLI (booktest test). Use decorators like @bt.snapshot_httpx(), @bt.snapshot_functions(), and @bt.depends_on() to mock external calls and compose pipeline steps, commit the generated books/ markdown to Git (use DVC for large cassettes) and run in CI with booktest test -pN.
+Install booktest (pip install booktest) and optionally run booktest --setup to create a config. Add tests under test/ using the booktest API (t.h1/t.tln/t.tdf, t.tmetric, r = t.start_review(), and decorators like @bt.snapshot_httpx() / @bt.depends_on()), run them with booktest test (use -p8 for CI), and commit the generated books/ snapshots (large cassettes can be stored in DVC).
 
 
 #### Evaluation:
@@ -151,8 +148,8 @@ Install booktest (pip install booktest) and run booktest --setup, then add tests
 
 Tracking metrics with ±5% tolerance
 
- * Criteria Score: 16.5/17 = 97.059% (was 97.059%, Δ-0.000%)
- * Rating Score: 9.5/10 = 95.000% (was 95.000%, Δ+0.000%)
+ * Criteria Score: 17/17 = 100.000% (was 97.059%, Δ+2.941%)
+ * Rating Score: 9.0/10 = 90.000% (was 95.000%, Δ-5.000%)
 
 
 ## Minimum Requirements

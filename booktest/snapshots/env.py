@@ -41,6 +41,10 @@ class SnapshotEnv:
         if self._old_env is None:
             raise AssertionError("already started")
 
+        # Reset the global LLM cache so it will be recreated with restored env vars
+        from booktest.llm.llm import set_llm
+        set_llm(None)
+
         self._old_env = {}
         for name in self.names:
             old_value = os.environ.get(name)
@@ -67,6 +71,10 @@ class SnapshotEnv:
                     del os.environ[name]
             else:
                 os.environ[name] = self._old_env[name]
+
+        # Reset the global LLM cache so subsequent code uses restored env vars
+        from booktest.llm.llm import set_llm
+        set_llm(None)
 
         # Get old hash before storing new content
         old_content = self.storage.fetch(self.t.test_id, "env")

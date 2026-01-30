@@ -588,8 +588,45 @@ class Tests:
                 print(f"removed {p}")
             return 0
         elif cmd == '-l':
+            from booktest.reporting.colors import green, yellow, red, gray
+            from booktest.reporting.reports import TestResult
+
+            def format_duration(duration_ms):
+                """Format duration in human-readable form."""
+                if duration_ms >= 60000:
+                    return f"{duration_ms / 60000:.1f} min"
+                elif duration_ms >= 1000:
+                    return f"{duration_ms / 1000:.1f} s"
+                else:
+                    return f"{int(duration_ms)} ms"
+
+            # Build a lookup from test name to (result, duration_ms)
+            result_lookup = {}
+            for case_name, result, duration_ms in reports.cases:
+                result_lookup[case_name] = (result, duration_ms)
+
+            # Count stats
+            ok_count = diff_count = fail_count = todo_count = 0
+
             for s in todo:
-                print(f"  {s}")
+                if s in result_lookup:
+                    result, duration_ms = result_lookup[s]
+                    duration_str = format_duration(duration_ms)
+                    if result == TestResult.OK:
+                        status = green("ok") + f" {duration_str}"
+                        ok_count += 1
+                    elif result == TestResult.DIFF:
+                        status = yellow("DIFF") + f" {duration_str}"
+                        diff_count += 1
+                    else:  # FAIL
+                        status = red("FAIL") + f" {duration_str}"
+                        fail_count += 1
+                    print(f"  {s} - {status}")
+                else:
+                    # Not run yet
+                    print(f"  {s}")
+                    todo_count += 1
+
             return 0
         elif cmd == '--review':
             return review(exp_dir,

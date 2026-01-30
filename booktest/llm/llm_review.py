@@ -209,15 +209,36 @@ Question? (optionA|optionB|optionC|...)
 
 reviewed material
 
-Respond only with the exact option that best answers the question! Do not produce any
-other text or explanation! Only respond with one of the options given in the parentheses.'''
+Respond with the following JSON format that best answers the question! Option MUST BE be one of listed options. 
+Reasons must contain concise explanations for the decision in the same language the question and the options are defined. 
+
+{
+  "result": "optionA", 
+  "why": ["reason1", "reason2"]
+}
+
+'''
 
         options = [expected] + list(fail_options)
 
         request = f"{system_prompt}\n\n{prompt} ({'|'.join(options)})\n\n{self.buffer}"
-        result = self.llm.prompt(request)
+
+        def validate_response(parsed):
+            return parsed.get("result") in options
+
+        response = self.llm.prompt_json(
+            request,
+            required_fields=["result", "why"],
+            validator=validate_response
+        )
+
+        result = response["result"]
+        why = response["why"]
 
         self.output.anchor(f" * {prompt} ").i(result).i(" - ").assertln(result == expected)
+        for i in why:
+            self.output.iln(f"    * {i}")
+
         return self
 
     def ireviewln(self, prompt: str, expected: str, *fail_options: str) -> str:
@@ -403,16 +424,27 @@ Test: {test_name}{desc_section}
 
 Provide your review as JSON:"""
 
+        def validate_ai_review(parsed):
+            # Validate category is 1-5
+            cat = parsed.get("category")
+            if not isinstance(cat, int) or cat < 1 or cat > 5:
+                return False
+            # Validate confidence is 0-1
+            conf = parsed.get("confidence")
+            if not isinstance(conf, (int, float)) or conf < 0 or conf > 1:
+                return False
+            return True
+
         try:
-            result_str = self.llm.prompt(request)
-
-            # Try to extract JSON from the response (LLM might add extra text)
-            json_start = result_str.find('{')
-            json_end = result_str.rfind('}') + 1
-            if json_start >= 0 and json_end > json_start:
-                result_str = result_str[json_start:json_end]
-
-            result_data = json.loads(result_str)
+            result_data = self.llm.prompt_json(
+                request,
+                required_fields=[
+                    "category", "confidence", "summary",
+                    "rationale", "issues", "suggestions", "flags_for_human"
+                ],
+                validator=validate_ai_review,
+                max_retries=3
+            )
 
             return AIReviewResult(
                 category=result_data['category'],
@@ -423,13 +455,13 @@ Provide your review as JSON:"""
                 suggestions=result_data['suggestions'],
                 flags_for_human=result_data['flags_for_human']
             )
-        except (json.JSONDecodeError, KeyError) as e:
-            # If AI response is malformed, return unsure result
+        except ValueError as e:
+            # If AI response is malformed after retries, return unsure result
             return AIReviewResult(
                 category=3,  # UNSURE
                 confidence=0.0,
                 summary="AI review failed - malformed response",
-                rationale=f"Failed to parse AI response: {str(e)}\nResponse: {result_str[:200]}",
+                rationale=str(e),
                 issues=[],
                 suggestions=["Fix AI prompt or LLM configuration"],
                 flags_for_human=True
