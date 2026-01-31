@@ -12,9 +12,9 @@ Booktest is a regression testing tool for systems where outputs aren't strictly 
   <img src="docs/assets/demo.gif" alt="Booktest Demo" width="700">
 </p>
 
-In these systems, the hard problem isn't checking correctness — it's **seeing what changed**. When you update a prompt, retrain a model, or tweak parameters, behavior shifts across the system. You need to see what changed, understand how, and decide whether it's acceptable. Traditional test frameworks aren't built for this.
+In these systems, the hard problem isn't checking correctness — it's **seeing what changed**. When you update a prompt, retrain a model, or tweak parameters, behavior shifts across the system. Most testing tools reduce this to a single verdict: pass or fail. In practice, that's a "computer says no" experience — a failure signal without diagnostics, raising more questions than it answers.
 
-Booktest captures test outputs as readable markdown, tracks them in Git, and makes behavioral changes reviewable — the same way you review code. Tolerance metrics separate real regressions from noise. AI evaluation scales review beyond what humans can do manually. A build-system-style dependency graph lets you iterate on one step of a pipeline without re-running everything before it.
+Booktest treats regressions as information, not verdicts. It captures test outputs as readable markdown, tracks them in Git, and makes behavioral changes reviewable — the same way you review code. The richer your diagnostics, the faster you find root causes and the fewer iterations you need. Tolerance metrics separate real regressions from noise. AI evaluation scales review beyond what humans can do manually. A build-system-style dependency graph makes each iteration faster by letting you re-run one step of a pipeline without re-running everything before it.
 
 Built by [Netigate](https://www.netigate.net/) (formerly Lumoa) after years of production use testing NLP, ML and LLM models processing millions of customer feedback messages. Similar tools were build and used over 2 decade career by the author to support DS/ML, information retrieval and [predictive database](https://aito.ai) RnD.
 
@@ -103,12 +103,12 @@ Three-tier quality control: human review via markdown, AI evaluation at scale, t
 
 ### 2. Regressions Without Visibility
 
-This is the scenario every data scientist recognizes:
+This is the scenario every data scientist recognizes — spooky action at a distance:
 
-- Change one prompt -> 47 tests fail
+- Change one prompt -> tests fail in unrelated areas
 - Update training data -> model behaves differently everywhere
 - Tweak hyperparameters -> metrics shift across the board
-- Upgrade a library -> output formats change subtly
+- Refine system context -> LLM loses focus on some other detail
 
 Traditional testing gives you binary pass/fail, no visibility into what actually changed, and no way to accept "close enough" changes.
 
