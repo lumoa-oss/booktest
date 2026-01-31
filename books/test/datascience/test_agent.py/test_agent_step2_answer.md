@@ -6,31 +6,28 @@ Agent uses the plan to generate a detailed answer
 ## Inherited State from Step 1
 
 Question: How do I test a multi-step ML pipeline with booktest?
-Plan: - Highlight the most relevant booktest features up front: the TestCaseRun API for authoring tests, named sections/steps (h1/h2), snapshotting/artifact...
+Plan: - Start with the booktest features to use: treat each ML pipeline stage as a booktest step/artifact (dependency graph), snapshot stage outputs as mark...
 
 
 ## Generating Answer
 
-✓ Generated answer with 154 words
+✓ Generated answer with 114 words
 
 
 ### Generated Answer
 
-Use the TestCaseRun API to author multi-step tests: name each stage with t.h1 / t.h2, emit intermediate inputs/outputs with t.iln/t.tln so booktest will snapshot and diff them, and leverage the built‑in artifact/snapshot capture, reviewer annotations (t.start_review) and comparison helpers to surface regressions.  
-Workflow: isolate every pipeline stage (preprocess → model → postprocess), normalize outputs for stable diffs (sort keys, round floats, redact timestamps), combine automated invariants (t.tmetric or lightweight assertions with tolerances) with human review for subjective results, and store intermediate artifacts so reviewers can judge changes.  
-Concrete pattern: in a single test function call t.h1("Preprocess"); t.tln(preproc_out); t.h2("Model"); t.tln(model_out); t.h2("Postprocess"); t.tln(final_out) — booktest will snapshot those sections and show diffs; add t.tmetric checks for numeric stability and t.start_review() prompts for human approval.  
-Run with booktest test and review generated diffs; for CI keep slow steps mocked or cached, seed RNGs and use small deterministic fixtures, and only update snapshots when reviewers approve intentional changes.
+Treat each ML pipeline stage as a booktest step/artifact and capture its outputs as human-readable markdown (use t.h1/t.iln) so the build-system-style dependency graph and caching only re-run downstream steps when inputs change. Assert behavior with t.tmetric for numeric tolerances and use t.start_review to collect human or AI evaluations for non-binary checks. Make tests deterministic with small sample fixtures, fixed random seeds and stubs so outputs are reproducible and reviewable. Practically: (1) map inputs and pipeline stages to booktest steps/artifacts, (2) snapshot stage outputs, add t.tmetric/t.start_review and enable caching so you can re-run single steps during debugging, (3) run booktest -v -i and use the Git-backed diffs to triage regressions and approve or update snapshots.
 
 
 ### Answer Review
 
  * Does answer follow the plan? Yes
-    * The answer clearly follows a multi-step testing plan: it names stages, emits intermediate inputs/outputs, and snapshots for diffs.
-    * It includes concrete commands (t.h1/t.tln/t.tmetric/t.start_review), normalization and CI guidance, which aligns with the intended workflow.
- * Is answer accurate per documentation? No
-    * The answer uses specific API names (t.iln, t.tln, t.h1/t.h2, t.start_review, t.tmetric, TestCaseRun API, booktest test) that do not match the documented interfaces—several identifiers appear invented or misnamed.
-    * Although the high-level recommendations (snapshot intermediate stages, normalize outputs, seed RNGs, mock slow steps) are sensible, the concrete examples and helper names are not consistent with the official documentation.
-    * Because of those mismatches and ambiguous/unsupported function names, the response cannot be considered accurate per the documentation.
+    * The answer explicitly maps pipeline stages to booktest steps/artifacts and snapshots outputs as human-readable markdown, matching the plan.
+    * It prescribes assertions (t.tmetric) and human/AI checks (t.start_review), enforces determinism (fixtures, seeds, stubs), and enables caching and incremental runs, which are all plan elements.
+    * It gives practical execution guidance (run booktest -v -i and use Git-backed diffs) to triage regressions, completing the end-to-end plan.
+ * Is answer accurate per documentation? Yes
+    * The response aligns with the documented booktest model: treating pipeline stages as steps/artifacts, snapshotting outputs, and using caching to avoid re-running unchanged downstream steps.
+    * It correctly cites the documented APIs and practices (t.tmetric, t.start_review, human-readable artifacts, deterministic fixtures, and Git-backed diffs) and gives the recommended workflow (snapshot, run booktest -v -i, triage diffs).
  * Is answer clear and concise? Yes
-    * Provides concrete, step-by-step instructions and example calls (t.h1, t.tln, t.tmetric) that make the workflow reproducible.
-    * Covers key best practices (normalization for diffs, metrics, seeding, CI considerations) succinctly and without irrelevant detail.
+    * Gives a focused summary of the approach and concrete, ordered steps (1–3) for implementation.
+    * Uses compact, actionable phrasing that conveys the essentials; although it includes domain-specific commands, the response remains brief and to the point.

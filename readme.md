@@ -6,53 +6,73 @@
 [![GitHub stars](https://img.shields.io/github/stars/lumoa-oss/booktest)](https://github.com/lumoa-oss/booktest/stargazers)
 [![GitHub last commit](https://img.shields.io/github/last-commit/lumoa-oss/booktest)](https://github.com/lumoa-oss/booktest/commits/main)
 
-> Stop playing whack-a-mole with regressions. Stop waiting hours for test suites.
-> Stop pretending `assertEqual()` works for "Is this good enough?"
+Booktest is a regression testing tool for systems where outputs aren't strictly right or wrong — ML models, LLM applications, NLP pipelines, and other data science systems that need expert review rather than binary assertions.
 
 <p align="center">
   <img src="docs/assets/demo.gif" alt="Booktest Demo" width="700">
 </p>
 
-Booktest is the first testing framework built for the **three fundamental realities** of data science:
+In these systems, the hard problem isn't checking correctness — it's **seeing what changed**. When you update a prompt, retrain a model, or tweak parameters, behavior shifts across the system. Most testing tools reduce this to a single verdict: pass or fail. In practice, that's a "computer says no" experience — a failure signal without diagnostics, raising more questions than it answers.
 
-1. **No correct answer** - Results need expert review, not binary pass/fail
-2. **Everything breaks everything** - Change one thing, get regressions everywhere
-3. **Operations are expensive** - Big data + slow models = productivity death
+Booktest treats regressions as information, not verdicts. It captures test outputs as readable markdown, tracks them in Git, and makes behavioral changes reviewable — the same way you review code. The richer your diagnostics, the faster you find root causes and the fewer iterations you need. Tolerance metrics separate real regressions from noise. AI evaluation scales review beyond what humans can do manually. A build-system-style dependency graph makes each iteration faster by letting you re-run one step of a pipeline without re-running everything before it.
 
-Built by [Netigate](https://www.netigate.net/) (formerly Lumoa) after years of production experience testing LLM analytics at scale. Used daily to test NLP models processing millions of customer feedback messages.
+Built by [Netigate](https://www.netigate.net/) (formerly Lumoa) after years of production use testing NLP, ML and LLM models processing millions of customer feedback messages. Similar tools were build and used over 2 decade career by the author to support DS/ML, information retrieval and [predictive database](https://aito.ai) RnD.
 
-**Try it in 30 seconds:**
+```python
+import booktest as bt
+
+def test_gpt_response(t: bt.TestCaseRun):
+    response = generate_response("What is the capital of France?")
+
+    # Capture output as reviewable markdown
+    t.h1("GPT Response")
+    t.iln(response)
+
+    # AI evaluates AI outputs
+    r = t.start_review()
+    r.iln(response)
+    r.reviewln("Is response accurate?", "Yes", "No")
+    r.reviewln("Is it concise?", "Yes", "No")
+
+    # Tolerance metrics - catch regressions, ignore noise
+    accuracy = evaluate_accuracy(response)
+    t.tmetric(accuracy, tolerance=0.05)  # 85% ± 5% = OK
+```
+
 ```bash
-pip install booktest && echo 'import booktest as bt
+# Review changes interactively
+booktest -v -i
 
-def test_hello(t: bt.TestCaseRun):
-    t.h1("My First Test")
-    t.tln("Hello, World!")' > test_hello.py && booktest test test_hello.py
+# See exactly what changed:
+?  * Prediction: 54% Positive (should be Negative)     |  * Prediction: 51% Negative (ok)
+?  * Accuracy: 93.3% (was 98.4%, delta -5.1%)
+
+    test_model DIFF 3027 ms
+    (a)ccept, (c)ontinue, (q)uit, (v)iew, (l)ogs, (d)iff or fast (D)iff
 ```
 
 ---
 
 ## The Three Problems Booktest Solves
 
-### 1. The Good vs Bad Problem 🎯
+### 1. No Correct Answer
 
-**Traditional software testing:**
+Traditional software testing has clear pass/fail:
 ```python
-assert result == "Paris"  # ✅ Clear right/wrong
+assert result == "Paris"  # Clear right/wrong
 ```
 
-**Data science reality:**
+Data science doesn't:
 ```python
 # Which is "correct"?
 result1 = "Paris"
 result2 = "The capital of France is Paris, which is located..."
 result3 = "Paris, France"
 
-# This doesn't work:
-assert result == ???  # ❌ No correct answer
+assert result == ???  # No single correct answer
 ```
 
-**The issue**: You need expert review, statistical thresholds, human judgment. Manual review doesn't scale to 1,000 test cases.
+You need expert review, statistical thresholds, human judgment — but manual review doesn't scale to 1,000 test cases.
 
 **Booktest solution:**
 
@@ -74,26 +94,23 @@ def test_gpt_response(t: bt.TestCaseRun):
 
     # 3. Tolerance metrics - catch regressions, not noise
     accuracy = evaluate_accuracy(response)
-    t.tmetric(accuracy, tolerance=0.05)  # 85% ± 5% = OK
+    t.tmetric(accuracy, tolerance=0.05)  # 85% +/- 5% = OK
 ```
 
-**Result**: Three-tier quality control. Human review via markdown, AI evaluation at scale, tolerance metrics for trends.
+Three-tier quality control: human review via markdown, AI evaluation at scale, tolerance metrics for trends.
 
 ---
 
-### 2. The Regression Whack-a-Mole 🔨
+### 2. Regressions Without Visibility
 
-**The nightmare every data scientist knows:**
+This is the scenario every data scientist recognizes — spooky action at a distance:
 
-- Change one prompt → 47 tests fail
-- Update training data → model behaves differently everywhere
-- Tweak hyperparameters → metrics shift across the board
-- Upgrade a library → output formats change subtly
+- Change one prompt -> tests fail in unrelated areas
+- Update training data -> model behaves differently everywhere
+- Tweak hyperparameters -> metrics shift across the board
+- Refine system context -> LLM loses focus on some other detail
 
-**Traditional testing gives you:**
-- ❌ Binary pass/fail (not helpful when output is "slightly different")
-- ❌ No visibility into what actually changed
-- ❌ No way to accept "close enough" changes
+Traditional testing gives you binary pass/fail, no visibility into what actually changed, and no way to accept "close enough" changes.
 
 **Booktest treats test outputs like code:**
 
@@ -104,7 +121,7 @@ def test_model_predictions(t: bt.TestCaseRun):
 
     # Snapshot everything as markdown
     t.h1("Model Predictions")
-    t.tdf(predictions)  # DataFrame → readable markdown table
+    t.tdf(predictions)  # DataFrame -> readable markdown table
 
     # Track metrics
     t.key("Accuracy:").tmetric(accuracy, tolerance=0.05)
@@ -119,27 +136,22 @@ booktest -v -i
    ...
 ?  ?  * Prediction: 54% Positive (should be Negative)                          |  * Prediction: 51% Negative (ok)
    ...
-?  ?  * Accuracy: 93.3% (was 98.4%, Δ-5.1%) 
+?  ?  * Accuracy: 93.3% (was 98.4%, delta -5.1%)
    ...
 
     test/datascience/test_model.py::test_model_predictions DIFF 3027 ms (snapshots updated)
     (a)ccept, (c)ontinue, (q)uit, (v)iew, (l)ogs, (d)iff or fast (D)iff
 ```
 
-**Result**: Regressions become **reviewable**, not catastrophic. Git history tracks how your model evolved.
+Regressions become **reviewable**, not catastrophic. Git history tracks how your model evolved.
 
 ---
 
-### 3. The Expensive Operations Problem ⏱️
+### 3. Expensive Operations, Slow Iteration
 
-**The productivity killer:**
+A typical ML pipeline: load data, clean, featurize, train, validate, test, generate reports.
 
-You have a 10-step ML pipeline: load data → clean → featurize → train → validate → test → deploy prep.
-
-Traditional testing forces you to:
-- ❌ Run all 10 steps every time (even when testing step 7)
-- ❌ Wait hours to test a one-line change in the last step
-- ❌ Choose between: duplicate code (Jupyter + pytest) or slow iteration
+Traditional testing forces you to run all steps every time, even when you're only changing the last one.
 
 **Example pipeline:**
 1. Prepare data: 10 min
@@ -147,12 +159,12 @@ Traditional testing forces you to:
 3. Train model B: 5 min
 4. Train model C: 5 min
 5. Evaluate combined model A+B+C: 4 min
-6. Generate reports: 1 min 
+6. Generate reports: 1 min
 **Total: 30 minutes** to test a report formatting change
 
 **Booktest is a build system for tests:**
 
-Tests return objects (like Make targets). Other tests depend on them. Change step 7 → only step 7+ re-runs.
+Tests return objects (like Make targets). Other tests depend on them. Change step 6 -> only step 6 re-runs.
 
 ```python
 # Step 1: Load data (slow, runs once)
@@ -168,16 +180,16 @@ def test_train_model(t: bt.TestCaseRun, data):
     t.key("Accuracy:").tmetric(model.accuracy, tolerance=0.05)
     return model  # Cache result
 
-# Step 3: Evaluate (fast, depends on step 2)
+# Step 3: Evaluate (depends on step 2)
 @bt.depends_on(test_train_model)
 def test_evaluate(t: bt.TestCaseRun, model):
     results = evaluate(model, test_data)  # 10 minutes
     t.tdf(results)
     return results
 
-# Step 4: Generate report (fast, depends on step 3)
+# Step 4: Generate report (depends on step 3)
 @bt.depends_on(test_evaluate)
-def test_report(t: bt.TestCaseRun results):
+def test_report(t: bt.TestCaseRun, results):
     report = generate_report(results)  # 5 minutes
     t.h1("Final Report")
     t.tln(report)
@@ -186,7 +198,7 @@ def test_report(t: bt.TestCaseRun results):
 **Iteration speed:**
 - **Change formatting in step 6?** Only step 6 re-runs (1 min, not 30 min)
 - **Change model A params in step 2?** Steps 2 and 5 re-run (9 min, cached step 1)
-- **All steps run in parallel?** `booktest test -p8` → smart scheduling: 20min, instead of 30min
+- **All steps run in parallel?** `booktest test -p8` -> smart scheduling: 20 min instead of 30 min
 
 **Plus HTTP mocking:**
 ```python
@@ -195,200 +207,98 @@ def test_openai_prompts(t):
     response = openai.chat(...)  # 5s first run, instant after
 ```
 
-**Result**: **40 min → 5 min** for iteration. Test each pipeline step in isolation, reuse expensive results.
+Test each pipeline step in isolation, reuse expensive results.
 
-**Real example**: [3-step agent testing](test/datascience/test_agent.py) - Break agent into plan → answer → validate steps. Iterate on validation logic without re-running plan generation.
+**Real example**: [3-step agent testing](test/datascience/test_agent.py) - Break agent into plan, answer, and validate steps. Iterate on validation logic without re-running plan generation.
 
 ---
 
-## Why Traditional Tools Fail
+## How Booktest Compares
 
 | Problem | Jupyter | pytest + syrupy | promptfoo | Booktest |
 |---------|---------|----------------|-----------|----------|
-| Expert review at scale | ❌ Manual | ❌ No support | ⚠️ LLM only | ✅ AI-assisted |
-| Tolerance metrics | ❌ None | ❌ None | ❌ None | ✅ Built-in |
-| Pipeline decomposition | ❌ No | ❌ No | ❌ No | ✅ Built-in |
-| Git-trackable outputs | ❌ No | ⚠️ Basic | ❌ No | ✅ Markdown |
-| HTTP/LLM mocking | ❌ Manual | ⚠️ Complex | ❌ No | ✅ Automatic |
-| Parallel execution | ❌ No | ⚠️ Limited | ⚠️ Limited | ✅ Native |
-| Data science ergonomics | ⚠️ Exploration | ❌ No | ❌ No | ✅ Yes |
+| Expert review at scale | Manual | No support | LLM only | AI-assisted |
+| Tolerance metrics | None | None | None | Built-in |
+| Pipeline decomposition | No | No | No | Built-in |
+| Git-trackable outputs | No | Basic | No | Markdown |
+| HTTP/LLM mocking | Manual | Complex | No | Automatic |
+| Parallel execution | No | Limited | Limited | Native |
+| Data science ergonomics | Exploration only | No | No | Yes |
 
-**Jupyter**: Great for exploration, terrible for regression testing. No automated review, no Git tracking, no CI/CD integration.
+**Jupyter**: Great for exploration, not for regression testing. No automated review, no Git tracking, no CI/CD integration.
 
-**pytest + syrupy**: Built for traditional software where outputs are deterministic. No concept of "good enough" - either exact match or fail.
+**pytest + syrupy**: Built for deterministic outputs. No concept of "good enough" — either exact match or fail.
 
 **promptfoo/langsmith**: LLM-focused evaluation platforms. Missing: dataframe support, metric tracking with tolerance, resource sharing, parallel dependency resolution.
 
-**Booktest**: Only tool that combines review-driven workflow + tolerance metrics + snapshot testing + parallel execution for data science at scale.
+**Booktest**: Combines review-driven workflow + tolerance metrics + snapshot testing + parallel execution for data science.
 
 ---
 
-## What's New in 1.0
+## What's New in 1.1
 
-**Making tests maintainable at scale:**
+### Tolerance-Based Metrics
 
-### ✨ Tolerance-Based Metrics
-
-**Before**: Accuracy drops from 87% to 86% → TEST FAILS → false alarm
-**After**: Track with ±5% tolerance → only fail on real regressions
+Track metrics with acceptable ranges instead of exact matches:
 
 ```python
-# Catch real problems, ignore noise
-t.tmetric(accuracy, tolerance=0.05)  # 87% → 86% = OK ✅
-                                      # 87% → 80% = DIFF ⚠️
+t.tmetric(accuracy, tolerance=0.05)  # 87% -> 86% = OK
+                                      # 87% -> 80% = DIFF
 
-# Set minimum thresholds for critical KPIs
-t.assertln("Accuracy ≥ 80%", accuracy >= 0.80)  # Hard requirement
+t.assertln("Accuracy >= 80%", accuracy >= 0.80)  # Hard minimum threshold
 ```
 
-**Result**: 90% fewer false alarms, catch real regressions.
+Catch real regressions, ignore noise.
 
-### 🤖 AI as North Star
+### AI-Powered Review
 
-Booktest provides **two AI-powered capabilities** for scaling test review:
+Two capabilities for scaling test review:
 
-#### 1. AI Evaluation of Test Outputs
-
-**Before**: Human reviews 500 LLM outputs → 3 days
-**After**: GPT reviews 500 LLM outputs → 5 minutes
-
+**AI evaluation of outputs** — use LLMs to evaluate LLM outputs:
 ```python
-# Automated, consistent evaluation that scales
 r = t.start_review()
 r.iln(response)
 r.reviewln("Is code syntactically correct?", "Yes", "No")
 r.reviewln("Does it solve the problem?", "Yes", "No")
-r.reviewln("Code quality?", "Excellent", "Good", "Poor")
 ```
 
-**How it works:**
-- First run: AI evaluates outputs, records decisions
-- Subsequent runs: Reuses evaluations (instant, deterministic, free)
-- Only re-evaluates when outputs change
+First run: AI evaluates and records decisions. Subsequent runs: reuses evaluations (instant, deterministic, free). Only re-evaluates when outputs change.
 
-#### 2. AI-Assisted Diff Review
-
-**Before**: 47 tests change output → must manually review each one
-**After**: AI reviews diffs → only 3 need human judgment
-
-**Enable with `-R` flag:**
+**AI-assisted diff review** — when many tests change output, AI triages which changes need human attention:
 
 ```bash
-# AI automatically reviews test differences
-booktest -R
-
-# Interactive mode: press 'R' to get AI recommendations
-booktest -R -i
+booktest -R        # AI reviews all diffs automatically
+booktest -R -i     # Interactive: press 'R' for AI review on individual tests
 ```
 
-**5-category classification:**
-- **ACCEPT** (5): No significant changes, clear improvements → **auto-accept**
-- **RECOMMEND ACCEPT** (4): Minor changes, likely acceptable → prompt user
-- **UNSURE** (3): Complex changes requiring human judgment → prompt user
-- **RECOMMEND FAIL** (2): Suspicious changes, likely issues → prompt user
-- **FAIL** (1): Clear regressions, critical errors → **auto-reject**
+AI classifies changes from ACCEPT (auto-approve) to FAIL (auto-reject), with intermediate categories flagged for human review. See the [Feature Guide](docs/features.md) for details.
 
-**Example workflow:**
+### DVC Integration
 
-```bash
-# you update the hello world test
-$ booktest -v -I test/examples/hello_book.py::test_hello
-
-# test results:
-
-test test/examples/hello_book.py::test_hello
-
-? # Review criteria:                                           | # This test prints hello world
-  
-?  - prints 'hello world', freely formatted                    | hello world
-  
-  # This test prints hello world
-  
-? Hello world!                                                 | hello world
-
-test/examples/hello_book.py::test_hello DIFF 0 ms
-(a)ccept, (c)ontinue, (q)uit, (v)iew, (l)ogs, (d)iff, fast (D)iff or AI (R)eview? R
-    Analyzing differences with AI...
-
-    AI Review (confidence: 0.72):
-      Category: RECOMMEND ACCEPT
-      Summary: Cosmetic formatting changes; semantics preserved, recommend accept
-
-      Rationale:
-        The actual output differs only in formatting and added explanatory comments: 'hello world' became 'Hello world!' (capitalization and punctuation) and a short review-criteria header was added. There are no numerical changes or error messages. Semantically the program still prints the expected phrase. If the test is intended to allow free formatting (as the added header even states), these differences are non-functional. If the test harness requires exact-match output, it would fail, but that would be a brittle test rather than a real regression.
-
-      Issues:
-        - line 1-3: New header/comments were added (# Review criteria ...), which change output but are non-functional
-        - last line: 'hello world' -> 'Hello world!' (capital H and added exclamation) — formatting/punctuation change
-
-      Suggestions:
-        - Relax the test to be format-tolerant: compare lowercased/alphanumeric-only forms or use a regex like /hello\s*world/i allowing trailing punctuation
-        - Ignore comment/header lines in output comparison (strip lines starting with '#') if they are non-essential
-        - If exact match is required, update the expected output to match the intended canonical form or add alternative accepted forms
-
-      ⚠ Flagged for human review
-
-(a)ccept, (c)ontinue, (q)uit, (v)iew, (l)ogs, (d)iff, fast (D)iff or AI (R)eview? a
-```
-
-**Smart behavior:**
-- Definitive decisions (FAIL/ACCEPT at 95%+ confidence) → auto-decided, no prompt
-- Ambiguous cases (RECOMMEND/UNSURE) → prompts for human review
-- In non-interactive mode: adds AI notes to test reports
-
-**Configuration:**
-
-```ini
-# .booktest or booktest.ini
-# Adjust confidence thresholds (default: 0.95)
-ai_auto_accept_threshold=0.98  # More conservative
-ai_auto_reject_threshold=0.98
-```
-
-**Result**: Scalable evaluation without human bottleneck. AI triages obvious cases, humans focus on truly ambiguous changes. Turn 3-day review sessions into 30-minute sessions.
-
-### 💾 DVC Integration
-
-**Before**: Git repo bloated with HTTP/LLM cassettes → slow clones, merge conflicts
-**After**: DVC stores snapshots, Git tracks tiny manifest
+Large HTTP/LLM snapshots stored in DVC instead of Git. Markdown outputs stay in Git for easy review:
 
 ```python
-# HTTP/LLM snapshots stored in DVC, not Git
 @bt.snapshot_httpx()
 def test_gpt(t: bt.TestCaseRun):
-    response = openai.chat(...)  # Cassette → DVC
-                                 # Git: only manifest hash
-
-# Markdown outputs still in Git for easy review
-t.h1("Results")
-t.tdf(predictions)  # Readable markdown table in Git
+    response = openai.chat(...)  # Cassette -> DVC, Git tracks only manifest hash
 ```
 
-**Result**: Fast Git operations, no repo bloat. Snapshots stored off-Git, markdown diffs stay reviewable.
+### Auto-Report on Failures
 
-### 🎯 Auto-Report on Failures
-
-**Before**: Tests fail → "computer says no" → must memorize `-v -L -w -c` spell
-**After**: Tests fail → detailed report appears automatically
+Tests that fail now show a detailed report automatically — no need to remember verbose flags:
 
 ```bash
-booktest -p8                       # Run in parallel
-# Failures automatically show detailed report - no extra flags needed!
+booktest -p8    # Run in parallel; failures show detailed report automatically
 ```
 
-**Result**: See exactly what failed immediately, no flag memorization required.
+### Reviewable Changes
 
-### ✅ Reviewable Changes
-
-**Before**: 47 tests fail → red/green panic
-**After**: See what changed → review → accept or reject
+Review and selectively accept or reject changes:
 
 ```bash
-booktest -w                        # Interactive review of failures
-booktest -u -c                     # Accept all changes
+booktest -w       # Interactive review of failures
+booktest -u -c    # Accept all changes
 ```
-
-**Result**: Regressions become manageable, not catastrophic.
 
 ---
 
@@ -412,7 +322,6 @@ EOF
 
 # Run
 booktest
-# Failures show detailed report automatically - no flags needed!
 
 # Or run with verbose output during execution
 booktest -v
@@ -429,7 +338,7 @@ booktest -v -i
 Hello, World!
 ```
 
-**When tests fail**: Detailed failure report appears automatically. No need to memorize flags!
+**When tests fail**: Detailed failure report appears automatically.
 
 **Next steps**: See [Getting Started Guide](getting-started.md) for LLM evaluation, metric tracking, and more.
 
@@ -437,7 +346,7 @@ Hello, World!
 
 ## Real-World Examples
 
-**At Netigate**: Testing sentiment classification across 50 languages × 20 topic models × 100 customer segments = 100,000 test combinations. Booktest reduced our CI time from 12 hours to 45 minutes while catching 3× more regressions through systematic review.
+**At Netigate**: Testing sentiment classification across 50 languages x 20 topic models x 100 customer segments = 100,000 test combinations. Booktest reduced CI time from 12 hours to 45 minutes while catching 3x more regressions through systematic review.
 
 ### LLM Application Testing
 
@@ -472,8 +381,8 @@ def test_sentiment_model(t: bt.TestCaseRun):
     t.key("F1 Score:").tmetric(f1, tolerance=0.05)
 
     t.h2("Minimum Requirements")
-    t.assertln("Accuracy ≥ 80%", accuracy >= 0.80)
-    t.assertln("F1 ≥ 0.75", f1 >= 0.75)
+    t.assertln("Accuracy >= 80%", accuracy >= 0.80)
+    t.assertln("F1 >= 0.75", f1 >= 0.75)
 ```
 
 ### Agent Testing with Build System
@@ -514,35 +423,35 @@ More examples: [test/examples/](test/examples/) and [test/datascience/](test/dat
 
 ## Core Features
 
-**For the Good vs Bad Problem:**
-- 📝 **Human review via markdown** - Git-tracked outputs, review changes like code diffs
-- 🤖 **AI-assisted review** - LLM evaluates LLM outputs automatically (use `-R` flag for AI diff review)
-- 📊 **Tolerance metrics & asserts** - Track trends with `tmetric()`, set thresholds with `assertln()`
+**Review and evaluation:**
+- **Human review via markdown** - Git-tracked outputs, review changes like code diffs
+- **AI-assisted review** - LLM evaluates outputs automatically; `-R` flag for AI diff review
+- **Tolerance metrics and assertions** - Track trends with `tmetric()`, set thresholds with `assertln()`
 
-**For Regression Whack-a-Mole:**
-- 📸 **Snapshot testing** - Git-track all outputs as markdown
-- 🔍 **Git diff visibility** - See exactly what changed
-- ✅ **Selective acceptance** - Accept good changes, reject bad ones
-- 💾 **DVC integration** - Large snapshots outside Git
+**Regression management:**
+- **Snapshot testing** - Git-track all outputs as markdown
+- **Git diff visibility** - See exactly what changed
+- **Selective acceptance** - Accept good changes, reject bad ones
+- **DVC integration** - Large snapshots outside Git
 
-**For Expensive Operations:**
-- 🔧 **Build system for tests** - Tests return objects, other tests depend on them (like Make/Bazel)
-- ⚡ **Pipeline decomposition** - Turn 10-step pipeline into 10 tests, iterate on step 7 without re-running 1-6
-- 🎭 **Automatic HTTP/LLM mocking** - HTTP/HTTPX requests recorded and replayed with `@snapshot_httpx()`
-- 🔄 **Parallel execution** - Native multi-core support with intelligent dependency scheduling
-- 🔗 **Resource sharing** - Share expensive resources (models, data) across tests with `@depends_on()`
+**Performance and pipeline:**
+- **Build system for tests** - Tests return objects, other tests depend on them (like Make/Bazel)
+- **Pipeline decomposition** - Turn 10-step pipeline into 10 tests, iterate on any step independently
+- **Automatic HTTP/LLM mocking** - HTTP/HTTPX requests recorded and replayed with `@snapshot_httpx()`
+- **Parallel execution** - Native multi-core support with intelligent dependency scheduling
+- **Resource sharing** - Share expensive resources (models, data) across tests with `@depends_on()`
 
-**Plus:**
-- 📝 **Markdown output** - Human-readable, reviewable test reports
-- 📊 **DataFrame support** - Snapshot pandas DataFrames as tables
-- 🖼️ **Image support** - Snapshot plots and visualizations
-- 🌐 **Environment mocking** - Control and snapshot env vars
+**Data science ergonomics:**
+- **Markdown output** - Human-readable, reviewable test reports
+- **DataFrame support** - Snapshot pandas DataFrames as tables
+- **Image support** - Snapshot plots and visualizations
+- **Environment mocking** - Control and snapshot env vars
 
 ---
 
 ## Documentation
 
-- **[Getting Started Guide](getting-started.md)** - Your first test in 5 minutes
+- **[Getting Started Guide](getting-started.md)** - Your first test
 - **[Use Case Gallery](docs/use-cases.md)** - Quick recipes for common scenarios
 - **[Complete Feature Guide](docs/features.md)** - Comprehensive documentation of all features
 - **[CI/CD Integration](docs/ci-cd.md)** - GitHub Actions, GitLab CI, CircleCI
@@ -554,7 +463,7 @@ More examples: [test/examples/](test/examples/) and [test/datascience/](test/dat
 
 ## Use Cases
 
-**Perfect for:**
+**Works well for:**
 - Testing LLM applications (ChatGPT, Claude, etc.)
 - ML model evaluation and monitoring
 - Data pipeline regression testing
@@ -562,10 +471,38 @@ More examples: [test/examples/](test/examples/) and [test/datascience/](test/dat
 - Non-deterministic system testing
 - Exploratory data analysis that needs regression testing
 
-**Not ideal for:**
+**Not the right fit for:**
 - Traditional unit testing (use pytest)
 - Testing with strict equality requirements
-- Systems without review component
+- Systems without a review component
+
+---
+
+## FAQ
+
+**Q: Why not just use pytest-regtest or syrupy?**
+A: Those work well for deterministic outputs. They don't handle tolerance-based metrics, subjective quality review, or large test matrices where you need to scale evaluation.
+
+**Q: Why not promptfoo or langsmith?**
+A: They're good for LLM-specific evaluation. Booktest is complementary — it handles the broader data science workflow (dataframes, metrics, resource management, parallel execution) and integrates review-driven testing into your Git workflow.
+
+**Q: Won't AI reviews give inconsistent results?**
+A: Reviews are snapshotted. First run records the AI's evaluation, subsequent runs reuse it (instant, deterministic, free). Re-evaluation only happens when output changes.
+
+**Q: Why Git-track test outputs? Won't that bloat my repo?**
+A: Markdown outputs are small (human-readable summaries). Large snapshots (HTTP cassettes, binary data) go to DVC. You get reviewable diffs in Git without bloat.
+
+**Q: Does this replace pytest?**
+A: No, it complements it. Use pytest for unit tests with clear pass/fail. Use booktest for integration tests, LLM outputs, model evaluation — anything requiring expert review or tolerance.
+
+**Q: How is this different from Make or Bazel?**
+A: Similar concept (dependency graph, incremental builds) but purpose-built for testing. Tests return Python objects (models, dataframes), not files. Built-in review workflow, tolerance metrics, parallel scheduling with resource management.
+
+---
+
+## Why "Booktest"?
+
+Test outputs are organized like a book — chapters (test files), sections (test cases), with all results in readable markdown. Review your tests like reading a book, track changes in Git like code.
 
 ---
 
@@ -582,43 +519,3 @@ Built by [Netigate](https://www.netigate.net/) - Enterprise feedback and experie
 ## License
 
 MIT - See [LICENSE](LICENSE) for details.
-
----
-
----
-
-## FAQ
-
-**Q: Why not just use pytest-regtest or syrupy?**
-A: Those are great for traditional software with deterministic outputs. They fail for data science where you need to track metrics with tolerance, review subjective quality, and handle massive test matrices efficiently.
-
-**Q: Why not promptfoo or langsmith?**
-A: They're excellent for LLM-specific evaluation dashboards. Booktest is complementary - it handles the full data science workflow (dataframes, metrics, resource management, parallel execution) while integrating review-driven testing into your Git workflow.
-
-**Q: Won't AI reviews give inconsistent results?**
-A: No - reviews are snapshotted. First run records GPT's evaluation, subsequent runs reuse it (instant, deterministic, free). You only re-review when output changes.
-
-**Q: Why Git-track test outputs? Won't that bloat my repo?**
-A: Markdown outputs are small (human-readable summaries). Large snapshots (HTTP cassettes, binary data) go to DVC. You get reviewable diffs in Git without bloat.
-
-**Q: Does this replace pytest?**
-A: No, it complements it. Use pytest for unit tests with clear pass/fail. Use booktest for integration tests, LLM outputs, model evaluation - anything requiring expert review or tolerance.
-
-**Q: How is this different from Make or Bazel?**
-A: Similar concept (dependency graph, incremental builds) but purpose-built for data science testing. Tests return Python objects (models, dataframes), not files. Built-in review workflow, tolerance metrics, parallel scheduling with resource management. Think "Make for testing ML pipelines."
-
----
-
-## Why "Booktest"?
-
-Test outputs are organized like a book - chapters (test files), sections (test cases), with all results in readable markdown. Review your tests like reading a book, track changes in Git like code.
-
----
-
-**Ready to stop the whack-a-mole?** → [Get Started](getting-started.md)
-
----
-
-![Booktest - Review-Driven Testing for Data Science](docs/assets/social_preview.png)
-
-*Found this useful? Give us a ⭐ on [GitHub](https://github.com/lumoa-oss/booktest)!*

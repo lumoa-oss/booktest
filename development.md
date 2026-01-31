@@ -5,11 +5,11 @@ running it's tests.
 
 ## dependencies
 
-You will need Poetry and Python 3.9 to use this package. To setup the environment
-and run the commands described in this package, run:
+You will need uv and Python 3.10+ to use this package. To setup the environment
+and install dependencies, run:
 
 ```bash
-poetry shell
+uv sync
 ```
 
 

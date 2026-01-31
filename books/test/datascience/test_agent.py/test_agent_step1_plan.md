@@ -5,12 +5,12 @@ Agent analyzes the question and creates an answering strategy
 
 ## Loading Context
 
-Loaded 34000 characters of documentation
+Loaded 30434 characters of documentation
 
 
 ## Creating Plan
 
-✓ Created plan with 148 words
+✓ Created plan with 133 words
 
 
 ### Question
@@ -20,18 +20,18 @@ How do I test a multi-step ML pipeline with booktest?
 
 ### Plan
 
-- Highlight the most relevant booktest features up front: the TestCaseRun API for authoring tests, named sections/steps (h1/h2), snapshotting/artifact capture for intermediate outputs, reviewer annotations/approval flow, and built-in diff/comparison helpers. Mention reproducibility aids (seeding, small fixtures) and caching/mocking for expensive steps.
-
-- Explain the key concepts to teach: isolate and test each pipeline stage (capture inputs/outputs), normalize outputs for stable diffs, combine automated invariant checks with human review for subjective output, and store intermediate artifacts so reviewers can judge regressions. Emphasize designing small deterministic fixtures and using snapshots for regression detection.
-
-- Present information in this order: 1) high-level workflow and strategy (what to capture and why), 2) a minimal concrete example test that walks through a 3-step pipeline (preprocess → model → postprocess) showing TestCaseRun usage and snapshotting of intermediates, 3) running and reviewing tests, and 4) practical tips (handling slow steps, seeding, updating snapshots, CI integration).
+- Start with the booktest features to use: treat each ML pipeline stage as a booktest step/artifact (dependency graph), snapshot stage outputs as markdown artifacts, use booktest’s caching/re-run semantics to re-run only downstream steps, and apply tolerance metrics or AI evaluators for non-binary comparisons.
+- Explain the essential concepts to implement: design deterministic, small sample fixtures (seeds, stubs) for reproducibility; assert on artifacts via human-readable snapshots + numeric tolerances or automatic evaluators; and rely on booktest’s Git-backed review workflow to inspect diffs and approve/record changes.
+- Present in this order (actionable flow): (1) define test cases and inputs and map pipeline stages to booktest steps/artifacts, (2) implement snapshotting + tolerances/evaluators and enable caching for incremental runs, (3) run tests, re-run single steps when debugging, and use the Git review diffs to triage regressions.
 
 
 ### Plan Review
 
  * Does plan address the question? Yes
-    * The plan explicitly covers booktest features needed for multi-step pipelines (TestCaseRun, named steps, snapshotting, artifact capture, reviewer flow and diffs).
-    * It lays out testing strategy and key concepts (stage isolation, deterministic fixtures, normalized outputs, combining automated checks with human review) and promises a concrete 3-step example plus practical tips (seeding, caching, CI), which directly answers how to test such pipelines.
+    * The plan maps pipeline stages to booktest steps/artifacts and explains key features to use (snapshotting, caching/re-run semantics, tolerances/evaluators).
+    * It gives an actionable implementation flow (deterministic fixtures, snapshot/assert strategies, incremental runs and Git-backed review) sufficient to test a multi-step ML pipeline.
  * Does plan reference relevant features? Yes
-    * The plan explicitly calls out and plans to demonstrate key booktest features: the TestCaseRun API, named sections/steps, snapshotting/artifact capture, reviewer annotations/approval flow, and built-in diff/comparison helpers.
-    * It also covers practical, relevant practices for ML pipelines—capturing intermediate outputs, normalizing outputs for stable diffs, deterministic fixtures/seeding, caching/mocking, and CI/update workflows—and includes a concrete example to show those features in action.
+    * Plan explicitly maps pipeline stages to booktest steps/artifacts and snapshotting, which is core to testing multi-step workflows.
+    * It references booktest caching/re-run semantics to avoid full re-runs and only execute downstream steps, a key feature for iterative ML pipelines.
+    * It covers non-binary comparisons via numeric tolerances and AI evaluators, and calls out deterministic fixtures (seeds/stubs) for reproducibility.
+    * It uses booktest’s Git-backed review/diff workflow for triage and approval, tying testing outputs into an actionable review process.

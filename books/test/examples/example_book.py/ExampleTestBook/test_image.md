@@ -1,3 +1,3 @@
 # This test demonstrates images
 
-![2820a09958b670649bf211ef97dc95aeeb41d62c](test_image/2820a09958b670649bf211ef97dc95aeeb41d62c)
+![ccc2824ffc4acfd5533fdada8caede90abb7b3e9](test_image/ccc2824ffc4acfd5533fdada8caede90abb7b3e9)

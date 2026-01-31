@@ -123,6 +123,42 @@ def docs() -> int:
     return result.returncode
 
 
+def version(parsed) -> int:
+    """Read or update the project version in pyproject.toml."""
+    import re
+    pyproject_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "pyproject.toml"
+    )
+    with open(pyproject_path, "r") as f:
+        content = f.read()
+
+    if parsed.new_version:
+        new_content = re.sub(
+            r'^version\s*=\s*"[^"]*"',
+            f'version = "{parsed.new_version}"',
+            content,
+            count=1,
+            flags=re.MULTILINE
+        )
+        with open(pyproject_path, "w") as f:
+            f.write(new_content)
+        print(parsed.new_version)
+    else:
+        match = re.search(
+            r'^version\s*=\s*"([^"]*)"',
+            content,
+            re.MULTILINE
+        )
+        if match:
+            print(match.group(1))
+        else:
+            print("error: version not found in pyproject.toml",
+                  file=sys.stderr)
+            return 1
+    return 0
+
+
 def do(cmd, cache=None):
     if cache is None:
         cache = {}
@@ -169,6 +205,12 @@ def setup_subparser(subparsers):
                     help='generates API documentation with lazydocs') \
         .set_defaults(
             exec=lambda parsed: docs())
+
+    version_parser = \
+        subparsers.add_parser('version',
+                              help='read or set project version')
+    version_parser.add_argument("new_version", nargs='?', default=None)
+    version_parser.set_defaults(exec=version)
 
 
 def do_args(args, cache={}) -> int:

@@ -500,8 +500,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install poetry
-          poetry install
+          pip install uv
+          uv sync
           pip install 'dvc[s3]'
 
       - name: Configure DVC credentials
@@ -517,7 +517,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          poetry run booktest test
+          uv run booktest test
           # Or: ./do test
 
       - name: Check for snapshot changes
@@ -573,7 +573,7 @@ ssh-keygen -t ed25519 -f dvc_deploy_key -N ""
         run: pip install 'dvc[ssh]'
 
       - name: Run tests
-        run: poetry run booktest test
+        run: uv run booktest test
 ```
 
 ### GitLab CI
@@ -585,11 +585,11 @@ test:
   image: python:3.11
 
   before_script:
-    - pip install poetry 'dvc[s3]'
-    - poetry install
+    - pip install uv 'dvc[s3]'
+    - uv sync
 
   script:
-    - poetry run booktest test
+    - uv run booktest test
 
   variables:
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
@@ -618,14 +618,14 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                sh 'pip install poetry dvc[s3]'
-                sh 'poetry install'
+                sh 'pip install uv dvc[s3]'
+                sh 'uv sync'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'poetry run booktest test'
+                sh 'uv run booktest test'
             }
         }
 
