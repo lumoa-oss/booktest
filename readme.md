@@ -14,9 +14,11 @@ Booktest is a regression testing tool for systems where outputs aren't strictly 
 
 In these systems, the hard problem isn't checking correctness — it's **seeing what changed**. When you update a prompt, retrain a model, or tweak parameters, behavior shifts across the system. Most testing tools reduce this to a single verdict: pass or fail. In practice, that's a "computer says no" experience — a failure signal without diagnostics, raising more questions than it answers.
 
-Booktest treats regressions as information, not verdicts. It captures test outputs as readable markdown, tracks them in Git, and makes behavioral changes reviewable — the same way you review code. The richer your diagnostics, the faster you find root causes and the fewer iterations you need. Tolerance metrics separate real regressions from noise. AI evaluation scales review beyond what humans can do manually. A build-system-style dependency graph makes each iteration faster by letting you re-run one step of a pipeline without re-running everything before it.
+Booktest treats regressions as information, not verdicts. It captures test outputs as readable markdown, tracks them in Git, and makes behavioral changes reviewable — the same way you review code. The richer your diagnostics, the faster you find root causes and the fewer iterations you need.
 
-Built by [Netigate](https://www.netigate.net/) (formerly Lumoa) after years of production use testing NLP, ML and LLM models processing millions of customer feedback messages. Similar tools were build and used over 2 decade career by the author to support DS/ML, information retrieval and [predictive database](https://aito.ai) RnD.
+Tolerance metrics separate real regressions from noise. AI evaluation scales review beyond what humans can do manually. A build-system-style dependency graph makes each iteration faster by letting you re-run one step of a pipeline without re-running everything before it.
+
+Built by [Netigate](https://www.netigate.net/) (formerly Lumoa) after years of production use testing NLP, ML and LLM models processing millions of customer feedback messages. Similar tools were built and used over a 2-decade career by the [author](https://github.com/anttirauhala) to support DS/ML, information retrieval and [predictive database](https://aito.ai) R&D.
 
 ```python
 import booktest as bt
@@ -154,17 +156,16 @@ A typical ML pipeline: load data, clean, featurize, train, validate, test, gener
 Traditional testing forces you to run all steps every time, even when you're only changing the last one.
 
 **Example pipeline:**
-1. Prepare data: 10 min
-2. Train model A: 5 min
-3. Train model B: 5 min
-4. Train model C: 5 min
-5. Evaluate combined model A+B+C: 4 min
-6. Generate reports: 1 min
+1. Load data: 5 min
+2. Train model: 20 min
+3. Evaluate: 4 min
+4. Generate report: 1 min
+
 **Total: 30 minutes** to test a report formatting change
 
 **Booktest is a build system for tests:**
 
-Tests return objects (like Make targets). Other tests depend on them. Change step 6 -> only step 6 re-runs.
+Tests return objects (like Make targets). Other tests depend on them. Change step 4 -> only step 4 re-runs.
 
 ```python
 # Step 1: Load data (slow, runs once)
@@ -183,22 +184,22 @@ def test_train_model(t: bt.TestCaseRun, data):
 # Step 3: Evaluate (depends on step 2)
 @bt.depends_on(test_train_model)
 def test_evaluate(t: bt.TestCaseRun, model):
-    results = evaluate(model, test_data)  # 10 minutes
+    results = evaluate(model, test_data)  # 4 minutes
     t.tdf(results)
     return results
 
 # Step 4: Generate report (depends on step 3)
 @bt.depends_on(test_evaluate)
 def test_report(t: bt.TestCaseRun, results):
-    report = generate_report(results)  # 5 minutes
+    report = generate_report(results)  # 1 minute
     t.h1("Final Report")
     t.tln(report)
 ```
 
 **Iteration speed:**
-- **Change formatting in step 6?** Only step 6 re-runs (1 min, not 30 min)
-- **Change model A params in step 2?** Steps 2 and 5 re-run (9 min, cached step 1)
-- **All steps run in parallel?** `booktest test -p8` -> smart scheduling: 20 min instead of 30 min
+- **Change formatting in step 4?** Only step 4 re-runs (1 min, not 30 min)
+- **Change model params in step 2?** Steps 2-4 re-run (25 min, step 1 cached)
+- **All steps in parallel?** `booktest test -p8` -> smart scheduling
 
 **Plus HTTP mocking:**
 ```python
@@ -235,7 +236,7 @@ Test each pipeline step in isolation, reuse expensive results.
 
 ---
 
-## What's New in 1.1
+## Key Capabilities
 
 ### Tolerance-Based Metrics
 
