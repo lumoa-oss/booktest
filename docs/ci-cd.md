@@ -47,9 +47,9 @@ jobs:
           retention-days: 7
 ```
 
-### With Poetry
+### With uv
 
-If your project uses Poetry:
+If your project uses uv:
 
 ```yaml
 name: Booktest
@@ -72,14 +72,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Poetry
-        run: pip install poetry
+      - name: Install uv
+        run: pip install uv
 
       - name: Install dependencies
-        run: poetry install
+        run: uv sync
 
       - name: Run booktest
-        run: poetry run booktest -c
+        run: uv run booktest -c
 
       - name: Upload test books on failure
         if: failure()

@@ -1,16 +1,14 @@
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
+[project]
 name = "booktest-example"
 version = "0.0.1"
 description = "example of using booktest"
-authors = ["Antt Rauhala <antti@lumoa.io>"]
+authors = [{name = "Antti Rauhala", email = "antti@lumoa.io"}]
 readme = "README.md"
-packages = [{include = "poetry_demo"}]
+requires-python = ">=3.10"
+dependencies = [
+    "booktest>=1.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.7"
-booktest = "0.3"
-
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

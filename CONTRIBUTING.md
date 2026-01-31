@@ -10,19 +10,14 @@ Thanks for your interest in contributing to Booktest! This document provides gui
    cd booktest
    ```
 
-2. **Install Poetry** (if not already installed)
+2. **Install uv** (if not already installed)
    ```bash
-   pip install poetry
+   pip install uv
    ```
 
 3. **Install dependencies**
    ```bash
-   poetry install
-   ```
-
-4. **Activate the virtual environment**
-   ```bash
-   poetry shell
+   uv sync
    ```
 
 ## Running Tests

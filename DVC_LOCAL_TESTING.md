@@ -8,7 +8,7 @@ This guide shows how to test booktest's DVC storage backend locally.
    ```bash
    pip install dvc
    # or
-   poetry add dvc --group dev
+   uv add --group dev dvc
    ```
 
 2. **Verify DVC installation**
