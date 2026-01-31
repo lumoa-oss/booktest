@@ -5,12 +5,12 @@ Agent analyzes the question and creates an answering strategy
 
 ## Loading Context
 
-Loaded 30434 characters of documentation
+Loaded 30360 characters of documentation
 
 
 ## Creating Plan
 
-✓ Created plan with 133 words
+✓ Created plan with 178 words
 
 
 ### Question
@@ -20,18 +20,17 @@ How do I test a multi-step ML pipeline with booktest?
 
 ### Plan
 
-- Start with the booktest features to use: treat each ML pipeline stage as a booktest step/artifact (dependency graph), snapshot stage outputs as markdown artifacts, use booktest’s caching/re-run semantics to re-run only downstream steps, and apply tolerance metrics or AI evaluators for non-binary comparisons.
-- Explain the essential concepts to implement: design deterministic, small sample fixtures (seeds, stubs) for reproducibility; assert on artifacts via human-readable snapshots + numeric tolerances or automatic evaluators; and rely on booktest’s Git-backed review workflow to inspect diffs and approve/record changes.
-- Present in this order (actionable flow): (1) define test cases and inputs and map pipeline stages to booktest steps/artifacts, (2) implement snapshotting + tolerances/evaluators and enable caching for incremental runs, (3) run tests, re-run single steps when debugging, and use the Git review diffs to triage regressions.
+- Start by listing the booktest features you’ll use and the core concepts you must explain: pipeline steps/nodes (one booktest target per ML stage), artifacts/outputs (capture outputs as markdown or files), the dependency graph / incremental re-run (cache so you can re-run just changed steps), tolerance metrics for numeric comparisons, and the review/git snapshot workflow (how diffs surface regressions).
+- Present the explanation in the logical order a reader would implement it: (1) decompose your ML pipeline into booktest steps and define inputs/outputs (show how to register each step and artifact), (2) capture each step’s human-readable output (predictions, metrics, examples) as markdown/files and attach tolerances for numeric checks, (3) run the test to create snapshots, then re-run incrementally after changes and interpret the diffs in the reviewer workflow.
+- Finish with short, actionable tips: use one step per transformation so diffs are localized, choose meaningful artifact names and small representative examples for human review, set per-metric tolerances to avoid noisy failures, and demonstrate a tiny code snippet or CI command showing an initial run and a single-step re-run.
 
 
 ### Plan Review
 
  * Does plan address the question? Yes
-    * The plan maps pipeline stages to booktest steps/artifacts and explains key features to use (snapshotting, caching/re-run semantics, tolerances/evaluators).
-    * It gives an actionable implementation flow (deterministic fixtures, snapshot/assert strategies, incremental runs and Git-backed review) sufficient to test a multi-step ML pipeline.
+    * Covers the key booktest capabilities needed: per-stage targets, artifacts, dependency graph and incremental re-runs.
+    * Gives a clear, implementable sequence: decompose pipeline, register steps/artifacts, capture outputs with tolerances, create snapshots and interpret diffs.
+    * Includes practical tips (localized steps, representative examples, per-metric tolerances) and promises a code/CI snippet to demonstrate initial and single-step re-runs.
  * Does plan reference relevant features? Yes
-    * Plan explicitly maps pipeline stages to booktest steps/artifacts and snapshotting, which is core to testing multi-step workflows.
-    * It references booktest caching/re-run semantics to avoid full re-runs and only execute downstream steps, a key feature for iterative ML pipelines.
-    * It covers non-binary comparisons via numeric tolerances and AI evaluators, and calls out deterministic fixtures (seeds/stubs) for reproducibility.
-    * It uses booktest’s Git-backed review/diff workflow for triage and approval, tying testing outputs into an actionable review process.
+    * The plan explicitly references key booktest features: per-stage targets/steps, artifacts/outputs captured as files/markdown, dependency graph with caching for incremental re-runs, numeric tolerances, and the review/git snapshot diff workflow.
+    * It organizes a practical implementation order (decompose pipeline, register steps/artifacts, capture outputs with tolerances, create snapshots and re-run incrementally) and adds actionable tips and a small code/CI example to make the plan executable.

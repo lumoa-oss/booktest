@@ -6,34 +6,32 @@ Agent validates the answer for quality and completeness
 ## Inherited State from Steps 1-2
 
 Question: How do I test a multi-step ML pipeline with booktest?
-Answer: Treat each ML pipeline stage as a booktest step/artifact and capture its outputs as human-readable markdown (use t.h1/t.iln) so the build-system-style...
+Answer: Use one booktest target (a test function receiving bt.TestCaseRun) per ML stage so each pipeline node becomes a reviewable snapshot; capture human-rea...
 
 
 ## Validation
 
-✓ Completed validation with 167 words
+✓ Completed validation with 164 words
 
 
 ### Validation Result
 
-What works well: The answer gives a solid, practical high-level approach — treating pipeline stages as booktest steps/artifacts, snapshotting human-readable outputs, using caching to avoid re-running unchanged stages, and making tests deterministic with seeds and stubs. Referencing t.tmetric for numeric tolerances and t.start_review for human/AI review matches typical booktest concepts for numeric assertions and reviews.
+What works well: The answer gives a clear, practical workflow (one test per pipeline stage), concrete places to put human-readable outputs vs numeric checks, and actionable tips (small examples, per-metric tolerances, localized diffs), so it’s immediately useful for organizing ML pipeline tests with booktest.
 
-Issues / missing information: It’s light on concrete examples or code showing how to map stages to steps, create artifacts, set up t.tmetric thresholds, or invoke t.start_review and approve snapshots; it also doesn’t discuss handling large model artifacts, CI integration, hardware nondeterminism, or how to name/organize artifacts and fixtures. A few of the function/flag names (t.h1/t.iln and the exact CLI flags) should be demonstrated or linked to docs so users can copy/paste a working pattern.
+Issues / missing information: It assumes familiarity with specific APIs and CLI flags (bt.TestCaseRun, t.h1/t.iln, t.tmetric, t.start_review, booktest -v -i) without showing example code or explaining how to make runs deterministic (seeds), manage large artifacts safely (tracking big binaries in Git is discouraged — mention LFS or external artifact storage), or how booktest’s dependency/caching is expressed in test code. Also it mixes running a single pytest test and running booktest; clarify whether you run pytest to update snapshots or run booktest directly to re-run a node and record diffs.
 
-Overall assessment: Good — accurate and actionable at a high level, but would be much stronger with short examples, more details on artifact management and CI workflow, and explicit mention of how to configure thresholds and approvals.
+Overall assessment: Good — the answer is practical and mostly actionable, but would be stronger with a small code example, clearer command/step sequencing, and guidance on reproducibility and safe artifact management.
 
 
 ### Quality Assessment
 
  * Overall answer quality? Good
-    * Provides solid, practical high-level guidance (snapshotting, caching, determinism, numeric tolerances, human/AI review hooks).
-    * Actionable for designing tests but intentionally high-level rather than implementation-ready.
-    * Missing concrete examples, code snippets, CI integration, artifact management, and handling of hardware nondeterminism; some function/flag names need demonstration or doc links.
+    * Provides a clear, practical workflow with concrete placement of human-readable outputs vs numeric checks and actionable tips.
+    * Assumes familiarity with specific APIs/CLI flags and lacks small code examples or explicit command sequencing (pytest vs booktest), which limits immediacy for unfamiliar users.
+    * Missing guidance on reproducibility (seeds), safe handling of large artifacts (LFS or external storage), and how booktest expresses dependencies/caching in test code.
  * Completeness? Mostly Complete
-    * Strong high-level approach: treats pipeline stages as booktest steps, snapshots human-readable outputs, uses caching, and enforces determinism with seeds and stubs.
-    * Appropriate testing practices noted: numeric tolerances (t.tmetric) and review hooks (t.start_review) align with common needs for numeric assertions and human/AI review.
-    * Lacks concrete examples or code showing how to map stages to steps, create artifacts, set thresholds, or invoke review/approval flows for copy-paste use.
-    * Does not address practical concerns: handling large model artifacts, CI integration, hardware nondeterminism, artifact naming/organization, or exact CLI/function usage for reproducibility.
+    * Provides a clear, practical workflow and actionable tips that make it immediately useful for organizing ML pipeline tests.
+    * Lacks concrete code examples and details on reproducibility (seeds), safe handling of large artifacts, and precise CLI/command sequencing, which are important for full completeness.
 
 
 ### Metrics
