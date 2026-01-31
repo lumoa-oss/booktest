@@ -16,7 +16,7 @@ In these systems, the hard problem isn't checking correctness — it's **seeing 
 
 Booktest captures test outputs as readable markdown, tracks them in Git, and makes behavioral changes reviewable — the same way you review code. Tolerance metrics separate real regressions from noise. AI evaluation scales review beyond what humans can do manually. A build-system-style dependency graph lets you iterate on one step of a pipeline without re-running everything before it.
 
-Built by [Netigate](https://www.netigate.net/) (formerly Lumoa) after years of production use testing NLP models processing millions of customer feedback messages.
+Built by [Netigate](https://www.netigate.net/) (formerly Lumoa) after years of production use testing NLP, ML and LLM models processing millions of customer feedback messages. Similar tools were build and used over 2 decade career by the author to support DS/ML, information retrieval and [predictive database](https://aito.ai) RnD.
 
 ```python
 import booktest as bt
