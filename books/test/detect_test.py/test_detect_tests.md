@@ -86,6 +86,9 @@
  * test/examples/snapshots_book.py::test_requests_sequence..ok
  * test/examples/snapshots_book.py::test_requests_with_headers..ok
  * test/examples/snapshots_book.py::test_saved_request..ok
+ * test/examples/snapshots_book.py::test_t_snapshot_async..ok
+ * test/examples/snapshots_book.py::test_t_snapshot_basic..ok
+ * test/examples/snapshots_book.py::test_t_snapshot_kwargs..ok
  * test/setup_teardown_test.py::test_setup_teardown..ok
  * test/stderr_test.py::StdErrBook/test_stderr..ok
  * test/test_case_filtering.py::test_removed_tests_filtered..ok
@@ -134,4 +137,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 133
+count: 136

@@ -157,6 +157,9 @@
          * [snapshots_book.py::test_requests_sequence](test/examples/snapshots_book.py::test_requests_sequence.md)
          * [snapshots_book.py::test_requests_with_headers](test/examples/snapshots_book.py::test_requests_with_headers.md)
          * [snapshots_book.py::test_saved_request](test/examples/snapshots_book.py::test_saved_request.md)
+         * [snapshots_book.py::test_t_snapshot_async](test/examples/snapshots_book.py::test_t_snapshot_async.md)
+         * [snapshots_book.py::test_t_snapshot_basic](test/examples/snapshots_book.py::test_t_snapshot_basic.md)
+         * [snapshots_book.py::test_t_snapshot_kwargs](test/examples/snapshots_book.py::test_t_snapshot_kwargs.md)
          * [memory_book.py::test_memory](test/examples/memory_book.py::test_memory.md)
 
          * example_suite
