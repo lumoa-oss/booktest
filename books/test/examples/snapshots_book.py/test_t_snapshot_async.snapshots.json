@@ -1,0 +1,30 @@
+{
+  "snapshot": [
+    {
+      "args": [
+        "https://api.example.com/users"
+      ],
+      "hash": "2a948d30f33924176be44386eba37436d54af632",
+      "kwargs": {},
+      "name": "fetch",
+      "result": {
+        "data": 7061,
+        "timestamp": 1770743799216649777,
+        "url": "https://api.example.com/users"
+      }
+    },
+    {
+      "args": [
+        "https://api.example.com"
+      ],
+      "hash": "8fea7cd43f66aeab974466cf57a40f6662926418",
+      "kwargs": {},
+      "name": "fetch",
+      "result": {
+        "data": 1179,
+        "timestamp": 1770743799205681676,
+        "url": "https://api.example.com"
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@ from booktest.snapshots.functions import snapshot_functions, mock_functions, Moc
 from booktest.snapshots.requests import snapshot_requests
 from booktest.snapshots.httpx import snapshot_httpx
 from booktest.snapshots.env import snapshot_env, mock_env, mock_missing_env, MockEnv, SnapshotEnv
+from booktest.snapshots.snapshot import SnapshotManager, SnapshotCallWrapper
 
 # Configuration and detection
 from booktest.config.naming import (

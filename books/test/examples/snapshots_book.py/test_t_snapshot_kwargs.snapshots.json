@@ -1,0 +1,36 @@
+{
+  "snapshot": [
+    {
+      "args": [
+        "/users"
+      ],
+      "hash": "e8d00958736b6c2063a3fd4425808b8c77757a98",
+      "kwargs": {
+        "method": "POST"
+      },
+      "name": "api",
+      "result": {
+        "endpoint": "/users",
+        "method": "POST",
+        "random": 5437,
+        "timeout": 30
+      }
+    },
+    {
+      "args": [
+        "/users"
+      ],
+      "hash": "eac5b4aa5effcd3ccb123ea2d7c8726a688b6f3f",
+      "kwargs": {
+        "method": "GET"
+      },
+      "name": "api",
+      "result": {
+        "endpoint": "/users",
+        "method": "GET",
+        "random": 5113,
+        "timeout": 30
+      }
+    }
+  ]
+}

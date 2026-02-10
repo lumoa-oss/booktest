@@ -622,6 +622,68 @@ def test_with_env(t: bt.TestCaseRun):
 **Subsequent runs**: Uses recorded values
 **Missing env vars**: Uses mock values
 
+### Inline Snapshots with `t.snapshot()`
+
+Cache any callable's result with explicit control over the cache key:
+
+```python
+def test_api_integration(t: bt.TestCaseRun):
+    user_id = 123
+
+    # Args are passed to the callable automatically
+    # api.fetch_user is called with (user_id,)
+    user = t.snapshot("user-data", user_id)(api.fetch_user)
+
+    t.h1("User Data")
+    t.tln(f"Name: {user['name']}")
+    t.tln(f"Email: {user['email']}")
+```
+
+**How it works**:
+- Cache key is computed from `(name, args, kwargs)` hash
+- Args and kwargs are passed to the callable automatically
+- Same arguments → same cached result
+- Different arguments → separate cache entries
+
+**With keyword arguments**:
+
+```python
+def test_queries(t: bt.TestCaseRun):
+    # db.query is called with ("users", limit=10)
+    users = t.snapshot("query", "users", limit=10)(db.query)
+
+    # Different kwargs = different snapshot
+    admins = t.snapshot("query", "users", role="admin")(db.query)
+```
+
+**Async support**:
+
+```python
+async def test_async_api(t: bt.TestCaseRun):
+    # async_client.get is called with (url,)
+    data = await t.snapshot("fetch", url)(async_client.get)
+```
+
+**Lambda for complex cases**:
+
+```python
+def test_complex(t: bt.TestCaseRun):
+    # Use lambda when you need extra parameters or transformations
+    result = t.snapshot("query", table)(
+        lambda t: db.query(t, limit=100, order_by="id")
+    )
+```
+
+**When to use `t.snapshot()` vs decorators**:
+
+| Use Case | Recommended |
+|----------|-------------|
+| Mock all HTTP requests | `@snapshot_requests()` or `@snapshot_httpx()` |
+| Mock specific functions globally | `@snapshot_functions(func1, func2)` |
+| Cache specific computations | `t.snapshot("name", args)` |
+| Fine-grained control over cache keys | `t.snapshot("name", args)` |
+| Mix cached and live calls | `t.snapshot("name", args)` |
+
 **Example**: [test/examples/snapshots_book.py](../test/examples/snapshots_book.py)
 
 ---
