@@ -86,6 +86,9 @@ class TestCaseRun(OutputWriter):
         # snapshot usage tracking
         self.snapshot_usage = {}  # Track snapshot usage for reporting
 
+        # t.snapshot() manager (lazy initialized)
+        self._snapshot_manager = None
+
         # storage initialization
         self.storage = self._init_storage()
         # Use filesystem path for storage (DVC manifest keys must be filesystem-safe)
@@ -287,6 +290,10 @@ class TestCaseRun(OutputWriter):
         """
         self.ended = time.time()
         self.took_ms = 1000*(self.ended - self.started)
+
+        # Save t.snapshot() results if used
+        if self._snapshot_manager is not None:
+            self._snapshot_manager.save()
 
         self.close()
 
@@ -1214,3 +1221,63 @@ class TestCaseRun(OutputWriter):
         """
         self.fail_feed(text)
         return self
+
+    def snapshot(self, name: str, *args, **kwargs):
+        """
+        Create a snapshot of a callable's result based on name and arguments.
+
+        This method caches the result of a callable and reuses it when the same
+        name and arguments are provided. Results are stored in the test's snapshot
+        file and managed via -s (complete) and -S (refresh) flags.
+
+        The snapshot args and kwargs are automatically passed to the callable,
+        so you don't need to repeat them. The snapshot is keyed by a hash of
+        (name, args, kwargs), so the cached result is returned only when all
+        three match exactly.
+
+        Args:
+            name: A unique identifier for this snapshot within the test.
+                  Use descriptive names like "api-response" or "computed-result".
+            *args: Arguments passed to the callable. Changes trigger re-computation.
+            **kwargs: Keyword arguments passed to the callable.
+
+        Returns:
+            A wrapper that accepts a callable. The callable receives the snapshot
+            args and kwargs automatically.
+
+        Examples:
+            Basic usage - args are passed to the callable:
+
+                # api.fetch is called with (user_id, endpoint)
+                result = t.snapshot("api-call", user_id, endpoint)(api.fetch)
+
+            With keyword arguments:
+
+                # db.query is called with ("users", limit=100)
+                result = t.snapshot("query", "users", limit=100)(db.query)
+
+            Async functions are supported:
+
+                # async_client.get is called with (url,)
+                result = await t.snapshot("async-fetch", url)(async_client.get)
+
+            Lambda for complex cases:
+
+                # Use lambda when you need extra parameters or transformations
+                result = t.snapshot("query", table)(
+                    lambda t: db.query(t, limit=100, order_by="id")
+                )
+
+        Notes:
+            - Results must be JSON-serializable
+            - Use -s flag to capture new snapshots: `./do test -s`
+            - Use -S flag to refresh all snapshots: `./do test -S`
+            - Snapshots are stored in .snapshots.json with type "snapshot"
+        """
+        from booktest.snapshots.snapshot import SnapshotManager, SnapshotCallWrapper
+
+        # Lazy initialize snapshot manager
+        if self._snapshot_manager is None:
+            self._snapshot_manager = SnapshotManager(self)
+
+        return SnapshotCallWrapper(self._snapshot_manager, name, args, kwargs)

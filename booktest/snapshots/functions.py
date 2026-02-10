@@ -231,9 +231,6 @@ class SnapshotFunctions:
             stored = self.snapshots[function]
             h = hashlib.sha1()
             for i in hashes:
-                if i not in stored:
-                    # force snapshot creation, if a snapshot is missing
-                    self.t.diff()
                 h.update(i.encode())
             aggregate_hash = str(h.hexdigest())
 

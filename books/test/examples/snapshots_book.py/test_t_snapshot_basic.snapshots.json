@@ -1,0 +1,31 @@
+{
+  "snapshot": [
+    {
+      "args": [],
+      "hash": "b46dc64f39e8ca6bbad2031adecf0c5d839c0f7e",
+      "kwargs": {},
+      "name": "timestamp",
+      "result": 1770743799225890786
+    },
+    {
+      "args": [
+        10,
+        20
+      ],
+      "hash": "b76bed1b77e5fd98f34762e839335a4ffe54489e",
+      "kwargs": {},
+      "name": "compute",
+      "result": 862
+    },
+    {
+      "args": [
+        30,
+        40
+      ],
+      "hash": "cdcd889025238fb75c06924ac502cee3129c8562",
+      "kwargs": {},
+      "name": "compute",
+      "result": 689
+    }
+  ]
+}

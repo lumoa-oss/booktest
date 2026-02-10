@@ -386,3 +386,88 @@ async def test_mock_functions(t: bt.TestCaseRun):
     t.keyvalueln(" * timestamp:", time.time_ns())
     t.keyvalueln(" * random:", random._inst.random())
     t.keyvalueln(" * async random:", await async_random())
+
+
+# ============================================================================
+# t.snapshot() tests - explicit snapshot caching
+# ============================================================================
+
+def test_t_snapshot_basic(t: bt.TestCaseRun):
+    """Test basic t.snapshot() usage with sync callables."""
+    t.h1("basic t.snapshot() usage")
+
+    t.tln("t.snapshot() caches callable results based on name and arguments.")
+    t.tln("Args are passed to the callable automatically.")
+
+    # Simple snapshot with no args
+    timestamp = t.snapshot("timestamp")(time.time_ns)
+    t.keyvalueln(" * cached timestamp:", timestamp)
+
+    # Snapshot with args - args are passed to the callable
+    def compute(a, b):
+        return a + b + random.randint(0, 1000)
+
+    result1 = t.snapshot("compute", 10, 20)(compute)
+    result2 = t.snapshot("compute", 10, 20)(compute)  # Same args = cached result
+    t.keyvalueln(" * compute(10, 20) first call:", result1)
+    t.keyvalueln(" * compute(10, 20) second call:", result2)
+    t.keyvalueln(" * results match:", result1 == result2)
+
+    # Different args = different snapshot
+    result3 = t.snapshot("compute", 30, 40)(compute)
+    t.keyvalueln(" * compute(30, 40):", result3)
+
+
+def test_t_snapshot_kwargs(t: bt.TestCaseRun):
+    """Test t.snapshot() with keyword arguments."""
+    t.h1("t.snapshot() with kwargs")
+
+    def api_call(endpoint, method="GET", timeout=30):
+        # Simulate API call that returns different results
+        return {
+            "endpoint": endpoint,
+            "method": method,
+            "timeout": timeout,
+            "random": random.randint(0, 10000)
+        }
+
+    # Snapshot with kwargs - args passed to api_call automatically
+    result1 = t.snapshot("api", "/users", method="GET")(api_call)
+    t.h2("GET /users:")
+    t.tln(json.dumps(result1, indent=2, sort_keys=True))
+
+    # Same call should return cached result
+    result2 = t.snapshot("api", "/users", method="GET")(api_call)
+    t.keyvalueln("cached result matches:", result1 == result2)
+
+    # Different kwargs = different snapshot
+    result3 = t.snapshot("api", "/users", method="POST")(api_call)
+    t.h2("POST /users:")
+    t.tln(json.dumps(result3, indent=2, sort_keys=True))
+
+
+async def test_t_snapshot_async(t: bt.TestCaseRun):
+    """Test t.snapshot() with async callables."""
+    t.h1("async t.snapshot() usage")
+
+    async def async_fetch(url):
+        await asyncio.sleep(0.01)  # Simulate network delay
+        return {
+            "url": url,
+            "data": random.randint(0, 10000),
+            "timestamp": time.time_ns()
+        }
+
+    # Async snapshot - url is passed to async_fetch automatically
+    result1 = await t.snapshot("fetch", "https://api.example.com")(async_fetch)
+    t.h2("first fetch:")
+    t.tln(json.dumps(result1, indent=2, sort_keys=True))
+
+    # Same call should return cached result
+    result2 = await t.snapshot("fetch", "https://api.example.com")(async_fetch)
+    t.keyvalueln("cached result matches:", result1 == result2)
+
+    # Different URL = different snapshot
+    result3 = await t.snapshot("fetch", "https://api.example.com/users")(async_fetch)
+    t.h2("fetch /users:")
+    t.tln(json.dumps(result3, indent=2, sort_keys=True))
