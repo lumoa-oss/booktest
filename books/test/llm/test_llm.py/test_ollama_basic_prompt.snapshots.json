@@ -1,0 +1,29 @@
+{
+  "env": {
+    "BOOKTEST_LLM": "ollama",
+    "OLLAMA_CONTEXT_SIZE": "32768",
+    "OLLAMA_HOST": "http://localhost:11435",
+    "OLLAMA_MODEL": "gpt-oss:20b"
+  },
+  "http": {
+    "3a5f6cf933d07765771f66c279eabe154d6d0af8": {
+      "request": {
+        "body": "eyJtb2RlbCI6ICJncHQtb3NzOjIwYiIsICJwcm9tcHQiOiAiV2hhdCBpcyAyICsgMj8gQW5zd2VyIHdpdGgganVzdCB0aGUgbnVtYmVyLiIsICJzdHJlYW0iOiBmYWxzZSwgIm9wdGlvbnMiOiB7Im51bV9wcmVkaWN0IjogMzIsICJudW1fY3R4IjogMzI3Njh9fQ==",
+        "hash": "3a5f6cf933d07765771f66c279eabe154d6d0af8",
+        "method": "POST",
+        "url": "http://localhost:11435/api/generate"
+      },
+      "response": {
+        "content": "{\"model\":\"gpt-oss:20b\",\"created_at\":\"2026-02-23T12:38:23.172332133Z\",\"response\":\"4\",\"thinking\":\"The user wants answer to 2+2 with just number. So \\\"4\\\".\",\"done\":true,\"done_reason\":\"stop\",\"context\":[200006,17360,200008,3575,553,17554,162016,11,261,4410,6439,2359,22203,656,7788,17527,558,87447,100594,25,220,1323,19,12,3218,198,6576,3521,25,220,1323,21,12,3286,12,1860,279,30377,289,25,14093,279,2,13888,18403,25,8450,11,49159,11,1721,13,21030,2804,413,7360,395,1753,3176,13,200007,200006,1428,200008,4827,382,220,17,659,220,17,30,30985,483,1327,290,2086,13,200007,200006,173781,200005,35644,200008,976,1825,10648,6052,316,220,17,10,17,483,1327,2086,13,2632,392,19,4050,200007,200006,173781,200005,17196,200008,19],\"total_duration\":5978895465,\"load_duration\":1893312985,\"prompt_eval_count\":81,\"prompt_eval_duration\":1635505774,\"eval_count\":28,\"eval_duration\":2448131136}",
+        "encoding": "utf-8",
+        "headers": {
+          "Content-Length": "869",
+          "Content-Type": "application/json; charset=utf-8",
+          "Date": "Mon, 23 Feb 2026 12:38:23 GMT"
+        },
+        "statusCode": 200
+      }
+    }
+  },
+  "httpx": {}
+}

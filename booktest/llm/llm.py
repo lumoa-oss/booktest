@@ -206,6 +206,12 @@ class OllamaLlm(Llm):
     Optional environment variables:
     - OLLAMA_HOST: Ollama server URL (default: http://localhost:11434)
     - OLLAMA_MODEL: Model name (default: llama3.2)
+    - OLLAMA_CONTEXT_SIZE: Context window size in tokens (default: 32768)
+
+    Note: OLLAMA_CONTEXT_SIZE should be set consistently across the entire
+    test run. Changing context size causes Ollama to reload the model,
+    which is expensive. Set this once via environment variable rather than
+    changing per-request.
     """
 
     def __init__(self, host: str = None, model: str = None):
@@ -217,9 +223,15 @@ class OllamaLlm(Llm):
                   or defaults to http://localhost:11434.
             model: Model name. If None, uses OLLAMA_MODEL env var
                    or defaults to llama3.2.
+
+        Note: Context size is read from OLLAMA_CONTEXT_SIZE environment
+        variable (default: 32768). This is intentionally not a constructor
+        parameter to discourage per-request changes, which cause expensive
+        model reloads in Ollama.
         """
         self.host = host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
         self.model = model or os.getenv("OLLAMA_MODEL", "llama3.2")
+        self.context_size = int(os.getenv("OLLAMA_CONTEXT_SIZE", "32768"))
 
     def prompt(self, request: str, max_completion_tokens: int = 2048) -> str:
         """
@@ -239,7 +251,10 @@ class OllamaLlm(Llm):
                 "model": self.model,
                 "prompt": request,
                 "stream": False,
-                "options": {"num_predict": max_completion_tokens}
+                "options": {
+                    "num_predict": max_completion_tokens,
+                    "num_ctx": self.context_size
+                }
             }
         )
         response.raise_for_status()
@@ -252,7 +267,23 @@ _default_llm: Optional[Llm] = None
 
 
 def _auto_detect_llm() -> Llm:
-    """Create LLM based on environment variables."""
+    """
+    Create LLM based on environment variables.
+
+    Selection priority:
+    1. BOOKTEST_LLM explicit choice (ollama, claude, gpt)
+    2. Auto-detect based on available credentials
+    """
+    # Explicit selection takes priority
+    llm_choice = os.getenv("BOOKTEST_LLM", "").lower()
+    if llm_choice == "ollama":
+        return OllamaLlm()
+    elif llm_choice in ("claude", "anthropic"):
+        return ClaudeLlm()
+    elif llm_choice in ("gpt", "openai", "azure"):
+        return GptLlm()
+
+    # Auto-detect based on available credentials
     if os.getenv("ANTHROPIC_API_KEY"):
         return ClaudeLlm()
     elif os.getenv("OLLAMA_HOST") or os.getenv("OLLAMA_MODEL"):
@@ -268,12 +299,14 @@ def get_llm() -> Llm:
     The instance is cached for efficiency. To reset the cache (e.g., after
     environment variables change), call set_llm(None).
 
-    Auto-detects the LLM provider based on environment variables:
-    1. ANTHROPIC_API_KEY -> ClaudeLlm
-    2. OLLAMA_HOST or OLLAMA_MODEL -> OllamaLlm
-    3. Otherwise -> GptLlm (Azure OpenAI)
+    LLM selection priority:
+    1. BOOKTEST_LLM env var (explicit choice: ollama, claude, gpt)
+    2. Auto-detect based on credentials:
+       - ANTHROPIC_API_KEY -> ClaudeLlm
+       - OLLAMA_HOST or OLLAMA_MODEL -> OllamaLlm
+       - Otherwise -> GptLlm (Azure OpenAI)
 
-    You can override with set_llm_factory() to use a specific LLM class.
+    You can also override programmatically with set_llm_factory().
 
     Returns:
         The cached LLM instance

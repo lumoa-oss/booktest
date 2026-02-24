@@ -1,0 +1,28 @@
+{
+  "env": {
+    "BOOKTEST_LLM": "ollama",
+    "OLLAMA_CONTEXT_SIZE": "32768",
+    "OLLAMA_HOST": "http://localhost:11435",
+    "OLLAMA_MODEL": "gpt-oss:20b"
+  },
+  "http": {
+    "21d9795fa59afe27a0efbada0d9f5aebab1fbf68": {
+      "request": {
+        "body": "eyJtb2RlbCI6ICJncHQtb3NzOjIwYiIsICJwcm9tcHQiOiAiQW5zd2VyIHRoaXMgcXVlc3Rpb24gYXMgSlNPTjpcbldoYXQgaXMgdGhlIGNhcGl0YWwgb2YgRnJhbmNlP1xuXG5SZXNwb25kIHdpdGg6IHtcImFuc3dlclwiOiBcInRoZSBjYXBpdGFsIGNpdHlcIiwgXCJjb3VudHJ5XCI6IFwiRnJhbmNlXCJ9IiwgInN0cmVhbSI6IGZhbHNlLCAib3B0aW9ucyI6IHsibnVtX3ByZWRpY3QiOiA0MDk2LCAibnVtX2N0eCI6IDMyNzY4fX0=",
+        "hash": "21d9795fa59afe27a0efbada0d9f5aebab1fbf68",
+        "method": "POST",
+        "url": "http://localhost:11435/api/generate"
+      },
+      "response": {
+        "content": "{\"model\":\"gpt-oss:20b\",\"created_at\":\"2026-02-23T12:38:34.689700589Z\",\"response\":\"{\\\"answer\\\":\\\"Paris\\\",\\\"country\\\":\\\"France\\\"}\",\"thinking\":\"We need to output JSON with keys \\\"answer\\\" and \\\"country\\\". For France capital is Paris. So {\\\"answer\\\":\\\"Paris\\\",\\\"country\\\":\\\"France\\\"}. Ensure JSON syntax.\",\"done\":true,\"done_reason\":\"stop\",\"context\":[200006,17360,200008,3575,553,17554,162016,11,261,4410,6439,2359,22203,656,7788,17527,558,87447,100594,25,220,1323,19,12,3218,198,6576,3521,25,220,1323,21,12,3286,12,1860,279,30377,289,25,14093,279,2,13888,18403,25,8450,11,49159,11,1721,13,21030,2804,413,7360,395,1753,3176,13,200007,200006,1428,200008,17045,495,4928,472,8205,734,4827,382,290,9029,328,10128,1715,100813,483,25,10494,17021,1243,392,3086,9029,5030,672,392,23663,1243,392,56501,18583,200007,200006,173781,200005,35644,200008,2167,1309,316,4733,8205,483,12994,392,17021,1,326,392,23663,4050,2214,10128,9029,382,12650,13,2632,10494,17021,7534,72782,4294,23663,7534,56501,1,16255,43810,8205,45440,13,200007,200006,173781,200005,17196,200008,10848,17021,7534,72782,4294,23663,7534,56501,18583],\"total_duration\":5527686486,\"load_duration\":92138077,\"prompt_eval_count\":97,\"prompt_eval_duration\":696152437,\"eval_count\":54,\"eval_duration\":4738648107}",
+        "encoding": "utf-8",
+        "headers": {
+          "Content-Length": "1251",
+          "Content-Type": "application/json; charset=utf-8",
+          "Date": "Mon, 23 Feb 2026 12:38:34 GMT"
+        },
+        "statusCode": 200
+      }
+    }
+  }
+}

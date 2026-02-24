@@ -1,38 +1,39 @@
 {
   "env": {
-    "OPENAI_API_BASE": "https://lumswectestopenai.openai.azure.com/",
+    "BOOKTEST_LLM": "openai",
+    "OPENAI_API_BASE": "https://oai-int-sisua-ai-sandbox-swe-001.openai.azure.com/",
     "OPENAI_API_VERSION": "2024-12-01-preview",
-    "OPENAI_COMPLETION_MAX_TOKENS": "128000",
-    "OPENAI_DEPLOYMENT": "gpt5-mini-dz",
+    "OPENAI_COMPLETION_MAX_TOKENS": "4096",
+    "OPENAI_DEPLOYMENT": "gpt-5-mini",
     "OPENAI_MODEL": "gpt-5-mini"
   },
   "httpx": {
-    "84b467e328f71e543d2d6918015ed0015eff32bd": {
+    "6636a8c64a33caaf777b6b96c95d43a90768b566": {
       "request": {
-        "body": "eyJtZXNzYWdlcyI6IFt7InJvbGUiOiAic3lzdGVtIiwgImNvbnRlbnQiOiAiWW91IGFyZSBhIGhlbHBmdWwgYXNzaXN0YW50IHByb3ZpZGluZyB2ZXJ5IGNvbmNpc2UgYW5zd2Vycy4ifSwgeyJyb2xlIjogInVzZXIiLCAiY29udGVudCI6ICJXaGF0IGlzIHRoZSBjYXBpdGFsIG9mIEZpbmxhbmQ/ICJ9XSwgIm1vZGVsIjogImdwdC01LW1pbmkiLCAibWF4X2NvbXBsZXRpb25fdG9rZW5zIjogMTI4MDAwLCAic2VlZCI6IDB9",
-        "hash": "84b467e328f71e543d2d6918015ed0015eff32bd",
+        "body": "eyJtZXNzYWdlcyI6IFt7InJvbGUiOiAic3lzdGVtIiwgImNvbnRlbnQiOiAiWW91IGFyZSBhIGhlbHBmdWwgYXNzaXN0YW50IHByb3ZpZGluZyB2ZXJ5IGNvbmNpc2UgYW5zd2Vycy4ifSwgeyJyb2xlIjogInVzZXIiLCAiY29udGVudCI6ICJXaGF0IGlzIHRoZSBjYXBpdGFsIG9mIEZpbmxhbmQ/ICJ9XSwgIm1vZGVsIjogImdwdC01LW1pbmkiLCAibWF4X2NvbXBsZXRpb25fdG9rZW5zIjogNDA5NiwgInNlZWQiOiAwfQ==",
+        "hash": "6636a8c64a33caaf777b6b96c95d43a90768b566",
         "method": "POST",
-        "url": "https://lumswectestopenai.openai.azure.com/openai/deployments/gpt5-mini-dz/chat/completions?api-version=2024-12-01-preview"
+        "url": "https://oai-int-sisua-ai-sandbox-swe-001.openai.azure.com/openai/deployments/gpt-5-mini/chat/completions?api-version=2024-12-01-preview"
       },
       "response": {
-        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2VsZl9oYXJtIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInNleHVhbCI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJ2aW9sZW5jZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJpbmRleCI6MCwibG9ncHJvYnMiOm51bGwsIm1lc3NhZ2UiOnsiYW5ub3RhdGlvbnMiOltdLCJjb250ZW50IjoiSGVsc2lua2kiLCJyZWZ1c2FsIjpudWxsLCJyb2xlIjoiYXNzaXN0YW50In19XSwiY3JlYXRlZCI6MTc2OTc4MTE0MCwiaWQiOiJjaGF0Y21wbC1EM2pEMmR3Y3oxZmdIb2htMmNaWUVOcmtIZEcwWiIsIm1vZGVsIjoiZ3B0LTUtbWluaS0yMDI1LTA4LTA3Iiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwicHJvbXB0X2ZpbHRlcl9yZXN1bHRzIjpbeyJwcm9tcHRfaW5kZXgiOjAsImNvbnRlbnRfZmlsdGVyX3Jlc3VsdHMiOnsiaGF0ZSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZWxmX2hhcm0iOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwic2V4dWFsIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sInZpb2xlbmNlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn19fV0sInN5c3RlbV9maW5nZXJwcmludCI6bnVsbCwidXNhZ2UiOnsiY29tcGxldGlvbl90b2tlbnMiOjEzLCJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjp7ImFjY2VwdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowLCJhdWRpb190b2tlbnMiOjAsInJlYXNvbmluZ190b2tlbnMiOjAsInJlamVjdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowfSwicHJvbXB0X3Rva2VucyI6MjgsInByb21wdF90b2tlbnNfZGV0YWlscyI6eyJhdWRpb190b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjB9LCJ0b3RhbF90b2tlbnMiOjQxfX0K",
+        "content": "eyJjaG9pY2VzIjpbeyJjb250ZW50X2ZpbHRlcl9yZXN1bHRzIjp7ImhhdGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwicHJvdGVjdGVkX21hdGVyaWFsX2NvZGUiOnsiZmlsdGVyZWQiOmZhbHNlLCJkZXRlY3RlZCI6ZmFsc2V9LCJwcm90ZWN0ZWRfbWF0ZXJpYWxfdGV4dCI6eyJmaWx0ZXJlZCI6ZmFsc2UsImRldGVjdGVkIjpmYWxzZX0sInNlbGZfaGFybSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZXh1YWwiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwidmlvbGVuY2UiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifX0sImZpbmlzaF9yZWFzb24iOiJzdG9wIiwiaW5kZXgiOjAsImxvZ3Byb2JzIjpudWxsLCJtZXNzYWdlIjp7ImFubm90YXRpb25zIjpbXSwiY29udGVudCI6IkhlbHNpbmtpLiIsInJlZnVzYWwiOm51bGwsInJvbGUiOiJhc3Npc3RhbnQifX1dLCJjcmVhdGVkIjoxNzcxOTE5ODU1LCJpZCI6ImNoYXRjbXBsLURDaGFScGVCSW1ySnRROTJyeUQ5c1dUOWVHaWlZIiwibW9kZWwiOiJncHQtNS1taW5pLTIwMjUtMDgtMDciLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJwcm9tcHRfZmlsdGVyX3Jlc3VsdHMiOlt7InByb21wdF9pbmRleCI6MCwiY29udGVudF9maWx0ZXJfcmVzdWx0cyI6eyJoYXRlIjp7ImZpbHRlcmVkIjpmYWxzZSwic2V2ZXJpdHkiOiJzYWZlIn0sImphaWxicmVhayI6eyJmaWx0ZXJlZCI6ZmFsc2UsImRldGVjdGVkIjpmYWxzZX0sInNlbGZfaGFybSI6eyJmaWx0ZXJlZCI6ZmFsc2UsInNldmVyaXR5Ijoic2FmZSJ9LCJzZXh1YWwiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifSwidmlvbGVuY2UiOnsiZmlsdGVyZWQiOmZhbHNlLCJzZXZlcml0eSI6InNhZmUifX19XSwic3lzdGVtX2ZpbmdlcnByaW50IjpudWxsLCJ1c2FnZSI6eyJjb21wbGV0aW9uX3Rva2VucyI6MTQsImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjAsImF1ZGlvX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6MCwicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjB9LCJwcm9tcHRfdG9rZW5zIjoyOCwicHJvbXB0X3Rva2Vuc19kZXRhaWxzIjp7ImF1ZGlvX3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MH0sInRvdGFsX3Rva2VucyI6NDJ9fQo=",
         "headers": {
-          "apim-request-id": "f6f9f26f-084c-4988-99ea-0735d33953cf",
-          "azureml-model-session": "d165-20251214172316",
-          "content-length": "1035",
+          "apim-request-id": "d3a25f64-b5a4-4f73-8534-75a26257dc0d",
+          "azureml-model-session": "d20260215025809-67c170fc2e54",
+          "content-length": "1208",
           "content-type": "application/json",
-          "date": "Fri, 30 Jan 2026 13:52:21 GMT",
+          "date": "Tue, 24 Feb 2026 07:57:34 GMT",
           "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
           "x-accel-buffering": "no",
           "x-content-type-options": "nosniff",
-          "x-ms-deployment-name": "gpt5-mini-dz",
+          "x-ms-deployment-name": "gpt-5-mini",
           "x-ms-rai-invoked": "true",
           "x-ms-region": "Sweden Central",
-          "x-ratelimit-limit-requests": "100",
-          "x-ratelimit-limit-tokens": "100000",
-          "x-ratelimit-remaining-requests": "92",
-          "x-ratelimit-remaining-tokens": "99627",
-          "x-request-id": "bf527a98-158a-49c5-bd7a-f16dbdc050a8"
+          "x-ratelimit-limit-requests": "110",
+          "x-ratelimit-limit-tokens": "110000",
+          "x-ratelimit-remaining-requests": "109",
+          "x-ratelimit-remaining-tokens": "109976",
+          "x-request-id": "e113c5ca-e208-4597-953a-95b61fac069b"
         },
         "statusCode": 200
       }
