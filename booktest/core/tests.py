@@ -423,6 +423,7 @@ class Tests:
         parser.add_argument('test_cases',
                             nargs='*',
                             default='*',
+                            type=lambda s: s.rstrip('/'),
                             choices=test_choices)
 
     def exec_parsed(self,

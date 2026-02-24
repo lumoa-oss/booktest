@@ -89,6 +89,11 @@
  * test/examples/snapshots_book.py::test_t_snapshot_async..ok
  * test/examples/snapshots_book.py::test_t_snapshot_basic..ok
  * test/examples/snapshots_book.py::test_t_snapshot_kwargs..ok
+ * test/llm/test_llm.py::test_booktest_llm_selection..ok
+ * test/llm/test_llm.py::test_ollama_basic_prompt..ok
+ * test/llm/test_llm.py::test_ollama_context_size..ok
+ * test/llm/test_llm.py::test_ollama_json_response..ok
+ * test/llm/test_llm.py::test_ollama_review..ok
  * test/setup_teardown_test.py::test_setup_teardown..ok
  * test/stderr_test.py::StdErrBook/test_stderr..ok
  * test/test_case_filtering.py::test_removed_tests_filtered..ok
@@ -137,4 +142,4 @@
  * test/test_two_dimensional_results.py::TestTwoDimensionalResults/test_two_dimensional_result_creation..ok
  * test/utils/all_caps/test_names..ok
 
-count: 136
+count: 141

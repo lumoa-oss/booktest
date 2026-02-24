@@ -42,6 +42,7 @@ def snapshot_gpt():
         bt.snapshot_httpx(lose_request_details=False),
         bt.mock_missing_env({"OPENAI_API_KEY": "mock-key"}),
         bt.snapshot_env(
+            "BOOKTEST_LLM",
             "OPENAI_API_BASE",
             "OPENAI_MODEL",
             "OPENAI_DEPLOYMENT",
