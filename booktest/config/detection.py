@@ -149,7 +149,8 @@ def detect_tests(path, selection=None):
     tests = []
     if os.path.exists(path):
         for root, dirs, files in os.walk(path):
-            for f in files:
+            dirs.sort()
+            for f in sorted(files):
                 if f.endswith("_test.py") or f.endswith("_book.py") or f.endswith("_suite.py") or \
                    (f.startswith("test_") and f.endswith(".py")):
                     tests.extend(get_file_tests(root, f, selection))
@@ -170,7 +171,11 @@ def detect_module_tests(module_name, selection=None):
     module = importlib.import_module(module_name)
     module_dir = os.path.dirname(module.__file__)
 
-    for _, submodule_name, is_pkg in pkgutil.walk_packages([module_dir], module_name + "."):
+    modules_found = sorted(
+        pkgutil.walk_packages([module_dir], module_name + "."),
+        key=lambda x: x[1]
+    )
+    for _, submodule_name, is_pkg in modules_found:
         submodule_path = str(submodule_name).split(".")
         test_name = submodule_path[len(submodule_path) - 1]
         if test_name.endswith("_test") or test_name.endswith("_book") or test_name.endswith("_suite") or\

@@ -14,6 +14,12 @@ booktest -v
 
 # test results:
 
+test book/test_hello.py::test_hello
+
+  the message is hello world!
+
+book/test_hello.py::test_hello ok <number> ms.
+
 test book/test_snapshot.py::test_auto_function_snapshots
 
   # snapshots:
@@ -22,12 +28,6 @@ test book/test_snapshot.py::test_auto_function_snapshots
    * random: 0.3846126080188771
 
 book/test_snapshot.py::test_auto_function_snapshots ok <number> ms.
-
-test book/test_hello.py::test_hello
-
-  the message is hello world!
-
-book/test_hello.py::test_hello ok <number> ms.
 
 test book/teardown/setup_teardown_test.py::test_setup_teardown
 
@@ -54,8 +54,8 @@ book/teardown/setup_teardown_test.py::test_setup_teardown ok <number> ms.
 
 # testing pytest project with pytest
 
-test/test_books.py::test_fs_detect[book/test_snapshot.py::test_auto_function_snapshots] PASSED [  8%]
-test/test_books.py::test_fs_detect[book/test_hello.py::test_hello] PASSED [ 16%]
+test/test_books.py::test_fs_detect[book/test_hello.py::test_hello] PASSED [  8%]
+test/test_books.py::test_fs_detect[book/test_snapshot.py::test_auto_function_snapshots] PASSED [ 16%]
 test/test_books.py::test_fs_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 25%]
 test/test_books.py::test_module_detect[book/teardown/setup_teardown_test.py::test_setup_teardown] PASSED [ 33%]
 test/test_books.py::test_module_detect[book/test_hello.py::test_hello] PASSED [ 41%]
