@@ -2,11 +2,14 @@
 Automatic migration from v1 (legacy) to v2 (pytest-style) filesystem layout.
 """
 
+import logging
 import os
 import shutil
 from pathlib import Path
 from typing import List, Tuple, Dict, Optional
 import warnings
+
+logger = logging.getLogger(__name__)
 
 from booktest.config.config import get_fs_version, set_fs_version, PROJECT_CONFIG_FILE
 
@@ -108,7 +111,7 @@ def cleanup_empty_directories(base_path: Path, directories: set):
             # Check if directory is empty (no files or subdirs)
             if not any(directory.iterdir()):
                 directory.rmdir()
-                print(f"Cleaned up empty directory: {directory.relative_to(base_path)}")
+                logger.info(f"Cleaned up empty directory: {directory.relative_to(base_path)}")
 
                 # Also try to clean up parent directories if they're now empty
                 parent = directory.parent
@@ -116,7 +119,7 @@ def cleanup_empty_directories(base_path: Path, directories: set):
                     try:
                         if not any(parent.iterdir()):
                             parent.rmdir()
-                            print(f"Cleaned up empty directory: {parent.relative_to(base_path)}")
+                            logger.info(f"Cleaned up empty directory: {parent.relative_to(base_path)}")
                             parent = parent.parent
                         else:
                             break
@@ -160,7 +163,7 @@ def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) ->
 
             if old_file.exists():
                 if dry_run:
-                    print(f"Would migrate: {old_file} → {new_file}")
+                    logger.info(f"Would migrate: {old_file} → {new_file}")
                     migrated_count += 1
                 else:
                     # Track parent directory for cleanup
@@ -171,7 +174,7 @@ def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) ->
 
                     # Move file
                     shutil.move(str(old_file), str(new_file))
-                    print(f"Migrated: {old_file.relative_to(base_path)} → {new_file.relative_to(base_path)}")
+                    logger.info(f"Migrated: {old_file.relative_to(base_path)} → {new_file.relative_to(base_path)}")
                     migrated_count += 1
 
         # Also migrate associated directory if it exists
@@ -180,7 +183,7 @@ def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) ->
 
         if old_dir.is_dir() and not new_dir.exists():
             if dry_run:
-                print(f"Would migrate directory: {old_dir} → {new_dir}")
+                logger.info(f"Would migrate directory: {old_dir} → {new_dir}")
                 migrated_count += 1
             else:
                 # Track parent directory for cleanup
@@ -188,7 +191,7 @@ def migrate_test_files(tests, base_dir: str = "books", dry_run: bool = False) ->
 
                 new_dir.parent.mkdir(parents=True, exist_ok=True)
                 shutil.move(str(old_dir), str(new_dir))
-                print(f"Migrated directory: {old_dir.relative_to(base_path)} → {new_dir.relative_to(base_path)}")
+                logger.info(f"Migrated directory: {old_dir.relative_to(base_path)} → {new_dir.relative_to(base_path)}")
                 migrated_count += 1
 
     # Cleanup empty directories after migration
@@ -243,7 +246,7 @@ def migrate_dvc_manifest_keys(manifest_path: str = "booktest.manifest.yaml",
             new_key = legacy_to_new[old_key]
             new_manifest[new_key] = value
             if not dry_run:
-                print(f"Migrated manifest key: {old_key} → {new_key}")
+                logger.info(f"Migrated manifest key: {old_key} → {new_key}")
             migrated_count += 1
         else:
             # Keep unchanged
@@ -293,42 +296,36 @@ def check_and_migrate(config_file: str = PROJECT_CONFIG_FILE,
 
     if current_version == "v1" or force:
         # Need to migrate
-        print("Detected legacy filesystem layout (v1)")
-        print("Migrating to pytest-style naming (v2)...")
-        print()
+        logger.info("Detected legacy filesystem layout (v1)")
+        logger.info("Migrating to pytest-style naming (v2)...")
 
         if tests is None:
             # Can't do actual migration without test discovery
             # Just mark as migrated and let tests regenerate
-            print("⚠️  Test discovery not available - files will regenerate on next run")
-            print()
+            logger.info("Test discovery not available - files will regenerate on next run")
         else:
             # Perform actual migration
-            print("Migrating test output files...")
+            logger.info("Migrating test output files...")
             file_count = migrate_test_files(tests, base_dir, dry_run=False)
 
             if file_count > 0:
-                print(f"✓ Migrated {file_count} files")
+                logger.info(f"Migrated {file_count} files")
             else:
-                print("✓ No legacy files found")
-            print()
+                logger.info("No legacy files found")
 
             # Migrate DVC manifest
-            print("Migrating DVC manifest keys...")
+            logger.info("Migrating DVC manifest keys...")
             manifest_count = migrate_dvc_manifest_keys(manifest_path, tests, dry_run=False)
 
             if manifest_count > 0:
-                print(f"✓ Migrated {manifest_count} manifest keys")
+                logger.info(f"Migrated {manifest_count} manifest keys")
             else:
-                print("✓ No legacy manifest keys found")
-            print()
+                logger.info("No legacy manifest keys found")
 
         # Mark as migrated
         set_fs_version("v2", config_file)
-        print(f"✓ Updated {config_file}: fs_version=v2")
-        print()
-        print("Migration complete! Tests now use pytest-style naming.")
-        print()
+        logger.info(f"Updated {config_file}: fs_version=v2")
+        logger.info("Migration complete! Tests now use pytest-style naming.")
 
         return True
 
