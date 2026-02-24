@@ -18,6 +18,14 @@ def path_to_module_resource(path: str):
     return ".".join(parts[:len(parts)-1]), parts[len(parts)-1]
 
 
+def _get_resource_traversable(path: str):
+    parts = path.split('/')
+    traversable = rs.files(parts[0])
+    for part in parts[1:]:
+        traversable = traversable / part
+    return traversable
+
+
 def open_file_or_resource(path: str, is_resource: bool):
     """
     Open a file or resource for reading.
@@ -33,21 +41,10 @@ def open_file_or_resource(path: str, is_resource: bool):
         File-like object opened for text reading
     """
     if not path.startswith("/") and is_resource:
-        # Split path into root module and relative path
         parts = path.split('/')
         if len(parts) < 2:
             raise ValueError(f"Resource path must have at least 2 components: {path}")
-
-        root_module = parts[0]  # e.g., 'books'
-        relative_parts = parts[1:]  # e.g., ['test', 'test_hello.py', 'test_hello.md']
-
-        # Use files() API to navigate to the resource
-        traversable = rs.files(root_module)
-        for part in relative_parts:
-            traversable = traversable / part
-
-        # Open the resource for reading
-        return traversable.open('r')
+        return _get_resource_traversable(path).open('r')
     else:
         return open(path, "r")
 
@@ -68,24 +65,11 @@ def file_or_resource_exists(path: str, is_resource: bool):
     # there seems to be a special case, where absolutely paths are provided
     # in is_resource mode, so we need to handle that as well
     if not path.startswith("/") and is_resource:
-        # Split path into root module and relative path
         parts = path.split('/')
-        if len(parts) < 2:
-            return False
-
-        root_module = parts[0]  # e.g., 'books'
-        relative_parts = parts[1:]  # e.g., ['test', 'test_hello.py', 'test_hello.md']
-
-        if not root_module:
+        if len(parts) < 2 or not parts[0]:
             return False
         try:
-            # Use files() API to navigate to the resource
-            traversable = rs.files(root_module)
-            for part in relative_parts:
-                traversable = traversable / part
-
-            # Check if it exists and is a file (not a directory)
-            return traversable.is_file()
+            return _get_resource_traversable(path).is_file()
         except (ModuleNotFoundError, FileNotFoundError, AttributeError):
             return False
     else:
