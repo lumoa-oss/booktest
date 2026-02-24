@@ -1,6 +1,6 @@
 [project]
 name = "booktest"
-version = "1.1.1"
+version = "1.1.2"
 authors = [{name = "Antti Rauhala", email = "antti@lumoa.me"}]
 description = "Booktest is a snapshot testing library for review driven testing."
 readme = "readme.md"
