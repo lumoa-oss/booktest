@@ -1,0 +1,17 @@
+{
+  "snapshot": [
+    {
+      "args": [
+        "test-query"
+      ],
+      "hash": "d2fa625ec913b24fa5c9da9b35bd9db22d3106bc",
+      "kwargs": {},
+      "name": "expensive",
+      "result": {
+        "call_number": 1,
+        "query": "test-query",
+        "result": "data"
+      }
+    }
+  ]
+}

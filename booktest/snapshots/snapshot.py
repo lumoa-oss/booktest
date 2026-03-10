@@ -313,18 +313,11 @@ class SnapshotCallWrapper:
                     return cached_result
                 return return_cached()
 
-            # func is sync, but might return a coroutine (lambda *args: async_fn(*args))
-            # We need to check by calling it, then close the coroutine
-            test_result = func(*self.args, **self.kwargs)
-            if inspect.iscoroutine(test_result):
-                # Close the unused coroutine to avoid warnings
-                test_result.close()
-                # Return cached in a coroutine wrapper
-                async def return_cached_async():
-                    return cached_result
-                return return_cached_async()
-
-            # Truly sync - return directly
+            # Sync function: return cached result directly.
+            # Note: if a user passes a sync function that returns a coroutine
+            # (e.g., lambda *args: async_fn(*args)), they should use async def
+            # instead. We don't probe for this case to avoid executing the
+            # function just to check its return type.
             return cached_result
 
         # Not in cache - need to capture

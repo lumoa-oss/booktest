@@ -3,30 +3,45 @@ from booktest.core.testsuite import cases_of
 
 
 def test_detect_tests(t: bt.TestCaseRun):
+    """Test that filesystem and module detection find the same tests.
+
+    This test verifies that both detection methods agree, rather than
+    listing all tests (which would break every time a test is added).
+    """
     t.h1("detecting tests:")
 
     fs_cases = cases_of(bt.detect_tests("test"))
     module_cases = cases_of(bt.detect_module_tests("test"))
 
-    cases = set()
     fs_set = set()
     module_set = set()
 
     for fs, module in zip(fs_cases, module_cases):
-        cases.add(fs[0])
         fs_set.add(fs[0])
-        cases.add(module[0])
         module_set.add(module[0])
 
-    for case in list(sorted(cases)):
-        t.anchor(f" * {case}..").assertln(case in fs_set and case in module_set)
-        if case not in fs_set:
-            t.fail().tln("   * not detected via fs")
-        if case not in module_set:
-            t.fail().tln("   * not detected via module")
+    # Check for mismatches between detection methods
+    only_in_fs = fs_set - module_set
+    only_in_module = module_set - fs_set
+
+    t.h2("detection method agreement:")
+    t.t(" * both methods detect some tests..").assertln(len(fs_set) > 0 and len(module_set) > 0)
+    t.t(" * methods find same tests..").assertln(fs_set == module_set)
+
+    if only_in_fs:
+        t.tln()
+        t.tln("tests only detected via filesystem:")
+        for case in sorted(only_in_fs):
+            t.fail().tln(f"   * {case}")
+
+    if only_in_module:
+        t.tln()
+        t.tln("tests only detected via module:")
+        for case in sorted(only_in_module):
+            t.fail().tln(f"   * {case}")
 
     t.tln()
-    t.keyvalueln("count:", len(cases))
+    t.t(" * detected test count is reasonable (> 100)..").assertln(len(fs_set) > 100)
 
 
 def test_detect_setup(t: bt.TestCaseRun):
